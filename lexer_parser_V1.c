@@ -475,7 +475,7 @@ char *preprocess_input(char *str, const char *delim)
     return preprocessed;
 }
 
-void lexer(char *input, t_token **tokenList, int *numTokens)
+/*void lexer(char *input, t_token **tokenList, int *numTokens)
 {
     // Initialize variables
     *numTokens = 0;
@@ -496,19 +496,20 @@ void lexer(char *input, t_token **tokenList, int *numTokens)
 
         // Determine token type
         enum token_type tokenType;
-        if (strcmp(tokenValue, "|") == 0) 
+        switch (tokenValue[0])
         {
-            tokenType = PIPE;
-        } else if (strcmp(tokenValue, ">") == 0) {
-            tokenType = RED_TO;
-        } else if (strcmp(tokenValue, "<") == 0) {
-            tokenType = RED_FROM;
-        } else if (strcmp(tokenValue, ">>") == 0) {
-            tokenType = APPEND;
-        } else if (strcmp(tokenValue, "<<") == 0) {
-            tokenType = HERE_DOC;
-        } else {
-            tokenType = WORD;
+            case '|':
+                tokenType = PIPE;
+                break;
+            case '>':
+                tokenType = (tokenValue[1] == '>') ? APPEND : RED_TO;
+                break;
+            case '<':
+                tokenType = (tokenValue[1] == '<') ? HERE_DOC : RED_FROM;
+                break;
+            default:
+                tokenType = WORD;
+                break;
         }
 
         // Populate token list
@@ -524,9 +525,84 @@ void lexer(char *input, t_token **tokenList, int *numTokens)
         (*numTokens)++;
         tokenValue = strtok(NULL, " @");
     }
+}*/
+
+void lexer(char *input, t_token_list **tokenList, int *numTokens)
+{
+    // Initialize variables
+    *numTokens = 0;
+    *tokenList = NULL;
+    t_token_list *current = NULL;
+    //char *delimiter = find_delimiter(input);
+    char *tokenValue = strtok(input, " @"); // Tokenize input string based on whitespace
+
+    // Iterate over tokens
+    while (tokenValue != NULL)
+    {
+        // Allocate memory for new token
+        t_token *newToken = malloc(sizeof(t_token));
+        if (newToken == NULL) {
+            perror("Memory allocation error");
+            exit(EXIT_FAILURE);
+        }
+
+        // Determine token type
+        enum token_type tokenType;
+        switch (tokenValue[0])
+        {
+            case '|':
+                tokenType = PIPE;
+                break;
+            case '>':
+                tokenType = (tokenValue[1] == '>') ? APPEND : RED_TO;
+                break;
+            case '<':
+                tokenType = (tokenValue[1] == '<') ? HERE_DOC : RED_FROM;
+                break;
+            default:
+                tokenType = WORD;
+                break;
+        }
+
+        // Populate token list
+        newToken -> type = tokenType;
+        newToken -> lexeme = strdup(tokenValue);
+        if (newToken -> lexeme == NULL) 
+        {
+            perror("Memory allocation error");
+            exit(EXIT_FAILURE);
+        }
+
+        // Move to next token
+        t_token_list *newNode = malloc(sizeof(t_token_list));
+            if (newNode == NULL)
+            {
+                perror("Memory allocation error");
+                exit(EXIT_FAILURE);
+            }
+            newNode->token = newToken;
+            newNode->next = NULL;
+
+        // Link the new node to the token list
+            if (*tokenList == NULL)
+            {
+                *tokenList = newNode;
+                current = *tokenList;
+            }
+            else
+            {
+                current->next = newNode;
+                current = current->next;
+            }
+
+        // Move to the next token
+            (*numTokens)++;
+            tokenValue = strtok(NULL, " @");
+    }
 }
 
-int main() {
+int main()
+{
     char input[100]; // Adjust size as needed
 
     printf("Enter a command: ");
@@ -535,26 +611,47 @@ int main() {
     // Remove the newline character from the input
     input[strcspn(input, "\n")] = '\0';
 
-    t_token *tokenList = NULL;
+    t_token_list *tokenList = NULL;
     int numTokens = 0;
-    //processed the input here, so we can free it atfer using it
+    // Processed the input here, so we can free it atfer using it
     char *processed_input = preprocess_input(input, "|><");
     // Tokenize the input string using the lexer
     lexer(processed_input, &tokenList, &numTokens);
 
-    // Pass the token list to your parser functions for parsing
-    // Example: parse_logical_and(tokenList, numTokens);
-
     // Print the token list for verification
     printf("Token list:\n");
-    for (int i = 0; i < numTokens; i++) {
-        printf("Token %d: Type=%d, Value='%s'\n", i+1, tokenList[i].type, tokenList[i].lexeme);
+    t_token_list *current = tokenList; // Start from the head of the token list
+    int i = 1; // Token index
+
+// Traverse the linked list of tokens
+    while (current != NULL)
+    {
+        printf("Token %d: Type=%d, Value='%s'\n", i, current->token->type, current->token->lexeme);
+        current = current->next;
+        i++;
     }
 
-    // Free allocated memory
-    for (int i = 0; i < numTokens; i++) {
-        free(tokenList[i].lexeme);
+    // Parse the tokenized tree
+    t_parse_tree* root = NULL;
+    if (is_pipe_sequence(&tokenList, &root) == SUBTREE_OK)
+    {
+        printf("Parse tree:\n");
+        print_parse_tree(root, 0);
     }
+    else
+    {
+        //free_parse_tree(root);//MAYBE NOT NEEDED IF WAS FREED IN IS_PIPE_SEQUENCE
+        printf("Parser returned an error: %d\n", SYNTAX_ERROR);
+    }
+
+    // Free resources
+    // free_token_list(tokenList); Fix later
+
+
+    // Free allocated memory
+    /*for (int i = 0; i < numTokens; i++) {
+        free(tokenList[i].lexeme);
+    }*/
     free(processed_input);
     free(tokenList);
 
