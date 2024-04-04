@@ -470,15 +470,27 @@ char *preprocess_input(char *str, const char *delim) {
     char *dest = preprocessed;
 
     // Copy the characters from the original string to the preprocessed string
-    while (*str != '\0') {
+    while (*str != '\0')
+    {
         // If the current character is a delimiter, insert a distinct character before it
-        if (strchr(delim, *str) != NULL) {
-            *dest++ = '@'; // Insert a distinct character
-            *dest++ = *str; // Copy the delimiter
-            *dest++ = '@';
-        } else {
-            *dest++ = *str; // Copy the character as is
+        if (strchr(delim, *str) != NULL)
+        {
+            if ((*str == '<' && *(str + 1) == '<') || (*str == '>' && *(str + 1) == '>'))
+            {
+                *dest++ = '@';
+                *dest++ = *str;
+                *dest++ = *++str;
+                *dest++ = '@';
+            }
+            else
+            {
+                *dest++ = '@'; // Insert a distinct character
+                *dest++ = *str; // Copy the delimiter
+                *dest++ = '@';
+            }
         }
+        else
+            *dest++ = *str; // Copy the character as is
         str++;
     }
 
