@@ -415,54 +415,30 @@ char *find_delimiter(char *input)
     return (NULL);
 }*/
 
-/*
-char *custom_strtok(char *str, const char *delim, const char *sep_delim) {
-    static char *current = NULL;
-
-    if (str)
-        current = str;
-    if (!current)
-        return NULL;
-
-    // Check for separate delimiter tokens at the current position
-    if (strchr(sep_delim, *current) != NULL) {
-        char *delimiter_token = malloc(2); // Allocate memory for the delimiter token
-        if (delimiter_token == NULL) {
-            perror("Memory allocation error");
-            exit(EXIT_FAILURE);
+int count_additional_chars(char *input, const char *delim)
+{
+    int num_of_extra = 0;
+    while (*input)
+    {
+        if (strchr(delim, *input) != NULL)
+        {
+            if ((*input == '<' && *(input + 1) == '<') || (*input == '>' && *(input + 1) == '>'))
+                input++;
+            num_of_extra += 2;
         }
-        delimiter_token[0] = *current; // Store the delimiter character
-        delimiter_token[1] = '\0';
-        current++; // Move to the next character
-        return delimiter_token;
+        input++;
     }
+    return (num_of_extra); 
+}
 
-    // Find the start of the next token using regular delimiters
-    while (*current != '\0' && strchr(delim, *current) != NULL) {
-        current++;
-    }
-    
-    // Check if we've reached the end of the string
-    if (*current == '\0') return NULL;
-
-    char *start = current;
-    char *end = strpbrk(current, delim);
-
-    // Check if a regular delimiter was found
-    if (end != NULL) {
-        *end = '\0'; // Replace the delimiter with a null terminator
-        current = end + 1; // Move to the next character after the delimiter
-    } else {
-        current = NULL; // No more tokens left
-    }
-
-    return start;
-}*/
-
-char *preprocess_input(char *str, const char *delim) {
+char *preprocess_input(char *str, const char *delim)
+{   
+    int original_len = strlen(str);
+    int additional_chars = count_additional_chars(str, delim);
     // Allocate memory for the preprocessed string
-    char *preprocessed = malloc(strlen(str) * 2 + 1); // Double the size to handle worst-case scenario
-    if (preprocessed == NULL) {
+    char *preprocessed = malloc(original_len + additional_chars + 1);
+    if (preprocessed == NULL)
+    {
         perror("Memory allocation error");
         exit(EXIT_FAILURE);
     }
@@ -505,8 +481,7 @@ void lexer(char *input, t_token **tokenList, int *numTokens)
     *numTokens = 0;
     *tokenList = NULL;
     //char *delimiter = find_delimiter(input);
-    char *processed_input = preprocess_input(input, "|><");
-    char *tokenValue = strtok(processed_input, " @"); // Tokenize input string based on whitespace
+    char *tokenValue = strtok(input, " @"); // Tokenize input string based on whitespace
 
     // Iterate over tokens
     while (tokenValue != NULL)
@@ -562,9 +537,10 @@ int main() {
 
     t_token *tokenList = NULL;
     int numTokens = 0;
-
+    //processed the input here, so we can free it atfer using it
+    char *processed_input = preprocess_input(input, "|><");
     // Tokenize the input string using the lexer
-    lexer(input, &tokenList, &numTokens);
+    lexer(processed_input, &tokenList, &numTokens);
 
     // Pass the token list to your parser functions for parsing
     // Example: parse_logical_and(tokenList, numTokens);
@@ -579,6 +555,7 @@ int main() {
     for (int i = 0; i < numTokens; i++) {
         free(tokenList[i].lexeme);
     }
+    free(processed_input);
     free(tokenList);
 
     return 0;
