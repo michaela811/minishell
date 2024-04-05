@@ -1,51 +1,4 @@
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-enum token_type
-{
-    // Basic Token Types in the Grammar
-    PIPE,              //0
-    WORD,              //1
-    ASSIGNMENT_WORD,   //2
-    RED_TO,            //3
-    RED_FROM,          //4
-    APPEND,            //5
-    HERE_DOC,          //6
-};
-
-typedef struct s_token
-{
-    char *lexeme;
-    enum token_type type;
-} t_token;
-
-
-//from lexer
-typedef struct s_token_list
-{
-    struct s_token *token;
-    struct s_token_list *next;
-} t_token_list;
-
-typedef struct s_parse_tree
-{
-  struct s_token *data;
-  struct s_parse_tree *child;
-  struct s_parse_tree *sibling;
-} t_parse_tree;
-
-// Return values
-#define SYNTAX_ERROR -1
-#define SUBTREE_OK 0
-#define MEMORY_ERROR 1
-
-int is_pipe_sequence(t_token_list **tok, t_parse_tree **new);
-int is_cmd_suffix(t_token_list **tok, t_parse_tree **suffix_node);
-int is_cmd_prefix(t_token_list **tok, t_parse_tree **prefix_node);
-bool is_redirection_token(enum token_type type);
-
+#include "lexer.h"
 
 t_parse_tree* alloc_parse_tree()
 {
@@ -113,13 +66,14 @@ void link_node(t_parse_tree **current, t_parse_tree *newNode)
 
 int is_cmd_word(t_token_list **tok, t_parse_tree **cmd_word_node)
 {
-    if (*tok == NULL || (*tok)->token->type != WORD)
-        return(SYNTAX_ERROR);
-    *cmd_word_node = alloc_parse_tree();
-    if (*cmd_word_node == NULL)
-        return(MEMORY_ERROR);
-    (*cmd_word_node)->data = (*tok)->token; // Set the WORD token to this node
-    *tok = (*tok)->next; // Move to the next token
+    if (*tok != NULL && (*tok)->token->type == WORD)
+	{
+		*cmd_word_node = alloc_parse_tree();
+    	if (*cmd_word_node == NULL)
+        	return(MEMORY_ERROR);
+    	(*cmd_word_node)->data = (*tok)->token; // Set the WORD token to this node
+    	*tok = (*tok)->next; // Move to the next token
+	}
     return(SUBTREE_OK);
 }
 
@@ -129,15 +83,17 @@ int is_simple_command(t_token_list **tok, t_parse_tree **new)
     if (*new == NULL)
         return(MEMORY_ERROR);
     if(is_cmd_prefix(tok, &((*new)->child)) != SUBTREE_OK)// && (*new)->child != NULL)
-        return(free_parse_tree(*new), SYNTAX_ERROR);//COULD BE ALSO MEMORY_ERROR
+        return(SYNTAX_ERROR);//COULD BE ALSO MEMORY_ERROR
     t_parse_tree *cmd_word_node = NULL;
     if(is_cmd_word(tok, &cmd_word_node) != SUBTREE_OK)
         return(free_parse_tree(*new), SYNTAX_ERROR);//COULD BE ALSO MEMORY_ERROR
+	if (cmd_word_node == NULL)// PROBABLY CHECK WHETHER THE TOKEN LIST IS EMPTY
+		return(SUBTREE_OK);
     link_node(&((*new)->child), cmd_word_node);//change to (*new)->child
     t_parse_tree *cmd_suffix_node = NULL;// Optionally parse and attach cmd_suffix
     if(is_cmd_suffix(tok, &cmd_suffix_node) == SUBTREE_OK)
     {
-        if(cmd_suffix_node->child != NULL)
+        if(cmd_suffix_node && cmd_suffix_node->child != NULL)
         link_node(&((*new)->child), cmd_suffix_node);//cmd_word_node->child = cmd_suffix_node;  // Attach suffix as sibling to cmd_word
     }
     else
@@ -262,7 +218,7 @@ int is_pipe_sequence(t_token_list **tok, t_parse_tree **new)//, int *status)
     if (*new == NULL)
         return(MEMORY_ERROR);
     t_parse_tree *current_command = NULL;
-    if(is_simple_command(tok, &current_command) != SUBTREE_OK)
+    if(is_simple_command(tok, &current_command) != SUBTREE_OK || !current_command->child)
         return(free_parse_tree(*new), SYNTAX_ERROR); //COULD BE ALSO MEMORY_ERROR
     (*new)->child = current_command; // Attach the first command as a child of the pipe sequence
     while (*tok != NULL && (*tok)->token->type == PIPE)// Iteratively look for PIPE tokens and subsequent simple_commands
@@ -274,7 +230,7 @@ int is_pipe_sequence(t_token_list **tok, t_parse_tree **new)//, int *status)
         *tok = (*tok)->next; // Move past the PIPE token
         link_pipe(new, pipe_node);
         t_parse_tree *next_command = NULL;
-        if(is_simple_command(tok, &next_command) != SUBTREE_OK && next_command->child)
+        if(is_simple_command(tok, &next_command) != SUBTREE_OK || !next_command->child)
             return(free_parse_tree(next_command), SYNTAX_ERROR);
         link_pipe(new, next_command);//pipe_node->child = next_command;// Link the next_command as a sibling of the current command
     }
@@ -362,6 +318,7 @@ void free_token_list(t_token_list* list)
     list = NULL; // Set the list pointer to NULL after freeing
 }
 
+
 void test_parser()
 {
     t_token_list* list = NULL;
@@ -398,176 +355,4 @@ void test_parser()
     // Note: You also need to free the token list, which is not covered here
 }
 
-/*int main() {
-    test_parser();
-    return 0;
-}*/
 
-/* Try to find a delimiter, didnt work because it didnt consider delimeter a token if needed
-char *find_delimiter(char *input)
-{
-    while (*input != '\0')
-    {
-        if (*input == '|' || *input == '>' || *input == '<' || *input == ' ')
-            return (input);
-        input++;
-    }
-    return (NULL);
-}*/
-
-/*
-char *custom_strtok(char *str, const char *delim, const char *sep_delim) {
-    static char *current = NULL;
-
-    if (str)
-        current = str;
-    if (!current)
-        return NULL;
-
-    // Check for separate delimiter tokens at the current position
-    if (strchr(sep_delim, *current) != NULL) {
-        char *delimiter_token = malloc(2); // Allocate memory for the delimiter token
-        if (delimiter_token == NULL) {
-            perror("Memory allocation error");
-            exit(EXIT_FAILURE);
-        }
-        delimiter_token[0] = *current; // Store the delimiter character
-        delimiter_token[1] = '\0';
-        current++; // Move to the next character
-        return delimiter_token;
-    }
-
-    // Find the start of the next token using regular delimiters
-    while (*current != '\0' && strchr(delim, *current) != NULL) {
-        current++;
-    }
-    
-    // Check if we've reached the end of the string
-    if (*current == '\0') return NULL;
-
-    char *start = current;
-    char *end = strpbrk(current, delim);
-
-    // Check if a regular delimiter was found
-    if (end != NULL) {
-        *end = '\0'; // Replace the delimiter with a null terminator
-        current = end + 1; // Move to the next character after the delimiter
-    } else {
-        current = NULL; // No more tokens left
-    }
-
-    return start;
-}*/
-
-char *preprocess_input(char *str, const char *delim) {
-    // Allocate memory for the preprocessed string
-    char *preprocessed = malloc(strlen(str) * 2 + 1); // Double the size to handle worst-case scenario
-    if (preprocessed == NULL) {
-        perror("Memory allocation error");
-        exit(EXIT_FAILURE);
-    }
-
-    char *dest = preprocessed;
-
-    // Copy the characters from the original string to the preprocessed string
-    while (*str != '\0') {
-        // If the current character is a delimiter, insert a distinct character before it
-        if (strchr(delim, *str) != NULL) {
-            *dest++ = '@'; // Insert a distinct character
-            *dest++ = *str; // Copy the delimiter
-            *dest++ = '@';
-        } else {
-            *dest++ = *str; // Copy the character as is
-        }
-        str++;
-    }
-
-    *dest = '\0'; // Null-terminate the preprocessed string
-    printf("Preprocessed input is: %s\n", preprocessed);
-    return preprocessed;
-}
-
-void lexer(char *input, t_token **tokenList, int *numTokens)
-{
-    // Initialize variables
-    *numTokens = 0;
-    *tokenList = NULL;
-    //char *delimiter = find_delimiter(input);
-    char *processed_input = preprocess_input(input, "|><");
-    char *tokenValue = strtok(processed_input, " @"); // Tokenize input string based on whitespace
-
-    // Iterate over tokens
-    while (tokenValue != NULL)
-    {
-        // Allocate memory for new token
-        *tokenList = realloc(*tokenList, (*numTokens + 1) * sizeof(t_token));
-        if (*tokenList == NULL)
-        {
-            perror("Memory allocation error");
-            exit(EXIT_FAILURE);
-        }
-
-        // Determine token type
-        enum token_type tokenType;
-        if (strcmp(tokenValue, "|") == 0) 
-        {
-            tokenType = PIPE;
-        } else if (strcmp(tokenValue, ">") == 0) {
-            tokenType = RED_TO;
-        } else if (strcmp(tokenValue, "<") == 0) {
-            tokenType = RED_FROM;
-        } else if (strcmp(tokenValue, ">>") == 0) {
-            tokenType = APPEND;
-        } else if (strcmp(tokenValue, "<<") == 0) {
-            tokenType = HERE_DOC;
-        } else {
-            tokenType = WORD;
-        }
-
-        // Populate token list
-        (*tokenList)[*numTokens].type = tokenType;
-        (*tokenList)[*numTokens].lexeme = strdup(tokenValue);
-        if ((*tokenList)[*numTokens].lexeme == NULL) 
-        {
-            perror("Memory allocation error");
-            exit(EXIT_FAILURE);
-        }
-
-        // Move to next token
-        (*numTokens)++;
-        tokenValue = strtok(NULL, " @");
-    }
-}
-
-int main() {
-    char input[100]; // Adjust size as needed
-
-    printf("Enter a command: ");
-    fgets(input, sizeof(input), stdin); // Read input from the command line
-
-    // Remove the newline character from the input
-    input[strcspn(input, "\n")] = '\0';
-
-    t_token *tokenList = NULL;
-    int numTokens = 0;
-
-    // Tokenize the input string using the lexer
-    lexer(input, &tokenList, &numTokens);
-
-    // Pass the token list to your parser functions for parsing
-    // Example: parse_logical_and(tokenList, numTokens);
-
-    // Print the token list for verification
-    printf("Token list:\n");
-    for (int i = 0; i < numTokens; i++) {
-        printf("Token %d: Type=%d, Value='%s'\n", i+1, tokenList[i].type, tokenList[i].lexeme);
-    }
-
-    // Free allocated memory
-    for (int i = 0; i < numTokens; i++) {
-        free(tokenList[i].lexeme);
-    }
-    free(tokenList);
-
-    return 0;
-}
