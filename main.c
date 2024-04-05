@@ -1,178 +1,59 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <sys/wait.h>
+#include "lexer.h"
 
-#define MAXARGS 128
-
-struct command
+int main()
 {
-	int argc;
-	char *argv[MAXARGS];
-	enum builtin_t
-	{
-		PWD, NONE//, QUIT, JOBS, BG, FG
-	} builtin;
-};
+    char input[100]; // Adjust size as needed
+	int error = 0;
 
-const int MAXLINE = 1024;
-char prompt[] = "lnsh> ";
+    printf("Enter a command: ");
+    fgets(input, sizeof(input), stdin); // Read input from the command line
 
-void eval(char *cmdline);
-int parse(const char *cmdline, struct command *cmd);
-void runSystemCommand(struct command *cmd, int bg);
-enum builtin_t parseBuiltin(struct command *cmd);
-void runBuiltinCommand(struct command *cmd, int bg);
-void printWorkingDirectory();
-void error(const char* msg);
+    // Remove the newline character from the input
+    input[strcspn(input, "\n")] = '\0';
 
-int main(int argc, char **argv)
-{
-	char	cmdline[MAXLINE];
+    t_token_list *tokenList = NULL;
+    int numTokens = 0;
+    // Processed the input here, so we can free it atfer using it
+    char *processed_input = preprocess_input(input, "|><");
+    // Tokenize the input string using the lexer
+    lexer(processed_input, &tokenList, &numTokens, &error);
 
-	while (1)
-	{
-		printf("%s", prompt);
-		if ((fgets(cmdline, MAXLINE, stdin) == NULL) && ferror(stdin))
-			error("fgets error");
-		if (feof(stdin))
-		{
-			printf("\n");
-			exit(0);
-		}
-		cmdline[strlen(cmdline) - 1] = '\0';
-		eval(cmdline);
-	}
-}
+    // Print the token list for verification
+    printf("Token list:\n");
+    t_token_list *current = tokenList; // Start from the head of the token list
+    int i = 1; // Token index
 
-void	eval(char *cmdline)
-{
-	int		bg;
-	struct	command cmd;
+// Traverse the linked list of tokens
+    while (current != NULL)
+    {
+        printf("Token %d: Type=%d, Value='%s'\n", i, current->token->type, current->token->lexeme);
+        current = current->next;
+        i++;
+    }
 
-	printf("Evaluating '%s'\n", cmdline);
-	bg = parse(cmdline, &cmd);
-	//printf("Found command %s\n", cmd.argv[0]);
-	if(bg == -1)
-		return;
-	if(cmd.argv[0] == NULL)
-		return;
-	if(cmd.builtin == NONE)
-		runSystemCommand(&cmd, bg);
-	else
-		runBuiltinCommand(&cmd, bg);
-}
+    // Parse the tokenized tree
+    t_parse_tree* root = NULL;
+    if (is_pipe_sequence(&tokenList, &root) == SUBTREE_OK)
+    {
+        printf("Parse tree:\n");
+        print_parse_tree(root, 0);
+    }
+    else
+    {
+        //free_parse_tree(root);//MAYBE NOT NEEDED IF WAS FREED IN IS_PIPE_SEQUENCE
+        printf("Parser returned an error: %d\n", SYNTAX_ERROR);
+    }
 
-int	parse(const char *cmdline, struct command *cmd)
-{
-	static char array[MAXLINE];
-	const char delims[10] = " \t\r\n";
-	char *line = array;
-	char *token;
-	char *endline;
-	int is_bg;
+    // Free resources
+    // free_token_list(tokenList); Fix later
 
-	if(cmdline == NULL)
-		error("command line is NULL\n");
-	(void)strncpy(line, cmdline, MAXLINE);
-	endline = line + strlen(line);
-	cmd->argc = 0;
-	while (line < endline)
-	{
-		line += strspn(line,delims);
-		if(line >= endline)
-			break;
-		token = line + strcspn(line, delims);
-		*token = '\0';
-		cmd->argv[cmd->argc++] = line;
-		if (cmd->argc >= MAXARGS - 1)
-			break;
-		line = token + 1;
-	}
-	cmd->argv[cmd->argc] = NULL;
-	if (cmd->argc == 0)
-		return (1);
-	cmd->builtin = parseBuiltin(cmd);
-	if ((is_bg = (*cmd->argv[cmd->argc - 1] == '&')) != 0)
-		return is_bg;
-	return (0);
-}
 
-void runSystemCommand (struct command *cmd, int bg)
-{
-	pid_t	childPid;
-	if((childPid = fork()) < 0)
-		error("fork() error");
-	else if (childPid == 0)
-	{
-		if (execvp(cmd->argv[0], cmd->argv) < 0)
-		{
-			printf("%s: Command not found\n", cmd->argv[0]);
-			exit(0);
-		}
-	}
-	else
-	{
-		if (bg)
-			printf("Child in background [%d]\n", childPid);
-		else
-			wait(&childPid);
-	}
-}
+    // Free allocated memory
+    /*for (int i = 0; i < numTokens; i++) {
+        free(tokenList[i].lexeme);
+    }*/
+    free(processed_input);
+    free(tokenList);
 
-enum builtin_t parseBuiltin(struct command *cmd)
-{
-	if (strcmp(cmd->argv[0], "pwd") == 0)
-		return PWD;
-    /*else if (strcmp(cmd->argv[0], "quit") == 0)
-		return QUIT;
-	else if (strcmp(cmd->argv[0], "jobs") == 0)
-		return JOBS;
-	else if (strcmp(cmd->argv[0], "bg") == 0)
-		return BG;
-	else if (strcmp(cmd->argv[0], "fg") == 0)
-		return FG;*/
-	else
-		return NONE;
-}
-
-void runBuiltinCommand(struct command *cmd, int bg)
-{
-	switch (cmd->builtin)
-	{
-	/*case QUIT:
-		exit(0);
-		break;
-	case JOBS:
-		printf("Displaying background jobs...\n");
-		break;
-	case BG:
-		printf("Pushing job/process to background...\n");
-		break;
-	case FG:
-		printf("Bringing job/process to foreground...\n");
-		break;*/
-	case PWD:
-		printWorkingDirectory();
-		break;
-	default:
-		printf("Unknown built-in command\n");
-		break;
-	}
-}
-
-void printWorkingDirectory()
-{
-	char cwd[1024];
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		printf("Current working directory: %s\n", cwd);
-	else
-		perror("getcwd() error");
-}
-void error(const char* msg) // Added definition for error function
-{
-    perror(msg);
-    exit(EXIT_FAILURE);
+    return 0;
 }

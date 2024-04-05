@@ -1,50 +1,4 @@
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-enum token_type
-{
-    PIPE = 1,   // 1
-    WORD,       // 2
-    RED_TO,     // 3
-    RED_FROM,   // 4
-    APPEND,     // 5
-    HERE_DOC,    // 6
-    ASSIGNMENT_WORD
-};
-
-typedef struct s_token
-{
-    char *lexeme;
-    enum token_type type;
-} t_token;
-
-
-//from lexer
-typedef struct s_token_list
-{
-    struct s_token *token;
-    struct s_token_list *next;
-} t_token_list;
-
-typedef struct s_parse_tree
-{
-  struct s_token *data;
-  struct s_parse_tree *child;
-  struct s_parse_tree *sibling;
-} t_parse_tree;
-
-// Return values
-#define SYNTAX_ERROR -1
-#define SUBTREE_OK 0
-#define MEMORY_ERROR 1
-
-int is_pipe_sequence(t_token_list **tok, t_parse_tree **new);
-int is_cmd_suffix(t_token_list **tok, t_parse_tree **suffix_node);
-int is_cmd_prefix(t_token_list **tok, t_parse_tree **prefix_node);
-bool is_redirection_token(enum token_type type);
-
+#include "lexer.h"
 
 t_parse_tree* alloc_parse_tree()
 {
@@ -364,6 +318,7 @@ void free_token_list(t_token_list* list)
     list = NULL; // Set the list pointer to NULL after freeing
 }
 
+
 void test_parser()
 {
     t_token_list* list = NULL;
@@ -410,7 +365,4 @@ void test_parser()
     // Note: You also need to free the token list, which is not covered here
 }
 
-int main() {
-    test_parser();
-    return 0;
-}
+
