@@ -133,7 +133,7 @@ int is_simple_command(t_token_list **tok, t_parse_tree **new)
     t_parse_tree *cmd_word_node = NULL;
     if(is_cmd_word(tok, &cmd_word_node) != SUBTREE_OK)
         return(free_parse_tree(*new), SYNTAX_ERROR);//COULD BE ALSO MEMORY_ERROR
-	if (cmd_word_node == NULL)
+	if (cmd_word_node == NULL)// PROBABLY CHECK WHETHER THE TOKEN LIST IS EMPTY
 		return(SUBTREE_OK);
     link_node(&((*new)->child), cmd_word_node);//change to (*new)->child
     t_parse_tree *cmd_suffix_node = NULL;// Optionally parse and attach cmd_suffix
@@ -264,22 +264,19 @@ int is_pipe_sequence(t_token_list **tok, t_parse_tree **new)//, int *status)
     if (*new == NULL)
         return(MEMORY_ERROR);
     t_parse_tree *current_command = NULL;
-    if(is_simple_command(tok, &current_command) != SUBTREE_OK)
+    if(is_simple_command(tok, &current_command) != SUBTREE_OK || !current_command->child)
         return(free_parse_tree(*new), SYNTAX_ERROR); //COULD BE ALSO MEMORY_ERROR
     (*new)->child = current_command; // Attach the first command as a child of the pipe sequence
     while (*tok != NULL && (*tok)->token->type == PIPE)// Iteratively look for PIPE tokens and subsequent simple_commands
     {
-		while ((*tok)->token->type == PIPE)
-		{
         t_parse_tree *pipe_node = alloc_parse_tree();
         if (pipe_node == NULL)
             return(free_parse_tree(current_command), free_parse_tree(*new), MEMORY_ERROR);
         pipe_node->data = (*tok)->token;
         *tok = (*tok)->next; // Move past the PIPE token
         link_pipe(new, pipe_node);
-		}
         t_parse_tree *next_command = NULL;
-        if(is_simple_command(tok, &next_command) != SUBTREE_OK && next_command->child)
+        if(is_simple_command(tok, &next_command) != SUBTREE_OK || !next_command->child)
             return(free_parse_tree(next_command), SYNTAX_ERROR);
         link_pipe(new, next_command);//pipe_node->child = next_command;// Link the next_command as a sibling of the current command
     }
@@ -385,11 +382,14 @@ void test_parser()
     add_token(&list, PIPE, "|");
     add_token(&list, WORD, "greb");
     add_token(&list, WORD, "123");*/
-    add_token(&list, RED_TO, ">");
+    //add_token(&list, RED_TO, ">");
     add_token(&list, WORD, "output.txt");
 	add_token(&list, RED_FROM, "<");
     add_token(&list, WORD, "input.txt");
+    add_token(&list, RED_TO, ">");
+    add_token(&list, WORD, "out2");
 	add_token(&list, PIPE, "|");
+    add_token(&list, WORD, "greb");
 	add_token(&list, PIPE, "|");
 	add_token(&list, WORD, "123");
 
