@@ -1,20 +1,34 @@
 #include "lexer.h"
 
-void execute_word_node(t_parse_tree *node) {
+void execute_word_node(t_parse_tree *node)
+{
+    t_parse_tree *current = node;
+    char *args[10]; // Adjust size as needed
+    int i = 0;
     if (node == NULL || node->data == NULL)
     {
         fprintf(stderr, "Error: NULL node or data encountered in execute_word_node\n");
         exit(EXIT_FAILURE);
     }
-    printf("I got this command - word %s\n", node -> data -> lexeme);
-    // Execute a word node as a command
-    execlp(node-> data -> lexeme, node-> data -> lexeme, NULL);
-    // If execlp fails, print an error message
+    //printf("I got this command from current - word %s\n", current -> data -> lexeme);
+    //printf("I got this command from node - word %s\n", node -> data -> lexeme);
+    while (current != NULL)
+    {
+    if (current->data != NULL) {
+        args[i] = current->data->lexeme;
+        //printf("I got this arg %s\n", args[i]);
+        i++;
+    }
+    current = current->child;
+    }
+    args[i] = NULL;
+    execvp(args[0], args); // I will change exevp to execve but I need to create an envp, which will take me some more time
     perror("exec failed");
     exit(EXIT_FAILURE);
 }
 
-void execute_append_node(t_parse_tree *node) {
+void execute_append_node(t_parse_tree *node)
+{
     // Open or create the file for appending
     int fd = open(node-> data -> lexeme, O_WRONLY | O_APPEND | O_CREAT, 0644);
     if (fd == -1)
