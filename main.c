@@ -19,17 +19,17 @@ int main()
     lexer(processed_input, &tokenList, &numTokens, &error);
 
     // Print the token list for verification
-    printf("Token list:\n");
+    //printf("Token list:\n");
     t_token_list *current = tokenList; // Start from the head of the token list
     int i = 1; // Token index
 
 // Traverse the linked list of tokens
-    while (current != NULL)
+    /*while (current != NULL)
     {
         printf("Token %d: Type=%d, Value='%s'\n", i, current->token->type, current->token->lexeme);
         current = current->next;
         i++;
-    }
+    }*/
 
     // Parse the tokenized tree
     t_parse_tree* root = NULL;

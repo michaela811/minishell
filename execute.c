@@ -10,13 +10,13 @@ void execute_word_node(t_parse_tree *node)
         fprintf(stderr, "Error: NULL node or data encountered in execute_word_node\n");
         exit(EXIT_FAILURE);
     }
-    printf("I got this command from current - word %s\n", current -> data -> lexeme);
-    printf("I got this command from node - word %s\n", node -> data -> lexeme);
+    //printf("I got this command from current - word %s\n", current -> data -> lexeme);
+    //printf("I got this command from node - word %s\n", node -> data -> lexeme);
     while (current != NULL)
     {
     if (current->data != NULL) {
         args[i] = current->data->lexeme;
-        printf("I got this arg %s\n", args[i]);
+        //printf("I got this arg %s\n", args[i]);
         i++;
     }
     current = current->child;

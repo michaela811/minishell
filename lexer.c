@@ -93,11 +93,11 @@ int count_additional_chars(char *input, const char *delim)
         }
         input++;
     }
-    return (num_of_extra); 
+    return (num_of_extra);
 }
 
 char *preprocess_input(char *str, const char *delim)
-{   
+{
     int original_len = strlen(str);
     int additional_chars = count_additional_chars(str, delim);
     // Allocate memory for the preprocessed string
@@ -136,7 +136,7 @@ char *preprocess_input(char *str, const char *delim)
     }
 
     *dest = '\0'; // Null-terminate the preprocessed string
-    printf("Preprocessed input is: %s\n", preprocessed);
+    //printf("Preprocessed input is: %s\n", preprocessed);
     return preprocessed;
 }
 
@@ -226,7 +226,7 @@ void lexer(char *input, t_token_list **tokenList, int *numTokens, int *error)
         // Populate token list
         newToken -> type = determine_token_type(tokenValue);
         newToken -> lexeme = strdup(tokenValue);
-        if (newToken -> lexeme == NULL) 
+        if (newToken -> lexeme == NULL)
         {
             perror("Memory allocation error");
             exit(EXIT_FAILURE);
