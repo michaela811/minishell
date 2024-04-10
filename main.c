@@ -37,6 +37,7 @@ int main()
     {
         printf("Parse tree:\n");
         print_parse_tree(root, 0);
+        execute_parse_tree(root);
     }
     else
     {
@@ -52,6 +53,7 @@ int main()
     /*for (int i = 0; i < numTokens; i++) {
         free(tokenList[i].lexeme);
     }*/
+
     free(processed_input);
     free(tokenList);
 
