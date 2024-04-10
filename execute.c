@@ -22,7 +22,7 @@ void execute_word_node(t_parse_tree *node)
     current = current->child;
     }
     args[i] = NULL;
-    execvp(args[0], args);
+    execvp(args[0], args); // I will change exevp to execve but I need to create an envp, which will take me some more time
     perror("exec failed");
     exit(EXIT_FAILURE);
 }
