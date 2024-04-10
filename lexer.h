@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 enum token_type
 {
@@ -80,3 +82,6 @@ char *update_pointer(char *str); // same?
 // Lexer
 void lexer(char *input, t_token_list **tokenList, int *numTokens, int *error);
 enum token_type determine_token_type(char *token_value);
+
+// Execute
+void execute_parse_tree(t_parse_tree *root);
