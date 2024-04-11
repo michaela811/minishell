@@ -46,7 +46,7 @@ void execute_append_node(t_parse_tree *node)
         execute_parse_tree(node->sibling);
 }
 
-void execute_pipe_node(t_parse_tree *node) {
+/*void execute_pipe_node(t_parse_tree *node) {
     int pipefd[2];
     pid_t pid;
 
@@ -112,4 +112,58 @@ void execute_parse_tree(t_parse_tree *root)
             execute_parse_tree(current -> child);
         current = current -> sibling;
     }
+}*/
+
+void execute_node(t_parse_tree *node)
+{
+    char *args[10]; // Adjust size as needed, may check how many is needed just in case?
+    int i = 0;
+    pid_t pid;
+    int status;
+
+    if (node == NULL) {
+        return;
+    }
+    while (node != NULL)
+    {
+    if (node->data != NULL) {
+        args[i] = node->data->lexeme;
+        //printf("I got this arg %s\n", args[i]);
+        i++;
+    }
+    node = node->child;
+    }
+    args[i] = NULL;
+    // Fork a new process
+    pid = fork();
+    if (pid == -1) {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    } else if (pid == 0) { // Child process
+        // Execute the command
+        execvp(args[0], args);
+
+        // If execvp fails, print error and exit
+        perror("execvp");
+        exit(EXIT_FAILURE);
+    } else { // Parent process
+        // Wait for child to finish
+        waitpid(pid, &status, 0);
+    }
+}
+
+void execute_parse_tree(t_parse_tree *root)
+{
+    if (root == NULL) {
+        return;
+    }
+
+    // Execute current node
+    execute_node(root);
+
+    // Execute sibling nodes
+    if (root->sibling != NULL)
+        execute_parse_tree(root->sibling->sibling);
+
+    // Execute child nodes
 }
