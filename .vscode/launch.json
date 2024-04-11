@@ -1,0 +1,27 @@
+
+{
+    "version": "0.2.0",
+    "configurations":
+    [
+      {
+        "name": "Debug Session",
+        "type": "cppdbg",
+        "request": "launch",
+        "args": [ "ls" ],
+        "stopAtEntry": false,
+        "externalConsole": false,
+        "cwd": "/home/mmasarov/minishell",
+        "program": "/home/mmasarov/minishell/minishell",
+        "MIMode": "gdb",
+        "miDebuggerPath": "gdb",
+        "setupCommands":
+        [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          }
+        ]
+      }
+    ]
+}
