@@ -87,8 +87,8 @@ void execute_parse_tree(t_parse_tree *root)
             execute_node(root->child);
     //}
     // Execute sibling nodes - pipes recursively, if it exists
-    if (root->sibling != NULL)
-        execute_parse_tree(root->sibling->sibling);
+    //if (root->sibling != NULL)
+        //execute_parse_tree(root->sibling->sibling);
 }
 
 void execute_pipeline(t_parse_tree *node)
@@ -96,19 +96,27 @@ void execute_pipeline(t_parse_tree *node)
     int pipefd[2];
     pid_t pid;
 
-    if (pipe(pipefd) == -1) {
-        perror("pipe");
-        exit(EXIT_FAILURE);
+	if (node == NULL) {
+        return;
+    }
+
+    if (node->sibling != NULL) {
+        if (pipe(pipefd) == -1) {
+            perror("pipe");
+            exit(EXIT_FAILURE);
+        }
     }
 
     pid = fork();
     if (pid == 0)
     { // Child process
-        close(pipefd[0]); // Close unused read end
-        dup2(pipefd[1], STDOUT_FILENO); // Redirect stdout to pipe write
+	if (node->sibling != NULL) {
+            close(pipefd[0]); // Close unused read end
+            dup2(pipefd[1], STDOUT_FILENO); // Redirect stdout to pipe write
+        }
 
-        int in_fd = STDIN_FILENO;
-        int out_fd = pipefd[1];
+        //int in_fd = STDIN_FILENO;
+        //int out_fd = pipefd[1];
         execute_node(node); // Execute the left command of the pipe
         close(pipefd[1]); // Close write end after dup
         exit(EXIT_SUCCESS);
@@ -118,7 +126,7 @@ void execute_pipeline(t_parse_tree *node)
         if (node->sibling) {
             dup2(pipefd[0], STDIN_FILENO); // Redirect stdin to pipe read
             close(pipefd[0]); // Close read end after dup
-            execute_node(node->sibling->sibling); // Recursively handle the next part of the pipeline
+            execute_pipeline(node->sibling->sibling); // Recursively handle the next part of the pipeline
         }
 
         wait(NULL); // Wait for child process to finish
