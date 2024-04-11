@@ -454,20 +454,58 @@ t_parse_tree **build_array(t_parse_tree *root)
     return array;
 }
 
+t_parse_tree *find_input_redirection(t_parse_tree *node)
+{
+    if (node == NULL)
+        return NULL;
+    if (node->data && node->data->type == RED_FROM)
+        return node;
+    t_parse_tree *found = find_input_redirection(node->child);
+    if (found != NULL)
+        return found;
+    return find_input_redirection(node->sibling);
+}
+
+void handle_input(t_parse_tree *node)
+{
+    //t_parse_tree *input_node = find_input_redirection(node);
+    if (node != NULL) {
+        int in_fd = open(node->child->data->lexeme, O_RDONLY);
+        if (in_fd == -1) {
+            perror("open");
+            exit(EXIT_FAILURE);
+        }
+        dup2(in_fd, STDIN_FILENO);
+        close(in_fd);
+    }
+}
+
 void execute_command_with_redirection(t_parse_tree *node, int in_fd, int out_fd)
 {
+    t_parse_tree *input_redirection = find_input_redirection(node);
+    if (input_redirection != NULL)
+    handle_input(input_redirection);
     // Similar to execute_command, but with added file descriptor redirections
-    if (!node || node->data->type != WORD) return;
+    t_parse_tree *current = node;
+    while (current->child != NULL)
+    {
+        if (current->data != NULL)
+            break;
+        current = current->child;
+    }
 
     // Collect command and its arguments
     char *argv[MAXARGS];
     int argc = 0;
-    for (t_parse_tree *current = node; current != NULL && current->data->type == WORD; current = current->child) {
-        argv[argc++] = current->data->lexeme;
+    while(current != NULL)
+    {
+        if (current->data && current->data->type != WORD)
+            break;
+        else if (current->data && current->data->type == WORD)
+            argv[argc++] = current->data->lexeme;
+        current = current->child;
     }
     argv[argc] = NULL; // Null-terminate the argv array
-
-    // Execute the command
     pid_t pid = fork();
     if (pid == 0) { // Child process
         if (in_fd != -1) {
@@ -488,9 +526,11 @@ void execute_command_with_redirection(t_parse_tree *node, int in_fd, int out_fd)
         // Fork failed
         perror("fork");
     }
+    handle_redirection;
 }
 
-void execute_pipeline(t_parse_tree *node) {
+void execute_pipeline(t_parse_tree *node)
+{
     int pipefd[2];
     pid_t pid;
 
@@ -500,22 +540,23 @@ void execute_pipeline(t_parse_tree *node) {
     }
 
     pid = fork();
-    if (pid == 0) { // Child process
+    if (pid == 0)
+    { // Child process
         close(pipefd[0]); // Close unused read end
         dup2(pipefd[1], STDOUT_FILENO); // Redirect stdout to pipe write
-        close(pipefd[1]); // Close write end after dup
 
         int in_fd = STDIN_FILENO;
         int out_fd = pipefd[1];
         execute_command_with_redirection(node, in_fd, out_fd); // Execute the left command of the pipe
+        close(pipefd[1]); // Close write end after dup
         exit(EXIT_SUCCESS);
     } else if (pid > 0) {
         close(pipefd[1]); // Close unused write end
-        dup2(pipefd[0], STDIN_FILENO); // Redirect stdin to pipe read
-        close(pipefd[0]); // Close read end after dup
 
         if (node->sibling) {
-            execute_pipeline(node->sibling); // Recursively handle the next part of the pipeline
+            dup2(pipefd[0], STDIN_FILENO); // Redirect stdin to pipe read
+            close(pipefd[0]); // Close read end after dup
+            execute_tree(node->sibling); // Recursively handle the next part of the pipeline
         }
 
         wait(NULL); // Wait for child process to finish
@@ -523,13 +564,18 @@ void execute_pipeline(t_parse_tree *node) {
         perror("fork");
         exit(EXIT_FAILURE);
     }
+    handle_redirection;
 }
 
-void handle_redirection(t_parse_tree *node, int *in_fd, int *out_fd) {
-    switch (node->data->type) {
-        case RED_FROM: // Input redirection
-            *in_fd = open(node->child->data->lexeme, O_RDONLY);
-            break;
+
+
+void handle_redirection(t_parse_tree *node, int *in_fd, int *out_fd)
+{
+    switch (node->data->type)
+    {
+        //case RED_FROM: // Input redirection
+            //*in_fd = open(node->child->data->lexeme, O_RDONLY);
+            //break;
         case RED_TO: // Output redirection
             *out_fd = open(node->child->data->lexeme, O_WRONLY | O_CREAT | O_TRUNC, 0644);
             break;
@@ -550,20 +596,9 @@ void execute_tree(t_parse_tree *node)
     t_parse_tree *current = node;
     while (current != NULL)
     {
-        if (current->data == NULL) {
-            if (current->sibling) {
-                current = current->sibling;
-                continue;
-            } else {
-                current = current->child;
-                continue;
-            }
-        }
-        switch (current->data->type) {
-        case WORD:
-            if (current->sibling && current->sibling->data->type == PIPE) {
-                execute_pipeline(current);
-            } else {
+        if (current->sibling)
+            execute_pipeline(current);//ADD a check that the child is already executed
+        else {
                 int in_fd = -1, out_fd = -1;
                 if (current->sibling) {
                     handle_redirection(current->sibling, &in_fd, &out_fd);
@@ -571,18 +606,14 @@ void execute_tree(t_parse_tree *node)
                 execute_command_with_redirection(current, in_fd, out_fd);
                 if (in_fd != -1) close(in_fd);
                 if (out_fd != -1) close(out_fd);
+                break;
             }
-            break;
-        // Add cases for other node types here
-        default:
-            break;
-        }
         current = current->sibling; // Move to the next sibling
     }
     // Assuming siblings are sequential commands (not piped)
-    if (node->sibling && node->sibling->data->type != PIPE) {
-        execute_tree(node->sibling);
-    }
+    //if (node->sibling && node->sibling->data->type != PIPE) {
+     //   execute_tree(node->sibling);
+    //}
 }
 /*
 void execute_parse_tree(t_parse_tree *root)
