@@ -36,6 +36,28 @@ void execute_node(t_parse_tree *node)
             fd_out = open(node->child->data->lexeme, O_WRONLY | O_CREAT | O_APPEND, 0644);
             node = node->child;
         }
+		else if (node->data->type == HERE_DOC)
+		{
+			char *filename = "/tmp/heredoc.txt"; // Temporary file to hold heredoc content
+            FILE *file = fopen(filename, "w"); // Unvalidated input in path value creation risks unintended file/directory access?
+            if (file == NULL) {
+                perror("fopen");
+                exit(EXIT_FAILURE);
+            }
+
+    		// Write the content of the heredoc to the file
+   			char buffer[1024];
+   			while (fgets(buffer, sizeof(buffer), stdin) != NULL)
+			{
+        	// Check for the delimiter
+        		if (strcmp(buffer, node->child->data->lexeme) == 0) 
+            		break;
+        		fprintf(file, "%s", buffer);
+   			}
+			fclose(file);
+			fd_in = open(filename, O_RDONLY);
+    		node = node->child;
+		}
         else
         {
             args[i] = node->data->lexeme;
