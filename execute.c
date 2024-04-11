@@ -42,8 +42,8 @@ void execute_append_node(t_parse_tree *node)
     // Execute the left subtree (command)
     if (node->child != NULL)
         execute_parse_tree(node->child);
-    if (node->sibling != NULL)
-        execute_parse_tree(node->sibling);
+    //if (node->sibling != NULL)
+    //    execute_parse_tree(node->sibling); // not sure about this line
 }
 
 void execute_pipe_node(t_parse_tree *node) {
@@ -86,6 +86,7 @@ void execute_parse_tree(t_parse_tree *root)
         return;
     }
     t_parse_tree *current = root;
+    t_parse_tree *pipe_node = NULL;
     while (current != NULL)
     {
         if (current -> data == NULL)
@@ -93,16 +94,36 @@ void execute_parse_tree(t_parse_tree *root)
             current = current -> child;
             continue;
         }
+        if (current -> data -> type == PIPE)
+        {
+            
+            pipe_node = current;
+            break;
+        }
         switch (current -> data -> type)
         {
-            case WORD:
-                execute_word_node(current);
-                break;
-            case APPEND:
-                execute_append_node(current);
-                break;
             case PIPE:
                 execute_pipe_node(current);
+                if (current != NULL  && current -> data == NULL)
+                {
+                    current = current -> child;
+                    execute_parse_tree(current -> child);
+                }
+                break;
+            case WORD:
+                execute_word_node(current);
+                if (current != NULL  && current -> data == NULL)
+                {
+                    current = current -> child;
+                    execute_parse_tree(current -> child);
+                }
+                break;
+            case APPEND:
+                if (current != NULL  && current -> data == NULL)
+                {
+                    current = current -> child;
+                    execute_parse_tree(current -> child);
+                }
                 break;
             default:
                 fprintf(stderr, "Unknown token type encountered\n");

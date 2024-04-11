@@ -24,12 +24,12 @@ int main()
     int i = 1; // Token index
 
 // Traverse the linked list of tokens
-    /*while (current != NULL)
+    while (current != NULL)
     {
         printf("Token %d: Type=%d, Value='%s'\n", i, current->token->type, current->token->lexeme);
         current = current->next;
         i++;
-    }*/
+    }
 
     // Parse the tokenized tree
     t_parse_tree* root = NULL;

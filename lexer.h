@@ -7,12 +7,12 @@
 
 enum token_type
 {
-    PIPE = 1,   // 1
+    PIPE = 1,   // 1 |
     WORD,       // 2
-    RED_TO,     // 3
-    RED_FROM,   // 4
-    APPEND,     // 5
-    HERE_DOC,   // 6
+    RED_TO,     // 3 >
+    RED_FROM,   // 4 <
+    APPEND,     // 5 >>
+    HERE_DOC,   // 6 <<
     ASSIGNMENT_WORD, // to delete when possible
 };
 
