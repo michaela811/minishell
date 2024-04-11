@@ -96,7 +96,7 @@ void execute_parse_tree(t_parse_tree *root)
         }
         if (current -> data -> type == PIPE)
         {
-            
+
             pipe_node = current;
             break;
         }
