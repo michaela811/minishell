@@ -14,11 +14,6 @@ void execute_node(t_parse_tree *node)
     }
     while (node != NULL)
     {
-    /*if (node->data != NULL) {
-        args[i] = node->data->lexeme;
-        //printf("I got this arg %s\n", args[i]);
-        i++;
-    }*/
     if (node->data != NULL)
     {
         if (node->data->type == RED_FROM)
@@ -31,7 +26,7 @@ void execute_node(t_parse_tree *node)
             fd_out = open(node->child->data->lexeme, O_WRONLY | O_CREAT | O_TRUNC, 0644);
             node = node->child;
         }
-        else if (node->data->type == APPEND)
+        else if (node->data->type == APPEND) //Check this, if there is more to it?
         {
             fd_out = open(node->child->data->lexeme, O_WRONLY | O_CREAT | O_APPEND, 0644);
             node = node->child;
@@ -39,17 +34,17 @@ void execute_node(t_parse_tree *node)
 		else if (node->data->type == HERE_DOC)
 		{
 			char *filename = "/tmp/heredoc.txt"; // Temporary file to hold heredoc content
-            FILE *file = fopen(filename, "w"); // Unvalidated input in path value creation risks unintended file/directory access?
+            FILE *file = fopen(filename, "w"); // Error check!Unvalidated input in path value creation risks unintended file/directory access?
             if (file == NULL) {
                 perror("fopen");
                 exit(EXIT_FAILURE);
             }
-
     		// Write the content of the heredoc to the file
    			char buffer[1024];
    			while (fgets(buffer, sizeof(buffer), stdin) != NULL)
 			{
         	// Check for the delimiter
+				buffer[strcspn(buffer, "\n")] = 0;
         		if (strcmp(buffer, node->child->data->lexeme) == 0) 
             		break;
         		fprintf(file, "%s", buffer);
