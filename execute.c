@@ -41,11 +41,12 @@ void execute_node(t_parse_tree *node)
             }
     		// Write the content of the heredoc to the file
    			char buffer[1024];
+            char delim[1024];
+            sprintf(delim, "%s\n", node->child->data->lexeme);
    			while (fgets(buffer, sizeof(buffer), stdin) != NULL)
 			{
         	// Check for the delimiter
-				buffer[strcspn(buffer, "\n")] = 0;
-        		if (strcmp(buffer, node->child->data->lexeme) == 0) 
+        		if (strcmp(buffer, delim) == 0)
             		break;
         		fprintf(file, "%s", buffer);
    			}
