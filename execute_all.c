@@ -1,35 +1,38 @@
 #include "lexer.h"
 
 void execute_pipeline(t_parse_tree *node);
-void handle_redirection(t_parse_tree *node, int *fd_in, int *fd_out);
-char *handle_here_doc(t_parse_tree *node, int *fd_in, int *fd_out);
+void handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out);
+char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out);
 void execute_command(char **args, int fd_in, int fd_out);
 void execute_node(t_parse_tree *node);
 void handle_global_env(t_parse_tree *node, char **args, int i);
 void handle_quotes_global(t_parse_tree *node, char **args, int i);
 
-void handle_redirection(t_parse_tree *node, int *fd_in, int *fd_out)
+void handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out)
 {
-    if (node->data->type == RED_FROM) {
-        *fd_in = open(node->child->data->lexeme, O_RDONLY);
-        node = node->child;
+    if ((*node)->data->type == RED_FROM)
+    {
+        *fd_in = open((*node)->child->data->lexeme, O_RDONLY);
+        *node = (*node)->child;
     }
-    else if (node->data->type == RED_TO) {
-        *fd_out = open(node->child->data->lexeme, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-        node = node->child;
+    else if ((*node)->data->type == RED_TO)
+    {
+        *fd_out = open((*node)->child->data->lexeme, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        *node = (*node)->child;
     }
-    else if (node->data->type == APPEND) {
-        *fd_out = open(node->child->data->lexeme, O_WRONLY | O_CREAT | O_APPEND, 0644);
-        node = node->child;
+    else if ((*node)->data->type == APPEND)
+    {
+        *fd_out = open((*node)->child->data->lexeme, O_WRONLY | O_CREAT | O_APPEND, 0644);
+        *node = (*node)->child;
     }
-    else if (node->data->type == HERE_DOC) {
+        else if ((*node)->data->type == HERE_DOC) {
         char *filename = handle_here_doc(node, fd_in, fd_out);
         *fd_in = open(filename, O_RDONLY);
-        node = node->child;
+        *node = (*node)->child;
     }
 }
 
-char *handle_here_doc(t_parse_tree *node, int *fd_in, int *fd_out)
+char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out)
 {
 	char *filename = "/tmp/heredoc.txt";
     FILE *file = fopen(filename, "w"); // Error check!Unvalidated input in path value creation risks unintended file/directory access?
@@ -39,10 +42,12 @@ char *handle_here_doc(t_parse_tree *node, int *fd_in, int *fd_out)
         exit(EXIT_FAILURE);
     }
    	char buffer[1024];
+    char delim[1024];
+    sprintf(delim, "%s\n", (*node)->child->data->lexeme);
    	while (fgets(buffer, sizeof(buffer), stdin) != NULL)
 	{
-		buffer[strcspn(buffer, "\n")] = 0;
-        if (strcmp(buffer, node->child->data->lexeme) == 0) 
+    // Check for the delimiter
+        if (strcmp(buffer, delim) == 0)
             break;
         fprintf(file, "%s", buffer);
    	}
@@ -90,7 +95,7 @@ void execute_node(t_parse_tree *node)
         {
             if (node->data->type == RED_FROM || node->data->type == RED_TO
             || node->data->type == APPEND || node->data->type == HERE_DOC)
-                handle_redirection(node, &fd_in, &fd_out);
+                handle_redirection(&node, &fd_in, &fd_out);
             else if (node->data->lexeme[0] == '$')
                 handle_global_env(node, args, i++);
             else if (node->data->lexeme[0] == '"')
@@ -101,8 +106,6 @@ void execute_node(t_parse_tree *node)
         node = node->child;
     }
     args[i] = NULL;
-    printf("args[0] is %s\n", args[0]);
-    printf("args[1] is %s\n", args[1]);
     execute_command(args, fd_in, fd_out);
 }
 
