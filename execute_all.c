@@ -119,6 +119,19 @@ void handle_global_env(t_parse_tree *node, char **args, int i)
         args[i] = node->data->lexeme;
 }
 
+char *ft_strpbrk(char *str, char *delim)//MOVE IT TO FT_LIBFT
+{
+    while (*str)
+    {
+        if (strchr(delim, *str))
+            break;
+        str++;
+    }
+    if (*str)
+        return (str);
+    return (NULL);
+}
+
 void handle_quotes_global(t_parse_tree *node, char **args, int i)
 {
     char *str = node->data->lexeme + 1;
