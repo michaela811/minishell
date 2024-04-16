@@ -307,23 +307,33 @@ void execute_pipeline(t_parse_tree *node)
 	if (node->sibling != NULL) {
             close(pipefd[0]); // Close unused read end
             dup2(pipefd[1], STDOUT_FILENO); // Redirect stdout to pipe write
+            close(pipefd[1]);
         }
 
         //int in_fd = STDIN_FILENO;
         //int out_fd = pipefd[1];
         execute_node(node); // Execute the left command of the pipe
-        close(pipefd[1]); // Close write end after dup
+        //close(pipefd[1]); // Close write end after dup
         exit(EXIT_SUCCESS);
     } else if (pid > 0) {
-        close(pipefd[1]); // Close unused write end
-
-        if (node->sibling) {
-            dup2(pipefd[0], STDIN_FILENO); // Redirect stdin to pipe read
-            close(pipefd[0]); // Close read end after dup
-            execute_pipeline(node->sibling->sibling); // Recursively handle the next part of the pipeline
+        if (node->sibling != NULL)
+        {
+            close(pipefd[1]); // Close unused write end
+            pid_t pid2 = fork();
+            if (pid2 == 0) { // Child process for next command
+                dup2(pipefd[0], STDIN_FILENO); // Redirect stdin to pipe read
+                close(pipefd[0]); // Close read end after dup
+                execute_pipeline(node->sibling->sibling); // Recursively handle the next part of the pipeline
+                exit(EXIT_SUCCESS);
+            } else if (pid2 > 0) { // Parent process
+                close(pipefd[0]); // Close unused read end
+                wait(NULL); // Wait for child process to finish
+            } else {
+                perror("fork");
+                exit(EXIT_FAILURE);
+            }
         }
-
-        wait(NULL); // Wait for child process to finish
+        wait(NULL); // Wait for first child process to finish
     } else {
         perror("fork");
         exit(EXIT_FAILURE);
