@@ -237,6 +237,7 @@ void handle_global_env(t_parse_tree *node, char **args, int i)
         args[i] = node->data->lexeme;
 }
 
+
 void handle_quotes_global(t_parse_tree *node, char **args, int i)
 {
     char *str = node->data->lexeme + 1;
