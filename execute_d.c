@@ -1,7 +1,7 @@
 #include "lexer.h"
 
 void execute_pipeline(t_parse_tree *node);
-void handle_redirection(t_parse_tree *node, int *fd_in, int *fd_out);
+void handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out);
 void execute_command(char **args, int fd_in, int fd_out);
 void execute_node(t_parse_tree *node);
 void handle_global_env(t_parse_tree *node, char **args, int i);
@@ -55,6 +55,7 @@ void execute_node(t_parse_tree *node)
             else {
                 args[i] = node->data->lexeme;
             }
+            i++;
         }
         else if (node->data->lexeme[0] == '"')
         {
@@ -101,11 +102,14 @@ void execute_node(t_parse_tree *node)
 
            // Use the final string as the argument
            args[i] = strdup(buffer);
+           i++;
         }
             // If the argument does not start with a $, use it as is
         else
+        {
             args[i] = node->data->lexeme;
-        i++;
+            i++;
+        }
         }
     node = node->child;
     }
@@ -143,19 +147,22 @@ void execute_node(t_parse_tree *node)
 }
 */
 
-void handle_redirection(t_parse_tree *node, int *fd_in, int *fd_out)
+void handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out)
 {
-    if (node->data->type == RED_FROM) {
-        *fd_in = open(node->child->data->lexeme, O_RDONLY);
-        node = node->child;
+    if ((*node)->data->type == RED_FROM)
+    {
+        *fd_in = open((*node)->child->data->lexeme, O_RDONLY);
+        *node = (*node)->child;
     }
-    else if (node->data->type == RED_TO) {
-        *fd_out = open(node->child->data->lexeme, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-        node = node->child;
+    else if ((*node)->data->type == RED_TO)
+    {
+        *fd_out = open((*node)->child->data->lexeme, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        *node = (*node)->child;
     }
-    else if (node->data->type == APPEND) {
-        *fd_out = open(node->child->data->lexeme, O_WRONLY | O_CREAT | O_APPEND, 0644);
-        node = node->child;
+    else if ((*node)->data->type == APPEND)
+    {
+        *fd_out = open((*node)->child->data->lexeme, O_WRONLY | O_CREAT | O_APPEND, 0644);
+        *node = (*node)->child;
     }
 }
 
@@ -199,11 +206,17 @@ void execute_node(t_parse_tree *node)
         {
             if (node->data->type == RED_FROM || node->data->type == RED_TO
             || node->data->type == APPEND)
-                handle_redirection(node, &fd_in, &fd_out);
+                handle_redirection(&node, &fd_in, &fd_out);
             else if (node->data->lexeme[0] == '$')
-                handle_global_env(node, args, i++);
+            {
+                handle_global_env(node, args, i);
+                i++;
+            }
             else if (node->data->lexeme[0] == '"')
-                handle_quotes_global(node, args, i++);
+            {
+                handle_quotes_global(node, args, i);
+                i++;
+            }
             else
                 args[i++] = node->data->lexeme;
             //i++;
