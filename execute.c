@@ -1,115 +1,106 @@
 #include "lexer.h"
 
-void execute_word_node(t_parse_tree *node)
+void execute_node(t_parse_tree *node)
 {
-    t_parse_tree *current = node;
-    char *args[10]; // Adjust size as needed
+    char *args[10]; // Adjust size as needed, may check how many is needed just in case?
     int i = 0;
-    if (node == NULL || node->data == NULL)
-    {
-        fprintf(stderr, "Error: NULL node or data encountered in execute_word_node\n");
-        exit(EXIT_FAILURE);
+    pid_t pid;
+    int status;
+    int fd_in = 0;
+    int fd_out = 1;
+
+    if (node == NULL) {
+        return;
     }
-    //printf("I got this command from current - word %s\n", current -> data -> lexeme);
-    //printf("I got this command from node - word %s\n", node -> data -> lexeme);
-    while (current != NULL)
+    while (node != NULL)
     {
-    if (current->data != NULL) {
-        args[i] = current->data->lexeme;
-        //printf("I got this arg %s\n", args[i]);
-        i++;
+    if (node->data != NULL)
+    {
+        if (node->data->type == RED_FROM)
+        {
+            fd_in = open(node->child->data->lexeme, O_RDONLY);
+            node = node->child;
+        }
+        else if (node->data->type == RED_TO)
+        {
+            fd_out = open(node->child->data->lexeme, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            node = node->child;
+        }
+        else if (node->data->type == APPEND) //Check this, if there is more to it?
+        {
+            fd_out = open(node->child->data->lexeme, O_WRONLY | O_CREAT | O_APPEND, 0644);
+            node = node->child;
+        }
+		else if (node->data->type == HERE_DOC)
+		{
+			char *filename = "/tmp/heredoc.txt"; // Temporary file to hold heredoc content
+            FILE *file = fopen(filename, "w"); // Error check!Unvalidated input in path value creation risks unintended file/directory access?
+            if (file == NULL) {
+                perror("fopen");
+                exit(EXIT_FAILURE);
+            }
+    		// Write the content of the heredoc to the file
+   			char buffer[1024];
+            char delim[1024];
+            sprintf(delim, "%s\n", node->child->data->lexeme);
+   			while (fgets(buffer, sizeof(buffer), stdin) != NULL)
+			{
+        	// Check for the delimiter
+        		if (strcmp(buffer, delim) == 0)
+            		break;
+        		fprintf(file, "%s", buffer);
+   			}
+			fclose(file);
+			fd_in = open(filename, O_RDONLY);
+    		node = node->child;
+		}
+        else
+        {
+            args[i] = node->data->lexeme;
+            i++;
+        }
     }
-    current = current->child;
+    node = node->child;
     }
     args[i] = NULL;
-    execvp(args[0], args); // I will change exevp to execve but I need to create an envp, which will take me some more time
-    perror("exec failed");
-    exit(EXIT_FAILURE);
-}
-
-void execute_append_node(t_parse_tree *node)
-{
-    // Open or create the file for appending
-    int fd = open(node-> data -> lexeme, O_WRONLY | O_APPEND | O_CREAT, 0644);
-    if (fd == -1)
-    {
-        perror("open failed");
-        exit(EXIT_FAILURE);
-    }
-    // Redirect stdout to the file
-    dup2(fd, STDOUT_FILENO);
-    close(fd);
-    // Execute the left subtree (command)
-    if (node->child != NULL)
-        execute_parse_tree(node->child);
-    if (node->sibling != NULL)
-        execute_parse_tree(node->sibling);
-}
-
-void execute_pipe_node(t_parse_tree *node) {
-    int pipefd[2];
-    pid_t pid;
-
-    if (pipe(pipefd) == -1) {
-        perror("pipe failed");
-        exit(EXIT_FAILURE);
-    }
-
+    // Fork a new process
     pid = fork();
     if (pid == -1) {
-        perror("fork failed");
+        perror("fork");
         exit(EXIT_FAILURE);
-    }
-    else if (pid == 0)
-    { // Child process
-        close(pipefd[0]); // Close unused read end
-        dup2(pipefd[1], STDOUT_FILENO); // Redirect stdout to the write end of the pipe
-        close(pipefd[1]); // Close the write end of the pipe
-        if (node->child != NULL)
-            execute_parse_tree(node->child); // Execute the left subtree (command)
-    }
-    else
-    { // Parent process
-        close(pipefd[1]); // Close unused write end
-        dup2(pipefd[0], STDIN_FILENO); // Redirect stdin to the read end of the pipe
-        close(pipefd[0]); // Close the read end of the pipe
-        if (node->sibling != NULL)
-            execute_parse_tree(node->sibling); // Execute the right subtree (command)
+    } else if (pid == 0) { // Child process
+        // Execute the command
+        if (fd_in != 0)
+        {
+            dup2(fd_in, 0);
+            close(fd_in);
+        }
+        if (fd_out != 1)
+        {
+            dup2(fd_out, 1);
+            close(fd_out);
+        }
+        execvp(args[0], args);
+
+        // If execvp fails, print error and exit
+        perror("execvp");
+        exit(EXIT_FAILURE);
+    } else { // Parent process
+        // Wait for child to finish
+        waitpid(pid, &status, 0);
     }
 }
 
 void execute_parse_tree(t_parse_tree *root)
 {
-    if (root == NULL) // check whether the root is NULL and it is necessary?
-    {
-        fprintf(stderr, "Error: NULL node encountered in execute_parse_tree\n");
+    if (root == NULL) {
         return;
     }
-    t_parse_tree *current = root;
-    while (current != NULL)
-    {
-        if (current -> data == NULL)
-        {
-            current = current -> child;
-            continue;
-        }
-        switch (current -> data -> type)
-        {
-            case WORD:
-                execute_word_node(current);
-                break;
-            case APPEND:
-                execute_append_node(current);
-                break;
-            case PIPE:
-                execute_pipe_node(current);
-                break;
-            default:
-                fprintf(stderr, "Unknown token type encountered\n");
-                exit(EXIT_FAILURE);
-        }
-        if (current -> child != NULL)
-            execute_parse_tree(current -> child);
-        current = current -> sibling;
-    }
+
+    // Execute current node
+    execute_node(root);
+
+    // Execute sibling nodes - pipes recursively, if it exists
+    if (root->sibling != NULL)
+        execute_parse_tree(root->sibling->sibling);
 }
