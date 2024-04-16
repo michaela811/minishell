@@ -72,7 +72,7 @@ void execute_command(char **args, int fd_in, int fd_out) {
             dup2(fd_out, 1);
             close(fd_out);
         }
-        execvp(args[0], args);
+        execute(args[0], env);
         perror("execvp");
         exit(EXIT_FAILURE);
     } else { // Parent process

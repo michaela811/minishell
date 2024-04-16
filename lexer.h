@@ -50,6 +50,10 @@ void free_token_list(t_token_list* list);
 
 // Errors
 void handle_memory_error(t_token **token_list, int num_tokens);
+void	error_message(char *str); // to delete later
+void	free_array(char **array); // to delete later
+void	exit_function(int i); // to delete later
+void	execve_error(char **s_cmd); // to delete later
 
 // Parsing
 void link_node(t_parse_tree **current, t_parse_tree *newNode);
@@ -86,3 +90,7 @@ enum token_type determine_token_type(char *token_value);
 
 // Execute
 void execute_parse_tree(t_parse_tree *root);
+void	execute(char *cmd, char **env);
+char	*get_path(char *cmd, char **env);
+char	*get_env(char **env, char *var);
+char	*get_exec(char **path, int i, char **s_cmd);
