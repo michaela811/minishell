@@ -116,7 +116,7 @@ void handle_global_env(t_parse_tree *node, char **args, int i)
     if (env_var_value != NULL)
         args[i] = env_var_value;
     else
-        args[i] = node->data->lexeme;
+        args[i] = "";
 }
 
 char *ft_strpbrk(char *str, char *delim)//MOVE IT TO FT_LIBFT

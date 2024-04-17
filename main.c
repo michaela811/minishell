@@ -8,6 +8,11 @@ int main()
     {
         if (*input)
         {
+            if (strcmp(input, "exit") == 0)
+            {
+                free(input);
+                exit (0);
+            }
             add_history(input);
             t_token_list *tokenList = NULL;
             int numTokens = 0;
@@ -18,8 +23,8 @@ int main()
             t_parse_tree* root = NULL;
             if (is_pipe_sequence(&tokenList, &root) == SUBTREE_OK)
             {
-                printf("Parse tree:\n");
-                print_parse_tree(root, 0);
+                /*printf("Parse tree:\n");
+                print_parse_tree(root, 0);*/
                 execute_parse_tree(root);
             }
             else
