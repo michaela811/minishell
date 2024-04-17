@@ -1,13 +1,5 @@
 #include "lexer.h"
 
-void execute_pipeline(t_parse_tree *node);
-void handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out);
-char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out);
-void execute_command(char **args, int fd_in, int fd_out);
-void execute_node(t_parse_tree *node);
-void handle_global_env(t_parse_tree *node, char **args, int i);
-void handle_quotes_global(t_parse_tree *node, char **args, int i);
-
 void handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out)
 {
     if ((*node)->data->type == RED_FROM)
@@ -34,6 +26,7 @@ void handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out)
 
 char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out)
 {
+    char *buffer;
 	char *filename = "/tmp/heredoc.txt";
     FILE *file = fopen(filename, "w"); // Error check!Unvalidated input in path value creation risks unintended file/directory access?
     if (file == NULL)
@@ -41,23 +34,21 @@ char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out)
         perror("fopen");
         exit(EXIT_FAILURE);
     }
-   	char buffer[1024];
-    char delim[1024];
-    sprintf(delim, "%s\n", (*node)->child->data->lexeme);
-   	while (fgets(buffer, sizeof(buffer), stdin) != NULL)
+   	while ((buffer = readline("heredoc> ")) != NULL)
 	{
-    // Check for the delimiter
-        if (strcmp(buffer, delim) == 0)
+        if (strcmp(buffer, (*node)->child->data->lexeme) == 0)
             break;
-        fprintf(file, "%s", buffer);
+        fprintf(file, "%s\n", buffer); //probably need to create this function?
+        free(buffer);
    	}
 	fclose(file);
     return (filename);
 }
 
-void execute_command(char **args, int fd_in, int fd_out) {
+void execute_command(char **args, int fd_in, int fd_out, char **env) {
     pid_t pid;
     int status;
+    char *path;
 
     pid = fork();
     if (pid == -1) {
@@ -72,15 +63,18 @@ void execute_command(char **args, int fd_in, int fd_out) {
             dup2(fd_out, 1);
             close(fd_out);
         }
-        execvp(args[0], args);
-        perror("execvp");
-        exit(EXIT_FAILURE);
+        path = get_path(args[0], env);
+        if (execve(path, args, env) < 0)
+        {
+            perror("execve");
+            exit(EXIT_FAILURE);
+        }
     } else { // Parent process
         waitpid(pid, &status, 0);
     }
 }
 
-void execute_node(t_parse_tree *node)
+void execute_node(t_parse_tree *node, char **env)
 {
     int fd_in = 0;
     int fd_out = 1;
@@ -106,7 +100,7 @@ void execute_node(t_parse_tree *node)
         node = node->child;
     }
     args[i] = NULL;
-    execute_command(args, fd_in, fd_out);
+    execute_command(args, fd_in, fd_out, env);
 }
 
 void handle_global_env(t_parse_tree *node, char **args, int i)
@@ -162,24 +156,18 @@ void handle_quotes_global(t_parse_tree *node, char **args, int i)
     args[i] = strdup(buffer);
 }
 
-void execute_parse_tree(t_parse_tree *root)
+void execute_parse_tree(t_parse_tree *root, char **env)
 {
     if (root == NULL) {
         return;
     }
-	//while (root != NULL)
-    //{
-        if (root->sibling)
-            execute_pipeline(root);//ADD a check that the child is already executed
-        else
-            execute_node(root->child);
-    //}
-    // Execute sibling nodes - pipes recursively, if it exists
-    //if (root->sibling != NULL)
-        //execute_parse_tree(root->sibling->sibling);
+    if (root->sibling)
+        execute_pipeline(root, env);//ADD a check that the child is already executed
+    else
+        execute_node(root->child, env);
 }
 
-void execute_pipeline(t_parse_tree *node)
+void execute_pipeline(t_parse_tree *node, char **env)
 {
     int pipefd[2];
     pid_t pid;
@@ -206,7 +194,7 @@ void execute_pipeline(t_parse_tree *node)
 
         //int in_fd = STDIN_FILENO;
         //int out_fd = pipefd[1];
-        execute_node(node); // Execute the left command of the pipe
+        execute_node(node, env); // Execute the left command of the pipe
         //close(pipefd[1]); // Close write end after dup
         exit(EXIT_SUCCESS);
     } else if (pid > 0) {
@@ -217,7 +205,7 @@ void execute_pipeline(t_parse_tree *node)
             if (pid2 == 0) { // Child process for next command
                 dup2(pipefd[0], STDIN_FILENO); // Redirect stdin to pipe read
                 close(pipefd[0]); // Close read end after dup
-                execute_pipeline(node->sibling->sibling); // Recursively handle the next part of the pipeline
+                execute_pipeline(node->sibling->sibling, env); // Recursively handle the next part of the pipeline
                 exit(EXIT_SUCCESS);
             } else if (pid2 > 0) { // Parent process
                 close(pipefd[0]); // Close unused read end

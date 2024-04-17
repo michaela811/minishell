@@ -70,7 +70,7 @@ char *update_pointer(char *str)
         return str;
 }
 
-int	ft_strlen(const char *s)
+/*int	ft_strlen(const char *s)
 {
 	int	i;
 
@@ -78,7 +78,7 @@ int	ft_strlen(const char *s)
 	while (s[i])
 		i++;
 	return (i);
-}
+}*/
 
 int count_additional_chars(char *input, const char *delim)
 {

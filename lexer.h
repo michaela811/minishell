@@ -83,7 +83,6 @@ int count_additional_chars(char *input, const char *delim);
 char *preprocess_input(char *str, const char *delim);
 size_t handle_quotes(char *str, int *error);
 char	*ft_strtok(char *str, const char *delim, int *error); // Maybe add to Libft
-int	ft_strlen(const char *s); // same as above
 char *update_pointer(char *str); // same?
 
 // Lexer
@@ -91,8 +90,31 @@ void lexer(char *input, t_token_list **tokenList, int *numTokens, int *error);
 enum token_type determine_token_type(char *token_value);
 
 // Execute
-void execute_parse_tree(t_parse_tree *root);
-void	execute(char *cmd, char **env);
+void execute_parse_tree(t_parse_tree *root, char **env);
 char	*get_path(char *cmd, char **env);
-char	*get_env(char **env, char *var);
-char	*get_exec(char **path, int i, char **s_cmd);
+char	*get_exec(char **path, int i, char *cmd);
+void execute_pipeline(t_parse_tree *node, char **env);
+void handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out);
+char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out);
+void execute_command(char **args, int fd_in, int fd_out, char **env);
+void execute_node(t_parse_tree *node, char **env);
+void handle_global_env(t_parse_tree *node, char **args, int i);
+void handle_quotes_global(t_parse_tree *node, char **args, int i);
+
+// To delete later when working
+void	execve_error(char **s_cmd);
+void	free_array(char **array);
+void	error_message(char *str);
+
+// Libft
+static void	ft_free(char **array, int j);
+static size_t	n_words(const char *str, char c);
+static size_t	size_word(const char *s, char c, int i);
+char	**ft_split(char const *s, char c);
+size_t	ft_strlen(const char *s);
+int	ft_strcmp(const char *s1, const char *s2);
+char	*ft_strjoin(char const *s1, char const *s2);
+void	ft_putstr_fd(char *s, int fd);
+void	ft_putendl_fd(char *s, int fd);
+static size_t	ft_special_cases(char const *s, unsigned int start, size_t len);
+char	*ft_substr(char const *s, unsigned int start, size_t len);

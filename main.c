@@ -1,6 +1,6 @@
 #include "lexer.h"
 
-int main()
+int main(int argc, char **argv, char **envp)
 {
     char* input;
 	int error = 0;
@@ -25,7 +25,7 @@ int main()
             {
                 /*printf("Parse tree:\n");
                 print_parse_tree(root, 0);*/
-                execute_parse_tree(root);
+                execute_parse_tree(root, envp);
             }
             else
                 printf("Parser returned an error: %d\n", SYNTAX_ERROR);
