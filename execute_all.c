@@ -1,5 +1,8 @@
 #include "lexer.h"
 
+void    exec_cd(char **args);
+void    exec_echo(char **args);
+
 void handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out)
 {
     if ((*node)->data->type == RED_FROM)
@@ -50,26 +53,34 @@ void execute_command(char **args, int fd_in, int fd_out, char **env) {
     int status;
     char *path;
 
-    pid = fork();
-    if (pid == -1) {
-        perror("fork");
-        exit(EXIT_FAILURE);
-    } else if (pid == 0) { // Child process
-        if (fd_in != 0) {
-            dup2(fd_in, 0);
-            close(fd_in);
-        }
-        if (fd_out != 1) {
-            dup2(fd_out, 1);
-            close(fd_out);
-        }
-        path = get_path(args[0], env);
-        if (execve(path, args, env) < 0)
+    if (strcmp(args[0], "echo") == 0)
+        exec_echo(args);
+    else
+    {
+        pid = fork();
+        if (pid == -1)
         {
-            perror("execve");
+            perror("fork");
             exit(EXIT_FAILURE);
         }
-    } else { // Parent process
+        else if (pid == 0)
+        { // Child process
+            if (fd_in != 0) {
+                dup2(fd_in, 0);
+                close(fd_in);
+            }
+            if (fd_out != 1) {
+                dup2(fd_out, 1);
+                close(fd_out);
+            }
+            path = get_path(args[0], env);
+            if (execve(path, args, env) < 0)
+            {
+                perror("execve");
+                exit(EXIT_FAILURE);
+            }
+        }
+        else // Parent process
         waitpid(pid, &status, 0);
     }
 }
@@ -220,4 +231,41 @@ void execute_pipeline(t_parse_tree *node, char **env)
         perror("fork");
         exit(EXIT_FAILURE);
     }
+}
+
+void    exec_cd(char **args)
+{
+    if (args[1] != NULL && args[2])
+    {
+        fprintf(stderr, "cd: too many arguments\n");
+        return ;
+    }
+    else if (args[1] == NULL || strcmp(args[1], "~") == 0)
+    {
+        chdir(getenv("HOME"));
+        return ;
+    }
+    else if (strcmp(args[1], "..") == 0)
+    {
+        if (chdir("..") != 0)
+            perror("chdir");
+    }
+    else if (chdir(args[1]) != 0)
+        perror("chdir");
+}
+
+void    exec_echo(char **args)//CHANGE IT TO FT_PRINTF AND FT_LIBFT
+{
+    int i = 1;
+    if (strcmp(args[1], "-n") == 0)
+        i++;
+    while (args[i])
+    {
+        printf("%s", args[i]);
+        if (args[i + 1])
+            printf(" ");
+        i++;
+    }
+    if (strcmp(args[1], "-n") != 0)
+        printf("\n");
 }
