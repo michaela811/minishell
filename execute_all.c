@@ -1,13 +1,5 @@
 #include "lexer.h"
 
-void execute_pipeline(t_parse_tree *node, char **env);
-void handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out);
-char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out);
-void execute_command(char **args, int fd_in, int fd_out, char **env);
-void execute_node(t_parse_tree *node, char **env);
-void handle_global_env(t_parse_tree *node, char **args, int i);
-void handle_quotes_global(t_parse_tree *node, char **args, int i);
-
 void handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out)
 {
     if ((*node)->data->type == RED_FROM)
@@ -34,6 +26,7 @@ void handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out)
 
 char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out)
 {
+    char *buffer;
 	char *filename = "/tmp/heredoc.txt";
     FILE *file = fopen(filename, "w"); // Error check!Unvalidated input in path value creation risks unintended file/directory access?
     if (file == NULL)
@@ -41,12 +34,11 @@ char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out)
         perror("fopen");
         exit(EXIT_FAILURE);
     }
-   	char *buffer;
    	while ((buffer = readline("heredoc> ")) != NULL)
 	{
         if (strcmp(buffer, (*node)->child->data->lexeme) == 0)
             break;
-        fprintf(file, "%s", buffer);
+        fprintf(file, "%s\n", buffer); //probably need to create this function?
         free(buffer);
    	}
 	fclose(file);

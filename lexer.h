@@ -91,9 +91,15 @@ enum token_type determine_token_type(char *token_value);
 
 // Execute
 void execute_parse_tree(t_parse_tree *root, char **env);
-//void	execute(char *cmd, char **env);
 char	*get_path(char *cmd, char **env);
 char	*get_exec(char **path, int i, char *cmd);
+void execute_pipeline(t_parse_tree *node, char **env);
+void handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out);
+char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out);
+void execute_command(char **args, int fd_in, int fd_out, char **env);
+void execute_node(t_parse_tree *node, char **env);
+void handle_global_env(t_parse_tree *node, char **args, int i);
+void handle_quotes_global(t_parse_tree *node, char **args, int i);
 
 // To delete later when working
 void	execve_error(char **s_cmd);
