@@ -269,3 +269,17 @@ void    exec_echo(char **args)//CHANGE IT TO FT_PRINTF AND FT_LIBFT
     if (strcmp(args[1], "-n") != 0)
         printf("\n");
 }
+
+void    exec_pwd(char **args)
+{
+    char    *cwd;
+
+    cwd = getcwd(NULL, 0);
+    if (cwd == NULL)
+        perror("getcwd");
+    else
+    {
+        printf("%s\n", cwd);
+        free(cwd);
+    }
+}
