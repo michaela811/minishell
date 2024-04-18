@@ -74,7 +74,7 @@ void execute_command(char **args, int fd_in, int fd_out, char **env) {
                 close(fd_out);
             }
             path = get_path(args[0], env);
-            if (execve(path, args, env) < 0)
+            if (execve(path, args, environtment) < 0)
             {
                 perror("execve");
                 exit(EXIT_FAILURE);
@@ -85,7 +85,7 @@ void execute_command(char **args, int fd_in, int fd_out, char **env) {
     }
 }
 
-void execute_node(t_parse_tree *node, char **env)
+void execute_node(t_parse_tree *node, t_env *env)
 {
     int fd_in = 0;
     int fd_out = 1;
@@ -102,9 +102,9 @@ void execute_node(t_parse_tree *node, char **env)
             || node->data->type == APPEND || node->data->type == HERE_DOC)
                 handle_redirection(&node, &fd_in, &fd_out);
             else if (node->data->lexeme[0] == '$')
-                handle_global_env(node, args, i++);
+                handle_global_env(node, args, i++, env);
             else if (node->data->lexeme[0] == '"')
-                handle_quotes_global(node, args, i++);
+                handle_quotes_global(node, args, i++, env);
             else
                 args[i++] = node->data->lexeme;
         }
@@ -114,10 +114,10 @@ void execute_node(t_parse_tree *node, char **env)
     execute_command(args, fd_in, fd_out, env);
 }
 
-void handle_global_env(t_parse_tree *node, char **args, int i)
+void handle_global_env(t_parse_tree *node, char **args, int i, t_env *env)
 {
     char *env_var_name = node->data->lexeme + 1;
-    char *env_var_value = getenv(env_var_name);
+    char *env_var_value = get_env_var(env, env_var_name);
     if (env_var_value != NULL)
         args[i] = env_var_value;
     else
@@ -137,7 +137,7 @@ char *ft_strpbrk(char *str, char *delim)//MOVE IT TO FT_LIBFT
     return (NULL);
 }
 
-void handle_quotes_global(t_parse_tree *node, char **args, int i)
+void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env *env)
 {
     char *str = node->data->lexeme + 1;
     str[strlen(str) - 1] = '\0';
@@ -159,7 +159,7 @@ void handle_quotes_global(t_parse_tree *node, char **args, int i)
         char var_name[1024];
         strncpy(var_name, var_start, var_end - var_start);
         var_name[var_end - var_start] = '\0';
-        char *var_value = getenv(var_name);
+        char *var_value = get_env_var(env, var_name);
         if (var_value != NULL)
             strcat(buffer, var_value);
         start = var_end;
@@ -167,7 +167,7 @@ void handle_quotes_global(t_parse_tree *node, char **args, int i)
     args[i] = strdup(buffer);
 }
 
-void execute_parse_tree(t_parse_tree *root, char **env)
+void execute_parse_tree(t_parse_tree *root, t_env *env)
 {
     if (root == NULL) {
         return;
@@ -178,7 +178,7 @@ void execute_parse_tree(t_parse_tree *root, char **env)
         execute_node(root->child, env);
 }
 
-void execute_pipeline(t_parse_tree *node, char **env)
+void execute_pipeline(t_parse_tree *node, t_env *env)
 {
     int pipefd[2];
     pid_t pid;

@@ -4,6 +4,7 @@ int main(int argc, char **argv, char **envp)
 {
     char* input;
 	int error = 0;
+    t_env *envmt = init_environment(envp);
     while ((input = readline("myshell> ")) != NULL)
     {
         if (*input)
@@ -25,7 +26,7 @@ int main(int argc, char **argv, char **envp)
             {
                 /*printf("Parse tree:\n");
                 print_parse_tree(root, 0);*/
-                execute_parse_tree(root, envp);
+                execute_parse_tree(root, envmt);
             }
             else
                 printf("Parser returned an error: %d\n", SYNTAX_ERROR);

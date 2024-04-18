@@ -1,13 +1,13 @@
 #include "lexer.h"
 
-char	*get_path(char *cmd, char **env)
+char	*get_path(char *cmd, t_env *env)
 {
 	int		i;
 	char	*exec;
 	char	**path;
 
 	i = -1;
-	path = ft_split(getenv("PATH"), ':');
+	path = ft_split(get_env_var(env, "PATH"), ':');
 	if (path == NULL)
 		error_message("Malloc error in split function");
 	while (path[++i])
