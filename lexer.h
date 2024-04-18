@@ -135,3 +135,5 @@ void update_add_env_var(t_env **head, const char *name, const char *value);
 void free_env(t_env *head);
 char *get_env_var(t_env *head, const char *name);
 char **env_list_to_array(t_env *head);
+void    exec_cd(char **args, t_env *env);
+void update_pwd(t_env **env, char *cwd);

@@ -1,6 +1,5 @@
 #include "lexer.h"
 
-void    exec_cd(char **args);
 void    exec_echo(char **args);
 
 void handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out)
@@ -53,8 +52,8 @@ void execute_command(char **args, int fd_in, int fd_out, char **env) {
     int status;
     char *path;
 
-    if (strcmp(args[0], "echo") == 0)
-        exec_echo(args);
+    if (strcmp(args[0], "cd") == 0)
+        exec_cd(args, env);
     else
     {
         pid = fork();
@@ -233,8 +232,19 @@ void execute_pipeline(t_parse_tree *node, t_env *env)
     }
 }
 
-void    exec_cd(char **args)
+void update_pwd(t_env **env, char *cwd)
 {
+    update_add_env_var(env, "OLDPWD", cwd);
+    cwd = getcwd(NULL, 0);  // Get the current working directory again
+    update_add_env_var(env, "PWD", cwd);
+    free(cwd);  // Free the current working directory string
+}
+
+void    exec_cd(char **args, t_env *env)
+{
+    char    *cwd;
+
+    cwd = getcwd(NULL, 0);
     if (args[1] != NULL && args[2])
     {
         fprintf(stderr, "cd: too many arguments\n");
@@ -242,17 +252,22 @@ void    exec_cd(char **args)
     }
     else if (args[1] == NULL || strcmp(args[1], "~") == 0)
     {
-        chdir(getenv("HOME"));
-        return ;
+        if (chdir(get_env_var(env, "HOME")) != 0)
+            perror("chdir");
+        return (update_pwd(&env, cwd), free(cwd));
     }
     else if (strcmp(args[1], "..") == 0)
     {
         if (chdir("..") != 0)
             perror("chdir");
+        return (update_pwd(&env, cwd),free(cwd));
     }
     else if (chdir(args[1]) != 0)
         perror("chdir");
+    return (update_pwd(&env, cwd),free(cwd));
 }
+
+
 
 void    exec_echo(char **args)//CHANGE IT TO FT_PRINTF AND FT_LIBFT
 {
