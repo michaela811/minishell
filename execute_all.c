@@ -47,10 +47,11 @@ char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out)
     return (filename);
 }
 
-void execute_command(char **args, int fd_in, int fd_out, char **env) {
+void execute_command(char **args, int fd_in, int fd_out, t_env *env) {
     pid_t pid;
     int status;
     char *path;
+    char **environtment = env_list_to_array(env);
 
     if (strcmp(args[0], "cd") == 0)
         exec_cd(args, env);
