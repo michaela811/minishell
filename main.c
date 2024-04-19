@@ -5,7 +5,7 @@ int main(int argc, char **argv, char **envp)
     char* input;
 	int error = 0;
     t_env *envmt = init_environment(envp);
-    while ((input = readline("myshell> ")) != NULL)
+    while ((input = readline("my(s)hell> ")) != NULL)
     {
         if (*input)
         {
