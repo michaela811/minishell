@@ -11,6 +11,7 @@ SOURCES = execute_all.c \
 			main.c \
 			parser.c \
 			env.c \
+			main_envp.c \
 
 OBJ = $(SOURCES:.c=.o)
 
