@@ -46,7 +46,6 @@ void free_parse_tree(t_parse_tree *tree)
     }
 }
 
-
 void link_node(t_parse_tree **current, t_parse_tree *newNode)
 {
     if (current == NULL || newNode == NULL) return; // Basic validation
@@ -245,7 +244,7 @@ t_token_list* create_token(enum token_type type, char* lexeme)
         perror("Failed to allocate memory for token");
         exit(MEMORY_ERROR);
     }
-    new_token->lexeme = strdup(lexeme);
+    new_token->lexeme = ft_strdup(lexeme);
     new_token->type = type;
 
     t_token_list* new_list_node = malloc(sizeof(t_token_list));
@@ -277,12 +276,12 @@ void print_parse_tree(t_parse_tree* tree, int depth) {
     if (!tree) return;
 
     for (int i = 0; i < depth; i++) {
-        printf("  ");
+        ft_printf("  ");
     }
     if (tree->data) {
-        printf("%s (%d)\n", tree->data->lexeme, tree->data->type);
+        ft_printf("%s (%d)\n", tree->data->lexeme, tree->data->type);
     } else {
-        printf("NULL\n");
+        ft_printf("NULL\n");
     }
 
     print_parse_tree(tree->child, depth + 1);
@@ -318,7 +317,6 @@ void free_token_list(t_token_list* list)
     list = NULL; // Set the list pointer to NULL after freeing
 }
 
-
 void test_parser()
 {
     t_token_list* list = NULL;
@@ -341,13 +339,13 @@ void test_parser()
     t_parse_tree* root = NULL;
     if (is_pipe_sequence(&list, &root) == SUBTREE_OK)//, &status);
     {
-        printf("Parse tree:\n");
+        ft_printf("Parse tree:\n");
         print_parse_tree(root, 0);
     }
     else
     {
         //free_parse_tree(root);//MAYBE NOT NEEDED IF WAS FREED IN IS_PIPE_SEQUENCE
-        printf("Parser returned an error: %d\n", status);
+        ft_printf("Parser returned an error: %d\n", status);
     }
 
     // Free resources

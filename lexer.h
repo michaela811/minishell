@@ -7,6 +7,7 @@
 #include <sys/wait.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include "libft/libft.h"
 
 enum token_type
 {
@@ -81,9 +82,6 @@ void add_token(t_token_list** list, enum token_type type, char* lexeme); // same
 // Lexer helper
 int count_additional_chars(char *input, const char *delim);
 char *preprocess_input(char *str, const char *delim);
-size_t handle_quotes(char *str, int *error);
-char	*ft_strtok(char *str, const char *delim, int *error); // Maybe add to Libft
-char *update_pointer(char *str); // same?
 
 // Lexer
 void lexer(char *input, t_token_list **tokenList, int *numTokens, int *error);
@@ -105,16 +103,3 @@ void handle_quotes_global(t_parse_tree *node, char **args, int i);
 void	execve_error(char **s_cmd);
 void	free_array(char **array);
 void	error_message(char *str);
-
-// Libft
-static void	ft_free(char **array, int j);
-static size_t	n_words(const char *str, char c);
-static size_t	size_word(const char *s, char c, int i);
-char	**ft_split(char const *s, char c);
-size_t	ft_strlen(const char *s);
-int	ft_strcmp(const char *s1, const char *s2);
-char	*ft_strjoin(char const *s1, char const *s2);
-void	ft_putstr_fd(char *s, int fd);
-void	ft_putendl_fd(char *s, int fd);
-static size_t	ft_special_cases(char const *s, unsigned int start, size_t len);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
