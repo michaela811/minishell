@@ -135,4 +135,7 @@ char *get_env_var(t_env *head, const char *name);
 char **env_list_to_array(t_env *head);
 void    exec_cd(char **args, t_env *env);
 void update_pwd(t_env **env, char *cwd);
+int exec_builtins(char **args, t_env *env);
+void    exec_echo(char **args);
+void    exec_pwd(char **args);
 

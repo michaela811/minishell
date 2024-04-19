@@ -47,14 +47,33 @@ char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out)
     return (filename);
 }
 
+int exec_builtins(char **args, t_env *env)
+{
+    if (strcmp(args[0], "cd") == 0)
+        return(exec_cd(args, env), 0);
+    else if (strcmp(args[0], "pwd") == 0)
+        return(exec_pwd(args), 0);
+    else if (strcmp(args[0], "echo") == 0)
+        return(exec_echo(args), 0);
+    /*else if (strcmp(args[0], "export") == 0)
+        return(exec_export(args), 0);
+    else if (strcmp(args[0], "unset") == 0)
+        return(exec_unset(args), 0);
+    else if (strcmp(args[0], "env") == 0)
+        return(exec_env(args), 0);
+    else if (strcmp(args[0], "exit") == 0)
+        return(exec_exit(args), 0);*/
+    return (1);
+}
+
 void execute_command(char **args, int fd_in, int fd_out, t_env *env) {
     pid_t pid;
     int status;
     char *path;
     char **environtment = env_list_to_array(env);
 
-    if (strcmp(args[0], "cd") == 0)
-        exec_cd(args, env);
+    if (exec_builtins(args, env) == 0)
+        return ;
     else
     {
         pid = fork();
