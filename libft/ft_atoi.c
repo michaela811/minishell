@@ -29,7 +29,7 @@ int	ft_atoi(const char *nptr)
 			minus++;
 		nptr++;
 	}
-	if ((*nptr >= 0 && *nptr <= 47) || (*nptr >= 58 && *nptr < 127))
+	if ((*nptr <= 47) || (*nptr >= 58 && *nptr < 127))//removed *nptr >= 0 &&
 		return (0);
 	while (*nptr >= 48 && *nptr <= 57)
 	{
