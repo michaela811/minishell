@@ -144,7 +144,7 @@ void handle_global_env(t_parse_tree *node, char **args, int i, t_env *env)
 }
 
 
-void handle_quotes_global(t_parse_tree *node, char **args, int i)
+void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env *env)
 {
     char *str = node->data->lexeme + 1;
     str[ft_strlen(str) - 1] = '\0';
