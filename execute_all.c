@@ -124,28 +124,16 @@ void handle_global_env(t_parse_tree *node, char **args, int i, t_env *env)
         args[i] = "";
 }
 
-char *ft_strpbrk(char *str, char *delim)//MOVE IT TO FT_LIBFT
-{
-    while (*str)
-    {
-        if (strchr(delim, *str))
-            break;
-        str++;
-    }
-    if (*str)
-        return (str);
-    return (NULL);
-}
 
-void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env *env)
+void handle_quotes_global(t_parse_tree *node, char **args, int i)
 {
     char *str = node->data->lexeme + 1;
-    str[strlen(str) - 1] = '\0';
+    str[ft_strlen(str) - 1] = '\0';
     char buffer[1024] = "";
     char *start = str;
     while (1)
     {
-        char *dollar = strchr(start, '$');
+        char *dollar = ft_strchr(start, '$');
         if (dollar == NULL)
         {
             strcat(buffer, start);
@@ -153,9 +141,9 @@ void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env *env)
         }
         strncat(buffer, start, dollar - start);
         char *var_start = dollar + 1;
-        char *var_end = strpbrk(var_start, " \t\n\"'$");
+        char *var_end = ft_strpbrk(var_start, " \t\n\"'$");
         if (var_end == NULL)
-            var_end = var_start + strlen(var_start);
+            var_end = var_start + ft_strlen(var_start);
         char var_name[1024];
         strncpy(var_name, var_start, var_end - var_start);
         var_name[var_end - var_start] = '\0';
@@ -164,7 +152,7 @@ void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env *env)
             strcat(buffer, var_value);
         start = var_end;
     }
-    args[i] = strdup(buffer);
+    args[i] = ft_strdup(buffer);
 }
 
 void execute_parse_tree(t_parse_tree *root, t_env *env)

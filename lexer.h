@@ -7,6 +7,7 @@
 #include <sys/wait.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include "libft/libft.h"
 
 enum token_type
 {
@@ -88,9 +89,6 @@ void add_token(t_token_list** list, enum token_type type, char* lexeme); // same
 // Lexer helper
 int count_additional_chars(char *input, const char *delim);
 char *preprocess_input(char *str, const char *delim);
-size_t handle_quotes(char *str, int *error);
-char	*ft_strtok(char *str, const char *delim, int *error); // Maybe add to Libft
-char *update_pointer(char *str); // same?
 
 // Lexer
 void lexer(char *input, t_token_list **tokenList, int *numTokens, int *error);
@@ -137,3 +135,4 @@ char *get_env_var(t_env *head, const char *name);
 char **env_list_to_array(t_env *head);
 void    exec_cd(char **args, t_env *env);
 void update_pwd(t_env **env, char *cwd);
+

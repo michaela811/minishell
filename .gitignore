@@ -35,6 +35,7 @@
 *.i*86
 *.x86_64
 *.hex
+*.gch
 
 # Debug files
 *.dSYM/
@@ -54,3 +55,6 @@ dkms.conf
 #VScode
 .vscode/launch.json
 .vscode/settings.json
+
+# Program name
+minishell
