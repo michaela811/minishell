@@ -138,4 +138,6 @@ void update_pwd(t_env **env, char *cwd);
 int exec_builtins(char **args, t_env *env);
 void    exec_echo(char **args);
 void    exec_pwd(char **args);
+void    exec_env(char **args, t_env *env);
+void    exec_unset (char **args, t_env **env);
 

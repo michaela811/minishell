@@ -55,14 +55,14 @@ int exec_builtins(char **args, t_env *env)
         return(exec_pwd(args), 0);
     else if (strcmp(args[0], "echo") == 0)
         return(exec_echo(args), 0);
-    /*else if (strcmp(args[0], "export") == 0)
-        return(exec_export(args), 0);
+    //else if (strcmp(args[0], "export") == 0)
+       // return(exec_export(args), 0);
     else if (strcmp(args[0], "unset") == 0)
-        return(exec_unset(args), 0);
+        return(exec_unset(args, env), 0);
     else if (strcmp(args[0], "env") == 0)
-        return(exec_env(args), 0);
-    else if (strcmp(args[0], "exit") == 0)
-        return(exec_exit(args), 0);*/
+        return(exec_env(args, env), 0);
+    //else if (strcmp(args[0], "exit") == 0) //already implemented
+        //return(exec_exit(args), 0);
     return (1);
 }
 
@@ -305,4 +305,105 @@ void    exec_pwd(char **args)
         printf("%s\n", cwd);
         free(cwd);
     }
+}
+
+void    exec_env(char **args, t_env *env)
+{
+    int i = 0;
+
+    if (args[1] != NULL)
+    {
+        fprintf(stderr, "env: too many arguments\n");
+        return ;
+    }
+    char **environtment = env_list_to_array(env);
+    while (environtment[i] != NULL)
+        printf("%s\n", environtment[i++]);
+    return;
+}
+
+void    exec_unset (char **args, t_env **env)
+{
+    if (args[2] != NULL)
+    {
+        fprintf(stderr, "unset: too many arguments\n");
+        return ;
+    }
+    t_env *current = *env;
+    t_env *prev = NULL;
+
+    while (current != NULL)
+    {
+        if (strcmp(current->name, args[1]) == 0)
+        {
+            if (prev == NULL)
+                *env = current->next;
+            else
+                prev->next = current->next;
+            free(current->name);
+            free(current->value);
+            free(current);
+            return;
+        }
+        prev = current;
+        current = current->next;
+    }
+}
+
+void exec_export_no_args(t_env *env)
+{
+    t_env *current = env;
+
+    while (current != NULL)
+    {
+        printf("declare -x %s=\"%s\"\n", current->name, current->value);
+        current = current->next;
+    }
+}
+
+int var_control(char *args)
+{
+    int i = 0;
+    if (args[i++] == '=')
+    {
+        fprintf(stderr, "'%s': not a valid identifier\n", args);
+        return (-1);//think how to handle the error
+    }
+    while (args[i])
+    {
+        if(args[i++] == '=')
+            return (0);
+    }
+    return(1);
+}
+
+void split_var(char *var, char **name, char **value)
+{
+    char *equals = strchr(var, '=');
+    if (equals == NULL)
+    {
+        *name = strdup(var);
+
+        *value = NULL;
+    }
+    else
+    {
+        *name = strndup(var, equals - var);
+        *value = strdup(equals + 1);
+    }
+}
+
+void    exec_export(char **args, t_env *env)
+{
+    char *name = NULL;
+    char *value = NULL;
+
+    if (args[1] != NULL)
+        return(exec_export_no_args(env));
+    if (var_control(args[1]) == 0)
+    {
+        split_var(args[1], name, value);
+        update_add_env_var (&env, name ,value);
+    }
+    return;
 }
