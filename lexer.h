@@ -40,6 +40,13 @@ typedef struct s_parse_tree
   struct s_parse_tree *sibling;
 } t_parse_tree;
 
+typedef struct s_env
+{
+    char *name;
+    char *value;
+    struct s_env *next;
+} t_env;
+
 // Return values
 #define SYNTAX_ERROR -1
 #define SUBTREE_OK 0
@@ -88,18 +95,44 @@ void lexer(char *input, t_token_list **tokenList, int *numTokens, int *error);
 enum token_type determine_token_type(char *token_value);
 
 // Execute
-void execute_parse_tree(t_parse_tree *root, char **env);
-char	*get_path(char *cmd, char **env);
+void execute_parse_tree(t_parse_tree *root, t_env *env);
+char	*get_path(char *cmd, t_env *env);
 char	*get_exec(char **path, int i, char *cmd);
-void execute_pipeline(t_parse_tree *node, char **env);
+void execute_pipeline(t_parse_tree *node, t_env *env);
 void handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out);
 char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out);
-void execute_command(char **args, int fd_in, int fd_out, char **env);
-void execute_node(t_parse_tree *node, char **env);
-void handle_global_env(t_parse_tree *node, char **args, int i);
-void handle_quotes_global(t_parse_tree *node, char **args, int i);
+void execute_command(char **args, int fd_in, int fd_out, t_env *env);
+void execute_node(t_parse_tree *node, t_env *env);
+void handle_global_env(t_parse_tree *node, char **args, int i, t_env *env);
+void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env *env);
 
 // To delete later when working
 void	execve_error(char **s_cmd);
 void	free_array(char **array);
 void	error_message(char *str);
+
+// Libft
+static void	ft_free(char **array, int j);
+static size_t	n_words(const char *str, char c);
+static size_t	size_word(const char *s, char c, int i);
+char	**ft_split(char const *s, char c);
+size_t	ft_strlen(const char *s);
+int	ft_strcmp(const char *s1, const char *s2);
+char	*ft_strjoin(char const *s1, char const *s2);
+void	ft_putstr_fd(char *s, int fd);
+void	ft_putendl_fd(char *s, int fd);
+static size_t	ft_special_cases(char const *s, unsigned int start, size_t len);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+
+
+
+t_env *create_env_var(const char *name, const char *value);
+t_env *init_environment(char **envp);
+t_env *find_env_var(t_env *head, const char *name);
+void update_add_env_var(t_env **head, const char *name, const char *value);
+void free_env(t_env *head);
+char *get_env_var(t_env *head, const char *name);
+char **env_list_to_array(t_env *head);
+void    exec_cd(char **args, t_env *env);
+void update_pwd(t_env **env, char *cwd);
+

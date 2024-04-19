@@ -1,5 +1,7 @@
 #include "lexer.h"
 
+void    exec_echo(char **args);
+
 void handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out)
 {
     if ((*node)->data->type == RED_FROM)
@@ -45,36 +47,45 @@ char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out)
     return (filename);
 }
 
-void execute_command(char **args, int fd_in, int fd_out, char **env) {
+void execute_command(char **args, int fd_in, int fd_out, t_env *env) {
     pid_t pid;
     int status;
     char *path;
+    char **environtment = env_list_to_array(env);
 
-    pid = fork();
-    if (pid == -1) {
-        perror("fork");
-        exit(EXIT_FAILURE);
-    } else if (pid == 0) { // Child process
-        if (fd_in != 0) {
-            dup2(fd_in, 0);
-            close(fd_in);
-        }
-        if (fd_out != 1) {
-            dup2(fd_out, 1);
-            close(fd_out);
-        }
-        path = get_path(args[0], env);
-        if (execve(path, args, env) < 0)
+    if (strcmp(args[0], "cd") == 0)
+        exec_cd(args, env);
+    else
+    {
+        pid = fork();
+        if (pid == -1)
         {
-            perror("execve");
+            perror("fork");
             exit(EXIT_FAILURE);
         }
-    } else { // Parent process
+        else if (pid == 0)
+        { // Child process
+            if (fd_in != 0) {
+                dup2(fd_in, 0);
+                close(fd_in);
+            }
+            if (fd_out != 1) {
+                dup2(fd_out, 1);
+                close(fd_out);
+            }
+            path = get_path(args[0], env);
+            if (execve(path, args, environtment) < 0)
+            {
+                perror("execve");
+                exit(EXIT_FAILURE);
+            }
+        }
+        else // Parent process
         waitpid(pid, &status, 0);
     }
 }
 
-void execute_node(t_parse_tree *node, char **env)
+void execute_node(t_parse_tree *node, t_env *env)
 {
     int fd_in = 0;
     int fd_out = 1;
@@ -91,9 +102,9 @@ void execute_node(t_parse_tree *node, char **env)
             || node->data->type == APPEND || node->data->type == HERE_DOC)
                 handle_redirection(&node, &fd_in, &fd_out);
             else if (node->data->lexeme[0] == '$')
-                handle_global_env(node, args, i++);
+                handle_global_env(node, args, i++, env);
             else if (node->data->lexeme[0] == '"')
-                handle_quotes_global(node, args, i++);
+                handle_quotes_global(node, args, i++, env);
             else
                 args[i++] = node->data->lexeme;
         }
@@ -103,15 +114,16 @@ void execute_node(t_parse_tree *node, char **env)
     execute_command(args, fd_in, fd_out, env);
 }
 
-void handle_global_env(t_parse_tree *node, char **args, int i)
+void handle_global_env(t_parse_tree *node, char **args, int i, t_env *env)
 {
     char *env_var_name = node->data->lexeme + 1;
-    char *env_var_value = getenv(env_var_name);
+    char *env_var_value = get_env_var(env, env_var_name);
     if (env_var_value != NULL)
         args[i] = env_var_value;
     else
         args[i] = "";
 }
+
 
 void handle_quotes_global(t_parse_tree *node, char **args, int i)
 {
@@ -135,7 +147,7 @@ void handle_quotes_global(t_parse_tree *node, char **args, int i)
         char var_name[1024];
         strncpy(var_name, var_start, var_end - var_start);
         var_name[var_end - var_start] = '\0';
-        char *var_value = getenv(var_name);
+        char *var_value = get_env_var(env, var_name);
         if (var_value != NULL)
             strcat(buffer, var_value);
         start = var_end;
@@ -143,7 +155,7 @@ void handle_quotes_global(t_parse_tree *node, char **args, int i)
     args[i] = ft_strdup(buffer);
 }
 
-void execute_parse_tree(t_parse_tree *root, char **env)
+void execute_parse_tree(t_parse_tree *root, t_env *env)
 {
     if (root == NULL) {
         return;
@@ -154,7 +166,7 @@ void execute_parse_tree(t_parse_tree *root, char **env)
         execute_node(root->child, env);
 }
 
-void execute_pipeline(t_parse_tree *node, char **env)
+void execute_pipeline(t_parse_tree *node, t_env *env)
 {
     int pipefd[2];
     pid_t pid;
@@ -206,5 +218,72 @@ void execute_pipeline(t_parse_tree *node, char **env)
     } else {
         perror("fork");
         exit(EXIT_FAILURE);
+    }
+}
+
+void update_pwd(t_env **env, char *cwd)
+{
+    update_add_env_var(env, "OLDPWD", cwd);
+    cwd = getcwd(NULL, 0);  // Get the current working directory again
+    update_add_env_var(env, "PWD", cwd);
+    free(cwd);  // Free the current working directory string
+}
+
+void    exec_cd(char **args, t_env *env)
+{
+    char    *cwd;
+
+    cwd = getcwd(NULL, 0);
+    if (args[1] != NULL && args[2])
+    {
+        fprintf(stderr, "cd: too many arguments\n");
+        return ;
+    }
+    else if (args[1] == NULL || strcmp(args[1], "~") == 0)
+    {
+        if (chdir(get_env_var(env, "HOME")) != 0)
+            perror("chdir");
+        return (update_pwd(&env, cwd), free(cwd));
+    }
+    else if (strcmp(args[1], "..") == 0)
+    {
+        if (chdir("..") != 0)
+            perror("chdir");
+        return (update_pwd(&env, cwd),free(cwd));
+    }
+    else if (chdir(args[1]) != 0)
+        perror("chdir");
+    return (update_pwd(&env, cwd),free(cwd));
+}
+
+
+
+void    exec_echo(char **args)//CHANGE IT TO FT_PRINTF AND FT_LIBFT
+{
+    int i = 1;
+    if (strcmp(args[1], "-n") == 0)
+        i++;
+    while (args[i])
+    {
+        printf("%s", args[i]);
+        if (args[i + 1])
+            printf(" ");
+        i++;
+    }
+    if (strcmp(args[1], "-n") != 0)
+        printf("\n");
+}
+
+void    exec_pwd(char **args)
+{
+    char    *cwd;
+
+    cwd = getcwd(NULL, 0);
+    if (cwd == NULL)
+        perror("getcwd");
+    else
+    {
+        printf("%s\n", cwd);
+        free(cwd);
     }
 }
