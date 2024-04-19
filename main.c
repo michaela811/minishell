@@ -4,7 +4,7 @@ int main(int argc, char **argv, char **envp)
 {
     char* input;
 	int error = 0;
-    while ((input = readline("myshell> ")) != NULL)
+    while ((input = readline("mini(s)hell> ")) != NULL)
     {
         if (*input)
         {
