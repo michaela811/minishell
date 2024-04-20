@@ -47,7 +47,7 @@ char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out)
     return (filename);
 }
 
-int exec_builtins(char **args, t_env *env)
+int exec_builtins(char **args, t_env **env)
 {
     if (strcmp(args[0], "cd") == 0)
         return(exec_cd(args, env), 0);
@@ -55,8 +55,8 @@ int exec_builtins(char **args, t_env *env)
         return(exec_pwd(args), 0);
     else if (strcmp(args[0], "echo") == 0)
         return(exec_echo(args), 0);
-    //else if (strcmp(args[0], "export") == 0)
-       // return(exec_export(args), 0);
+    else if (strcmp(args[0], "export") == 0)
+        return(exec_export(args, env), 0);
     else if (strcmp(args[0], "unset") == 0)
         return(exec_unset(args, env), 0);
     else if (strcmp(args[0], "env") == 0)
@@ -66,11 +66,11 @@ int exec_builtins(char **args, t_env *env)
     return (1);
 }
 
-void execute_command(char **args, int fd_in, int fd_out, t_env *env) {
+void execute_command(char **args, int fd_in, int fd_out, t_env **env) {
     pid_t pid;
     int status;
     char *path;
-    char **environtment = env_list_to_array(env);
+    char **environtment = env_list_to_array(*env);
 
     if (exec_builtins(args, env) == 0)
         return ;
@@ -92,7 +92,7 @@ void execute_command(char **args, int fd_in, int fd_out, t_env *env) {
                 dup2(fd_out, 1);
                 close(fd_out);
             }
-            path = get_path(args[0], env);
+            path = get_path(args[0], *env);
             if (execve(path, args, environtment) < 0)
             {
                 perror("execve");
@@ -104,7 +104,7 @@ void execute_command(char **args, int fd_in, int fd_out, t_env *env) {
     }
 }
 
-void execute_node(t_parse_tree *node, t_env *env)
+void execute_node(t_parse_tree *node, t_env **env)
 {
     int fd_in = 0;
     int fd_out = 1;
@@ -133,10 +133,10 @@ void execute_node(t_parse_tree *node, t_env *env)
     execute_command(args, fd_in, fd_out, env);
 }
 
-void handle_global_env(t_parse_tree *node, char **args, int i, t_env *env)
+void handle_global_env(t_parse_tree *node, char **args, int i, t_env **env)
 {
     char *env_var_name = node->data->lexeme + 1;
-    char *env_var_value = get_env_var(env, env_var_name);
+    char *env_var_value = get_env_var(*env, env_var_name);
     if (env_var_value != NULL)
         args[i] = env_var_value;
     else
@@ -144,7 +144,7 @@ void handle_global_env(t_parse_tree *node, char **args, int i, t_env *env)
 }
 
 
-void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env *env)
+void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env)
 {
     char *str = node->data->lexeme + 1;
     str[ft_strlen(str) - 1] = '\0';
@@ -166,7 +166,7 @@ void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env *env)
         char var_name[1024];
         strncpy(var_name, var_start, var_end - var_start);
         var_name[var_end - var_start] = '\0';
-        char *var_value = get_env_var(env, var_name);
+        char *var_value = get_env_var(*env, var_name);
         if (var_value != NULL)
             strcat(buffer, var_value);
         start = var_end;
@@ -174,7 +174,7 @@ void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env *env)
     args[i] = ft_strdup(buffer);
 }
 
-void execute_parse_tree(t_parse_tree *root, t_env *env)
+void execute_parse_tree(t_parse_tree *root, t_env **env)
 {
     if (root == NULL) {
         return;
@@ -185,7 +185,7 @@ void execute_parse_tree(t_parse_tree *root, t_env *env)
         execute_node(root->child, env);
 }
 
-void execute_pipeline(t_parse_tree *node, t_env *env)
+void execute_pipeline(t_parse_tree *node, t_env **env)
 {
     int pipefd[2];
     pid_t pid;
@@ -248,7 +248,7 @@ void update_pwd(t_env **env, char *cwd)
     free(cwd);  // Free the current working directory string
 }
 
-void    exec_cd(char **args, t_env *env)
+void    exec_cd(char **args, t_env **env)
 {
     char    *cwd;
 
@@ -260,19 +260,19 @@ void    exec_cd(char **args, t_env *env)
     }
     else if (args[1] == NULL || strcmp(args[1], "~") == 0)
     {
-        if (chdir(get_env_var(env, "HOME")) != 0)
+        if (chdir(get_env_var(*env, "HOME")) != 0)
             perror("chdir");
-        return (update_pwd(&env, cwd), free(cwd));
+        return (update_pwd(env, cwd), free(cwd));
     }
     else if (strcmp(args[1], "..") == 0)
     {
         if (chdir("..") != 0)
             perror("chdir");
-        return (update_pwd(&env, cwd),free(cwd));
+        return (update_pwd(env, cwd),free(cwd));
     }
     else if (chdir(args[1]) != 0)
         perror("chdir");
-    return (update_pwd(&env, cwd),free(cwd));
+    return (update_pwd(env, cwd),free(cwd));
 }
 
 
@@ -307,7 +307,7 @@ void    exec_pwd(char **args)
     }
 }
 
-void    exec_env(char **args, t_env *env)
+void    exec_env(char **args, t_env **env)
 {
     int i = 0;
 
@@ -316,7 +316,7 @@ void    exec_env(char **args, t_env *env)
         fprintf(stderr, "env: too many arguments\n");
         return ;
     }
-    char **environtment = env_list_to_array(env);
+    char **environtment = env_list_to_array(*env);
     while (environtment[i] != NULL)
         printf("%s\n", environtment[i++]);
     return;
@@ -380,30 +380,31 @@ int var_control(char *args)
 void split_var(char *var, char **name, char **value)
 {
     char *equals = strchr(var, '=');
-    if (equals == NULL)
+    *name = strndup(var, equals - var);
+    if (name == NULL)
     {
-        *name = strdup(var);
-
-        *value = NULL;
+        fprintf(stderr, "split_var: strndup error\n");
+        return ;
     }
-    else
+    *value = strdup(equals + 1);
+    if (value == NULL)
     {
-        *name = strndup(var, equals - var);
-        *value = strdup(equals + 1);
+        fprintf(stderr, "split_var: strndup error\n");
+        return (free(*name));
     }
 }
 
-void    exec_export(char **args, t_env *env)
+void    exec_export(char **args, t_env **env)
 {
     char *name = NULL;
     char *value = NULL;
 
-    if (args[1] != NULL)
-        return(exec_export_no_args(env));
+    if (args[1] == NULL)
+        return(exec_export_no_args(*env));
     if (var_control(args[1]) == 0)
     {
-        split_var(args[1], name, value);
-        update_add_env_var (&env, name ,value);
+        split_var(args[1], &name, &value);//think how to handle the error
+        update_add_env_var (env, name ,value);
     }
     return;
 }

@@ -26,7 +26,8 @@ int main(int argc, char **argv, char **envp)
             {
                 /*printf("Parse tree:\n");
                 print_parse_tree(root, 0);*/
-                execute_parse_tree(root, envmt);
+
+                execute_parse_tree(root, &envmt);
             }
             else
                 printf("Parser returned an error: %d\n", SYNTAX_ERROR);
