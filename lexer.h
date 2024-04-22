@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "libft/libft.h"
@@ -46,6 +47,15 @@ typedef struct s_env
     char *value;
     struct s_env *next;
 } t_env;
+
+typedef struct s_exec_vars
+{
+    int fd_in;
+    int fd_out;
+    char *args[10];
+    int i;
+    int error;
+} t_exec_vars;
 
 // Return values
 #define SYNTAX_ERROR -1
