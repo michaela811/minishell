@@ -1,7 +1,5 @@
 #include "lexer.h"
 
-void    exec_echo(char **args);
-
 void handle_redirection_from(t_parse_tree **node, t_exec_vars *vars)
 {
     vars->fd_in = open((*node)->child->data->lexeme, O_RDONLY);
@@ -40,7 +38,7 @@ void handle_redirection_append(t_parse_tree **node, t_exec_vars *vars)
 
 void handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars)
 {
-    char *filename = handle_here_doc(node, &vars->fd_in, &vars->fd_out, &vars->error);
+    char *filename = handle_here_doc(node, vars);
     if (vars->error)
         return ;
     vars->fd_in = open(filename, O_RDONLY);
@@ -178,7 +176,7 @@ int execute_command(char **args, int fd_in, int fd_out, t_env **env)
     if (environtment == NULL)
         return (1);
     if (exec_builtins(args, env) == 1)
-        return (1);
+        return (free_env_array(environtment), 1);
     else
     {
         pid = fork();
@@ -199,7 +197,8 @@ int execute_command(char **args, int fd_in, int fd_out, t_env **env)
                 dup2(fd_out, 1);
                 close(fd_out);
             }
-            path = get_path(args[0], *env);
+            if (get_path(args[0], *env, &path))
+                return (1);
             if (execve(path, args, environtment) < 0)
             {
                 perror("execve");
@@ -229,9 +228,9 @@ void handle_node_data(t_parse_tree *node, t_exec_vars *vars, t_env **env)
         || node->data->type == APPEND || node->data->type == HERE_DOC)
         handle_redirection(&node, vars);
     else if (node->data->lexeme[0] == '$')
-        handle_global_env(node, vars, env);
+        handle_global_env(node, vars, vars->i, env);
     else if (node->data->lexeme[0] == '"')
-        handle_quotes_global(node, vars, env);
+        handle_quotes_global(node, vars, vars->i, env);
 }
 
 int execute_node(t_parse_tree *node, t_env **env)
@@ -349,13 +348,65 @@ int execute_parse_tree(t_parse_tree *root, t_env **env)
     return (0);
 }
 
+
+
+int handle_child_process(t_parse_tree *node, t_env **env, int *pipefd)
+{
+    if (node->sibling != NULL)
+    {
+        close(pipefd[0]);
+        dup2(pipefd[1], STDOUT_FILENO);
+        close(pipefd[1]);
+    }
+    if (execute_node(node, env) != 0)
+        exit(EXIT_FAILURE);
+    exit(EXIT_SUCCESS);
+}
+
+int handle_sibling_process(t_parse_tree *node, t_env **env, int *pipefd)
+{
+    pid_t pid2 = fork();
+    if (pid2 == 0)
+    {
+        dup2(pipefd[0], STDIN_FILENO);
+        close(pipefd[0]);
+        if(execute_pipeline(node->sibling->sibling, env))
+            exit(EXIT_FAILURE);
+        exit(EXIT_SUCCESS);
+    }
+    else if (pid2 > 0)
+    {
+        close(pipefd[0]);
+        wait(NULL);
+    }
+    else
+        return (perror("fork"), 1);
+    return 0;
+}
+
+int handle_parent_process(t_parse_tree *node, t_env **env, int *pipefd, pid_t pid)
+{
+    int status;
+
+    waitpid(pid, &status, 0);
+    if (WIFEXITED(status) && WEXITSTATUS(status) != EXIT_SUCCESS)
+        return (perror("Child process failed"), 1);
+    if (node->sibling != NULL)
+    {
+        close(pipefd[1]);
+        if (handle_sibling_process(node, env, pipefd))
+            return 1;
+    }
+    wait(NULL);
+    return 0;
+}
+
 int execute_pipeline(t_parse_tree *node, t_env **env)
 {
     int pipefd[2];
     pid_t pid;
-    int status;
 
-	if (node == NULL)
+    if (node == NULL)
         return (0);
     if (node->sibling != NULL)
     {
@@ -363,47 +414,15 @@ int execute_pipeline(t_parse_tree *node, t_env **env)
             return (perror("pipe"), 1);
     }
     pid = fork();
-    if (pid == 0)
+    if (pid == -1)
     {
-	    if (node->sibling != NULL)
-        {
-            close(pipefd[0]);
-            dup2(pipefd[1], STDOUT_FILENO);
-            close(pipefd[1]);
-        }
-        if (execute_node(node, env));
-            exit(EXIT_FAILURE);//NOT SURE IF IT SHOULD BE HANDLED THIS WAY
-        exit(EXIT_SUCCESS);
+        perror("fork");
+        return 1;
     }
-    else if (pid > 0)
-    {
-        waitpid(pid, &status, 0);
-        if (WIFEXITED(status) && WEXITSTATUS(status) != EXIT_SUCCESS)
-            return(perror("Child process failed"), 1);
-        if (node->sibling != NULL)
-        {
-            close(pipefd[1]);
-            pid_t pid2 = fork();
-            if (pid2 == 0)
-            {
-                dup2(pipefd[0], STDIN_FILENO);
-                close(pipefd[0]);
-                if(execute_pipeline(node->sibling->sibling, env));
-                    exit(EXIT_FAILURE);
-                exit(EXIT_SUCCESS);
-            }
-            else if (pid2 > 0)
-            {
-                close(pipefd[0]);
-                wait(NULL);
-            }
-            else
-                return(perror("fork"), exit(EXIT_FAILURE), 1);
-        }
-        wait(NULL);
-    }
+    else if (pid == 0)
+        return (handle_child_process(node, env, pipefd));
     else
-        return(perror("fork"), exit(EXIT_FAILURE), 1);
+        return (handle_parent_process(node, env, pipefd, pid));
 }
 
 int update_pwd(t_env **env, char *cwd)
@@ -615,7 +634,7 @@ int    exec_export(char **args, t_env **env)
     {
         if (split_var(args[1], &name, &value))//think how to handle the error
             return (1);
-        if (update_add_env_var (env, name ,value))
+        if (update_add_env_var(env, name ,value))
             return(free(name), free(value), 1);
     }
     return (0);

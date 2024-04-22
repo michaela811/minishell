@@ -1,45 +1,49 @@
 #include "lexer.h"
 
-char	*get_path(char *cmd, t_env *env)
+int	get_path(char *cmd, t_env *env , char **exec)
 {
 	int		i;
-	char	*exec;
 	char	**path;
 
 	i = -1;
 	path = ft_split(get_env_var(env, "PATH"), ':');
 	if (path == NULL)
-		error_message("Malloc error in split function");
+		return(error_message("Malloc error in split function"));
 	while (path[++i])
 	{
-		exec = get_exec(path, i, cmd);
+		//free(*exec);
+		if (get_exec(path, i, cmd, exec))
+			return (free_array(path), 1);
 		if (access(exec, F_OK | X_OK) == 0)
-			return (exec);
-		free(exec);
+			return (0);
+		free(*exec);
 	}
 	free_array(path);
-	return (cmd);
+	*exec = cmd;
+	return (0);
 }
 
-char	*get_exec(char **path, int i, char *cmd)
+int	get_exec(char **path, int i, char *cmd, char **exec)
 {
-	char	*exec;
 	char	*path_part;
 
 	path_part = ft_strjoin(path[i], "/");
 	if (path_part == NULL)
-		error_message("Malloc error in strjoin function");
-	exec = ft_strjoin(path_part, cmd);
-	if (exec == NULL)
-		error_message("Malloc error in strjoin function");
+		return (error_message("Malloc error in strjoin function"));
+	*exec = ft_strjoin(path_part, cmd);
+	if (*exec == NULL)
+	{
+		free(path_part);
+		return (error_message("Malloc error in strjoin function"));
+	}
 	free(path_part);
-	return (exec);
+	return (0);
 }
 
-void	error_message(char *str) // Probably unnecessary
+int	error_message(char *str) // Probably unnecessary
 {
 	perror(str);
-	exit (1);
+	return (1);
 }
 
 void	free_array(char **array) //We probably have this one already

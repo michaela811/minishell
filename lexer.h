@@ -70,7 +70,6 @@ void free_token_list(t_token_list* list);
 
 // Errors
 void handle_memory_error(t_token **token_list, int num_tokens);
-void	error_message(char *str); // to delete later
 void	free_array(char **array); // to delete later
 void	exit_function(int i); // to delete later
 void	execve_error(char **s_cmd); // to delete later
@@ -105,21 +104,33 @@ void lexer(char *input, t_token_list **tokenList, int *numTokens, int *error);
 enum token_type determine_token_type(char *token_value);
 
 // Execute
-void execute_parse_tree(t_parse_tree *root, t_env **env);
-char	*get_path(char *cmd, t_env *env);
-char	*get_exec(char **path, int i, char *cmd);
-void execute_pipeline(t_parse_tree *node, t_env **env);
-void handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out);
-char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out);
-void execute_command(char **args, int fd_in, int fd_out, t_env **env);
-void execute_node(t_parse_tree *node, t_env **env);
+int execute_parse_tree(t_parse_tree *root, t_env **env);
+int get_path(char *cmd, t_env *env, char **exec);
+int get_exec(char **path, int i, char *cmd, char **exec);
+int handle_child_process(t_parse_tree *node, t_env **env, int *pipefd);
+int handle_sibling_process(t_parse_tree *node, t_env **env, int *pipefd);
+int handle_parent_process(t_parse_tree *node, t_env **env, int *pipefd, pid_t pid);
+int execute_pipeline(t_parse_tree *node, t_env **env);
+
+void handle_redirection(t_parse_tree **node, t_exec_vars *vars);
+void handle_redirection_from(t_parse_tree **node, t_exec_vars *vars);
+void handle_redirection_to(t_parse_tree **node, t_exec_vars *vars);
+void handle_redirection_append(t_parse_tree **node, t_exec_vars *vars);
+void handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars);
+char *handle_here_doc(t_parse_tree **node, t_exec_vars *vars);
+
+int exec_builtins(char **args, t_env **env);
+int execute_command(char **args, int fd_in, int fd_out, t_env **env);
+void init_exec_vars(t_exec_vars *vars);
+void handle_node_data(t_parse_tree *node, t_exec_vars *vars, t_env **env);
+int execute_node(t_parse_tree *node, t_env **env);
 void handle_global_env(t_parse_tree *node, char **args, int i, t_env **env);
 void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
 
 // To delete later when working
 void	execve_error(char **s_cmd);
 void	free_array(char **array);
-void	error_message(char *str);
+int	error_message(char *str);
 
 // Libft
 static void	ft_free(char **array, int j);
@@ -139,19 +150,22 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 t_env *create_env_var(const char *name, const char *value);
 t_env *init_environment(char **envp);
 t_env *find_env_var(t_env *head, const char *name);
-void update_add_env_var(t_env **head, const char *name, const char *value);
+int update_add_env_var(t_env **head, const char *name, const char *value);
 void free_env(t_env *head);
+int count_env_list(t_env *head);
+char *create_env_str(t_env *current);
+void free_env_array(char **env_array);
 char *get_env_var(t_env *head, const char *name);
 char **env_list_to_array(t_env *head);
-void    exec_cd(char **args, t_env **env);
-void update_pwd(t_env **env, char *cwd);
-int exec_builtins(char **args, t_env **env);
+int exec_cd(char **args, t_env **env);
+int update_pwd(t_env **env, char *cwd);
+int change_directory_and_update(char *path, t_env **env, char *cwd);
 void    exec_echo(char **args);
-void    exec_pwd(char **args);
-void    exec_env(char **args, t_env **env);
-void    exec_unset (char **args, t_env **env);
+int    exec_pwd(char **args);
+int    exec_env(char **args, t_env **env);
+int    exec_unset (char **args, t_env **env);
 void exec_export_no_args(t_env *env);
 int var_control(char *args);
-void split_var(char *var, char **name, char **value);
-void    exec_export(char **args, t_env **env);
+int split_var(char *var, char **name, char **value);
+int    exec_export(char **args, t_env **env);
 

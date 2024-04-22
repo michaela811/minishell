@@ -121,10 +121,14 @@ char *create_env_str(t_env *current)
     return env_str;
 }
 
-void free_env_array(char **env_array, int count)
+void free_env_array(char **env_array)
 {
-    for (int i = 0; i < count; i++)
+    int i = 0;
+    while (env_array[i] != NULL)
+    {
         free(env_array[i]);
+        i++;
+    }
     free(env_array);
 }
 
@@ -143,7 +147,7 @@ char **env_list_to_array(t_env *head)
         env_array[i] = create_env_str(current);
         if (env_array[i] == NULL)
         {
-            free_env_array(env_array, i);
+            free_env_array(env_array);
             return (NULL);
         }
         current = current->next;
