@@ -230,7 +230,7 @@ int is_pipe_sequence(t_token_list **tok, t_parse_tree **new)//, int *status)
         link_pipe(new, pipe_node);
         t_parse_tree *next_command = NULL;
         if(is_simple_command(tok, &next_command) != SUBTREE_OK || !next_command->child)
-            return(free_parse_tree(next_command), SYNTAX_ERROR);
+            return(free_parse_tree(current_command), free_parse_tree(*new), free_parse_tree(next_command), SYNTAX_ERROR);
         link_pipe(new, next_command);//pipe_node->child = next_command;// Link the next_command as a sibling of the current command
     }
     return(SUBTREE_OK);
@@ -316,7 +316,7 @@ void free_token_list(t_token_list* list)
 
     list = NULL; // Set the list pointer to NULL after freeing
 }
-
+/*
 void test_parser()
 {
     t_token_list* list = NULL;
@@ -352,5 +352,6 @@ void test_parser()
     free_token_list(list);
     // Note: You also need to free the token list, which is not covered here
 }
+*/
 
 

@@ -119,7 +119,7 @@ void handle_redirection_append(t_parse_tree **node, t_exec_vars *vars);
 void handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars);
 char *handle_here_doc(t_parse_tree **node, t_exec_vars *vars);
 
-int exec_builtins(char **args, t_env **env);
+int exec_builtins(char **args, t_env **env, char **environment);
 int handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment);
 int handle_fork(t_exec_vars *vars, t_env **env, char **environment);
 int execute_command(t_exec_vars *vars,  t_env **env);
@@ -164,7 +164,7 @@ int update_pwd(t_env **env, char *cwd);
 int change_directory_and_update(char *path, t_env **env, char *cwd);
 void    exec_echo(char **args);
 int    exec_pwd(char **args);
-int    exec_env(char **args, t_env **env);
+int    exec_env(char **args, t_env **env, char **environment);
 int    exec_unset (char **args, t_env **env);
 void exec_export_no_args(t_env *env);
 int var_control(char *args);

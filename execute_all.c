@@ -146,7 +146,7 @@ char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out)
 }
 */
 
-int exec_builtins(char **args, t_env **env)
+int exec_builtins(char **args, t_env **env, char **environment)
 {
     if (strcmp(args[0], "cd") == 0)
         return(exec_cd(args, env));
@@ -159,7 +159,7 @@ int exec_builtins(char **args, t_env **env)
     else if (strcmp(args[0], "unset") == 0)
         return(exec_unset(args, env));
     else if (strcmp(args[0], "env") == 0)
-        return(exec_env(args, env));
+        return(exec_env(args, env, environment));
     return (2);
 }
 
@@ -216,16 +216,15 @@ int execute_command(t_exec_vars *vars,  t_env **env)
     environment = env_list_to_array(*env);
     if (environment == NULL)
         return 1;
-
-    return_builtins = exec_builtins(vars->args, env);
+    return_builtins = exec_builtins(vars->args, env, environment);
     if (return_builtins == 2)
     {
         if (handle_fork(vars, env, environment))
-            return 1;
+            return (free_env_array(environment), 1);
     }
     else if (return_builtins == 1)
         return (free_env_array(environment), 1);
-
+    free_env_array(environment);
     return 0;
 }
 
@@ -267,8 +266,6 @@ int execute_node(t_parse_tree *node, t_env **env)
             handle_node_data(node, &vars, env);
             if (vars.error == 1)
                 return (vars.error);
-            //else
-                //vars.args[vars.i++] = node->data->lexeme;
         }
         node = node->child;
     }
@@ -277,37 +274,6 @@ int execute_node(t_parse_tree *node, t_env **env)
         return (1);
     return (0);
 }
-/*
-int execute_node(t_parse_tree *node, t_env **env)
-{
-    t_exec_vars vars;
-    init_exec_vars (&vars);
-
-    if (node == NULL)
-        return (0);
-    while (node != NULL)
-    {
-        if (node->data != NULL)
-        {
-            if (node->data->type == RED_FROM || node->data->type == RED_TO
-            || node->data->type == APPEND || node->data->type == HERE_DOC)
-                handle_redirection(&node, &vars);
-            else if (node->data->lexeme[0] == '$')
-                handle_global_env(node, &vars, env);
-            else if (node->data->lexeme[0] == '"')
-                handle_quotes_global(node, &vars, env);
-            if (vars.error == 1)
-                return (vars.error);
-            else
-                vars.args[i++] = node->data->lexeme;
-        }
-        node = node->child;
-    }
-    vars.args[i] = NULL;
-    if (execute_command(&vars, env) == 1)
-        return (1);
-}
-*/
 
 void handle_global_env(t_parse_tree *node, char **args, int i, t_env **env)
 {
@@ -367,8 +333,6 @@ int execute_parse_tree(t_parse_tree *root, t_env **env)
     }
     return (0);
 }
-
-
 
 int handle_child_process(t_parse_tree *node, t_env **env, int *pipefd)
 {
@@ -456,39 +420,6 @@ int update_pwd(t_env **env, char *cwd)
         return (free(cwd), 1);
     return (free(cwd), 0);;  // Free the current working directory string
 }
-/*
-int    exec_cd(char **args, t_env **env)
-{
-    char    *cwd;
-
-    cwd = getcwd(NULL, 0);
-    if (cwd == NULL)
-        return (perror("getcwd"), 1);
-    if (args[1] != NULL && args[2])
-        return (perror("cd: too many arguments\n"), 1); //not sure if appropriate to use perror here
-    else if (args[1] == NULL || strcmp(args[1], "~") == 0)
-    {
-        if (chdir(get_env_var(*env, "HOME")) != 0)
-            return (perror("chdir"), free(cwd), 1);
-        if (update_pwd(env, cwd))
-            return (free(cwd), 1);
-        return (free(cwd), 0);
-    }
-    else if (strcmp(args[1], "..") == 0)
-    {
-        if (chdir("..") != 0)
-            return (perror("chdir"), free(cwd), 1);
-        if (update_pwd(env, cwd))
-            return (free(cwd), 1);
-        return (free(cwd), 0);
-    }
-    else if (chdir(args[1]) != 0)
-        return (perror("chdir"), free(cwd), 1);
-    if (update_pwd(env, cwd))
-            return (free(cwd), 1);
-        return (free(cwd), 0);
-}
-*/
 
 int change_directory_and_update(char *path, t_env **env, char *cwd)
 {
@@ -529,6 +460,11 @@ int exec_cd(char **args, t_env **env)
 void    exec_echo(char **args)//CHANGE IT TO FT_PRINTF AND FT_LIBFT
 {
     int i = 1;
+    if (args[i] == NULL)
+    {
+        printf("\n");
+        return ;
+    }
     if (strcmp(args[1], "-n") == 0)
         i++;
     while (args[i])
@@ -557,19 +493,20 @@ int    exec_pwd(char **args)
     }
 }
 
-int    exec_env(char **args, t_env **env)
+int    exec_env(char **args, t_env **env, char **environment)
 {
-    char **environtment;
+    //char **environtment;
     int i;
 
     i = 0;
     if (args[1] != NULL)
         return (perror("env: too many arguments\n"), 1);
-    environtment = env_list_to_array(*env);
-    if (environtment == NULL)
-        return (1);
-    while (environtment[i] != NULL)
-        printf("%s\n", environtment[i++]);
+    //environtment = env_list_to_array(*env);
+    //if (environtment == NULL)
+     //   return (1);
+    while (environment[i] != NULL)
+        printf("%s\n", environment[i++]);
+    //free_env_array(environment);
     return (0);
 }
 
