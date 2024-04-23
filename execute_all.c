@@ -160,55 +160,73 @@ int exec_builtins(char **args, t_env **env)
         return(exec_unset(args, env));
     else if (strcmp(args[0], "env") == 0)
         return(exec_env(args, env));
-    //else if (strcmp(args[0], "exit") == 0) //already implemented
-        //return(exec_exit(args), 0);
-    return (0);
+    return (2);
 }
 
-int execute_command(char **args, int fd_in, int fd_out, t_env **env)
+int handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
+{
+    char *path;
+    if (vars->fd_in != 0)
+    {
+        dup2(vars->fd_in, 0);
+        close(vars->fd_in);
+    }
+    if (vars->fd_out != 1)
+    {
+        dup2(vars->fd_out, 1);
+        close(vars->fd_out);
+    }
+    if (get_path(vars->args[0], *env, &path))
+        return 1;
+    if (execve(path, vars->args, environment) < 0)
+    {
+        perror("execve");
+        exit(EXIT_FAILURE);
+    }
+    return 0;
+}
+
+int handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 {
     pid_t pid;
     int status;
-    char *path;
-    char **environtment;
 
-    **environtment = env_list_to_array(*env);
-    if (environtment == NULL)
-        return (1);
-    if (exec_builtins(args, env) == 1)
-        return (free_env_array(environtment), 1);
-    else
+    pid = fork();
+    if (pid == -1)
     {
-        pid = fork();
-        if (pid == -1)
-        {
-            perror("fork");
-            exit(EXIT_FAILURE);
-        }
-        else if (pid == 0)
-        {
-            if (fd_in != 0)
-            {
-                dup2(fd_in, 0);
-                close(fd_in);
-            }
-            if (fd_out != 1)
-            {
-                dup2(fd_out, 1);
-                close(fd_out);
-            }
-            if (get_path(args[0], *env, &path))
-                return (1);
-            if (execve(path, args, environtment) < 0)
-            {
-                perror("execve");
-                exit(EXIT_FAILURE);
-            }
-        }
-        else // Parent process
-        waitpid(pid, &status, 0);
+        perror("fork");
+        exit(EXIT_FAILURE);
     }
-    return(0);
+    else if (pid == 0)
+    {
+        if (handle_child_cmd(vars, env, environment))
+            return 1;
+    }
+    else // Parent process
+        waitpid(pid, &status, 0);
+
+    return 0;
+}
+
+int execute_command(t_exec_vars *vars,  t_env **env)
+{
+    char **environment;
+    int return_builtins;
+
+    environment = env_list_to_array(*env);
+    if (environment == NULL)
+        return 1;
+
+    return_builtins = exec_builtins(vars->args, env);
+    if (return_builtins == 2)
+    {
+        if (handle_fork(vars, env, environment))
+            return 1;
+    }
+    else if (return_builtins == 1)
+        return (free_env_array(environment), 1);
+
+    return 0;
 }
 
 void init_exec_vars(t_exec_vars *vars)
@@ -228,9 +246,11 @@ void handle_node_data(t_parse_tree *node, t_exec_vars *vars, t_env **env)
         || node->data->type == APPEND || node->data->type == HERE_DOC)
         handle_redirection(&node, vars);
     else if (node->data->lexeme[0] == '$')
-        handle_global_env(node, vars, vars->i, env);
+        handle_global_env(node, vars->args, vars->i++, env);
     else if (node->data->lexeme[0] == '"')
-        handle_quotes_global(node, vars, vars->i, env);
+        handle_quotes_global(node, vars->args, vars->i++, env);
+    else
+        vars->args[vars->i++] = node->data->lexeme;
 }
 
 int execute_node(t_parse_tree *node, t_env **env)
@@ -247,13 +267,13 @@ int execute_node(t_parse_tree *node, t_env **env)
             handle_node_data(node, &vars, env);
             if (vars.error == 1)
                 return (vars.error);
-            else
-                vars.args[vars.i++] = node->data->lexeme;
+            //else
+                //vars.args[vars.i++] = node->data->lexeme;
         }
         node = node->child;
     }
     vars.args[vars.i] = NULL;
-    if (execute_command(vars.args, vars.fd_in, vars.fd_out, env) == 1)
+    if (execute_command(&vars, env) == 1)
         return (1);
     return (0);
 }
@@ -337,12 +357,12 @@ int execute_parse_tree(t_parse_tree *root, t_env **env)
         return 0; //NO IMPUT, NOT A MISTAKE
     if (root->sibling)
     {
-        if (execute_pipeline(root, env));
+        if (execute_pipeline(root, env))
             return (1);
     }
     else
     {
-        if (execute_node(root->child, env));
+        if (execute_node(root->child, env))
             return (1);
     }
     return (0);
@@ -561,7 +581,7 @@ int    exec_unset (char **args, t_env **env)
     if (args[2] != NULL)
         return(perror ("unset: too many arguments\n"), 1);
 
-    current = env;
+    current = *env;
     prev = NULL;
     while (current != NULL)
     {
@@ -579,6 +599,7 @@ int    exec_unset (char **args, t_env **env)
         prev = current;
         current = current->next;
     }
+    return (0);//IF NOT FOUND, IT IS NOT AN ERROR?
 }
 
 void exec_export_no_args(t_env *env)

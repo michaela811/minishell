@@ -138,7 +138,7 @@ char **env_list_to_array(t_env *head)
     char **env_array;
 
     count = count_env_list(head);
-    **env_array = malloc((count + 1) * sizeof(char *));
+    env_array = malloc((count + 1) * sizeof(char *));
     if (env_array == NULL)
         return (NULL);
     t_env *current = head;

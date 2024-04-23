@@ -120,7 +120,9 @@ void handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars);
 char *handle_here_doc(t_parse_tree **node, t_exec_vars *vars);
 
 int exec_builtins(char **args, t_env **env);
-int execute_command(char **args, int fd_in, int fd_out, t_env **env);
+int handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment);
+int handle_fork(t_exec_vars *vars, t_env **env, char **environment);
+int execute_command(t_exec_vars *vars,  t_env **env);
 void init_exec_vars(t_exec_vars *vars);
 void handle_node_data(t_parse_tree *node, t_exec_vars *vars, t_env **env);
 int execute_node(t_parse_tree *node, t_env **env);

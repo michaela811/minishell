@@ -14,7 +14,7 @@ int	get_path(char *cmd, t_env *env , char **exec)
 		//free(*exec);
 		if (get_exec(path, i, cmd, exec))
 			return (free_array(path), 1);
-		if (access(exec, F_OK | X_OK) == 0)
+		if (access(*exec, F_OK | X_OK) == 0)
 			return (0);
 		free(*exec);
 	}
