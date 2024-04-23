@@ -18,9 +18,21 @@ int main(int argc, char **argv, char **envp)
             }
             add_history(input);
             t_token_list *tokenList = NULL;
-            int numTokens = 0;
+            //int numTokens = 0;
             char *processed_input = preprocess_input(input, "|><");
-            lexer(processed_input, &tokenList, &numTokens, &error);
+            if (processed_input == NULL)
+            {
+                perror("preprocess_input failed");
+                free(input);
+                continue;
+            }
+            if (lexer(processed_input, &tokenList))//, &numTokens))
+            {
+                //perror("lexer failed");
+                free(input);
+                free(processed_input);
+                continue;
+            }
             t_token_list *current = tokenList; // Start from the head of the token list
             int i = 1;
             t_parse_tree* root = NULL;
@@ -35,7 +47,7 @@ int main(int argc, char **argv, char **envp)
             else
                 printf("Parser returned an error: %d\n", SYNTAX_ERROR);
             free(processed_input);
-            free(tokenList);
+            free_token_list(tokenList);
         }
     }
     rl_on_new_line();

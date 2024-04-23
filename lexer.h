@@ -100,7 +100,7 @@ int count_additional_chars(char *input, const char *delim);
 char *preprocess_input(char *str, const char *delim);
 
 // Lexer
-void lexer(char *input, t_token_list **tokenList, int *numTokens, int *error);
+int lexer(char *input, t_token_list **tokenList);
 enum token_type determine_token_type(char *token_value);
 
 // Execute

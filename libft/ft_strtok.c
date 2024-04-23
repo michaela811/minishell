@@ -6,25 +6,25 @@ size_t handle_quotes(char *str, int *error)
 	size_t len = 0;
 	char	*c;
 
-	if (!str)
-		str++;
+	if (!str)//WHY?
+		return (len);
+		//str++;
 	//result = str;
 	c = str;
-	if (str)
+	while(*str)
 	{
-		while(*str)
-		{
-			str++;
-			len++;
-			if (*str == *c)
-				break;
-		}
-		if (*str == *c && (*(str + 1) == ' ' || *(str + 1) == '\0'))//maybe '\n'
-			*error = 0;
-		else
-			*error = 1;
+		str++;
+		len++;
+		if (*str == *c)
+			break;
 	}
-	len++;
+	if (*str == *c && (!*(str + 1) || *(str + 1) == ' ' || *(str + 1) == '\0'))//maybe '\n'
+	{
+		*error = 0;
+		len++;
+	}
+	else
+		*error = 1;
 	return (len);
 }
 

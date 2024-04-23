@@ -18,22 +18,18 @@ int count_additional_chars(char *input, const char *delim)
 
 char *preprocess_input(char *str, const char *delim)
 {
-    int original_len = ft_strlen(str);
-    int additional_chars = count_additional_chars(str, delim);
-    // Allocate memory for the preprocessed string
-    char *preprocessed = malloc(original_len + additional_chars + 1);
+    int original_len;
+    int additional_chars;
+    char *preprocessed;
+
+    original_len = ft_strlen(str);
+    additional_chars = count_additional_chars(str, delim);
+    preprocessed = malloc(original_len + additional_chars + 1);
     if (preprocessed == NULL)
-    {
-        perror("Memory allocation error");
-        exit(EXIT_FAILURE);
-    }
-
+        return (perror("Memory allocation error"), NULL);
     char *dest = preprocessed;
-
-    // Copy the characters from the original string to the preprocessed string
     while (*str != '\0')
     {
-        // If the current character is a delimiter, insert a distinct character before it
         if (ft_strchr(delim, *str) != NULL)
         {
             if ((*str == '<' && *(str + 1) == '<') || (*str == '>' && *(str + 1) == '>'))
@@ -45,19 +41,17 @@ char *preprocess_input(char *str, const char *delim)
             }
             else
             {
-                *dest++ = '@'; // Insert a distinct character
-                *dest++ = *str; // Copy the delimiter
+                *dest++ = '@';
+                *dest++ = *str;
                 *dest++ = '@';
             }
         }
         else
-            *dest++ = *str; // Copy the character as is
+            *dest++ = *str;
         str++;
     }
-
-    *dest = '\0'; // Null-terminate the preprocessed string
-    //printf("Preprocessed input is: %s\n", preprocessed);
-    return preprocessed;
+    *dest = '\0';
+    return (preprocessed);
 }
 
 enum token_type determine_token_type(char *token_value)
@@ -90,38 +84,26 @@ void handle_memory_error(t_token **token_list, int num_tokens)
     exit(EXIT_FAILURE);
 }
 
-void lexer(char *input, t_token_list **tokenList, int *numTokens, int *error)
+int lexer(char *input, t_token_list **tokenList)
 {
-    // Initialize variables
-    *numTokens = 0;
+    int error = 0;
     *tokenList = NULL;
     t_token_list *current = NULL;
-    //char *delimiter = find_delimiter(input);
-    char *tokenValue = ft_strtok(input, " @", error); // Tokenize input string based on whitespace
-
-    // Iterate over tokens
+    char *tokenValue = ft_strtok(input, " @", &error);
+    if (error)
+        return (perror("Memory allocation error"), 1);
     while (tokenValue != NULL)
     {
-        // Allocate memory for new token
         t_token *newToken = malloc(sizeof(t_token));
         if (newToken == NULL)
-        {
-            perror("Memory allocation error");
-            exit(EXIT_FAILURE);
-        }
-        newToken -> type = determine_token_type(tokenValue);
-        newToken -> lexeme = ft_strdup(tokenValue);
-        if (newToken -> lexeme == NULL)
-        {
-            perror("Memory allocation error");
-            exit(EXIT_FAILURE);
-        }
+            return (free_token_list(*tokenList), perror("Memory allocation error"), 1);
+        newToken->type = determine_token_type(tokenValue);
+        newToken->lexeme = ft_strdup(tokenValue);
+        if (newToken->lexeme == NULL)
+            return (free_token(newToken), free_token_list(*tokenList), perror("Memory allocation error"), 1);
         t_token_list *newNode = malloc(sizeof(t_token_list));
         if (newNode == NULL)
-        {
-            perror("Memory allocation error");
-            exit(EXIT_FAILURE);
-        }
+            return (free(newToken->lexeme), free_token(newToken), free_token_list(*tokenList), perror("Memory allocation error"), 1);
         newNode->token = newToken;
         newNode->next = NULL;
         if (*tokenList == NULL)
@@ -134,7 +116,14 @@ void lexer(char *input, t_token_list **tokenList, int *numTokens, int *error)
             current->next = newNode;
             current = current->next;
         }
-        (*numTokens)++;
-        tokenValue = ft_strtok(NULL, " @", error);
+        tokenValue = ft_strtok(NULL, " @", &error);
+        if (error)
+        {
+            //free(tokenValue);
+            free_token_list(*tokenList);
+            return ( perror("Memory allocation error"), 1);
+        }
+            //return (free_token_list(*tokenList), free(tokenValue), perror("Memory allocation error"), 1);
     }
+    return (0);
 }
