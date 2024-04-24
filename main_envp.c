@@ -61,20 +61,28 @@ t_env *find_env_var(t_env *head, const char *name)
     return NULL;
 }
 
-void update_add_env_var(t_env **head, const char *name, const char *value)
+int update_add_env_var(t_env **head, const char *name, const char *value)
 {
-    t_env *var = find_env_var(*head, name);
+    t_env *var;
+    t_env *new_var;
+
+    var = find_env_var(*head, name);
     if (var)
 	{
         free(var->value);
         var->value = strdup(value);
+        if (var->value == NULL)
+            return (perror("Memory allocation error"), 1);
     }
 	else//Probably we don't need this as we don't implement
 	{
-        t_env *new_var = create_env_var(name, value);
+        new_var = create_env_var(name, value);
+        if (new_var == NULL)
+            return (perror("Memory allocation error"), 1);
         new_var->next = *head;
         *head = new_var;
     }
+    return (0);
 }
 
 void free_env(t_env *head)
@@ -90,51 +98,100 @@ void free_env(t_env *head)
     }
 }
 
+int count_env_list(t_env *head)
+{
+    int count = 0;
+    t_env *current = head;
+    while (current != NULL)
+    {
+        count++;
+        current = current->next;
+    }
+    return count;
+}
+
+char *create_env_str(t_env *current)
+{
+    char *env_str = malloc(strlen(current->name) + strlen(current->value) + 2);
+    if (env_str == NULL)
+        return NULL;
+    strcpy(env_str, current->name);
+    strcat(env_str, "=");
+    strcat(env_str, current->value);
+    return env_str;
+}
+
+void free_env_array(char **env_array)
+{
+    int i = 0;
+    while (env_array[i] != NULL)
+    {
+        free(env_array[i]);
+        i++;
+    }
+    free(env_array);
+}
+
 char **env_list_to_array(t_env *head)
 {
-    // First, count the number of elements in the list
+    int count;
+    char **env_array;
+
+    count = count_env_list(head);
+    env_array = malloc((count + 1) * sizeof(char *));
+    if (env_array == NULL)
+        return (NULL);
+    t_env *current = head;
+    for (int i = 0; i < count; i++)
+    {
+        env_array[i] = create_env_str(current);
+        if (env_array[i] == NULL)
+        {
+            free_env_array(env_array);
+            return (NULL);
+        }
+        current = current->next;
+    }
+    env_array[count] = NULL;
+    return (env_array);
+}
+/*
+char **env_list_to_array(t_env *head)
+{
     int count = 0;
 	int i = 0;
 	int j = 0;
+    t_env *current;
+    char **env_char;
 
-    t_env *current = head;
+    current = head;
     while (current != NULL)
 	{
         count++;
         current = current->next;
     }
-    // Allocate an array of the right size
-    // We add 1 to the count for the NULL terminator
-    char **env_char = malloc((count + 1) * sizeof(char *));
+    **env_char = malloc((count + 1) * sizeof(char *));
     if (env_char == NULL)
-        return NULL;  // Return NULL on allocation failure
-    // Now fill in the array
+        return NULL;
     current = head;
 	while (i < count)
 	{
-        // Allocate a string for the environment variable
-        // The +2 is for the '=' and the null terminator
         env_char[i] = malloc(strlen(current->name) + strlen(current->value) + 2);
         if (env_char[i] == NULL)
 		{
 			while (j < i)
-			{
-				free(env_char[j]);
-				j++;
-			}
+				free(env_char[j++]);
             free(env_char);
             return NULL;
         }
-        // Copy the key, the '=', and the value into the string
         strcpy(env_char[i], current->name);
         strcat(env_char[i], "=");
         strcat(env_char[i], current->value);
         current = current->next;
 		i++;
     }
-    // The last element of the array is a NULL pointer
     env_char[count] = NULL;
     return env_char;
-}
+}*/
 
 

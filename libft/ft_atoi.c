@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 16:14:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2023/09/11 09:43:22 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/04/19 14:38:22 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	ft_atoi(const char *nptr)
 			minus++;
 		nptr++;
 	}
-	if ((*nptr >= 0 && *nptr <= 47) || (*nptr >= 58 && *nptr < 127))
+	if ((*nptr <= 47) || (*nptr >= 58 && *nptr < 127))//removed *nptr >= 0 &&
 		return (0);
 	while (*nptr >= 48 && *nptr <= 57)
 	{
