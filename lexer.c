@@ -103,7 +103,7 @@ int lexer(char *input, t_token_list **tokenList)
             return (free_token(newToken), free_token_list(*tokenList), perror("Memory allocation error"), 1);
         t_token_list *newNode = malloc(sizeof(t_token_list));
         if (newNode == NULL)
-            return (free(newToken->lexeme), free_token(newToken), free_token_list(*tokenList), perror("Memory allocation error"), 1);
+            return (free_token(newToken), free_token_list(*tokenList), perror("Memory allocation error"), 1);
         newNode->token = newToken;
         newNode->next = NULL;
         if (*tokenList == NULL)

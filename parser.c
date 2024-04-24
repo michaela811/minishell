@@ -34,6 +34,21 @@ void free_parse_tree(t_parse_tree *tree)
         free_parse_tree(sibling);
     if (child != NULL)
         free_parse_tree(child);
+    free(tree);
+    tree = NULL;
+}
+/*
+void free_parse_tree(t_parse_tree *tree)
+{
+    if (tree == NULL) return;
+    t_parse_tree* sibling;
+    t_parse_tree* child;
+    child = tree->child;
+    sibling = tree->sibling;
+    if (sibling != NULL)
+        free_parse_tree(sibling);
+    if (child != NULL)
+        free_parse_tree(child);
     if (tree->data != NULL)
     {
         free_token(tree->data);
@@ -44,7 +59,8 @@ void free_parse_tree(t_parse_tree *tree)
         free(tree);
         tree = NULL;
     }
-}
+}*/
+
 
 void link_node(t_parse_tree **current, t_parse_tree *newNode)
 {
@@ -82,7 +98,7 @@ int is_simple_command(t_token_list **tok, t_parse_tree **new)
     if (*new == NULL)
         return(MEMORY_ERROR);
     if(is_cmd_prefix(tok, &((*new)->child)) != SUBTREE_OK)// && (*new)->child != NULL)
-        return(SYNTAX_ERROR);//COULD BE ALSO MEMORY_ERROR
+        return(free_parse_tree(*new), SYNTAX_ERROR);//COULD BE ALSO MEMORY_ERROR
     t_parse_tree *cmd_word_node = NULL;
     if(is_cmd_word(tok, &cmd_word_node) != SUBTREE_OK)
         return(free_parse_tree(*new), SYNTAX_ERROR);//COULD BE ALSO MEMORY_ERROR
@@ -224,13 +240,13 @@ int is_pipe_sequence(t_token_list **tok, t_parse_tree **new)//, int *status)
     {
         t_parse_tree *pipe_node = alloc_parse_tree();
         if (pipe_node == NULL)
-            return(free_parse_tree(current_command), free_parse_tree(*new), MEMORY_ERROR);
+            return(free_parse_tree(*new), MEMORY_ERROR);
         pipe_node->data = (*tok)->token;
         *tok = (*tok)->next; // Move past the PIPE token
         link_pipe(new, pipe_node);
         t_parse_tree *next_command = NULL;
         if(is_simple_command(tok, &next_command) != SUBTREE_OK || !next_command->child)
-            return(free_parse_tree(current_command), free_parse_tree(*new), free_parse_tree(next_command), SYNTAX_ERROR);
+            return(free_parse_tree(*new), SYNTAX_ERROR);
         link_pipe(new, next_command);//pipe_node->child = next_command;// Link the next_command as a sibling of the current command
     }
     return(SUBTREE_OK);
@@ -249,8 +265,7 @@ t_token_list* create_token(enum token_type type, char* lexeme)
 
     t_token_list* new_list_node = malloc(sizeof(t_token_list));
     if (!new_list_node) {
-        free(new_token->lexeme);
-        free(new_token);
+        free_token(new_token);
         perror("Failed to allocate memory for token list node");
         exit(MEMORY_ERROR);
     }
@@ -261,6 +276,10 @@ t_token_list* create_token(enum token_type type, char* lexeme)
 
 void add_token(t_token_list** list, enum token_type type, char* lexeme) {
     t_token_list* new_node = create_token(type, lexeme);
+    if (!new_node) {
+        perror("Failed to create token");
+        exit(MEMORY_ERROR);
+    }
     if (!*list) {
         *list = new_node;
     } else {
@@ -306,41 +325,37 @@ void free_token_list(t_token_list* list)
             free(current->token);
             current->token = NULL; // Prevent double-free
         }
-        if (current != NULL)
-        {
-            free(current);
-            current = NULL; // Prevent double-free
-        }
+        //if (current != NULL)
+        //{
+        //    free(current);
+        //    current = NULL; // Prevent double-free
+       // }
+        free(current);
         current = next;
     }
 
     list = NULL; // Set the list pointer to NULL after freeing
 }
-/*
+
 void test_parser()
 {
     t_token_list* list = NULL;
     int status = 0;
     // Example command: echo "Hello, World!" > output.txt
     add_token(&list, WORD, "cat");
-    add_token(&list, RED_TO, ">");
-    add_token(&list, WORD, "out1");
-    add_token(&list, RED_FROM, "<");
-    add_token(&list, WORD, "fileinput.txt");
-    add_token(&list, RED_TO, ">");
-    add_token(&list, WORD, "out2");
-    add_token(&list, PIPE, "|");
-    add_token(&list, WORD, "greb");
-    add_token(&list, WORD, "123");
-    add_token(&list, PIPE, "|");
-    add_token(&list, WORD, "greb");
-    add_token(&list, WORD, "123");
+    if (list == NULL)
+    {
+        ft_printf("Failed to create token list\n");
+        return;
+    }
+    t_token_list* start = list;
 
     t_parse_tree* root = NULL;
     if (is_pipe_sequence(&list, &root) == SUBTREE_OK)//, &status);
     {
         ft_printf("Parse tree:\n");
         print_parse_tree(root, 0);
+        free_parse_tree(root);
     }
     else
     {
@@ -349,9 +364,9 @@ void test_parser()
     }
 
     // Free resources
-    free_token_list(list);
+    free_token_list(start);
     // Note: You also need to free the token list, which is not covered here
 }
-*/
+
 
 
