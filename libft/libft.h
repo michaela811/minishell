@@ -62,5 +62,8 @@ char    *ft_strpbrk(char *str, char *delim);
 
 /* Printf added*/
 int	ft_printf(const char *print, ...);
+char *ft_strcat(char *dest, const char *src);
+int ft_strcmp(const char *s1, const char *s2);
+char *ft_strcpy(char *dest, const char *src);
 
 #endif
