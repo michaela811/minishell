@@ -5,10 +5,10 @@ t_env *create_env_var(const char *name, const char *value)
     t_env *var = malloc(sizeof(t_env));
     if (var == NULL)
 		return NULL;
-    var->name = strdup(name);
+    var->name = ft_strdup(name);
 	if (var->name == NULL)
 		return(free(var), NULL);
-    var->value = strdup(value);
+    var->value = ft_strdup(value);
 	if (var->value == NULL)
 		return(free(var->name), free(var), NULL);
     var->next = NULL;
@@ -23,7 +23,7 @@ t_env *init_environment(char **envp)
     while (*env)
 	{
         char *entry = *env;
-        char *separator = strchr(entry, '=');
+        char *separator = ft_strchr(entry, '=');
         if (separator)
 		{
             *separator = '\0';  // Temporarily terminate the string to isolate the name
@@ -42,7 +42,7 @@ t_env *init_environment(char **envp)
 char *get_env_var(t_env *head, const char *name)
 {
     while (head != NULL) {
-        if (strcmp(head->name, name) == 0) {
+        if (ft_strcmp(head->name, name) == 0) {
             return head->value;  // Return the value of the variable if found
         }
         head = head->next;  // Move to the next node in the list
@@ -54,7 +54,7 @@ t_env *find_env_var(t_env *head, const char *name)
 {
     while (head)
 	{
-        if (strcmp(head->name, name) == 0)
+        if (ft_strcmp(head->name, name) == 0)
             return head;
         head = head->next;
     }
@@ -70,7 +70,7 @@ int update_add_env_var(t_env **head, const char *name, const char *value)
     if (var)
 	{
         free(var->value);
-        var->value = strdup(value);
+        var->value = ft_strdup(value);
         if (var->value == NULL)
             return (perror("Memory allocation error"), 1);
     }
@@ -112,12 +112,12 @@ int count_env_list(t_env *head)
 
 char *create_env_str(t_env *current)
 {
-    char *env_str = malloc(strlen(current->name) + strlen(current->value) + 2);
+    char *env_str = malloc(ft_strlen(current->name) + ft_strlen(current->value) + 2);
     if (env_str == NULL)
         return NULL;
-    strcpy(env_str, current->name);
-    strcat(env_str, "=");
-    strcat(env_str, current->value);
+    ft_strcpy(env_str, current->name);
+    ft_strcat(env_str, "=");
+    ft_strcat(env_str, current->value);
     return env_str;
 }
 
