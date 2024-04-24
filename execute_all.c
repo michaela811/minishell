@@ -148,17 +148,17 @@ char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out)
 
 int exec_builtins(char **args, t_env **env, char **environment)
 {
-    if (strcmp(args[0], "cd") == 0)
+    if (ft_strcmp(args[0], "cd") == 0)
         return(exec_cd(args, env));
-    else if (strcmp(args[0], "pwd") == 0)
+    else if (ft_strcmp(args[0], "pwd") == 0)
         return(exec_pwd(args));
-    else if (strcmp(args[0], "echo") == 0)
+    else if (ft_strcmp(args[0], "echo") == 0)
         return(exec_echo(args), 0);
-    else if (strcmp(args[0], "export") == 0)
+    else if (ft_strcmp(args[0], "export") == 0)
         return(exec_export(args, env));
-    else if (strcmp(args[0], "unset") == 0)
+    else if (ft_strcmp(args[0], "unset") == 0)
         return(exec_unset(args, env));
-    else if (strcmp(args[0], "env") == 0)
+    else if (ft_strcmp(args[0], "env") == 0)
         return(exec_env(args, env, environment));
     return (2);
 }
@@ -297,7 +297,7 @@ void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env)
         char *dollar = ft_strchr(start, '$');
         if (dollar == NULL)
         {
-            strcat(buffer, start);
+            ft_strcat(buffer, start);
             break;
         }
         strncat(buffer, start, dollar - start);
@@ -306,11 +306,11 @@ void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env)
         if (var_end == NULL)
             var_end = var_start + ft_strlen(var_start);
         char var_name[1024];
-        strncpy(var_name, var_start, var_end - var_start);
+        ft_strncpy(var_name, var_start, var_end - var_start);
         var_name[var_end - var_start] = '\0';
         char *var_value = get_env_var(*env, var_name);
         if (var_value != NULL)
-            strcat(buffer, var_value);
+            ft_strcat(buffer, var_value);
         start = var_end;
     }
     args[i] = ft_strdup(buffer);
@@ -447,9 +447,9 @@ int exec_cd(char **args, t_env **env)
         return (perror("getcwd"), 1);
     if (args[1] != NULL && args[2])
         return (perror("cd: too many arguments\n"), free(cwd), 1);
-    else if (args[1] == NULL || strcmp(args[1], "~") == 0)
+    else if (args[1] == NULL || ft_strcmp(args[1], "~") == 0)
         return change_directory_and_update(get_env_var(*env, "HOME"), env, cwd);
-    else if (strcmp(args[1], "..") == 0)
+    else if (ft_strcmp(args[1], "..") == 0)
         return change_directory_and_update("..", env, cwd);
     else
         return change_directory_and_update(args[1], env, cwd);
@@ -465,7 +465,7 @@ void    exec_echo(char **args)//CHANGE IT TO FT_PRINTF AND FT_LIBFT
         printf("\n");
         return ;
     }
-    if (strcmp(args[1], "-n") == 0)
+    if (ft_strcmp(args[1], "-n") == 0)
         i++;
     while (args[i])
     {
@@ -474,7 +474,7 @@ void    exec_echo(char **args)//CHANGE IT TO FT_PRINTF AND FT_LIBFT
             printf(" ");
         i++;
     }
-    if (strcmp(args[1], "-n") != 0)
+    if (ft_strcmp(args[1], "-n") != 0)
         printf("\n");
 }
 
@@ -522,7 +522,7 @@ int    exec_unset (char **args, t_env **env)
     prev = NULL;
     while (current != NULL)
     {
-        if (strcmp(current->name, args[1]) == 0)
+        if (ft_strcmp(current->name, args[1]) == 0)
         {
             if (prev == NULL)
                 *env = current->next;
@@ -565,11 +565,11 @@ int var_control(char *args)
 
 int split_var(char *var, char **name, char **value)
 {
-    char *equals = strchr(var, '=');
-    *name = strndup(var, equals - var);
+    char *equals = ft_strchr(var, '=');
+    *name = ft_strndup(var, equals - var);
     if (name == NULL)
         return(perror("split_var: strndup error\n"), 1);
-    *value = strdup(equals + 1);
+    *value = ft_strdup(equals + 1);
     if (value == NULL)
         return(perror("split_var: strndup error\n"), free(*name), 1);
     return (0);
