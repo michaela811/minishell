@@ -11,40 +11,6 @@ t_parse_tree* alloc_parse_tree()
     tree->sibling = NULL;
     return tree;
 }
-void free_token(t_token* tok)
-{
-    if (tok == NULL)
-        return;
-    if (tok->lexeme == NULL)
-        return;
-    free(tok->lexeme);
-    tok->lexeme = NULL;
-    free(tok);
-    tok = NULL;
-}
-
-void free_parse_tree(t_parse_tree *tree)
-{
-    if (tree == NULL) return;
-    t_parse_tree* sibling;
-    t_parse_tree* child;
-    child = tree->child;
-    sibling = tree->sibling;
-    if (sibling != NULL)
-        free_parse_tree(sibling);
-    if (child != NULL)
-        free_parse_tree(child);
-    if (tree->data != NULL)
-    {
-        free_token(tree->data);
-        tree->data = NULL;
-    }
-    if(tree != NULL)
-    {
-        free(tree);
-        tree = NULL;
-    }
-}
 
 void link_node(t_parse_tree **current, t_parse_tree *newNode)
 {
@@ -287,71 +253,5 @@ void print_parse_tree(t_parse_tree* tree, int depth) {
     print_parse_tree(tree->child, depth + 1);
     print_parse_tree(tree->sibling, depth);
 }
-
-void free_token_list(t_token_list* list)
-{
-    t_token_list* current = list;
-    t_token_list* next;
-
-    while (current != NULL)
-    {
-        next = current->next;
-        if (current->token->lexeme != NULL)
-        {
-            free(current->token->lexeme);
-            current->token->lexeme = NULL; // Prevent double-free
-        }
-        if (current->token != NULL)
-        {
-            free(current->token);
-            current->token = NULL; // Prevent double-free
-        }
-        if (current != NULL)
-        {
-            free(current);
-            current = NULL; // Prevent double-free
-        }
-        current = next;
-    }
-
-    list = NULL; // Set the list pointer to NULL after freeing
-}
-/*
-void test_parser()
-{
-    t_token_list* list = NULL;
-    int status = 0;
-    // Example command: echo "Hello, World!" > output.txt
-    add_token(&list, WORD, "cat");
-    add_token(&list, RED_TO, ">");
-    add_token(&list, WORD, "out1");
-    add_token(&list, RED_FROM, "<");
-    add_token(&list, WORD, "fileinput.txt");
-    add_token(&list, RED_TO, ">");
-    add_token(&list, WORD, "out2");
-    add_token(&list, PIPE, "|");
-    add_token(&list, WORD, "greb");
-    add_token(&list, WORD, "123");
-    add_token(&list, PIPE, "|");
-    add_token(&list, WORD, "greb");
-    add_token(&list, WORD, "123");
-
-    t_parse_tree* root = NULL;
-    if (is_pipe_sequence(&list, &root) == SUBTREE_OK)//, &status);
-    {
-        ft_printf("Parse tree:\n");
-        print_parse_tree(root, 0);
-    }
-    else
-    {
-        //free_parse_tree(root);//MAYBE NOT NEEDED IF WAS FREED IN IS_PIPE_SEQUENCE
-        ft_printf("Parser returned an error: %d\n", status);
-    }
-
-    // Free resources
-    free_token_list(list);
-    // Note: You also need to free the token list, which is not covered here
-}
-*/
 
 
