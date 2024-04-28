@@ -6,13 +6,26 @@ CFLAGS = -g #-WALL -Wextra -Werror -fsanitize=address
 LIBDIR = ./libft
 LIBFT = $(LIBDIR)/libft.a
 
-SOURCES = execute_all.c \
+SOURCES = env_main.c \
+			env_utils.c \
+			error_handling.c \
+			exec_builtins_1.c \
+			exec_builtins_2.c \
+			exec_builtins_utils.c \
+			execute_node_utils_exec_cmd.c \
+			execute_node_utils_global.c \
+			execute_node_utils_redirections.c \
+			execute_node_utils.c \
+			execute_parse_tree.c \
+			execute_pipeline_utils.c \
+			free_functions.c \
+			lexer_main.c \
 			lexer.c \
 			main.c \
-			parser.c \
-			error_handling.c \
-			free_functions.c \
-			main_envp.c \
+			parser_is_all_rest.c \
+			parser_is_cmd_suffix.c \
+			parser_main.c \
+			parser_utils.c \
 
 OBJ = $(SOURCES:.c=.o)
 

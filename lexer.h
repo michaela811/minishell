@@ -65,6 +65,15 @@ typedef struct s_exec_vars
 #define MEMORY_ERROR 1
 #define PARSING_ERROR 2
 
+// Global variable for signal handling
+extern int g_last_exit_status;
+
+//MAIN
+void handle_signal(int signal);
+void handle_input(char* input, t_env *envmt);
+void handle_preprocess_input(char* input, t_token_list **tokenList);
+void handle_parse_tree(t_token_list **tokenList, t_env **envmt);
+
 // Allocs and frees
 t_parse_tree* alloc_parse_tree();
 void free_parse_tree(t_parse_tree *tree);
@@ -73,7 +82,6 @@ void free_token_list(t_token_list* list);
 
 // Errors
 void handle_memory_error(t_token **token_list, int num_tokens);
-void	free_array(char **array); // to delete later
 void	exit_function(int i); // to delete later
 void	execve_error(char **s_cmd); // to delete later
 
@@ -101,9 +109,15 @@ void add_token(t_token_list** list, enum token_type type, char* lexeme); // same
 // Lexer helper
 int count_additional_chars(char *input, const char *delim);
 char *preprocess_input(char *str, const char *delim);
+void process_input_str(char *str, const char *delim, char *dest);
 
 // Lexer
 int lexer(char *input, t_token_list **tokenList);
+int create_and_add_token(char **tokenValue, t_token_list **tokenList,
+t_token_list **current, int *error);
+t_token *create_token_lexer(char *tokenValue);
+t_token_list *create_node_lexer(t_token *newToken);
+
 enum token_type determine_token_type(char *token_value);
 
 // Execute
