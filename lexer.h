@@ -10,6 +10,8 @@
 #include <readline/history.h>
 #include "libft/libft.h"
 
+extern int g_last_exit_status;
+
 enum token_type
 {
     PIPE = 1,   // 1
@@ -61,6 +63,7 @@ typedef struct s_exec_vars
 #define SYNTAX_ERROR -1
 #define SUBTREE_OK 0
 #define MEMORY_ERROR 1
+#define PARSING_ERROR 2
 
 // Allocs and frees
 t_parse_tree* alloc_parse_tree();

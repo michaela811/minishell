@@ -5,16 +5,15 @@ t_env *create_env_var(const char *name, const char *value)
     t_env *var = malloc(sizeof(t_env));
     if (var == NULL)
 		return NULL;
-    var->name = strdup(name);
+    var->name = ft_strdup(name);
 	if (var->name == NULL)
 		return(free(var), NULL);
-    var->value = strdup(value);
+    var->value = ft_strdup(value);
 	if (var->value == NULL)
 		return(free(var->name), free(var), NULL);
     var->next = NULL;
     return var;
 }
-
 
 t_env *init_environment(char **envp)
 {
@@ -23,7 +22,7 @@ t_env *init_environment(char **envp)
     while (*env)
 	{
         char *entry = *env;
-        char *separator = strchr(entry, '=');
+        char *separator = ft_strchr(entry, '=');
         if (separator)
 		{
             *separator = '\0';  // Temporarily terminate the string to isolate the name
@@ -42,7 +41,7 @@ t_env *init_environment(char **envp)
 char *get_env_var(t_env *head, const char *name)
 {
     while (head != NULL) {
-        if (strcmp(head->name, name) == 0) {
+        if (ft_strcmp(head->name, name) == 0) {
             return head->value;  // Return the value of the variable if found
         }
         head = head->next;  // Move to the next node in the list
@@ -54,7 +53,7 @@ t_env *find_env_var(t_env *head, const char *name)
 {
     while (head)
 	{
-        if (strcmp(head->name, name) == 0)
+        if (ft_strcmp(head->name, name) == 0)
             return head;
         head = head->next;
     }
@@ -70,7 +69,7 @@ int update_add_env_var(t_env **head, const char *name, const char *value)
     if (var)
 	{
         free(var->value);
-        var->value = strdup(value);
+        var->value = ft_strdup(value);
         if (var->value == NULL)
             return (perror("Memory allocation error"), 1);
     }
@@ -83,19 +82,6 @@ int update_add_env_var(t_env **head, const char *name, const char *value)
         *head = new_var;
     }
     return (0);
-}
-
-void free_env(t_env *head)
-{
-    t_env *current = head;
-    while (current)
-	{
-        t_env *next = current->next;
-        free(current->name);
-        free(current->value);
-        free(current);
-        current = next;
-    }
 }
 
 int count_env_list(t_env *head)
@@ -112,24 +98,13 @@ int count_env_list(t_env *head)
 
 char *create_env_str(t_env *current)
 {
-    char *env_str = malloc(strlen(current->name) + strlen(current->value) + 2);
+    char *env_str = malloc(ft_strlen(current->name) + ft_strlen(current->value) + 2);
     if (env_str == NULL)
         return NULL;
-    strcpy(env_str, current->name);
-    strcat(env_str, "=");
-    strcat(env_str, current->value);
+    ft_strcpy(env_str, current->name);
+    ft_strcat(env_str, "=");
+    ft_strcat(env_str, current->value);
     return env_str;
-}
-
-void free_env_array(char **env_array)
-{
-    int i = 0;
-    while (env_array[i] != NULL)
-    {
-        free(env_array[i]);
-        i++;
-    }
-    free(env_array);
 }
 
 char **env_list_to_array(t_env *head)
@@ -155,43 +130,48 @@ char **env_list_to_array(t_env *head)
     env_array[count] = NULL;
     return (env_array);
 }
-/*
-char **env_list_to_array(t_env *head)
-{
-    int count = 0;
-	int i = 0;
-	int j = 0;
-    t_env *current;
-    char **env_char;
 
-    current = head;
-    while (current != NULL)
+int	get_path(char *cmd, t_env *env , char **exec)
+{
+	int		i;
+	char	**path;
+
+	i = -1;
+	path = ft_split(get_env_var(env, "PATH"), ':');
+	if (path == NULL)
+		return(error_message("Malloc error in split function"));
+	while (path[++i])
 	{
-        count++;
-        current = current->next;
-    }
-    **env_char = malloc((count + 1) * sizeof(char *));
-    if (env_char == NULL)
-        return NULL;
-    current = head;
-	while (i < count)
-	{
-        env_char[i] = malloc(strlen(current->name) + strlen(current->value) + 2);
-        if (env_char[i] == NULL)
+		//free(*exec);
+		if (get_exec(path, i, cmd, exec))
 		{
-			while (j < i)
-				free(env_char[j++]);
-            free(env_char);
-            return NULL;
-        }
-        strcpy(env_char[i], current->name);
-        strcat(env_char[i], "=");
-        strcat(env_char[i], current->value);
-        current = current->next;
-		i++;
-    }
-    env_char[count] = NULL;
-    return env_char;
-}*/
+			g_last_exit_status = 1;
+			return (free_array(path), 1);
+		}
+		if (access(*exec, F_OK | X_OK) == 0)
+			return (0);
+		free(*exec);
+	}
+	free_array(path);
+	*exec = cmd;
+	return (0);
+}
+
+int	get_exec(char **path, int i, char *cmd, char **exec)
+{
+	char	*path_part;
+
+	path_part = ft_strjoin(path[i], "/");
+	if (path_part == NULL)
+		return (error_message("Malloc error in strjoin function"));
+	*exec = ft_strjoin(path_part, cmd);
+	if (*exec == NULL)
+	{
+		free(path_part);
+		return (error_message("Malloc error in strjoin function"));
+	}
+	free(path_part);
+	return (0);
+}
 
 

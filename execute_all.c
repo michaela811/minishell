@@ -1,5 +1,7 @@
 #include "lexer.h"
 
+int g_last_exit_status = 0;
+
 void handle_redirection_from(t_parse_tree **node, t_exec_vars *vars)
 {
     vars->fd_in = open((*node)->child->data->lexeme, O_RDONLY);
@@ -62,45 +64,6 @@ void handle_redirection(t_parse_tree **node, t_exec_vars *vars)
     else if ((*node)->data->type == HERE_DOC)
         return handle_redirection_here_doc(node, vars);
 }
-/*
-int handle_redirection(t_parse_tree **node, int *fd_in, int *fd_out)
-{
-    int error = 0;
-
-    if ((*node)->data->type == RED_FROM)
-    {
-        *fd_in = open((*node)->child->data->lexeme, O_RDONLY);
-        if (*fd_in == -1)
-            return(perror("open"), 1);
-        *node = (*node)->child;
-    }
-    else if ((*node)->data->type == RED_TO)
-    {
-        *fd_out = open((*node)->child->data->lexeme, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-        if (*fd_out == -1)
-            return(perror("open"), 1);
-        *node = (*node)->child;
-    }
-    else if ((*node)->data->type == APPEND)
-    {
-        *fd_out = open((*node)->child->data->lexeme, O_WRONLY | O_CREAT | O_APPEND, 0644);
-        if (*fd_out == -1)
-            return(perror("open"), 1);
-        *node = (*node)->child;
-    }
-    else if ((*node)->data->type == HERE_DOC)
-    {
-        char *filename = handle_here_doc(node, fd_in, fd_out, error);
-        if (error)
-            return (error);
-        *fd_in = open(filename, O_RDONLY);
-        if (*fd_in == -1)
-            return(perror("open"), 1);
-        *node = (*node)->child;
-    }
-    return (0);
-}
-*/
 
 char *handle_here_doc(t_parse_tree **node, t_exec_vars *vars)
 {
@@ -123,42 +86,20 @@ char *handle_here_doc(t_parse_tree **node, t_exec_vars *vars)
     close(file);
     return (filename);
 }
-/*
-char *handle_here_doc(t_parse_tree **node, int *fd_in, int *fd_out)
-{
-    char *buffer;
-	char *filename = "/tmp/heredoc.txt";
-    FILE *file = fopen(filename, "w"); // Error check!Unvalidated input in path value creation risks unintended file/directory access?
-    if (file == NULL)
-    {
-        perror("fopen");
-        exit(EXIT_FAILURE);
-    }
-   	while ((buffer = readline("heredoc> ")) != NULL)
-	{
-        if (strcmp(buffer, (*node)->child->data->lexeme) == 0)
-            break;
-        fprintf(file, "%s\n", buffer); //probably need to create this function?
-        free(buffer);
-   	}
-	fclose(file);
-    return (filename);
-}
-*/
 
 int exec_builtins(char **args, t_env **env, char **environment)
 {
-    if (strcmp(args[0], "cd") == 0)
+    if (ft_strcmp(args[0], "cd") == 0)
         return(exec_cd(args, env));
-    else if (strcmp(args[0], "pwd") == 0)
+    else if (ft_strcmp(args[0], "pwd") == 0)
         return(exec_pwd(args));
-    else if (strcmp(args[0], "echo") == 0)
+    else if (ft_strcmp(args[0], "echo") == 0)
         return(exec_echo(args), 0);
-    else if (strcmp(args[0], "export") == 0)
+    else if (ft_strcmp(args[0], "export") == 0)
         return(exec_export(args, env));
-    else if (strcmp(args[0], "unset") == 0)
+    else if (ft_strcmp(args[0], "unset") == 0)
         return(exec_unset(args, env));
-    else if (strcmp(args[0], "env") == 0)
+    else if (ft_strcmp(args[0], "env") == 0)
         return(exec_env(args, env, environment));
     return (2);
 }
@@ -177,12 +118,17 @@ int handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
         close(vars->fd_out);
     }
     if (get_path(vars->args[0], *env, &path))
+    {
+        g_last_exit_status = 138;
         return 1;
+    }
     if (execve(path, vars->args, environment) < 0)
     {
+        g_last_exit_status = 127;
         perror("execve");
         exit(EXIT_FAILURE);
     }
+    g_last_exit_status = 0;
     return 0;
 }
 
@@ -195,16 +141,22 @@ int handle_fork(t_exec_vars *vars, t_env **env, char **environment)
     if (pid == -1)
     {
         perror("fork");
+        g_last_exit_status = 128;
         exit(EXIT_FAILURE);
     }
     else if (pid == 0)
     {
         if (handle_child_cmd(vars, env, environment))
+        {
+            g_last_exit_status = 155;
             return 1;
+        }
     }
     else // Parent process
+    {
         waitpid(pid, &status, 0);
-
+        g_last_exit_status = WEXITSTATUS(status);
+    }
     return 0;
 }
 
@@ -215,15 +167,25 @@ int execute_command(t_exec_vars *vars,  t_env **env)
 
     environment = env_list_to_array(*env);
     if (environment == NULL)
+    {
+        g_last_exit_status = 1;
         return 1;
+    }
     return_builtins = exec_builtins(vars->args, env, environment);
     if (return_builtins == 2)
     {
         if (handle_fork(vars, env, environment))
+        {
+            g_last_exit_status = 1;
             return (free_env_array(environment), 1);
+        }
     }
     else if (return_builtins == 1)
+    {
+        g_last_exit_status = 1;
         return (free_env_array(environment), 1);
+    }
+    g_last_exit_status = 0;
     free_env_array(environment);
     return 0;
 }
@@ -244,6 +206,8 @@ void handle_node_data(t_parse_tree *node, t_exec_vars *vars, t_env **env)
     if (node->data->type == RED_FROM || node->data->type == RED_TO
         || node->data->type == APPEND || node->data->type == HERE_DOC)
         handle_redirection(&node, vars);
+    else if (node->data->lexeme[0] == '$' && strcmp(node->data->lexeme, "$?") == 0)
+        vars->args[vars->i++] = "$?";
     else if (node->data->lexeme[0] == '$')
         handle_global_env(node, vars->args, vars->i++, env);
     else if (node->data->lexeme[0] == '"')
@@ -271,7 +235,10 @@ int execute_node(t_parse_tree *node, t_env **env)
     }
     vars.args[vars.i] = NULL;
     if (execute_command(&vars, env) == 1)
+    {
+        g_last_exit_status = 154;
         return (1);
+    }
     return (0);
 }
 
@@ -297,7 +264,7 @@ void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env)
         char *dollar = ft_strchr(start, '$');
         if (dollar == NULL)
         {
-            strcat(buffer, start);
+            ft_strcat(buffer, start);
             break;
         }
         strncat(buffer, start, dollar - start);
@@ -306,56 +273,76 @@ void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env)
         if (var_end == NULL)
             var_end = var_start + ft_strlen(var_start);
         char var_name[1024];
-        strncpy(var_name, var_start, var_end - var_start);
+        ft_strncpy(var_name, var_start, var_end - var_start);
         var_name[var_end - var_start] = '\0';
         char *var_value = get_env_var(*env, var_name);
         if (var_value != NULL)
-            strcat(buffer, var_value);
+            ft_strcat(buffer, var_value);
         start = var_end;
     }
     args[i] = ft_strdup(buffer);
 }
 
 int execute_parse_tree(t_parse_tree *root, t_env **env)
-
 {
     if (root == NULL)
         return 0; //NO IMPUT, NOT A MISTAKE
     if (root->sibling)
     {
         if (execute_pipeline(root, env))
+        {
+            g_last_exit_status = 1;
             return (1);
+        }
     }
     else
     {
         if (execute_node(root->child, env))
+        {
+            g_last_exit_status = 1;
             return (1);
+        }
     }
     return (0);
 }
 
 int handle_child_process(t_parse_tree *node, t_env **env, int *pipefd)
 {
+    int return_value;
+
     if (node->sibling != NULL)
     {
         close(pipefd[0]);
         dup2(pipefd[1], STDOUT_FILENO);
         close(pipefd[1]);
     }
-    if (execute_node(node, env) != 0)
+    return_value = execute_node(node, env);
+    if (return_value != 0)
+    {
+        g_last_exit_status = return_value;
         exit(EXIT_FAILURE);
+    }
+    g_last_exit_status = 0;
     exit(EXIT_SUCCESS);
 }
 
 int handle_sibling_process(t_parse_tree *node, t_env **env, int *pipefd)
 {
-    pid_t pid2 = fork();
+    pid_t pid2;
+    int return_value;
+
+    pid2 = fork();
     if (pid2 == 0)
     {
         dup2(pipefd[0], STDIN_FILENO);
         close(pipefd[0]);
-        if(execute_pipeline(node->sibling->sibling, env))
+        return_value = execute_pipeline(node->sibling->sibling, env);
+        if(return_value != 0)
+        {
+            g_last_exit_status = return_value;
             exit(EXIT_FAILURE);
+        }
+        g_last_exit_status = 0;
         exit(EXIT_SUCCESS);
     }
     else if (pid2 > 0)
@@ -374,7 +361,10 @@ int handle_parent_process(t_parse_tree *node, t_env **env, int *pipefd, pid_t pi
 
     waitpid(pid, &status, 0);
     if (WIFEXITED(status) && WEXITSTATUS(status) != EXIT_SUCCESS)
+    {
+        g_last_exit_status = WEXITSTATUS(status);
         return (perror("Child process failed"), 1);
+    }
     if (node->sibling != NULL)
     {
         close(pipefd[1]);
@@ -382,6 +372,7 @@ int handle_parent_process(t_parse_tree *node, t_env **env, int *pipefd, pid_t pi
             return 1;
     }
     wait(NULL);
+    g_last_exit_status = 0;
     return 0;
 }
 
@@ -395,11 +386,15 @@ int execute_pipeline(t_parse_tree *node, t_env **env)
     if (node->sibling != NULL)
     {
         if (pipe(pipefd) == -1)
+        {
+            g_last_exit_status = 1;
             return (perror("pipe"), 1);
+        }
     }
     pid = fork();
     if (pid == -1)
     {
+        g_last_exit_status = 1;
         perror("fork");
         return 1;
     }
@@ -425,12 +420,14 @@ int change_directory_and_update(char *path, t_env **env, char *cwd)
 {
     if (chdir(path) != 0)
     {
+        g_last_exit_status = 1;
         perror("chdir");
         free(cwd);
         return 1;
     }
     if (update_pwd(env, cwd))
     {
+        g_last_exit_status = 1;
         free(cwd);
         return 1;
     }
@@ -447,17 +444,15 @@ int exec_cd(char **args, t_env **env)
         return (perror("getcwd"), 1);
     if (args[1] != NULL && args[2])
         return (perror("cd: too many arguments\n"), free(cwd), 1);
-    else if (args[1] == NULL || strcmp(args[1], "~") == 0)
+    else if (args[1] == NULL || ft_strcmp(args[1], "~") == 0)
         return change_directory_and_update(get_env_var(*env, "HOME"), env, cwd);
-    else if (strcmp(args[1], "..") == 0)
+    else if (ft_strcmp(args[1], "..") == 0)
         return change_directory_and_update("..", env, cwd);
     else
         return change_directory_and_update(args[1], env, cwd);
 }
 
-
-
-void    exec_echo(char **args)//CHANGE IT TO FT_PRINTF AND FT_LIBFT
+void    exec_echo(char **args)
 {
     int i = 1;
     if (args[i] == NULL)
@@ -465,7 +460,12 @@ void    exec_echo(char **args)//CHANGE IT TO FT_PRINTF AND FT_LIBFT
         printf("\n");
         return ;
     }
-    if (strcmp(args[1], "-n") == 0)
+    if (ft_strcmp(args[i], "$?") == 0)
+    {
+        printf("%d\n", g_last_exit_status);
+        return ;
+    }
+    else if (ft_strcmp(args[1], "-n") == 0)
         i++;
     while (args[i])
     {
@@ -474,7 +474,7 @@ void    exec_echo(char **args)//CHANGE IT TO FT_PRINTF AND FT_LIBFT
             printf(" ");
         i++;
     }
-    if (strcmp(args[1], "-n") != 0)
+    if (ft_strcmp(args[1], "-n") != 0)
         printf("\n");
 }
 
@@ -522,7 +522,7 @@ int    exec_unset (char **args, t_env **env)
     prev = NULL;
     while (current != NULL)
     {
-        if (strcmp(current->name, args[1]) == 0)
+        if (ft_strcmp(current->name, args[1]) == 0)
         {
             if (prev == NULL)
                 *env = current->next;
@@ -565,11 +565,11 @@ int var_control(char *args)
 
 int split_var(char *var, char **name, char **value)
 {
-    char *equals = strchr(var, '=');
-    *name = strndup(var, equals - var);
+    char *equals = ft_strchr(var, '=');
+    *name = ft_strndup(var, equals - var);
     if (name == NULL)
         return(perror("split_var: strndup error\n"), 1);
-    *value = strdup(equals + 1);
+    *value = ft_strdup(equals + 1);
     if (value == NULL)
         return(perror("split_var: strndup error\n"), free(*name), 1);
     return (0);

@@ -1,7 +1,7 @@
 NAME = minishell
 HEADER = lexer.h
 CC = cc
-CFLAGS = -g
+CFLAGS = -g #-WALL -Wextra -Werror -fsanitize=address
 
 LIBDIR = ./libft
 LIBFT = $(LIBDIR)/libft.a
@@ -10,7 +10,8 @@ SOURCES = execute_all.c \
 			lexer.c \
 			main.c \
 			parser.c \
-			env.c \
+			error_handling.c \
+			free_functions.c \
 			main_envp.c \
 
 OBJ = $(SOURCES:.c=.o)
