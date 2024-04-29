@@ -14,10 +14,10 @@ int	handle_child_process(t_parse_tree *node, t_env **env, int *pipefd)
 	if (return_value != 0)
 	{
 		g_last_exit_status = return_value;
-		return (1);//exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 	g_last_exit_status = 0;
-	return (0);//exit(EXIT_SUCCESS);
+	exit(EXIT_SUCCESS);
 }
 
 int	handle_sibling_process(t_parse_tree *node, t_env **env, int *pipefd)
@@ -34,10 +34,10 @@ int	handle_sibling_process(t_parse_tree *node, t_env **env, int *pipefd)
 		if (return_value != 0)
 		{
 			g_last_exit_status = return_value;
-			return (1);//exit(EXIT_FAILURE);
+			exit(EXIT_FAILURE);
 		}
 		g_last_exit_status = 0;
-		return (0);//exit(EXIT_SUCCESS);
+		exit(EXIT_SUCCESS);
 	}
 	else if (pid2 > 0)
 	{

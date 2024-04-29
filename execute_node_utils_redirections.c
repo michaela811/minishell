@@ -68,8 +68,9 @@ char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars)
 		vars->error = 1;
 		return (perror("open"), NULL);
 	}
-	while (buffer = readline("heredoc> "))
+	while (1)
 	{
+		buffer = readline("heredoc> ");
 		if (buffer == NULL)// DON'T KNOW WHETHER REPLACES CORRECTLY PREVIOUS STATEMENT while (buffer = readline("heredoc> ") != NULL)
 			break ;
 		if (ft_strcmp(buffer, (*node)->child->data->lexeme) == 0)

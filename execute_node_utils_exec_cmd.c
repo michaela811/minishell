@@ -49,40 +49,14 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 		g_last_exit_status = 138;
 		return (1);
 	}
-	/*
-	printf("Path: %s\n", path);
-	fflush(stdout);
-
-printf("Args: ");
-for (int i = 0; vars->args[i] != NULL; i++)
-{
-    printf("%s ", vars->args[i]);
-}
-printf("\n");
-fflush(stdout);
-
-printf("Environment: ");
-for (int i = 0; environment[i] != NULL; i++)
-{
-    printf("%s ", environment[i]);
-}
-printf("\n");
-fflush(stdout);*/
-
 	if (execve(path, vars->args, environment) < 0)
 	{
 		g_last_exit_status = 127;
-		//perror("execve");
-		FILE *fp = fopen("error_log.txt", "a");
-    if (fp != NULL)
-    {
-        fprintf(fp, "execve error: %s\n", strerror(errno));
-        fclose(fp);
-    }
-		return (1);//exit(EXIT_FAILURE);
+		perror("execve");
+		exit(EXIT_FAILURE);
 	}
 	g_last_exit_status = 0;
-	return (0);
+	exit(EXIT_SUCCESS);
 }
 
 int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
@@ -95,7 +69,7 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	{
 		perror("fork");
 		g_last_exit_status = 128;
-		return (1);//exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)
 	{
