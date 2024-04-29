@@ -59,6 +59,11 @@ SOURCES = ft_isdigit.c \
 		  ft_print_unsign_int.c \
 		  ft_print_percent.c \
 		  ft_print_int.c \
+		  ft_strcat.c \
+		  ft_strcmp.c \
+		  ft_strcpy.c \
+		  ft_strndup.c \
+		  ft_strncpy.c \
 
 OBJECT = $(SOURCES:.c=.o)
 
