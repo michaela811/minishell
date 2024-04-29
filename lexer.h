@@ -145,6 +145,7 @@ void            handle_global_env(t_parse_tree *node, char **args, int i, t_env 
 //void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
 void            handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
 void            handle_dollar_sign(char **start, char *buffer, t_env **env);
+void            remove_even_quotes(t_parse_tree *node, char **args, int i, int error);
 
 // To delete later when working
 void            execve_error(char **s_cmd);

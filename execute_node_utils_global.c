@@ -49,6 +49,11 @@ void	handle_quotes_global(t_parse_tree *node, char **args,
 
 	str = node->data->lexeme + 1;
 	str[ft_strlen(str) - 1] = '\0';
+	if (*node->data->lexeme == 39)
+	{
+		args[i] = str;
+		return ;
+	}
 	start = str;
 	while (1)
 	{
@@ -56,7 +61,7 @@ void	handle_quotes_global(t_parse_tree *node, char **args,
 		if (ft_strchr(start, '$') == NULL)
 			break ;
 	}
-	args[i] = ft_strdup(buffer);
+	args[i] = ft_strdup(buffer);//ADD MEMORY CHECK
 }
 /*
 void	handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env)
