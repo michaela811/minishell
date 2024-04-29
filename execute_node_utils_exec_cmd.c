@@ -1,4 +1,5 @@
 #include "lexer.h"
+#include <errno.h>
 
 int	execute_command(t_exec_vars *vars, t_env **env)
 {
@@ -48,7 +49,9 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 		g_last_exit_status = 138;
 		return (1);
 	}
+	/*
 	printf("Path: %s\n", path);
+	fflush(stdout);
 
 printf("Args: ");
 for (int i = 0; vars->args[i] != NULL; i++)
@@ -56,6 +59,7 @@ for (int i = 0; vars->args[i] != NULL; i++)
     printf("%s ", vars->args[i]);
 }
 printf("\n");
+fflush(stdout);
 
 printf("Environment: ");
 for (int i = 0; environment[i] != NULL; i++)
@@ -63,21 +67,20 @@ for (int i = 0; environment[i] != NULL; i++)
     printf("%s ", environment[i]);
 }
 printf("\n");
+fflush(stdout);*/
 
-if (execve(path, vars->args, environment) < 0)
-{
-    g_last_exit_status = 127;
-    perror("execve");
-    return (1);//exit(EXIT_FAILURE);
-}
 	if (execve(path, vars->args, environment) < 0)
 	{
-		printf ("exited in execve\n");
 		g_last_exit_status = 127;
-		perror("execve");
+		//perror("execve");
+		FILE *fp = fopen("error_log.txt", "a");
+    if (fp != NULL)
+    {
+        fprintf(fp, "execve error: %s\n", strerror(errno));
+        fclose(fp);
+    }
 		return (1);//exit(EXIT_FAILURE);
 	}
-	printf ("exited after execve\n");
 	g_last_exit_status = 0;
 	return (0);
 }
@@ -98,17 +101,14 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	{
 		if (handle_child_cmd(vars, env, environment))
 		{
-			printf ("was an error");
 			g_last_exit_status = 155;
 			return (1);
 		}
-		printf ("no error");
 	}
 	else
 	{
 		waitpid(pid, &status, 0);
-		//g_last_exit_status = WEXITSTATUS(status);
-		g_last_exit_status = 133;
+		g_last_exit_status = WEXITSTATUS(status);
 	}
 	return (0);
 }

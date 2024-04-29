@@ -55,7 +55,7 @@ int	handle_parent_process(t_parse_tree *node, t_env **env,
 	int	status;
 
 	waitpid(pid, &status, 0);
-	if (WIFEXITED(status) && WEXITSTATUS(status) != EXIT_SUCCESS)
+	if (WIFEXITED(status) && (WEXITSTATUS(status) != EXIT_SUCCESS))
 	{
 		g_last_exit_status = WEXITSTATUS(status);
 		return (perror("Child process failed"), 1);
