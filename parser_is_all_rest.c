@@ -47,7 +47,6 @@ bool	is_redirection_token(enum token_type type)
 int	is_cmd_prefix(t_token_list **tok, t_parse_tree **prefix_node)
 {
 	t_parse_tree	*redirect_node;
-	t_parse_tree	*assignment_node;
 
 	if (*tok != NULL && is_redirection_token((*tok)->token->type))
 	{

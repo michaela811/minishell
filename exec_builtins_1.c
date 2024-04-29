@@ -5,7 +5,7 @@ int	exec_builtins(char **args, t_env **env, char **environment)
 	if (ft_strcmp(args[0], "cd") == 0)
 		return (exec_cd(args, env));
 	else if (ft_strcmp(args[0], "pwd") == 0)
-		return (exec_pwd(args));
+		return (exec_pwd());
 	else if (ft_strcmp(args[0], "echo") == 0)
 		return (exec_echo(args), 0);
 	else if (ft_strcmp(args[0], "export") == 0)
@@ -13,7 +13,7 @@ int	exec_builtins(char **args, t_env **env, char **environment)
 	else if (ft_strcmp(args[0], "unset") == 0)
 		return (exec_unset(args, env));
 	else if (ft_strcmp(args[0], "env") == 0)
-		return (exec_env(args, env, environment));
+		return (exec_env(args, environment));
 	return (2);
 }
 
@@ -35,7 +35,7 @@ int	exec_cd(char **args, t_env **env)
 		return (change_directory_and_update(args[1], env, cwd));
 }
 
-int	exec_pwd(char **args)
+int	exec_pwd(void)
 {
 	char	*cwd;
 

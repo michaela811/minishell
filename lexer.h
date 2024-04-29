@@ -152,6 +152,7 @@ void            free_array(char **array);
 int             error_message(char *str);
 
 // Libft
+/*
 static void     ft_free(char **array, int j);
 static size_t   n_words(const char *str, char c);
 static size_t   size_word(const char *s, char c, int i);
@@ -163,6 +164,7 @@ void            ft_putstr_fd(char *s, int fd);
 void            ft_putendl_fd(char *s, int fd);
 static size_t   ft_special_cases(char const *s, unsigned int start, size_t len);
 char            *ft_substr(char const *s, unsigned int start, size_t len);
+*/
 
 
 
@@ -181,8 +183,8 @@ int             exec_cd(char **args, t_env **env);
 int             update_pwd(t_env **env, char *cwd);
 int             change_directory_and_update(char *path, t_env **env, char *cwd);
 void            exec_echo(char **args);
-int             exec_pwd(char **args);
-int             exec_env(char **args, t_env **env, char **environment);
+int             exec_pwd(void);
+int             exec_env(char **args, char **environment);
 int             exec_unset (char **args, t_env **env);
 void            exec_export_no_args(t_env *env);
 int             var_control(char *args);

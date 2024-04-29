@@ -19,6 +19,8 @@ int	main(int argc, char **argv, char **envp)
 	char	*input;
 	t_env	*envmt;
 
+    (void)argc;
+    (void)argv;
 	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, handle_signal);
 	envmt = init_environment(envp);
@@ -87,10 +89,10 @@ void	handle_preprocess_input(char *input, t_token_list **token_list)
 
 void	handle_parse_tree(t_token_list **token_list, t_env **envmt)
 {
-	t_token_list	*start;
+	//t_token_list	*start;
 	t_parse_tree	*root;
 
-	start = *token_list;
+	//start = *token_list;
 	root = NULL;
 	if (is_pipe_sequence(token_list, &root) == SUBTREE_OK)
 	{

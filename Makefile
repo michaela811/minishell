@@ -1,7 +1,7 @@
 NAME = minishell
 HEADER = lexer.h
 CC = cc
-CFLAGS = -g #-WALL -Wextra -Werror -fsanitize=address
+CFLAGS = -g -Wall -Wextra -Werror# -fsanitize=address
 
 LIBDIR = ./libft
 LIBFT = $(LIBDIR)/libft.a
