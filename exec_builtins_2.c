@@ -12,7 +12,7 @@ int	exec_env(char **args, t_env **env, char **environment)
 	return (0);
 }
 
-int	exec_unset (char **args, t_env **env)
+int	exec_unset(char **args, t_env **env)
 {
 	t_env	*current;
 	t_env	*prev;

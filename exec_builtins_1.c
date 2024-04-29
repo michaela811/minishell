@@ -1,20 +1,20 @@
 #include "lexer.h"
 
-int exec_builtins(char **args, t_env **env, char **environment)
+int	exec_builtins(char **args, t_env **env, char **environment)
 {
-    if (ft_strcmp(args[0], "cd") == 0)
-        return(exec_cd(args, env));
-    else if (ft_strcmp(args[0], "pwd") == 0)
-        return(exec_pwd(args));
-    else if (ft_strcmp(args[0], "echo") == 0)
-        return(exec_echo(args), 0);
-    else if (ft_strcmp(args[0], "export") == 0)
-        return(exec_export(args, env));
-    else if (ft_strcmp(args[0], "unset") == 0)
-        return(exec_unset(args, env));
-    else if (ft_strcmp(args[0], "env") == 0)
-        return(exec_env(args, env, environment));
-    return (2);
+	if (ft_strcmp(args[0], "cd") == 0)
+		return (exec_cd(args, env));
+	else if (ft_strcmp(args[0], "pwd") == 0)
+		return (exec_pwd(args));
+	else if (ft_strcmp(args[0], "echo") == 0)
+		return (exec_echo(args), 0);
+	else if (ft_strcmp(args[0], "export") == 0)
+		return (exec_export(args, env));
+	else if (ft_strcmp(args[0], "unset") == 0)
+		return (exec_unset(args, env));
+	else if (ft_strcmp(args[0], "env") == 0)
+		return (exec_env(args, env, environment));
+	return (2);
 }
 
 int	exec_cd(char **args, t_env **env)

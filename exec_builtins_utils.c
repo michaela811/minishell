@@ -41,7 +41,7 @@ int	var_control(char *args)
 	while (args[i])
 	{
 		if (args[i++] == '=')//Seems like in bash it is not a problem not to have =
-		return (2);
+			return (2);
 	}
 	return (0);
 }
@@ -60,14 +60,14 @@ int	split_var(char *var, char **name, char **value)
 	return (0);
 }
 
-int update_pwd(t_env **env, char *cwd)
+int	update_pwd(t_env **env, char *cwd)
 {
-    if (update_add_env_var(env, "OLDPWD", cwd))
-        return (1);
-    cwd = getcwd(NULL, 0);  // Get the current working directory again
-    if (cwd == NULL)
-        return (perror("getcwd"), 1);
-    if (update_add_env_var(env, "PWD", cwd))
-        return (free(cwd), 1);
-    return (free(cwd), 0);;  // Free the current working directory string
+	if (update_add_env_var(env, "OLDPWD", cwd))
+		return (1);
+	cwd = getcwd(NULL, 0);
+	if (cwd == NULL)
+		return (perror("getcwd"), 1);
+	if (update_add_env_var(env, "PWD", cwd))
+		return (free(cwd), 1);
+	return (free(cwd), 0);
 }
