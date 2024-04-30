@@ -27,44 +27,9 @@ void	handle_node_data(t_parse_tree *node, t_exec_vars *vars, t_env **env)
 		handle_quotes_global(node, vars->args, vars->i++, env);
 	else
 	{
-		remove_even_quotes(node, vars->args, vars->i++, vars->error);
-		//vars->args[vars->i++] = node->data->lexeme;
+		//remove_even_quotes(node, vars->args, vars->i++, vars->error);
+		vars->args[vars->i++] = node->data->lexeme;
 	}
-}
-
-void 	remove_even_quotes(t_parse_tree *node, char **args, int i, int error)
-{
-	int		quote_count;
-	char	*str;
-	int		k;
-	char	*new_str;
-	int		j;
-
-	quote_count = 0;
-	str = node->data->lexeme;
-	k = 0;
-	while (str[k] != '\0')
-    {
-        if (str[k] == '"' || str[k] == '\'')
-            quote_count++;
-		k++;
-    }
-    if (quote_count % 2 != 0)
-	{
-		error = 1;
-        return ;
-	}
-    new_str = malloc(ft_strlen(str) + 1);
-    j = 0;
-	k = 0;
-    while (str[k] != '\0')
-    {
-        if (str[k] != '"' && str[k] != '\'')
-            new_str[j++] = str[k];
-		k++;
-    }
-    new_str[j] = '\0';
-    args[i] = new_str;
 }
 
 void	handle_redirection(t_parse_tree **node, t_exec_vars *vars)

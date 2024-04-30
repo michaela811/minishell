@@ -134,7 +134,7 @@ void            handle_redirection_append(t_parse_tree **node, t_exec_vars *vars
 void            handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars);
 char            *handle_here_doc(t_parse_tree **node, t_exec_vars *vars);
 
-int             exec_builtins(char **args, t_env **env, char **environment);
+int             exec_builtins(t_exec_vars *vars, t_env **env, char **environment);
 int             handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment);
 int             handle_fork(t_exec_vars *vars, t_env **env, char **environment);
 int             execute_command(t_exec_vars *vars,  t_env **env);
@@ -145,7 +145,6 @@ void            handle_global_env(t_parse_tree *node, char **args, int i, t_env 
 //void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
 void            handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
 void            handle_dollar_sign(char **start, char *buffer, t_env **env);
-void            remove_even_quotes(t_parse_tree *node, char **args, int i, int error);
 
 // To delete later when working
 void            execve_error(char **s_cmd);
@@ -183,7 +182,9 @@ char            **env_list_to_array(t_env *head);
 int             exec_cd(char **args, t_env **env);
 int             update_pwd(t_env **env, char *cwd);
 int             change_directory_and_update(char *path, t_env **env, char *cwd);
-void            exec_echo(char **args);
+int             exec_echo(t_exec_vars *vars);
+char            *remove_even_quotes(char *str, int *error);
+void            process_args(char **args, int *error);
 int             exec_pwd(void);
 int             exec_env(char **args, char **environment);
 int             exec_unset (char **args, t_env **env);
