@@ -121,7 +121,7 @@ char *handle_quotes_echo(const char *input, int *error)
             if (input[i] != quote)
 			{
                 *error = 1;
-				return (perror("echo: memory allocation\n"), free(result), NULL);
+				return (perror("echo: no closing quote"), free(result), NULL);
 			}
 			i++;
 		}

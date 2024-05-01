@@ -2,15 +2,36 @@
 
 void	handle_global_env(t_parse_tree *node, char **args, int i, t_env **env)
 {
-	char	*env_var_name;
+	/*char	*env_var_name;
 	char	*env_var_value;
 
-	env_var_name = node->data->lexeme + 1;
-	env_var_value = get_env_var(*env, env_var_name);
-	if (env_var_value != NULL)
-		args[i] = env_var_value;
-	else
-		args[i] = "";
+	env_var_name = ft_strtok(node->data->lexeme + 1, "$", 0);
+	while (env_var_name != NULL)
+	{
+    	env_var_value = get_env_var(*env, env_var_name);
+    	if (env_var_value != NULL)
+        	args[i] = ft_strcat(args[i], env_var_value);
+    	else
+        	{args[i] = ft_strcat(args[i], "");}
+		env_var_name = ft_strtok(NULL, "$", 0);
+	}*/
+	char	*str;
+	char	buffer[1024] = "";
+	char	*start;
+	str = node->data->lexeme;
+	if (*node->data->lexeme == 39)
+	{
+		args[i] = ft_strdup(str);//MEMORY LEAK
+		return ;
+	}
+	start = str;
+	while (1)
+	{
+		handle_dollar_sign(&start, buffer, env);
+		if (ft_strchr(start, '$') == NULL)
+			break ;
+	}
+	args[i] = ft_strdup(buffer);
 }
 
 void	handle_dollar_sign(char **start, char *buffer, t_env **env)
@@ -20,7 +41,10 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env)
 	char	*var_end;
 	char	var_name[1024];
 	char	*var_value;
+	char	*start_store;
 
+	//buffer = NULL;
+	start_store = *start;
 	while ((dollar = ft_strchr(*start, '$')) != NULL)
 	{
 		ft_strncat(buffer, *start, dollar - *start);
@@ -43,6 +67,10 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env)
 			*start = var_end;
 		}
 	}
+	if ((dollar = ft_strchr(start_store, '$')) == NULL)
+		ft_strcpy(buffer, start_store);//Probably use strncpy!
+	else if (var_end)
+		ft_strcat(buffer, var_end);
 }
 
 void	handle_quotes_global(t_parse_tree *node, char **args,
@@ -52,11 +80,19 @@ void	handle_quotes_global(t_parse_tree *node, char **args,
 	char	buffer[1024] = "";
 	char	*start;
 
-	str = node->data->lexeme + 1;
-	str[ft_strlen(str) - 1] = '\0';
+	//printf("Before modification: %s\n", node->data->lexeme);
+
+	str = node->data->lexeme; //Probably a memory leak (first quote)
+
+
+	//node->data->lexeme[0] = '\0';
+
+	//printf("zero first quote: %s\n", node->data->lexeme);
+	//str[ft_strlen(str) - 1] = '\0';
+	//printf("After modification: %s\n", str);
 	if (*node->data->lexeme == 39)
 	{
-		args[i] = str;
+		args[i] = ft_strdup(str);//MEMORY LEAK
 		return ;
 	}
 	start = str;

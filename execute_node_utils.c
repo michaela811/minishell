@@ -21,9 +21,9 @@ void	handle_node_data(t_parse_tree *node, t_exec_vars *vars, t_env **env)
 	else if (node->data->lexeme[0] == '$'
 		&& strcmp(node->data->lexeme, "$?") == 0)
 		vars->args[vars->i++] = "$?";
-	else if (node->data->lexeme[0] == '$')
-		handle_global_env(node, vars->args, vars->i++, env);
-	else if (node->data->lexeme[0] == '"' || node->data->lexeme[0] == 39)
+	//else if (node->data->lexeme[0] == '$')
+		//handle_global_env(node, vars->args, vars->i++, env);
+	else if (node->data->lexeme[0] == '"' || node->data->lexeme[0] == 39 || node->data->lexeme[0] == '$')
 		handle_quotes_global(node, vars->args, vars->i++, env);
 	else
 	{
