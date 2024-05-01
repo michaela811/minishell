@@ -46,13 +46,13 @@ void	handle_input(char *input, t_env *envmt)
 
 	if (*input)
 	{
-		if (strcmp(input, "exit") == 0)
+		/*if (strcmp(input, "exit") == 0)
 		{
 			free_env(envmt);
 			free(input);
 			rl_clear_history();
 			exit (0);
-		}
+		}*/
 		add_history(input);
 		token_list = NULL;
 		handle_preprocess_input(input, &token_list);
