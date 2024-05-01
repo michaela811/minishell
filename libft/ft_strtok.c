@@ -18,7 +18,7 @@ size_t handle_quotes(char *str, int *error)
 		if (*str == *c)
 			break;
 	}
-	if (*str == *c && (!*(str + 1) || *(str + 1) == ' ' || *(str + 1) == '\0'))//maybe '\n'
+	if (*str == *c)
 	{
 		*error = 0;
 		len++;
