@@ -23,7 +23,7 @@ int	exec_echo(t_exec_vars *vars)
 	int	i;
 
 	i = 1;
-	if (vars->args[i] == NULL)
+	if (vars->args[i] == NULL || vars->args[i][0] == '\0')
 	{
 		printf("\n");
 		return (0);
@@ -64,7 +64,8 @@ void	process_args(char **args, int *error)
 			free(new_str);
 			return ;
 		}
-		free(args[i]);
+		if (args[i])
+			free(args[i]);
         args[i] = new_str;
         i++;
 	}
