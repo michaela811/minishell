@@ -183,7 +183,7 @@ int             exec_cd(char **args, t_env **env);
 int             update_pwd(t_env **env, char *cwd);
 int             change_directory_and_update(char *path, t_env **env, char *cwd);
 int             exec_echo(t_exec_vars *vars);
-char            *remove_even_quotes(char *str, int *error);
+char            *handle_quotes_echo(const char *input, int *error);
 void            process_args(char **args, int *error);
 int             exec_pwd(void);
 int             exec_env(char **args, char **environment);

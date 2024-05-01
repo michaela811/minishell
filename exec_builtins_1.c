@@ -58,7 +58,7 @@ void	process_args(char **args, int *error)
 	i = 1;
 	while (args[i])
 	{
-		new_str = remove_even_quotes(args[i], error);
+		new_str = handle_quotes_echo(args[i], error);
 		if (*error)
 		{
 			free(new_str);
@@ -70,37 +70,40 @@ void	process_args(char **args, int *error)
 	}
 }
 
-char	*remove_even_quotes(char *str, int *error)
+char *handle_quotes_echo(const char *input, int *error)
 {
-	int		quote_count;
-	int		i;
-	char	*new_str;
-	int		j;
+	char *result;
+	int i;
+	int j;
+	char quote;
 
-	quote_count = 0;
-	i = 0;
-	while (str[i] != '\0')
-    {
-        if (str[i] == '"' || str[i] == '\'')
-            quote_count++;
-		i++;
-    }
-    if (quote_count % 2 != 0)
+    result = malloc(ft_strlen(input) + 1);
+    if (!result)
 	{
 		*error = 1;
-        return (NULL);
+		return (perror("echo: memory allocation\n"), NULL);
 	}
-    new_str = malloc(ft_strlen(str) + 1);
-    j = 0;
-	i = 0;
-    while (str[i] != '\0')
-    {
-        if (str[i] != '"' && str[i] != '\'')
-            new_str[j++] = str[i];
-		i++;
-    }
-    new_str[j] = '\0';
-    return (new_str);
+    i = 0;
+	j = 0;
+    while (input[i] != '\0')
+	{
+        if (input[i] == '"' || input[i] == '\'')
+		{
+            quote = input[i++];
+            while (input[i] != '\0' && input[i] != quote)
+                result[j++] = input[i++];
+            if (input[i] != quote)
+			{
+                *error = 1;
+				return (perror("echo: memory allocation\n"), free(result), NULL);
+			}
+			i++;
+		}
+        else
+            result[j++] = input[i++];
+	}
+    result[j] = '\0';
+    return result;
 }
 
 int	exec_cd(char **args, t_env **env)
