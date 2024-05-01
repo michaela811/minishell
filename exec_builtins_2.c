@@ -1,6 +1,6 @@
 #include "lexer.h"
 
-int	exec_env(char **args, t_env **env, char **environment)
+int	exec_env(char **args, char **environment)
 {
 	int	i;
 

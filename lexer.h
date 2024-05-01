@@ -120,6 +120,7 @@ enum token_type	determine_token_type(char *token_value);
 
 // Execute
 int             execute_parse_tree(t_parse_tree *root, t_env **env);
+int             exec_exit(char **args, t_env **env);
 int             get_path(char *cmd, t_env *env, char **exec);
 int             get_exec(char **path, int i, char *cmd, char **exec);
 int             handle_child_process(t_parse_tree *node, t_env **env, int *pipefd);
@@ -134,7 +135,7 @@ void            handle_redirection_append(t_parse_tree **node, t_exec_vars *vars
 void            handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars);
 char            *handle_here_doc(t_parse_tree **node, t_exec_vars *vars);
 
-int             exec_builtins(char **args, t_env **env, char **environment);
+int             exec_builtins(t_exec_vars *vars, t_env **env, char **environment);
 int             handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment);
 int             handle_fork(t_exec_vars *vars, t_env **env, char **environment);
 int             execute_command(t_exec_vars *vars,  t_env **env);
@@ -152,6 +153,7 @@ void            free_array(char **array);
 int             error_message(char *str);
 
 // Libft
+/*
 static void     ft_free(char **array, int j);
 static size_t   n_words(const char *str, char c);
 static size_t   size_word(const char *s, char c, int i);
@@ -163,6 +165,7 @@ void            ft_putstr_fd(char *s, int fd);
 void            ft_putendl_fd(char *s, int fd);
 static size_t   ft_special_cases(char const *s, unsigned int start, size_t len);
 char            *ft_substr(char const *s, unsigned int start, size_t len);
+*/
 
 
 
@@ -180,9 +183,11 @@ char            **env_list_to_array(t_env *head);
 int             exec_cd(char **args, t_env **env);
 int             update_pwd(t_env **env, char *cwd);
 int             change_directory_and_update(char *path, t_env **env, char *cwd);
-void            exec_echo(char **args);
-int             exec_pwd(char **args);
-int             exec_env(char **args, t_env **env, char **environment);
+int             exec_echo(t_exec_vars *vars);
+char            *remove_even_quotes(char *str, int *error);
+void            process_args(char **args, int *error);
+int             exec_pwd(void);
+int             exec_env(char **args, char **environment);
 int             exec_unset (char **args, t_env **env);
 void            exec_export_no_args(t_env *env);
 int             var_control(char *args);

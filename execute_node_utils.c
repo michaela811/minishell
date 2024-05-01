@@ -23,10 +23,13 @@ void	handle_node_data(t_parse_tree *node, t_exec_vars *vars, t_env **env)
 		vars->args[vars->i++] = "$?";
 	else if (node->data->lexeme[0] == '$')
 		handle_global_env(node, vars->args, vars->i++, env);
-	else if (node->data->lexeme[0] == '"')
+	else if (node->data->lexeme[0] == '"' || node->data->lexeme[0] == 39)
 		handle_quotes_global(node, vars->args, vars->i++, env);
 	else
+	{
+		//remove_even_quotes(node, vars->args, vars->i++, vars->error);
 		vars->args[vars->i++] = node->data->lexeme;
+	}
 }
 
 void	handle_redirection(t_parse_tree **node, t_exec_vars *vars)

@@ -12,7 +12,7 @@ int	execute_command(t_exec_vars *vars, t_env **env)
 		g_last_exit_status = 1;
 		return (1);
 	}
-	return_builtins = exec_builtins(vars->args, env, environment);
+	return_builtins = exec_builtins(vars, env, environment);
 	if (return_builtins == 2)
 	{
 		if (handle_fork(vars, env, environment))

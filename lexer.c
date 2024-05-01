@@ -33,14 +33,19 @@ char	*preprocess_input(char *str, const char *delim)
 		return (perror("Memory allocation error"), NULL);
 	dest = preprocessed;
 	process_input_str(str, delim, dest);
+	//printf("Preprocessed input is %s\n", dest);
 	return (preprocessed);
 }
 
 void	process_input_str(char *str, const char *delim, char *dest)
 {
+	int in_quotes = 0;
+
 	while (*str != '\0')
 	{
-		if (ft_strchr(delim, *str) != NULL)
+		if (*str == '"' || *str == '\'')
+            in_quotes = !in_quotes;
+		if (!in_quotes && ft_strchr(delim, *str) != NULL)
 		{
 			if ((*str == '<' && *(str + 1) == '<') || (*str == '>'
 					&& *(str + 1) == '>'))
