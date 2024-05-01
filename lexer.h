@@ -120,6 +120,7 @@ enum token_type	determine_token_type(char *token_value);
 
 // Execute
 int             execute_parse_tree(t_parse_tree *root, t_env **env);
+int             exec_exit(char **args, t_env **env);
 int             get_path(char *cmd, t_env *env, char **exec);
 int             get_exec(char **path, int i, char *cmd, char **exec);
 int             handle_child_process(t_parse_tree *node, t_env **env, int *pipefd);

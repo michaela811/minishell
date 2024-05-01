@@ -21,23 +21,28 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env)
 	char	var_name[1024];
 	char	*var_value;
 
-	dollar = ft_strchr(*start, '$');
-	if (dollar == NULL)
+	while ((dollar = ft_strchr(*start, '$')) != NULL)
 	{
-		ft_strcat(buffer, *start);
-		return ;
+		ft_strncat(buffer, *start, dollar - *start);
+		if (*(dollar + 1) == '?')
+		{
+			ft_strcat(buffer, ft_itoa(g_last_exit_status));
+			*start = dollar + 2;
+		}
+		else
+		{
+			var_start = dollar + 1;
+			var_end = ft_strpbrk(var_start, " \t\n\"'$");
+			if (var_end == NULL)
+				var_end = var_start + ft_strlen(var_start);
+			ft_strncpy(var_name, var_start, var_end - var_start);
+			var_name[var_end - var_start] = '\0';
+			var_value = get_env_var(*env, var_name);
+			if (var_value != NULL)
+				ft_strcat(buffer, var_value);
+			*start = var_end;
+		}
 	}
-	strncat(buffer, *start, dollar - *start);
-	var_start = dollar + 1;
-	var_end = ft_strpbrk(var_start, " \t\n\"'$");
-	if (var_end == NULL)
-		var_end = var_start + ft_strlen(var_start);
-	ft_strncpy(var_name, var_start, var_end - var_start);
-	var_name[var_end - var_start] = '\0';
-	var_value = get_env_var(*env, var_name);
-	if (var_value != NULL)
-		ft_strcat(buffer, var_value);
-	*start = var_end;
 }
 
 void	handle_quotes_global(t_parse_tree *node, char **args,
