@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 10:28:27 by mmasarov          #+#    #+#             */
-/*   Updated: 2023/09/07 10:53:27 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/05/02 15:35:32 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,5 @@ char	*ft_strchr(const char *s, int c)
 		}
 		return ((char *)s);
 	}
-	return (0);
+	return (NULL);
 }

@@ -17,8 +17,8 @@ int	exec_unset(char **args, t_env **env)
 	t_env	*current;
 	t_env	*prev;
 
-	if (args[2] != NULL)
-		return (perror ("unset: too many arguments\n"), 1);
+	if (args[1] == NULL)
+		return (0);
 	current = *env;
 	prev = NULL;
 	while (current != NULL)
