@@ -3,7 +3,7 @@
 int	exec_builtins(t_exec_vars *vars, t_env **env, char **environment)
 {
 	if (ft_strcmp(vars->args[0], "exit") == 0)
-		return (exec_exit(vars->args, env));
+		return (exec_exit(vars, env));
 	else if (ft_strcmp(vars->args[0], "cd") == 0)
 		return (exec_cd(vars->args, env));
 	else if (ft_strcmp(vars->args[0], "pwd") == 0)
@@ -19,28 +19,74 @@ int	exec_builtins(t_exec_vars *vars, t_env **env, char **environment)
 	return (2);
 }
 
-int	exec_exit(char **args, t_env **env)
+int	ft_atoi_no_minus(const char *nptr)
+{
+	long int	number;
+
+	number = 0;
+	while (*nptr && (*nptr == 32 || (*nptr >= 9 && *nptr <= 13)))
+	{
+		nptr++;
+	}
+	if (*nptr == 43)
+		nptr++;
+	if ((*nptr <= 47) || (*nptr >= 58 && *nptr < 127))//removed *nptr >= 0 &&
+		return (0);
+	while (*nptr >= 48 && *nptr <= 57)
+	{
+		number = number * 10 + (*nptr - 48);
+		nptr++;
+	}
+	return (number);
+}
+
+int	exec_exit(t_exec_vars *vars, t_env **env)
 {
 	int	i;
+	char *result;
 
 	i = 0;
-	if (args[1] != NULL)
+	result = NULL;
+	if (vars->args[1] != NULL)
 	{
-		if (args[2] != NULL)
-			return (printf("exit: too many arguments"));
-		while (args[1][i])
+		if (vars->args[2] != NULL)
 		{
-			if (ft_isdigit(args[1][i]) == 0)
+			//printf("exit: too many arguments");
+			g_last_exit_status = 1;
+			exit(g_last_exit_status);
+		}
+		if (vars->args[1][i])
+		{
+			if (vars->args[1][0] == '+')
+				i++;
+			result = handle_quotes_echo(&vars->args[1][i], &(vars->error));
+			if (vars->error)
+			{
+				g_last_exit_status = vars->error;
+				exit(g_last_exit_status);
+			}
+		}
+		i = 0;
+		while (result && result[i])
+		{
+			if (result[i] == '+' && vars->args[1][0] == '+')
 			{
 				g_last_exit_status = 156;
-				return (156);
+				exit(g_last_exit_status);
+			}
+			if (result[i] == '+')
+				i++;
+			if (ft_isdigit(result[i]) == 0)
+			{
+				g_last_exit_status = 156;
+				exit(g_last_exit_status);
 			}
 			i++;
 		}
-		g_last_exit_status = ft_atoi(args[1]);
+		g_last_exit_status = ft_atoi(result);
 	}
 	free_env(*env);
-	exit(0);
+	exit(g_last_exit_status);
 }
 
 int	exec_echo(t_exec_vars *vars)
