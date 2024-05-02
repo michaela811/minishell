@@ -66,7 +66,7 @@ void	handle_preprocess_input(char *input, t_token_list **token_list)
 {
 	char	*processed_input;
 
-	processed_input = preprocess_input(input, "|><");
+	processed_input = preprocess_input(input, " |><");
 	if (processed_input == NULL)
 	{
 		g_last_exit_status = 2;

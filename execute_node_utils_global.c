@@ -2,19 +2,6 @@
 
 void	handle_global_env(t_parse_tree *node, char **args, int i, t_env **env)
 {
-	/*char	*env_var_name;
-	char	*env_var_value;
-
-	env_var_name = ft_strtok(node->data->lexeme + 1, "$", 0);
-	while (env_var_name != NULL)
-	{
-    	env_var_value = get_env_var(*env, env_var_name);
-    	if (env_var_value != NULL)
-        	args[i] = ft_strcat(args[i], env_var_value);
-    	else
-        	{args[i] = ft_strcat(args[i], "");}
-		env_var_name = ft_strtok(NULL, "$", 0);
-	}*/
 	char	*str;
 	char	buffer[1024] = "";
 	char	*start;
@@ -69,8 +56,8 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env)
 	}
 	if ((dollar = ft_strchr(start_store, '$')) == NULL)
 		ft_strcpy(buffer, start_store);//Probably use strncpy!
-	else if (var_end)
-		ft_strcat(buffer, var_end);
+	else if (*start)
+		ft_strcat(buffer, *start);
 }
 
 void	handle_quotes_global(t_parse_tree *node, char **args,
