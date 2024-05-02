@@ -40,14 +40,26 @@ char	*preprocess_input(char *str, const char *delim)
 void	process_input_str(char *str, const char *delim, char *dest)
 {
 	int in_quotes = 0;
+	char c;
 
+	c = '\0';
 	while (*str != '\0')
 	{
 		if (*str == '"' || *str == '\'')
-            in_quotes = !in_quotes;
-		if (!in_quotes && ft_strchr(delim, *str) != NULL)
 		{
-			if ((*str == '<' && *(str + 1) == '<') || (*str == '>'
+			if (!c || c == *str)
+            	in_quotes = !in_quotes;
+			if (!c)
+				c = *str;
+		}
+		if (in_quotes == 0 && ft_strchr(delim, *str) != NULL)
+		{
+			if (*str == ' ' )
+			{
+				*dest++ = '@';
+				*dest++ = '@';
+			}
+			else if ((*str == '<' && *(str + 1) == '<') || (*str == '>'
 					&& *(str + 1) == '>'))
 			{
 				*dest++ = '@';

@@ -38,22 +38,42 @@ int	var_control(char *args)
 	i = 0;
 	if (args[i++] == '=')
 		return (perror("export: not a valid identifier\n"), 1);
-	while (args[i])
+	return (0);
+	/*while (args[i])
 	{
 		if (args[i++] == '=')//Seems like in bash it is not a problem not to have =
-			return (2);
+			return (0);
 	}
-	return (0);
+	return (perror("export: not a valid identifier\n"), 1);*/
 }
 
 int	split_var(char *var, char **name, char **value)
 {
 	char	*equals;
+	int		i;
 
+	i = 0;
 	equals = ft_strchr(var, '=');
-	*name = ft_strndup(var, equals - var);
+	if (equals)
+		*name = ft_strndup(var, equals - var);
+	else
+		*name = ft_strdup(var);
 	if (name == NULL)
 		return (perror("split_var: strndup error\n"), 1);
+	while ((*name)[i] != '\0')
+	{
+		if (ft_isalpha((*name)[i]) == 0)
+			return (perror("export: not a valid identifier\n"), free(*name), 1);
+		i++;
+	}
+	(*name)[i] = '\0';
+	if (equals == NULL)
+	{
+		*value = ft_strdup("");
+		if (value == NULL)
+			return (perror("split_var: strndup error\n"), free(*name), 1);
+		return (0);
+	}
 	*value = ft_strdup(equals + 1);
 	if (value == NULL)
 		return (perror("split_var: strndup error\n"), free(*name), 1);

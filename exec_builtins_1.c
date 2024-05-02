@@ -178,7 +178,7 @@ int	exec_export(char **args, t_env **env)
 	control = var_control(args[1]);
 	if (control == 1)
 		return (1);
-	if (control == 2)
+	else
 	{
 		if (split_var(args[1], &name, &value))//think how to handle the error
 			return (1);
