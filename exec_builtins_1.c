@@ -76,6 +76,11 @@ int	exec_exit(t_exec_vars *vars, t_env **env)
 			}
 			if (result[i] == '+')
 				i++;
+			if (ft_atoi(result) == 0)
+			{
+				g_last_exit_status = 2;
+				exit(g_last_exit_status);
+			}
 			if (ft_isdigit(result[i]) == 0)
 			{
 				g_last_exit_status = 156;
