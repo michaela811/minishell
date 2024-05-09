@@ -8,6 +8,8 @@ int	exec_builtins(t_exec_vars *vars, t_env **env, char **environment)
 		return (exec_cd(vars->args, env));
 	else if (ft_strcmp(vars->args[0], "pwd") == 0)
 		return (exec_pwd());
+	else if (ft_strcmp(vars->args[0], "$PWD") == 0)
+		return (exec_dollar_pwd());
 	else if (ft_strcmp(vars->args[0], "echo") == 0)
 		return (exec_echo(vars));
 	else if (ft_strcmp(vars->args[0], "export") == 0)
@@ -194,6 +196,23 @@ int	exec_cd(char **args, t_env **env)
 		return (change_directory_and_update("..", env, cwd));
 	else
 		return (change_directory_and_update(args[1], env, cwd));
+}
+
+int	exec_dollar_pwd(void)
+{
+	char	*cwd;
+
+	cwd = getcwd(NULL, 0);
+	if (cwd == NULL)
+		return (perror("getcwd"), 1);
+	else
+	{
+		ft_putstr_fd(cwd, 1);//("%s", cwd);
+		ft_putstr_fd(": Is a directory\n", 1);
+		g_last_exit_status = 126;
+		free(cwd);
+		return (g_last_exit_status);
+	}
 }
 
 int	exec_pwd(void)
