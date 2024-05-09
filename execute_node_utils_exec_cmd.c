@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 #include <errno.h>
 
 int	execute_command(t_exec_vars *vars, t_env **env)

@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	handle_child_process(t_parse_tree *node, t_env **env, int *pipefd)
 {

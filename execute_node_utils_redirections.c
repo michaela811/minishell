@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 void	handle_redirection_from(t_parse_tree **node, t_exec_vars *vars)
 {

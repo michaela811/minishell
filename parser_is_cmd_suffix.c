@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 /*
 int is_cmd_suffix(t_token_list **tok, t_parse_tree **suffix_node)
 {

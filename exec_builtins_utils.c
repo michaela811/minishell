@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	change_directory_and_update(char *path, t_env **env, char *cwd)
 {

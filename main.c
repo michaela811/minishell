@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	g_last_exit_status = 0;
 

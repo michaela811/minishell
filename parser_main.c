@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 /*
 int is_pipe_sequence(t_token_list **tok, t_parse_tree **new)//, int *status)
 {

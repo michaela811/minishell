@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	exec_builtins(t_exec_vars *vars, t_env **env, char **environment)
 {

@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	count_additional_chars(char *input, const char *delim)
 {

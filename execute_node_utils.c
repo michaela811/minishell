@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 void	init_exec_vars(t_exec_vars *vars)
 {

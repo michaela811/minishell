@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	error_message(char *str) // Probably unnecessary
 {
