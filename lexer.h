@@ -10,6 +10,9 @@
 #include <readline/history.h>
 #include "libft/libft.h"
 
+#define MY_MALLOC(size) custom_malloc(size, __FILE__, __LINE__)
+#define free(ptr) custom_free(ptr)
+
 enum token_type
 {
     PIPE = 1,   // 1
@@ -20,6 +23,14 @@ enum token_type
     HERE_DOC,   // 6 <<
     //ASSIGNMENT_WORD, // to delete when possible
 };
+
+typedef struct MemoryBlock {
+    void *address;
+    size_t size;
+    const char *file;
+    int line;
+    struct MemoryBlock *next;
+} MemoryBlock;
 
 typedef struct s_token
 {
@@ -96,9 +107,6 @@ int				is_pipe_sequence(t_token_list **tok, t_parse_tree **new);
 
 // Printing
 void			print_parse_tree(t_parse_tree* tree, int depth);
-
-// Testing
-void			test_parser(); // to delete later
 
 // Tokens
 t_token_list	*create_token(enum token_type type, char* lexeme); //probably to delete later
@@ -193,4 +201,11 @@ void            exec_export_no_args(t_env *env);
 int             var_control(char *args);
 int             split_var(char *var, char **name, char **value);
 int             exec_export(char **args, t_env **env);
+
+
+
+
+void check_for_memory_leaks();
+void custom_free(void *ptr);
+void *custom_malloc(size_t size, const char *file, int line);
 

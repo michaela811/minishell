@@ -37,6 +37,7 @@ int	main(int argc, char **argv, char **envp)
 	}
 	rl_on_new_line();
 	free_env(envmt);
+	check_for_memory_leaks();
 	return (0);
 }
 

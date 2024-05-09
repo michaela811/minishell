@@ -149,7 +149,7 @@ char *handle_quotes_echo(const char *input, int *error)
 	int j;
 	char quote;
 
-    result = malloc(ft_strlen(input) + 1);
+    result = MY_MALLOC(ft_strlen(input) + 1);
     if (!result)
 	{
 		*error = 1;
