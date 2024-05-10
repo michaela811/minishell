@@ -11,7 +11,7 @@
 #include "libft/libft.h"
 
 #define MY_MALLOC(size) custom_malloc(size, __FILE__, __LINE__)
-#define free(ptr) custom_free(ptr)
+#define free(ptr) custom_free(ptr, __FILE__, __LINE__)
 
 enum token_type
 {
@@ -206,6 +206,6 @@ int             exec_export(char **args, t_env **env);
 
 
 void check_for_memory_leaks();
-void custom_free(void *ptr);
+void custom_free(void *ptr, const char *file, int line);
 void *custom_malloc(size_t size, const char *file, int line);
 

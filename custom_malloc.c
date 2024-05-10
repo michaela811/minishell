@@ -20,14 +20,15 @@ void *custom_malloc(size_t size, const char *file, int line) {
 }
 
 // Custom memory deallocation function
-void custom_free(void *ptr)
+void custom_free(void *ptr, const char *file, int line)
 {
     if (!ptr) return;
 
     // Find the corresponding block in the list and remove it
     MemoryBlock *prev = NULL;
     MemoryBlock *curr = allocated_blocks;
-    while (curr) {
+    while (curr)
+    {
         if (curr->address == ptr) {
             if (prev) {
                 prev->next = curr->next;
@@ -36,15 +37,13 @@ void custom_free(void *ptr)
             }
             free(curr->address);
             free(curr);
-			printf("Freed memory at %p (File: %s, Line: %d)\n", ptr, curr->file, curr->line);
+			printf("Freed memory at %p (Size: %zu, File: %s, Line: %d)\n", ptr,  curr->size, file, line);
             return;
         }
         prev = curr;
         curr = curr->next;
     }
-
-    // If pointer not found in the list, it's likely an error
-    fprintf(stderr, "Error: Attempted to free unallocated memory at %p\n", ptr);
+    fprintf(stderr, "Error: Attempted to free unallocated memory at %p (File: %s, Line: %d)\n", ptr, file, line);;
 }
 
 // Function to check for memory leaks
