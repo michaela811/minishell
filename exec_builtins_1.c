@@ -86,6 +86,7 @@ int	exec_exit(t_exec_vars *vars, t_env **env)
 		g_last_exit_status = ft_atoi(result);
 	}
 	free_env(*env);
+	check_for_memory_leaks();
 	exit(g_last_exit_status);
 }
 

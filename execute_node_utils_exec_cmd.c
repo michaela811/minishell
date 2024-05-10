@@ -67,6 +67,7 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	pid = fork();
 	if (pid == -1)
 	{
+		free_env_array(environment);
 		perror("fork");
 		g_last_exit_status = 128;
 		exit(EXIT_FAILURE);
@@ -75,6 +76,7 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	{
 		if (handle_child_cmd(vars, env, environment))
 		{
+			free_env_array(environment);
 			g_last_exit_status = 155;
 			return (1);
 		}
@@ -84,5 +86,6 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 		waitpid(pid, &status, 0);
 		g_last_exit_status = WEXITSTATUS(status);
 	}
+	free_env_array(environment);
 	return (0);
 }

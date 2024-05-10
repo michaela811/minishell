@@ -3,7 +3,7 @@
 MemoryBlock *allocated_blocks = NULL;
 
 void *custom_malloc(size_t size, const char *file, int line) {
-    void *ptr = malloc(size); // Call system MY_MALLOC
+    void *ptr = malloc(size);
     if (ptr) {
 		printf("Allocated %zu bytes at %p (File: %s, Line: %d)\n", size, ptr, file, line);
         MemoryBlock *block = malloc(sizeof(MemoryBlock));
@@ -47,12 +47,12 @@ void custom_free(void *ptr, const char *file, int line)
 }
 
 // Function to check for memory leaks
-void check_for_memory_leaks() {
+void check_for_memory_leaks()
+{
     MemoryBlock *curr = allocated_blocks;
-    while (curr) {
-        fprintf(stderr, "Memory leak detected: %zu bytes allocated at %s:%d\n", curr->size, curr->file, curr->line);
+    while (curr)
+    {
+        printf("Memory leak detected: %zu bytes allocated at %s:%d\n", curr->size, curr->file, curr->line);
         curr = curr->next;
     }
 }
-
-// Macros for easier use of custom_MY_MALLOC and custom_free

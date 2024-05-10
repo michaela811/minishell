@@ -36,8 +36,7 @@ int	main(int argc, char **argv, char **envp)
 		handle_input(input, envmt);
 	}
 	rl_on_new_line();
-	free_env(envmt);
-	check_for_memory_leaks();
+    free_env(envmt);
 	return (0);
 }
 
@@ -109,6 +108,7 @@ void	handle_parse_tree(t_token_list **token_list, t_env **envmt)
 		g_last_exit_status = 4;
 		printf("Parser returned an error: %d\n", SYNTAX_ERROR);
 	}
+    check_for_memory_leaks();
 }
 
 /*
