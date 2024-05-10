@@ -20,18 +20,40 @@ void	handle_node_data(t_parse_tree *node, t_exec_vars *vars, t_env **env)
 		handle_redirection(&node, vars);
 	else if (node->data->lexeme[0] == '$'
 		&& strcmp(node->data->lexeme, "$?") == 0)
-		vars->args[vars->i++] = "$?";
+		vars->args[vars->i] = "$?";
 	//else if (node->data->lexeme[0] == '$')
 		//handle_global_env(node, vars->args, vars->i++, env);
-	else if (strcmp(node->data->lexeme, "$PWD") == 0)
-		vars->args[vars->i++] = node->data->lexeme;
+	//else if (strcmp(node->data->lexeme, "$PWD") == 0)
+		//vars->args[vars->i++] = node->data->lexeme;
 	else if (node->data->lexeme[0] == '"' || node->data->lexeme[0] == 39 || node->data->lexeme[0] == '$')
-		handle_quotes_global(node, vars->args, vars->i++, env);
+		//handle_quotes_global(node, vars->args, vars->i++, env);
+		handle_quotes_global(node, vars->args, vars->i, env);
 	else
 	{
 		//remove_even_quotes(node, vars->args, vars->i++, vars->error);
-		vars->args[vars->i++] = node->data->lexeme;
+		vars->args[vars->i] = node->data->lexeme;
 	}
+	if (node->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' '))
+		vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
+	vars->i++;
+}
+
+int split_variable(char *arg, int i, t_exec_vars *vars)
+{
+    char **split_args;
+    int j;
+
+    j = 0;
+    split_args = ft_split(arg, ' ');
+    if (!split_args)
+        return i;
+    while (split_args[j])
+	{
+        vars->args[i + j] = split_args[j];
+        j++;
+    }
+    free(split_args);
+    return i + j;
 }
 
 void	handle_redirection(t_parse_tree **node, t_exec_vars *vars)

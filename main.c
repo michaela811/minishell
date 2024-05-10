@@ -33,14 +33,14 @@ int	main(int argc, char **argv, char **envp)
 	{
 		if (!input)// NOT SURE IF CORRECTLY RESOLVED PREVIOUS while ((input = readline("my(s)hell> ")) != NULL)
 			break ;
-		handle_input(input, envmt);
+		handle_input(input, &envmt);
 	}
 	rl_on_new_line();
 	free_env(envmt);
 	return (0);
 }
 
-void	handle_input(char *input, t_env *envmt)
+void	handle_input(char *input, t_env **envmt)
 {
 	t_token_list	*token_list;
 
@@ -48,7 +48,7 @@ void	handle_input(char *input, t_env *envmt)
 	{
 		if (strcmp(input, "exit") == 0)
 		{
-			free_env(envmt);
+			free_env(*envmt);
 			free(input);
 			rl_clear_history();
 			exit (0);
@@ -58,7 +58,7 @@ void	handle_input(char *input, t_env *envmt)
 		handle_preprocess_input(input, &token_list);
 		if (!token_list)
 			return ;
-		handle_parse_tree(&token_list, &envmt);
+		handle_parse_tree(&token_list, envmt);
 	}
 }
 
