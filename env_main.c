@@ -90,7 +90,7 @@ int	get_path(char *cmd, t_env *env, char **exec)
 	i = -1;
 	path = ft_split(get_env_var(env, "PATH"), ':');
 	if (path == NULL)
-		return (error_message("Malloc error in split function"));
+		return (error_message("Malloc error in split function"));//change error handling
 	while (path[++i])
 	{
 		if (get_exec(path, i, cmd, exec))
@@ -99,12 +99,14 @@ int	get_path(char *cmd, t_env *env, char **exec)
 			return (free_array(path), 1);
 		}
 		if (access(*exec, F_OK | X_OK) == 0)
-			return (0);
+			return (free_array(path), 0);//return (0);
+		//else
+			//return (free_array(path), -1);
 		free(*exec);
 	}
-	free_array(path);
+	free_array(path);//maybe will be freed later as lexem!
 	*exec = cmd;
-	return (0);
+	return (-1);
 }
 
 int	get_exec(char **path, int i, char *cmd, char **exec)

@@ -27,7 +27,11 @@ void	handle_node_data(t_parse_tree *node, t_exec_vars *vars, t_env **env)
 		//vars->args[vars->i++] = node->data->lexeme;
 	else if (node->data->lexeme[0] == '"' || node->data->lexeme[0] == 39 || node->data->lexeme[0] == '$')
 		//handle_quotes_global(node, vars->args, vars->i++, env);
+	{
 		handle_quotes_global(node, vars->args, vars->i, env);
+		if (ft_strcmp(vars->args[vars->i], "") == 0)
+			return ;
+	}
 	else
 	{
 		//remove_even_quotes(node, vars->args, vars->i++, vars->error);
