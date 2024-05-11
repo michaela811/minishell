@@ -43,6 +43,9 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 {
 	char	*path;
 
+	process_args(vars->args, &(vars->error));
+	if (vars->error)
+		return (perror("execve preprocessing: odd number of quotes\n"), 1);
 	if (vars->fd_in != 0)
 	{
 		dup2(vars->fd_in, 0);
