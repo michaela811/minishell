@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 t_env	*init_environment(char **envt)
 {

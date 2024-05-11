@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	change_directory_and_update(char *path, t_env **env, char *cwd)
 {
@@ -62,7 +62,7 @@ int	split_var(char *var, char **name, char **value)
 		return (perror("split_var: strndup error\n"), 1);
 	while ((*name)[i] != '\0')
 	{
-		if (ft_isalpha((*name)[i]) == 0)
+		if (ft_isalpha((*name)[i]) == 0)//add underscore and probably numbers
 			return (perror("export: not a valid identifier\n"), free(*name), 1);
 		i++;
 	}
@@ -74,10 +74,47 @@ int	split_var(char *var, char **name, char **value)
 			return (perror("split_var: strndup error\n"), free(*name), 1);
 		return (0);
 	}
-	*value = ft_strdup(equals + 1);
+	if (export_quotes(equals + 1, value))
+		return (perror("split_var: export_quotes error\n"), free(*name), 1);
+	//*value = ft_strdup(equals + 1);
 	if (value == NULL)
 		return (perror("split_var: strndup error\n"), free(*name), 1);
 	return (0);
+}
+
+int export_quotes(char *input, char **output)
+{
+    int len;
+	len = ft_strlen(input);
+    if (len == 0)
+	{
+        *output = ft_strdup(""); // Handle empty value
+        return 0;
+    }
+	if ((input[0] == '"' || input[0] == '\'') && input[0] != input[len - 1])
+	{
+		perror("export_quotes: unbalanced quotes");
+		return 1;
+	}
+    if ((input[0] == '"' || input[0] == '\'') && input[0] == input[len - 1])
+	{
+        *output = ft_strndup(input + 1, len - 2);
+        if (*output == NULL)
+		{
+            perror("export_quotes: strndup error");
+            return 1;
+        }
+    }
+	else
+	{
+        *output = ft_strdup(input); // No quotes to handle, just duplicate
+        if (*output == NULL)
+		{
+            perror("export_quotes: strdup error");
+            return 1;
+        }
+    }
+    return 0;
 }
 
 int	update_pwd(t_env **env, char *cwd)

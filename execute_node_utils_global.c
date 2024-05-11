@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 void	handle_global_env(t_parse_tree *node, char **args, int i, t_env **env)
 {

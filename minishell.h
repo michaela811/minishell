@@ -61,14 +61,14 @@ typedef struct s_exec_vars
 #define SYNTAX_ERROR -1
 #define SUBTREE_OK 0
 #define MEMORY_ERROR 1
-#define PARSING_ERROR 2
+//#define PARSING_ERROR 2
 
 // Global variable for signal handling
 extern int		g_last_exit_status;
 
 //MAIN
 void			handle_signal(int signal);
-void			handle_input(char* input, t_env *envmt);
+void			handle_input(char* input, t_env **envmt);
 void			handle_preprocess_input(char* input, t_token_list **tokenList);
 void			handle_parse_tree(t_token_list **tokenList, t_env **envmt);
 
@@ -141,6 +141,7 @@ int             handle_fork(t_exec_vars *vars, t_env **env, char **environment);
 int             execute_command(t_exec_vars *vars,  t_env **env);
 void            init_exec_vars(t_exec_vars *vars);
 void            handle_node_data(t_parse_tree *node, t_exec_vars *vars, t_env **env);
+int             split_variable(char *arg, int i, t_exec_vars *vars);
 int             execute_node(t_parse_tree *node, t_env **env);
 void            handle_global_env(t_parse_tree *node, char **args, int i, t_env **env);
 //void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
@@ -187,10 +188,13 @@ int             exec_echo(t_exec_vars *vars);
 char            *handle_quotes_echo(const char *input, int *error);
 void            process_args(char **args, int *error);
 int             exec_pwd(void);
+int             exec_dollar_pwd(void);
 int             exec_env(char **args, char **environment);
 int             exec_unset (char **args, t_env **env);
 void            exec_export_no_args(t_env *env);
 int             var_control(char *args);
 int             split_var(char *var, char **name, char **value);
 int             exec_export(char **args, t_env **env);
+int             export_quotes(char *input, char **output);
+int             exec_global_env(t_exec_vars *vars, t_env **env);
 

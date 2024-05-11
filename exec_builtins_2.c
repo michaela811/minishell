@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	exec_env(char **args, char **environment)
 {

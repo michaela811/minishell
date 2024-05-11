@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 #include <errno.h>
 
 int	execute_command(t_exec_vars *vars, t_env **env)
@@ -10,7 +10,7 @@ int	execute_command(t_exec_vars *vars, t_env **env)
 	if (environment == NULL)
 	{
 		g_last_exit_status = 1;
-		return (1);
+		return (g_last_exit_status);
 	}
 	return_builtins = exec_builtins(vars, env, environment);
 	if (return_builtins == 2)
@@ -18,16 +18,25 @@ int	execute_command(t_exec_vars *vars, t_env **env)
 		if (handle_fork(vars, env, environment))
 		{
 			g_last_exit_status = 1;
-			return (free_env_array(environment), 1);
+			return (free_env_array(environment), g_last_exit_status);
 		}
 	}
 	else if (return_builtins == 1)
 	{
 		g_last_exit_status = 1;
-		return (free_env_array(environment), 1);
+		return (free_env_array(environment), g_last_exit_status);
 	}
-	g_last_exit_status = 0;
-	return (free_env_array(environment), 0);
+	return (free_env_array(environment), g_last_exit_status);
+}
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+int is_directory(const char *path) {
+    struct stat path_stat;
+    stat(path, &path_stat);
+    return S_ISDIR(path_stat.st_mode);
 }
 
 int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
@@ -44,19 +53,36 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 		dup2(vars->fd_out, 1);
 		close(vars->fd_out);
 	}
+	if (is_directory(vars->args[0]))
+	{
+    	ft_putstr_fd(vars->args[0], 2);
+    	ft_putstr_fd(": Is a directory\n", 2);
+    	g_last_exit_status = 126;
+    	return(g_last_exit_status);
+	}
 	if (get_path(vars->args[0], *env, &path))
 	{
 		g_last_exit_status = 138;
-		return (1);
+		return (g_last_exit_status);
+	}
+	if (access(path, F_OK | X_OK) != 0)
+	{
+		ft_putstr_fd("my(s)hell: ", 2);
+		ft_putstr_fd(vars->args[0], 2);
+		ft_putstr_fd(": command not found\n", 2);
+		g_last_exit_status = 127;
+		return (g_last_exit_status);
 	}
 	if (execve(path, vars->args, environment) < 0)
 	{
 		g_last_exit_status = 127;
 		perror("execve");
-		exit(EXIT_FAILURE);
+		//exit(EXIT_FAILURE);
+		return(1);
 	}
 	g_last_exit_status = 0;
-	exit(EXIT_SUCCESS);
+	//exit(EXIT_SUCCESS);
+	return (0);
 }
 
 int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)

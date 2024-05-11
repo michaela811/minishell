@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	execute_parse_tree(t_parse_tree *root, t_env **env)
 {
@@ -13,14 +13,15 @@ int	execute_parse_tree(t_parse_tree *root, t_env **env)
 		}
 	}
 	else
-	{
-		if (execute_node(root->child, env))
+		execute_node(root->child, env);
+	/*{
+		if (execute_node(root->child, env)) //
 		{
 			g_last_exit_status = 1;
 			return (1);
 		}
-	}
-	return (0);
+	}*/
+	return (g_last_exit_status);
 }
 
 int	execute_node(t_parse_tree *node, t_env **env)
@@ -41,12 +42,12 @@ int	execute_node(t_parse_tree *node, t_env **env)
 		node = node->child;
 	}
 	vars.args[vars.i] = NULL;
-	if (execute_command(&vars, env) == 1)
-	{
-		g_last_exit_status = 154;
-		return (1);
-	}
-	return (0);
+	execute_command(&vars, env);
+	/*{
+		g_last_exit_status = 154;//Why 154?
+		return (g_last_exit_status);
+	}*/
+	return (g_last_exit_status);
 }
 
 int	execute_pipeline(t_parse_tree *node, t_env **env)

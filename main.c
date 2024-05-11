@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	g_last_exit_status = 0;
 
@@ -33,14 +33,14 @@ int	main(int argc, char **argv, char **envp)
 	{
 		if (!input)// NOT SURE IF CORRECTLY RESOLVED PREVIOUS while ((input = readline("my(s)hell> ")) != NULL)
 			break ;
-		handle_input(input, envmt);
+		handle_input(input, &envmt);
 	}
 	rl_on_new_line();
 	free_env(envmt);
 	return (0);
 }
 
-void	handle_input(char *input, t_env *envmt)
+void	handle_input(char *input, t_env **envmt)
 {
 	t_token_list	*token_list;
 
@@ -48,7 +48,7 @@ void	handle_input(char *input, t_env *envmt)
 	{
 		if (strcmp(input, "exit") == 0)
 		{
-			free_env(envmt);
+			free_env(*envmt);
 			free(input);
 			rl_clear_history();
 			exit (0);
@@ -58,7 +58,7 @@ void	handle_input(char *input, t_env *envmt)
 		handle_preprocess_input(input, &token_list);
 		if (!token_list)
 			return ;
-		handle_parse_tree(&token_list, &envmt);
+		handle_parse_tree(&token_list, envmt);
 	}
 }
 
@@ -89,17 +89,15 @@ void	handle_preprocess_input(char *input, t_token_list **token_list)
 
 void	handle_parse_tree(t_token_list **token_list, t_env **envmt)
 {
-	//t_token_list	*start;
 	t_parse_tree	*root;
 
-	//start = *token_list;
 	root = NULL;
 	if (is_pipe_sequence(token_list, &root) == SUBTREE_OK)
 	{
 		//g_last_exit_status = PARSING_ERROR;//WHY PARSING ERROR?
 		if (execute_parse_tree(root, envmt))
 		{
-			g_last_exit_status = PARSING_ERROR;
+			//g_last_exit_status = 1;//PARSING_ERROR;
 			free_parse_tree(root);
 		}
 	}

@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	is_cmd_word(t_token_list **tok, t_parse_tree **cmd_word_node)
 {
