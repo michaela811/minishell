@@ -10,7 +10,7 @@ int	execute_command(t_exec_vars *vars, t_env **env)
 	if (environment == NULL)
 	{
 		g_last_exit_status = 1;
-		return (1);
+		return (free_env(*env), 1);
 	}
 	return_builtins = exec_builtins(vars, env, environment);
 	if (return_builtins == 2)
@@ -18,16 +18,16 @@ int	execute_command(t_exec_vars *vars, t_env **env)
 		if (handle_fork(vars, env, environment))
 		{
 			g_last_exit_status = 1;
-			return (free_env_array(environment), 1);
+			return (free_env(*env), free_env_array(environment), 1);
 		}
 	}
 	else if (return_builtins == 1)
 	{
 		g_last_exit_status = 1;
-		return (free_env_array(environment), 1);
+		return (free_env(*env), free_env_array(environment), 1);
 	}
 	g_last_exit_status = 0;
-	return (free_env_array(environment), 0);
+	return (free_env(*env), free_env_array(environment), 0);
 }
 
 int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)

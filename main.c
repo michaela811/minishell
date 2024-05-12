@@ -16,11 +16,13 @@ void	handle_signal(int signal)
 
 int	main(int argc, char **argv, char **envp)
 {
-	char	*input;
-	t_env	*envmt;
+	char	        *input;
+	t_env	        *envmt;
+    t_token_list	*token_list;
 
     (void)argc;
     (void)argv;
+    token_list = NULL;
 	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, handle_signal);
 	envmt = init_environment(envp);
@@ -33,28 +35,22 @@ int	main(int argc, char **argv, char **envp)
 	{
 		if (!input)// NOT SURE IF CORRECTLY RESOLVED PREVIOUS while ((input = readline("my(s)hell> ")) != NULL)
 			break ;
-		handle_input(input, envmt);
+		handle_input(input, envmt, token_list);
+        free_token_list(token_list);
 	}
 	rl_on_new_line();
     free_env(envmt);
 	return (0);
 }
 
-void	handle_input(char *input, t_env *envmt)
+void	handle_input(char *input, t_env *envmt, t_token_list *token_list)
 {
-	t_token_list	*token_list;
+	//t_token_list	*token_list;
 
 	if (*input)
 	{
-		if (strcmp(input, "exit") == 0)
-		/*{
-			free_env(envmt);
-			free(input);
-			//rl_clear_history();
-			exit (0);
-		}*/
 		add_history(input);
-		token_list = NULL;
+		//token_list = NULL;
 		handle_preprocess_input(input, &token_list);
 		if (!token_list)
 			return ;
@@ -100,14 +96,19 @@ void	handle_parse_tree(t_token_list **token_list, t_env **envmt)
 		if (execute_parse_tree(root, envmt))
 		{
 			g_last_exit_status = PARSING_ERROR;
+            free_token_list(*token_list);
 			free_parse_tree(root);
 		}
 	}
 	else
 	{
 		g_last_exit_status = 4;
+        free_token_list(*token_list);
+        free_parse_tree(root);
 		printf("Parser returned an error: %d\n", SYNTAX_ERROR);
 	}
+    free_token_list(*token_list);
+    free_parse_tree(root);
     check_for_memory_leaks();
 }
 

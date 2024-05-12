@@ -70,7 +70,7 @@ int	is_pipe_sequence(t_token_list **tok, t_parse_tree **new)
 	while (*tok != NULL && (*tok)->token->type == PIPE)
 	{
 		if (create_and_link_pipe(tok, new) != SUBTREE_OK)
-			return (SYNTAX_ERROR);
+			return (free_parse_tree(*new), SYNTAX_ERROR);
 	}
 	return (SUBTREE_OK);
 }

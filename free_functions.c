@@ -86,8 +86,8 @@ void	free_env(t_env *head)
 	while (current)
 	{
 		next = current->next;
-		//free(current->name);
-		//free(current->value);
+		free(current->name);
+		free(current->value);
 		free(current);
 		current = next;
 	}

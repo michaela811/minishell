@@ -43,7 +43,7 @@ void custom_free(void *ptr, const char *file, int line)
         prev = curr;
         curr = curr->next;
     }
-    fprintf(stderr, "Error: Attempted to free unallocated memory at %p (File: %s, Line: %d)\n", ptr, file, line);;
+    //fprintf(stderr, "Error: Attempted to free unallocated memory at %p (File: %s, Line: %d)\n", ptr, file, line);;
 }
 
 // Function to check for memory leaks

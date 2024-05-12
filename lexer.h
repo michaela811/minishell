@@ -79,7 +79,7 @@ extern int		g_last_exit_status;
 
 //MAIN
 void			handle_signal(int signal);
-void			handle_input(char* input, t_env *envmt);
+void	        handle_input(char *input, t_env *envmt, t_token_list *token_list);
 void			handle_preprocess_input(char* input, t_token_list **tokenList);
 void			handle_parse_tree(t_token_list **tokenList, t_env **envmt);
 
@@ -128,7 +128,7 @@ enum token_type	determine_token_type(char *token_value);
 
 // Execute
 int             execute_parse_tree(t_parse_tree *root, t_env **env);
-int             exec_exit(t_exec_vars *vars, t_env **env);
+int             exec_exit(t_exec_vars *vars, t_env **env, char **environment);
 int             get_path(char *cmd, t_env *env, char **exec);
 int             get_exec(char **path, int i, char *cmd, char **exec);
 int             handle_child_process(t_parse_tree *node, t_env **env, int *pipefd);
