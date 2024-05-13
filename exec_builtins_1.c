@@ -122,7 +122,7 @@ int	exec_echo(t_exec_vars *vars)
 		i++;
 	process_args(vars->args, &(vars->error));
 	if (vars->error)
-		return (perror("echo: odd number of quotes\n"), 1);
+		return (printf_global_error(1, 2, "echo: odd number of quotes\n"), g_last_exit_status);
 	while (vars->args[i])
 	{
 		printf("%s", vars->args[i]);
@@ -166,8 +166,8 @@ char *handle_quotes_echo(const char *input, int *error)
     result = malloc(ft_strlen(input) + 1);
     if (!result)
 	{
-		*error = 1;
-		return (perror("echo: memory allocation\n"), NULL);
+		*error = 1;//Do we need this error or can be handle with g_last_exit_status
+		return (printf_global_error(1, 2, "echo: memory allocation\n"), NULL);
 	}
     i = 0;
 	j = 0;
@@ -181,7 +181,7 @@ char *handle_quotes_echo(const char *input, int *error)
             if (input[i] != quote)
 			{
                 *error = 1;
-				return (perror("echo: no closing quote"), free(result), NULL);
+				return (printf_global_error(1, 2, "echo: no closing quote\n"), free(result), NULL);
 			}
 			i++;
 		}
@@ -198,9 +198,9 @@ int	exec_cd(char **args, t_env **env)
 
 	cwd = getcwd(NULL, 0);
 	if (cwd == NULL)
-		return (perror("getcwd"), 1);
+		return (printf_global_error(1, 2, "getcwd\n"), g_last_exit_status);
 	if (args[1] != NULL && args[2])
-		return (perror("cd: too many arguments\n"), free(cwd), 1);
+		return (printf_global_error(1, 2, "cd: too many arguments\n"), free(cwd), g_last_exit_status);
 	else if (args[1] == NULL || ft_strcmp(args[1], "~") == 0)
 		return (change_directory_and_update(get_env_var(*env, "HOME"),
 				env, cwd));
@@ -216,7 +216,7 @@ int	exec_dollar_pwd(void)
 
 	cwd = getcwd(NULL, 0);
 	if (cwd == NULL)
-		return (perror("getcwd"), 1);
+		return (printf_global_error(1, 2, "getcwd\n"), g_last_exit_status);
 	else
 	{
 		ft_putstr_fd(cwd, 1);
@@ -233,7 +233,7 @@ int	exec_pwd(void)
 
 	cwd = getcwd(NULL, 0);
 	if (cwd == NULL)
-		return (perror("getcwd"), 1);
+		return (printf_global_error(1, 2, "getcwd\n"), g_last_exit_status);
 	else
 	{
 		printf("%s\n", cwd);
@@ -254,13 +254,13 @@ int	exec_export(char **args, t_env **env)
 		return (exec_export_no_args(*env), 0);
 	control = var_control(args[1]);
 	if (control == 1)
-		return (1);
+		return (g_last_exit_status);
 	else
 	{
 		if (split_var(args[1], &name, &value))
-			return (1);
+			return (g_last_exit_status);
 		if (update_add_env_var(env, name, value))
-			return (free(name), free(value), 1);
+			return (free(name), free(value), g_last_exit_status);
 	}
-	return (0);
+	return (g_last_exit_status);
 }

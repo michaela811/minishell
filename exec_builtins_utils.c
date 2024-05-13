@@ -37,7 +37,7 @@ int	var_control(char *args)
 
 	i = 0;
 	if (args[i++] == '=')
-		return (perror("export: not a valid identifier\n"), 1);
+		return (printf_global_error(1, 2, "export: not a valid identifier\n"), g_last_exit_status);
 	return (0);
 	/*while (args[i])
 	{
@@ -59,14 +59,11 @@ int	split_var(char *var, char **name, char **value)
 	else
 		*name = ft_strdup(var);
 	if (name == NULL)
-		return (perror("split_var: strndup error\n"), 1);
+		return (printf_global_error(1, 2, "split_var: strndup error\n"), free(*name), g_last_exit_status);
 	while ((*name)[i] != '\0')
 	{
 		if (ft_isalpha((*name)[i]) == 0)//add underscore and probably numbers
-		{
-			g_last_exit_status = 1;
-			return(ft_printf_fd(1, "export: %s: not a valid identifier\n", (*name)[i]), free(*name), g_last_exit_status);
-		}
+			return(printf_global_error(1, 2, "export: %s: not a valid identifier\n", *name), free(*name), g_last_exit_status);
 		i++;
 	}
 	(*name)[i] = '\0';
@@ -74,17 +71,13 @@ int	split_var(char *var, char **name, char **value)
 	{
 		*value = ft_strdup("");
 		if (value == NULL)
-		{
-			g_last_exit_status = 1;
-			return (ft_printf_fd(1, "split_var: strndup error\n"), free(*name), 1);
-		}
+			return (printf_global_error(1, 2, "split_var: strndup error\n"), free(*name), g_last_exit_status);
 		return (0);
 	}
 	if (export_quotes(equals + 1, value))
-		return (perror("split_var: export_quotes error\n"), free(*name), 1);
-	//*value = ft_strdup(equals + 1);
-	if (value == NULL)
-		return (perror("split_var: strndup error\n"), free(*name), 1);
+		return (printf_global_error(1, 2, "split_var: export_quotes error\n"), free(*name), g_last_exit_status);
+	//if (value == NULL)//Do we need this check?
+		//return (printf_global_error("split_var: strndup error\n"), free(*name), 1);
 	return (0);
 }
 
@@ -95,20 +88,20 @@ int export_quotes(char *input, char **output)
     if (len == 0)
 	{
         *output = ft_strdup(""); // Handle empty value
-        return 0;
+        return (0);
     }
 	if ((input[0] == '"' || input[0] == '\'') && input[0] != input[len - 1])
 	{
-		perror("export_quotes: unbalanced quotes");
-		return 1;
+		g_last_exit_status = 1;//maybe to change it to a different number
+		return(ft_printf_fd(1, "export_quotes: unbalanced quotes"), g_last_exit_status);
 	}
     if ((input[0] == '"' || input[0] == '\'') && input[0] == input[len - 1])
 	{
         *output = ft_strndup(input + 1, len - 2);
         if (*output == NULL)
 		{
-            perror("export_quotes: strndup error");
-            return 1;
+			g_last_exit_status = 1;//maybe to change it to a different number
+			return(ft_printf_fd(1, "export_quotes: strndup error"), g_last_exit_status);
         }
     }
 	else
@@ -116,8 +109,8 @@ int export_quotes(char *input, char **output)
         *output = ft_strdup(input); // No quotes to handle, just duplicate
         if (*output == NULL)
 		{
-            perror("export_quotes: strdup error");
-            return 1;
+            g_last_exit_status = 1;//maybe to change it to a different number
+			return(ft_printf_fd(1, "export_quotes: strndup error"), g_last_exit_status);
         }
     }
     return 0;

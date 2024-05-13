@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*   ft_printf_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 09:27:54 by mmasarov          #+#    #+#             */
-/*   Updated: 2023/10/04 13:53:28 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/05/13 14:59:00 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,29 @@ int	ft_printf_fd(unsigned int fd, const char *print, ...)
 	}
 	va_end(args);
 	return (return_len);
+}
+
+int ft_vprintf_fd(unsigned int fd, const char *print, va_list args)
+{
+    int return_len = 0;
+    int i = 0;
+
+    if (!print)
+        return (-1);
+
+    while (print[i])
+    {
+        if (print[i] == '%')
+        {
+            return_len += ft_format_fd(fd, print[i + 1], args);
+            i++;
+        }
+        else
+        {
+            ft_print_char_fd(fd, print[i]);
+            return_len++;
+        }
+        i++;
+    }
+    return return_len;
 }

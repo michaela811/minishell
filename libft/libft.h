@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/14 10:29:25 by mmasarov          #+#    #+#             */
-/*   Updated: 2023/09/14 11:15:19 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/05/13 14:59:36 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <printf.h>
+# include <stdarg.h>
 //# include <ft_printf_fd.h>
 
 /* part one functions*/
@@ -70,5 +71,6 @@ char *ft_strncpy(char *dest, const char *src, size_t n);
 /* Printf added*/
 //int	ft_printf(const char *print, ...);
 int	ft_printf_fd(unsigned int fd, const char *print, ...);
+int ft_vprintf_fd(unsigned int fd, const char *print, va_list args);
 
 #endif

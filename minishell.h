@@ -83,6 +83,7 @@ void			free_token_list(t_token_list* list);
 void			handle_memory_error(t_token **token_list, int num_tokens);
 void			exit_function(int i); // to delete later
 void			execve_error(char **s_cmd); // to delete later
+void            printf_global_error(int status, unsigned int fd, char *format, ...);
 
 // Parsing
 void			link_node(t_parse_tree **current, t_parse_tree *newNode);
