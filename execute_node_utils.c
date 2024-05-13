@@ -21,22 +21,14 @@ void	handle_node_data(t_parse_tree *node, t_exec_vars *vars, t_env **env)
 	else if (node->data->lexeme[0] == '$'
 		&& strcmp(node->data->lexeme, "$?") == 0)
 		vars->args[vars->i] = "$?";
-	//else if (node->data->lexeme[0] == '$')
-		//handle_global_env(node, vars->args, vars->i++, env);
-	//else if (strcmp(node->data->lexeme, "$PWD") == 0)
-		//vars->args[vars->i++] = node->data->lexeme;
 	else if (node->data->lexeme[0] == '"' || node->data->lexeme[0] == 39 || node->data->lexeme[0] == '$')
-		//handle_quotes_global(node, vars->args, vars->i++, env);
 	{
 		handle_quotes_global(node, vars->args, vars->i, env);
 		if (ft_strcmp(vars->args[vars->i], "") == 0)
 			return ;
 	}
 	else
-	{
-		//remove_even_quotes(node, vars->args, vars->i++, vars->error);
 		vars->args[vars->i] = node->data->lexeme;
-	}
 	if (node->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' '))
 		vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
 	vars->i++;

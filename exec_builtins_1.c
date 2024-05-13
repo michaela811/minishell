@@ -8,8 +8,6 @@ int	exec_builtins(t_exec_vars *vars, t_env **env, char **environment)
 		return (exec_cd(vars->args, env));
 	else if (ft_strcmp(vars->args[0], "pwd") == 0)
 		return (exec_pwd());
-	//else if (ft_strcmp(vars->args[0], "$PWD") == 0)
-		//return (exec_dollar_pwd());
 	else if (ft_strcmp(vars->args[0], "echo") == 0)
 		return (exec_echo(vars));
 	else if (ft_strcmp(vars->args[0], "export") == 0)
@@ -18,66 +16,17 @@ int	exec_builtins(t_exec_vars *vars, t_env **env, char **environment)
 		return (exec_unset(vars->args, env));
 	else if (ft_strcmp(vars->args[0], "env") == 0)
 		return (exec_env(vars->args, environment));
-	//else if (vars->args[0][0] == '$')
-		//return (exec_global_env(vars, env));
 	return (2);
 }
 
 int	exec_global_env(t_exec_vars *vars, t_env **env)
 {
-	//char	*str;
 	char	buffer[1024] = "";
-	//char	*start;
 	handle_dollar_sign(vars->args, buffer, env);
 
 	vars->args[0][0] = *ft_strdup(buffer);
 	return (0);
 }
-/*
-void	handle_dollar_sign(char **start, char *buffer, t_env **env)
-{
-	char	*dollar;
-	char	*var_start;
-	char	*var_end;
-	char	var_name[1024];
-	char	*var_value;
-	char	*start_store;
-
-	//buffer = NULL;
-	start_store = *start;
-	while ((dollar = ft_strchr(*start, '$')) != NULL)
-	{
-		ft_strncat(buffer, *start, dollar - *start);
-		if (*(dollar + 1) == '?')
-		{
-			ft_strcat(buffer, ft_itoa(g_last_exit_status));
-			*start = dollar + 2;
-		}
-		else if (*(dollar + 1) == '\0' || *(dollar + 1) == '$' || *(dollar + 1) == ' ' || *(dollar + 1) == '"')
-		{
-			ft_strcat(buffer, "$");
-			*start = dollar + 1;
-		}
-		else
-		{
-			var_start = dollar + 1;
-			var_end = ft_strpbrk(var_start, " \t\n\"'$");
-			if (var_end == NULL)
-				var_end = var_start + ft_strlen(var_start);
-			ft_strncpy(var_name, var_start, var_end - var_start);
-			var_name[var_end - var_start] = '\0';
-			var_value = get_env_var(*env, var_name);
-			if (var_value != NULL)
-				ft_strcat(buffer, var_value);
-			*start = var_end;
-		}
-	}
-	if ((dollar = ft_strchr(start_store, '$')) == NULL)
-		ft_strcpy(buffer, start_store);//Probably use strncpy!
-	else if (*start)
-		ft_strcat(buffer, *start);
-}
-}*/
 
 int	ft_atoi_no_minus(const char *nptr)
 {
@@ -90,7 +39,7 @@ int	ft_atoi_no_minus(const char *nptr)
 	}
 	if (*nptr == 43)
 		nptr++;
-	if ((*nptr <= 47) || (*nptr >= 58 && *nptr < 127))//removed *nptr >= 0 &&
+	if ((*nptr <= 47) || (*nptr >= 58 && *nptr < 127))
 		return (0);
 	while (*nptr >= 48 && *nptr <= 57)
 	{
@@ -270,7 +219,7 @@ int	exec_dollar_pwd(void)
 		return (perror("getcwd"), 1);
 	else
 	{
-		ft_putstr_fd(cwd, 1);//("%s", cwd);
+		ft_putstr_fd(cwd, 1);
 		ft_putstr_fd(": Is a directory\n", 1);
 		g_last_exit_status = 126;
 		free(cwd);
@@ -308,7 +257,7 @@ int	exec_export(char **args, t_env **env)
 		return (1);
 	else
 	{
-		if (split_var(args[1], &name, &value))//think how to handle the error
+		if (split_var(args[1], &name, &value))
 			return (1);
 		if (update_add_env_var(env, name, value))
 			return (free(name), free(value), 1);

@@ -64,7 +64,8 @@ int	split_var(char *var, char **name, char **value)
 	{
 		if (ft_isalpha((*name)[i]) == 0)//add underscore and probably numbers
 		{
-			return (ft_printf_fd(1, "export: %s: not a valid identifier\n", (*name)[i]), free(*name), 1);
+			g_last_exit_status = 1;
+			return(ft_printf_fd(1, "export: %s: not a valid identifier\n", (*name)[i]), free(*name), g_last_exit_status);
 		}
 		i++;
 	}
@@ -73,7 +74,10 @@ int	split_var(char *var, char **name, char **value)
 	{
 		*value = ft_strdup("");
 		if (value == NULL)
-			return (perror("split_var: strndup error\n"), free(*name), 1);
+		{
+			g_last_exit_status = 1;
+			return (ft_printf_fd(1, "split_var: strndup error\n"), free(*name), 1);
+		}
 		return (0);
 	}
 	if (export_quotes(equals + 1, value))

@@ -94,10 +94,8 @@ void	handle_parse_tree(t_token_list **token_list, t_env **envmt)
 	root = NULL;
 	if (is_pipe_sequence(token_list, &root) == SUBTREE_OK)
 	{
-		//g_last_exit_status = PARSING_ERROR;//WHY PARSING ERROR?
 		if (execute_parse_tree(root, envmt))
 		{
-			//g_last_exit_status = 1;//PARSING_ERROR;
 			free_parse_tree(root);
 		}
 	}
