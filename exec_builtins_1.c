@@ -122,7 +122,7 @@ int	exec_echo(t_exec_vars *vars)
 		i++;
 	process_args(vars->args, &(vars->error));
 	if (vars->error) //free the args
-		return (free(vars->args), perror("echo: odd number of quotes\n"), 1);
+		return (free_env_array(vars->args), perror("echo: odd number of quotes\n"), 1);
 	while (vars->args[i])
 	{
 		printf("%s", vars->args[i]);
