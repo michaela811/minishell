@@ -79,7 +79,7 @@ extern int		g_last_exit_status;
 
 //MAIN
 void			handle_signal(int signal);
-void	        handle_input(char *input, t_env *envmt, t_token_list *token_list);
+void	        handle_input(char *input, t_env *envmt, t_token_list **token_list);
 void			handle_preprocess_input(char* input, t_token_list **tokenList);
 void			handle_parse_tree(t_token_list **tokenList, t_env **envmt);
 

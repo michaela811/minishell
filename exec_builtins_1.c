@@ -132,7 +132,7 @@ int	exec_echo(t_exec_vars *vars)
 	}
 	if (ft_strcmp(vars->args[1], "-n") != 0)
 		printf("\n");
-	free(vars->args);
+	free_env_array(vars->args);
 	return (0);
 }
 
