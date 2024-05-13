@@ -12,7 +12,7 @@ void	free_token(t_token *tok)
 	tok = NULL;
 }
 
-void	free_parse_tree(t_parse_tree *tree)
+/*void	free_parse_tree(t_parse_tree *tree)
 {
 	t_parse_tree	*sibling;
 	t_parse_tree	*child;
@@ -35,6 +35,32 @@ void	free_parse_tree(t_parse_tree *tree)
 		free(tree);
 		tree = NULL;
 	}
+}*/
+
+void	free_parse_tree(t_parse_tree *tree)
+{
+    t_parse_tree	*sibling;
+    t_parse_tree	*child;
+
+    if (tree == NULL)
+        return ;
+
+    child = tree->child;
+    sibling = tree->sibling;
+
+    if (tree->data != NULL)
+    {
+        free_token(tree->data);
+        tree->data = NULL;
+    }
+
+    free(tree);
+    tree = NULL;
+
+    if (sibling != NULL)
+        free_parse_tree(sibling);
+    if (child != NULL)
+        free_parse_tree(child);
 }
 
 void	free_token_list(t_token_list *list)
