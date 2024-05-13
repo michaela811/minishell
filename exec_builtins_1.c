@@ -3,7 +3,7 @@
 int	exec_builtins(t_exec_vars *vars, t_env **env, char **environment)
 {
 	if (ft_strcmp(vars->args[0], "exit") == 0)
-		return (exec_exit(vars, env));
+		return (exec_exit(vars, env, environment));
 	else if (ft_strcmp(vars->args[0], "cd") == 0)
 		return (exec_cd(vars->args, env));
 	else if (ft_strcmp(vars->args[0], "pwd") == 0)
@@ -40,7 +40,7 @@ int	ft_atoi_no_minus(const char *nptr)
 	return (number);
 }
 
-int	exec_exit(t_exec_vars *vars, t_env **env)
+int	exec_exit(t_exec_vars *vars, t_env **env, char **environment)
 {
 	int	i;
 	char *result;
@@ -52,6 +52,8 @@ int	exec_exit(t_exec_vars *vars, t_env **env)
 		if (vars->args[2] != NULL)
 		{
 			//printf("exit: too many arguments");
+			free_env_array(environment);
+			free_env(*env);
 			g_last_exit_status = 1;
 			exit(g_last_exit_status);
 		}
@@ -62,6 +64,9 @@ int	exec_exit(t_exec_vars *vars, t_env **env)
 			result = handle_quotes_echo(&vars->args[1][i], &(vars->error));
 			if (vars->error)
 			{
+				free(result);
+				free_env(*env);
+				free_env_array(environment);
 				g_last_exit_status = vars->error;
 				exit(g_last_exit_status);
 			}
@@ -71,6 +76,9 @@ int	exec_exit(t_exec_vars *vars, t_env **env)
 		{
 			if (result[i] == '+' && vars->args[1][0] == '+')
 			{
+				free(result);
+				free_env(*env);
+				free_env_array(environment);
 				g_last_exit_status = 156;
 				exit(g_last_exit_status);
 			}
@@ -78,6 +86,9 @@ int	exec_exit(t_exec_vars *vars, t_env **env)
 				i++;
 			if (ft_isdigit(result[i]) == 0)
 			{
+				free(result);
+				free_env(*env);
+				free_env_array(environment);
 				g_last_exit_status = 156;
 				exit(g_last_exit_status);
 			}
@@ -85,6 +96,8 @@ int	exec_exit(t_exec_vars *vars, t_env **env)
 		}
 		g_last_exit_status = ft_atoi(result);
 	}
+	free(result);
+	free_env_array(environment);
 	free_env(*env);
 	exit(g_last_exit_status);
 }
@@ -108,7 +121,7 @@ int	exec_echo(t_exec_vars *vars)
 		i++;
 	process_args(vars->args, &(vars->error));
 	if (vars->error)
-		return (perror("echo: odd number of quotes\n"), 1);
+		return (free_env_array(vars->args), perror("echo: odd number of quotes\n"), 1);
 	while (vars->args[i])
 	{
 		printf("%s", vars->args[i]);
@@ -118,6 +131,7 @@ int	exec_echo(t_exec_vars *vars)
 	}
 	if (ft_strcmp(vars->args[1], "-n") != 0)
 		printf("\n");
+	free_env_array(vars->args);
 	return (0);
 }
 

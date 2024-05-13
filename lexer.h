@@ -68,7 +68,7 @@ extern int		g_last_exit_status;
 
 //MAIN
 void			handle_signal(int signal);
-void			handle_input(char* input, t_env *envmt);
+void            handle_input(char *input, t_env *envmt, t_token_list **token_list);
 void			handle_preprocess_input(char* input, t_token_list **tokenList);
 void			handle_parse_tree(t_token_list **tokenList, t_env **envmt);
 
@@ -80,7 +80,6 @@ void			free_token_list(t_token_list* list);
 
 // Errors
 void			handle_memory_error(t_token **token_list, int num_tokens);
-void			exit_function(int i); // to delete later
 void			execve_error(char **s_cmd); // to delete later
 
 // Parsing
@@ -120,7 +119,7 @@ enum token_type	determine_token_type(char *token_value);
 
 // Execute
 int             execute_parse_tree(t_parse_tree *root, t_env **env);
-int             exec_exit(t_exec_vars *vars, t_env **env);
+int             exec_exit(t_exec_vars *vars, t_env **env, char **environment);
 int             get_path(char *cmd, t_env *env, char **exec);
 int             get_exec(char **path, int i, char *cmd, char **exec);
 int             handle_child_process(t_parse_tree *node, t_env **env, int *pipefd);
@@ -152,23 +151,7 @@ void            execve_error(char **s_cmd);
 void            free_array(char **array);
 int             error_message(char *str);
 
-// Libft
-/*
-static void     ft_free(char **array, int j);
-static size_t   n_words(const char *str, char c);
-static size_t   size_word(const char *s, char c, int i);
-char            **ft_split(char const *s, char c);
-size_t          ft_strlen(const char *s);
-int             ft_strcmp(const char *s1, const char *s2);
-char            *ft_strjoin(char const *s1, char const *s2);
-void            ft_putstr_fd(char *s, int fd);
-void            ft_putendl_fd(char *s, int fd);
-static size_t   ft_special_cases(char const *s, unsigned int start, size_t len);
-char            *ft_substr(char const *s, unsigned int start, size_t len);
-*/
-
-
-
+// Environment
 t_env           *create_env_var(const char *name, const char *value);
 t_env           *init_environment(char **envp);
 t_env           *find_env_var(t_env *head, const char *name);
