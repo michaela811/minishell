@@ -59,6 +59,14 @@ SOURCES = ft_isdigit.c \
 		  ft_print_unsign_int.c \
 		  ft_print_percent.c \
 		  ft_print_int.c \
+		  ft_printf_fd.c \
+		  ft_print_char_fd.c \
+		  ft_print_hex_fd.c \
+		  ft_print_ptr_fd.c \
+		  ft_print_str_fd.c \
+		  ft_print_unsign_int_fd.c \
+		  ft_print_percent_fd.c \
+		  ft_print_int_fd.c \
 		  ft_strcat.c \
 		  ft_strcmp.c \
 		  ft_strcpy.c \

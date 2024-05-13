@@ -63,7 +63,9 @@ int	split_var(char *var, char **name, char **value)
 	while ((*name)[i] != '\0')
 	{
 		if (ft_isalpha((*name)[i]) == 0)//add underscore and probably numbers
-			return (perror("export: not a valid identifier\n"), free(*name), 1);
+		{
+			return (ft_printf_fd(1, "export: %s: not a valid identifier\n", (*name)[i]), free(*name), 1);
+		}
 		i++;
 	}
 	(*name)[i] = '\0';

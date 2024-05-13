@@ -89,34 +89,45 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 		return (g_last_exit_status);
 	}
 	if (path_status == -1)
-{
-    struct stat path_stat;
-    stat(path, &path_stat);
-    if (access(path, F_OK) == -1 || S_ISDIR(path_stat.st_mode))
-    {
-        ft_putstr_fd("my(s)hell: ", 2);
-        ft_putstr_fd(vars->args[0], 2);
-        ft_putstr_fd(": command not found\n", 2);
-        g_last_exit_status = 127;
-        return (g_last_exit_status);
-    }
-    else if (access(path, X_OK) == -1 && S_ISREG(path_stat.st_mode))
-    {
-        ft_putstr_fd("my(s)hell: ", 2);
-        ft_putstr_fd(vars->args[0], 2);
-        ft_putstr_fd(": command not found\n", 2);
-        g_last_exit_status = 127;
-        return (g_last_exit_status);
-    }
-    else
-    {
-        ft_putstr_fd("my(s)hell: ", 2);
-        ft_putstr_fd(vars->args[0], 2);
-        ft_putstr_fd(": Permission denied\n", 2);
-        g_last_exit_status = 126;
-        return (g_last_exit_status);
-    }
-}
+	{
+    	struct stat path_stat;
+    	stat(path, &path_stat);
+    	if (access(path, F_OK) == -1 || S_ISDIR(path_stat.st_mode))
+    	{
+        	ft_putstr_fd("my(s)hell: ", 2);
+        	ft_putstr_fd(vars->args[0], 2);
+        	ft_putstr_fd(": command not found\n", 2);
+        	g_last_exit_status = 127;
+        	return (g_last_exit_status);
+    	}
+    	if (access(vars->args[0], X_OK) == -1)
+		{
+        if (S_ISREG(path_stat.st_mode))
+			{
+        	    ft_putstr_fd("my(s)hell: ", 2);
+        	    ft_putstr_fd(vars->args[0], 2);
+				if ((path_stat.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) == 0) {
+                // The file has execute bits set but isn't executable, perhaps due to other restrictions
+				ft_putstr_fd(": command not found\n", 2);
+        	        return (g_last_exit_status = 127);
+                ft_putstr_fd(": Permission denied\n", 2);
+        	        return (g_last_exit_status = 126);
+            } else {
+                // The file has no execute bits set
+                ft_putstr_fd(": Permission denied\n", 2);
+        	        return (g_last_exit_status = 126);
+            }
+        	    /*if ((path_stat.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) != 0)
+				{
+        	        ft_putstr_fd(": command not found\n", 2);
+        	        return (g_last_exit_status = 127);
+        	    } else {
+        	        ft_putstr_fd(": Permission denied\n", 2);
+        	        return (g_last_exit_status = 126);
+        	    }*/
+        	}
+		}
+	}
 //free(path); //probably freed later as lexem
 	if (execve(path, vars->args, environment) < 0)
 	{

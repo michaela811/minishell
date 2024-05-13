@@ -103,11 +103,11 @@ void	print_parse_tree(t_parse_tree *tree, int depth)
 	if (!tree)
 		return ;
 	while (i++ < depth)
-		ft_printf("  ");
+		printf("  ");
 	if (tree->data)
-		ft_printf("%s (%d)\n", tree->data->lexeme, tree->data->type);
+		printf("%s (%d)\n", tree->data->lexeme, tree->data->type);
 	else
-		ft_printf("NULL\n");
+		printf("NULL\n");
 	print_parse_tree(tree->child, depth + 1);
 	print_parse_tree(tree->sibling, depth);
 }
