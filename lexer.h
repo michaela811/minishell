@@ -71,7 +71,7 @@ typedef struct s_exec_vars
 // Building struct to free when exiting
 typedef struct s_free_data {
     t_parse_tree *tree;
-    t_env **env;
+    t_env *env;
     t_token_list *token_list;
     char **environment;
 } t_free_data;
@@ -87,8 +87,8 @@ extern int		g_last_exit_status;
 
 //MAIN
 void			handle_signal(int signal);
-void	        handle_input(char *input, t_env *envmt, t_token_list **token_list);
-void			handle_preprocess_input(char* input, t_token_list **tokenList);
+void	        handle_input(char *input, t_free_data *free_data);
+void	        handle_preprocess_input(char *input, t_token_list **token_list);
 void			handle_parse_tree(t_token_list **tokenList, t_env **envmt);
 
 // Allocs and frees
@@ -96,6 +96,7 @@ t_parse_tree*	alloc_parse_tree();
 void			free_parse_tree(t_parse_tree *tree);
 void			free_token(t_token* tok);
 void			free_token_list(t_token_list* list);
+void	        free_command_data(t_free_data *free_data);
 
 // Errors
 void			handle_memory_error(t_token **token_list, int num_tokens);
@@ -209,6 +210,8 @@ void            exec_export_no_args(t_env *env);
 int             var_control(char *args);
 int             split_var(char *var, char **name, char **value);
 int             exec_export(char **args, t_env **env);
+
+t_free_data     *init_command_data(char **envp);
 
 
 

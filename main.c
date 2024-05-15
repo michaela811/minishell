@@ -17,41 +17,33 @@ void	handle_signal(int signal)
 int	main(int argc, char **argv, char **envp)
 {
 	char	        *input;
-	t_env	        *envmt;
-    t_token_list    *token_list;
+    t_free_data     *free_data;
 
-    token_list = NULL;
     (void)argc;
     (void)argv;
 	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, handle_signal);
-	envmt = init_environment(envp);
-	if (envmt == NULL)
-	{
-		g_last_exit_status = 1;
-		return (perror("init_environment failed"), 1);
-	}
+    free_data = init_command_data(envp);
 	while ((input = readline("my(s)hell> ")))
 	{
-		if (!input)// NOT SURE IF CORRECTLY RESOLVED PREVIOUS while ((input = readline("my(s)hell> ")) != NULL)
+		if (!input)
 			break ;
-		handle_input(input, envmt, &token_list);
+		handle_input(input, free_data);
 	}
 	rl_on_new_line();
-    free_env(envmt);
 	return (0);
 }
 
-void	handle_input(char *input, t_env *envmt, t_token_list **token_list)
+void	handle_input(char *input, t_free_data *free_data)
 {
-	if (*input)
-	{
-		add_history(input);
-		handle_preprocess_input(input, token_list);
-		if (!*token_list)
-			return ;
-		handle_parse_tree(token_list, &envmt);
-	}
+    if (*input)
+    {
+        add_history(input);
+        handle_preprocess_input(input, &free_data->token_list);
+        if (!free_data->token_list)
+            return ;
+        handle_parse_tree(&free_data->token_list, &free_data->env);
+    }
 }
 
 void	handle_preprocess_input(char *input, t_token_list **token_list)
@@ -81,27 +73,19 @@ void	handle_preprocess_input(char *input, t_token_list **token_list)
 
 void	handle_parse_tree(t_token_list **token_list, t_env **envmt)
 {
-	//t_token_list	*start;
 	t_parse_tree	*root;
 	t_token_list	*start;
 
-	//start = *token_list;
 	start = *token_list;;
 	root = NULL;
 	if (is_pipe_sequence(token_list, &root) == SUBTREE_OK)
 	{
-		//g_last_exit_status = PARSING_ERROR;//WHY PARSING ERROR?
 		if (execute_parse_tree(root, envmt, start))
-		{
 			g_last_exit_status = PARSING_ERROR;
-			//free_parse_tree(root);
-		}
 	}
 	else
 	{
 		g_last_exit_status = 4;
-        //free_token_list(start);
-        //free_parse_tree(root);
 		printf("Parser returned an error: %d\n", SYNTAX_ERROR);
 	}
 	free_token_list(start);

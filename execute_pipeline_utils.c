@@ -46,6 +46,7 @@ int	handle_sibling_process(t_parse_tree *node, t_env **env, int *pipefd, t_token
 	}
 	else
 		return (perror("fork"), 1);
+	free_env(*env);
 	return (0);
 }
 

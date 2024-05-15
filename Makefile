@@ -26,6 +26,7 @@ SOURCES = env_main.c \
 			parser_is_cmd_suffix.c \
 			parser_main.c \
 			parser_utils.c \
+			init.c \
 			custom_malloc.c \
 
 OBJ = $(SOURCES:.c=.o)
