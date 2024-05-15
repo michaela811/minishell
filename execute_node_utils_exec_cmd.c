@@ -1,7 +1,7 @@
 #include "lexer.h"
 #include <errno.h>
 
-int	execute_command(t_exec_vars *vars, t_env **env)
+int	execute_command(t_exec_vars *vars, t_env **env, t_token_list *token_list, t_parse_tree *root)
 {
 	char	**environment;
 	int		return_builtins;
@@ -12,7 +12,7 @@ int	execute_command(t_exec_vars *vars, t_env **env)
 		g_last_exit_status = 1;
 		return (free_env(*env), 1);
 	}
-	return_builtins = exec_builtins(vars, env, environment);
+	return_builtins = exec_builtins(vars, env, environment, token_list, root);
 	if (return_builtins == 2)
 	{
 		if (handle_fork(vars, env, environment))

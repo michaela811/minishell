@@ -91,17 +91,17 @@ void	handle_parse_tree(t_token_list **token_list, t_env **envmt)
 	if (is_pipe_sequence(token_list, &root) == SUBTREE_OK)
 	{
 		//g_last_exit_status = PARSING_ERROR;//WHY PARSING ERROR?
-		if (execute_parse_tree(root, envmt))
+		if (execute_parse_tree(root, envmt, start))
 		{
 			g_last_exit_status = PARSING_ERROR;
-			free_parse_tree(root);
+			//free_parse_tree(root);
 		}
 	}
 	else
 	{
 		g_last_exit_status = 4;
-        free_token_list(start);
-        free_parse_tree(root);
+        //free_token_list(start);
+        //free_parse_tree(root);
 		printf("Parser returned an error: %d\n", SYNTAX_ERROR);
 	}
 	free_token_list(start);

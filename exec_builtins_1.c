@@ -1,9 +1,9 @@
 #include "lexer.h"
 
-int	exec_builtins(t_exec_vars *vars, t_env **env, char **environment)
+int	exec_builtins(t_exec_vars *vars, t_env **env, char **environment, t_token_list *token_list, t_parse_tree *root)
 {
 	if (ft_strcmp(vars->args[0], "exit") == 0)
-		return (exec_exit(vars, env, environment));
+		return (exec_exit(vars, env, environment, token_list, root));
 	else if (ft_strcmp(vars->args[0], "cd") == 0)
 		return (exec_cd(vars->args, env));
 	else if (ft_strcmp(vars->args[0], "pwd") == 0)
@@ -40,7 +40,7 @@ int	ft_atoi_no_minus(const char *nptr)
 	return (number);
 }
 
-int	exec_exit(t_exec_vars *vars, t_env **env, char **environment)
+int	exec_exit(t_exec_vars *vars, t_env **env, char **environment, t_token_list *token_list, t_parse_tree *root)
 {
 	int	i;
 	char *result;
@@ -52,6 +52,8 @@ int	exec_exit(t_exec_vars *vars, t_env **env, char **environment)
 		if (vars->args[2] != NULL)
 		{
 			//printf("exit: too many arguments");
+			free_parse_tree(root);
+			free_token_list(token_list);
 			free_env_array(environment);
 			free_env(*env);
 			g_last_exit_status = 1;
@@ -65,6 +67,8 @@ int	exec_exit(t_exec_vars *vars, t_env **env, char **environment)
 			if (vars->error)
 			{
 				free(result);
+				free_parse_tree(root);
+				free_token_list(token_list);
 				free_env(*env);
 				free_env_array(environment);
 				g_last_exit_status = vars->error;
@@ -77,6 +81,8 @@ int	exec_exit(t_exec_vars *vars, t_env **env, char **environment)
 			if (result[i] == '+' && vars->args[1][0] == '+')
 			{
 				free(result);
+				free_parse_tree(root);
+				free_token_list(token_list);
 				free_env(*env);
 				free_env_array(environment);
 				g_last_exit_status = 156;
@@ -87,6 +93,8 @@ int	exec_exit(t_exec_vars *vars, t_env **env, char **environment)
 			if (ft_isdigit(result[i]) == 0)
 			{
 				free(result);
+				free_parse_tree(root);
+				free_token_list(token_list);
 				free_env_array(environment);
 				free_env(*env);
 				g_last_exit_status = 156;
@@ -97,6 +105,8 @@ int	exec_exit(t_exec_vars *vars, t_env **env, char **environment)
 		g_last_exit_status = ft_atoi(result);
 	}
 	free(result);
+	free_parse_tree(root);
+	free_token_list(token_list);
 	free_env_array(environment);
 	free_env(*env);
 	check_for_memory_leaks();

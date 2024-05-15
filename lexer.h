@@ -68,6 +68,14 @@ typedef struct s_exec_vars
     int error;
 } t_exec_vars;
 
+// Building struct to free when exiting
+typedef struct s_free_data {
+    t_parse_tree *tree;
+    t_env **env;
+    t_token_list *token_list;
+    char **environment;
+} t_free_data;
+
 // Return values
 #define SYNTAX_ERROR -1
 #define SUBTREE_OK 0
@@ -127,14 +135,14 @@ t_token_list	*create_node_lexer(t_token *newToken);
 enum token_type	determine_token_type(char *token_value);
 
 // Execute
-int             execute_parse_tree(t_parse_tree *root, t_env **env);
-int             exec_exit(t_exec_vars *vars, t_env **env, char **environment);
+int             execute_parse_tree(t_parse_tree *root, t_env **env, t_token_list *token_list);
+int             exec_exit(t_exec_vars *vars, t_env **env, char **environment, t_token_list *token_list, t_parse_tree *root);
 int             get_path(char *cmd, t_env *env, char **exec);
 int             get_exec(char **path, int i, char *cmd, char **exec);
-int             handle_child_process(t_parse_tree *node, t_env **env, int *pipefd);
-int             handle_sibling_process(t_parse_tree *node, t_env **env, int *pipefd);
-int             handle_parent_process(t_parse_tree *node, t_env **env, int *pipefd, pid_t pid);
-int             execute_pipeline(t_parse_tree *node, t_env **env);
+int             handle_child_process(t_parse_tree *node, t_env **env, int *pipefd, t_token_list *token_list, t_parse_tree *tree);
+int             handle_sibling_process(t_parse_tree *node, t_env **env, int *pipefd, t_token_list *token_list, t_parse_tree *tree);
+int             handle_parent_process(t_parse_tree *node, t_env **env, int *pipefd, pid_t pid, t_token_list *token_list, t_parse_tree *tree);
+int             execute_pipeline(t_parse_tree *node, t_env **env, t_token_list *token_list, t_parse_tree *tree);
 
 void            handle_redirection(t_parse_tree **node, t_exec_vars *vars);
 void            handle_redirection_from(t_parse_tree **node, t_exec_vars *vars);
@@ -143,13 +151,13 @@ void            handle_redirection_append(t_parse_tree **node, t_exec_vars *vars
 void            handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars);
 char            *handle_here_doc(t_parse_tree **node, t_exec_vars *vars);
 
-int             exec_builtins(t_exec_vars *vars, t_env **env, char **environment);
+int             exec_builtins(t_exec_vars *vars, t_env **env, char **environment, t_token_list *token_list, t_parse_tree *root);
 int             handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment);
 int             handle_fork(t_exec_vars *vars, t_env **env, char **environment);
-int             execute_command(t_exec_vars *vars,  t_env **env);
+int             execute_command(t_exec_vars *vars,  t_env **env, t_token_list *token_list, t_parse_tree *root);
 void            init_exec_vars(t_exec_vars *vars);
 void            handle_node_data(t_parse_tree *node, t_exec_vars *vars, t_env **env);
-int             execute_node(t_parse_tree *node, t_env **env);
+int             execute_node(t_parse_tree *node, t_env **env, t_token_list *token_list, t_parse_tree *tree);
 void            handle_global_env(t_parse_tree *node, char **args, int i, t_env **env);
 //void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
 void            handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);

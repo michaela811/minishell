@@ -1,12 +1,15 @@
 #include "lexer.h"
 
-int	execute_parse_tree(t_parse_tree *root, t_env **env)
+int	execute_parse_tree(t_parse_tree *root, t_env **env, t_token_list *token_list)
 {
+	t_parse_tree	*start;
+
+	start = root;
 	if (root == NULL)
 		return (0); //NO IMPUT, NOT A MISTAKE
 	if (root->sibling)
 	{
-		if (execute_pipeline(root, env))
+		if (execute_pipeline(root, env, token_list, start))
 		{
 			g_last_exit_status = 1;
 			return (1);
@@ -14,7 +17,7 @@ int	execute_parse_tree(t_parse_tree *root, t_env **env)
 	}
 	else
 	{
-		if (execute_node(root->child, env))
+		if (execute_node(root->child, env, token_list, start))
 		{
 			g_last_exit_status = 1;
 			return (1);
@@ -23,7 +26,7 @@ int	execute_parse_tree(t_parse_tree *root, t_env **env)
 	return (0);
 }
 
-int	execute_node(t_parse_tree *node, t_env **env)
+int	execute_node(t_parse_tree *node, t_env **env, t_token_list *token_list, t_parse_tree *tree)
 {
 	t_exec_vars	vars;
 
@@ -41,7 +44,7 @@ int	execute_node(t_parse_tree *node, t_env **env)
 		node = node->child;
 	}
 	vars.args[vars.i] = NULL;
-	if (execute_command(&vars, env) == 1)
+	if (execute_command(&vars, env, token_list, tree) == 1)
 	{
 		g_last_exit_status = 154;
 		return (1);
@@ -49,7 +52,7 @@ int	execute_node(t_parse_tree *node, t_env **env)
 	return (0);
 }
 
-int	execute_pipeline(t_parse_tree *node, t_env **env)
+int	execute_pipeline(t_parse_tree *node, t_env **env, t_token_list *token_list, t_parse_tree *tree)
 {
 	int		pipefd[2];
 	pid_t	pid;
@@ -72,7 +75,7 @@ int	execute_pipeline(t_parse_tree *node, t_env **env)
 		return (1);
 	}
 	else if (pid == 0)
-		return (handle_child_process(node, env, pipefd));
+		return (handle_child_process(node, env, pipefd, token_list, tree));
 	else
-		return (handle_parent_process(node, env, pipefd, pid));
+		return (handle_parent_process(node, env, pipefd, pid, token_list, tree));
 }
