@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	create_and_link_pipe(t_token_list **tok, t_parse_tree **new)
 		//t_parse_tree *pipe_node, t_parse_tree *next_command)

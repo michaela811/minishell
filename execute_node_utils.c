@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 void	init_exec_vars(t_exec_vars *vars)
 {
@@ -6,6 +6,12 @@ void	init_exec_vars(t_exec_vars *vars)
 
 	vars->fd_in = 0;
 	vars->fd_out = 1;
+	vars->args = malloc(10 * sizeof(char *));  // Allocate memory for args
+    if (!vars->args)
+    {
+        // Handle memory allocation error
+        return;
+    }
 	i = 0;
 	while (i < 10)
 		vars->args[i++] = NULL;
@@ -13,23 +19,46 @@ void	init_exec_vars(t_exec_vars *vars)
 	vars->error = 0;
 }
 
-void	handle_node_data(t_parse_tree *node, t_exec_vars *vars, t_env **env)
+void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
-	if (node->data->type == RED_FROM || node->data->type == RED_TO
-		|| node->data->type == APPEND || node->data->type == HERE_DOC)
-		handle_redirection(&node, vars);
-	else if (node->data->lexeme[0] == '$'
-		&& strcmp(node->data->lexeme, "$?") == 0)
-		vars->args[vars->i++] = "$?";
-	//else if (node->data->lexeme[0] == '$')
-		//handle_global_env(node, vars->args, vars->i++, env);
-	else if (node->data->lexeme[0] == '"' || node->data->lexeme[0] == 39 || node->data->lexeme[0] == '$')
-		handle_quotes_global(node, vars->args, vars->i++, env);
-	else
+	if ((*node)->data->type == RED_FROM || (*node)->data->type == RED_TO
+		|| (*node)->data->type == APPEND || (*node)->data->type == HERE_DOC)
 	{
-		//remove_even_quotes(node, vars->args, vars->i++, vars->error);
-		vars->args[vars->i++] = node->data->lexeme;
+		handle_redirection(node, vars);
+		return ;
 	}
+	if ((*node)->data->lexeme[0] == '$'
+		&& strcmp((*node)->data->lexeme, "$?") == 0)
+		vars->args[vars->i] = "$?";
+	else if ((*node)->data->lexeme[0] == '"' || (*node)->data->lexeme[0] == 39 || (*node)->data->lexeme[0] == '$')
+	{
+		handle_quotes_global(node, vars->args, vars->i, env);
+		if (ft_strcmp(vars->args[vars->i], "") == 0)
+			return ;
+	}
+	else
+		vars->args[vars->i] = (*node)->data->lexeme;
+	if ((*node)->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' '))
+		vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
+	vars->i++;
+}
+
+int split_variable(char *arg, int i, t_exec_vars *vars)
+{
+    char **split_args;
+    int j;
+
+    j = 0;
+    split_args = ft_split(arg, ' ');
+    if (!split_args)
+        return i;
+    while (split_args[j])
+	{
+        vars->args[i + j] = split_args[j];
+        j++;
+    }
+    free(split_args);
+    return i + j;
 }
 
 void	handle_redirection(t_parse_tree **node, t_exec_vars *vars)

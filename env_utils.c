@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 t_env	*create_env_var(const char *name, const char *value)
 {

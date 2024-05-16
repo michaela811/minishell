@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	g_last_exit_status = 0;
 
@@ -80,8 +80,9 @@ void	handle_parse_tree(t_free_data *free_data)
 	//root = NULL;
 	if (is_pipe_sequence(free_data) == SUBTREE_OK)
 	{
-		if (execute_parse_tree(free_data))
-			g_last_exit_status = PARSING_ERROR;
+        execute_parse_tree(free_data);
+		//if (execute_parse_tree(free_data))
+			//g_last_exit_status = PARSING_ERROR;
 	}
 	else
 	{

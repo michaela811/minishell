@@ -4,6 +4,7 @@ CC = cc
 CFLAGS = -g -Wall -Wextra -Werror# -fsanitize=address
 
 LIBDIR = ./libft
+OBJDIR = ./obj
 LIBFT = $(LIBDIR)/libft.a
 
 SOURCES = env_main.c \
@@ -30,11 +31,14 @@ SOURCES = env_main.c \
 			custom_malloc.c \
 			libft.c \
 
-OBJ = $(SOURCES:.c=.o)
+OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))
 
 all: $(NAME)
 
-%.o: %.c
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
+
+$(OBJDIR)/%.o: %.c | $(OBJDIR)
 	$(CC) $(CFLAGS) -o $@ -c $< -I.
 
 $(NAME): $(LIBFT) $(OBJ)
@@ -47,7 +51,7 @@ $(LIBFT):
 
 clean:
 		$(MAKE) -C $(LIBDIR) clean
-		rm -f $(OBJ)
+		rm -rf $(OBJDIR)
 
 fclean: clean
 		$(MAKE) -C $(LIBDIR) fclean

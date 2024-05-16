@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 void	free_token(t_token *tok)
 {

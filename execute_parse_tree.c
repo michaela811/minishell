@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	execute_parse_tree(t_free_data *free_data)
 {
@@ -9,21 +9,23 @@ int	execute_parse_tree(t_free_data *free_data)
 		return (0); //NO IMPUT, NOT A MISTAKE
 	if (free_data->tree->sibling)
 	{
-		if (execute_pipeline(free_data))
-		{
-			g_last_exit_status = 1;
-			return (1);
-		}
+		execute_pipeline(free_data);
+		//if (execute_pipeline(free_data))
+		//{
+		//	g_last_exit_status = 1;
+		//	return (1);
+		//}
 	}
 	else
 	{
-		if (execute_node(free_data))
-		{
-			g_last_exit_status = 1;
-			return (1);
-		}
+		execute_node(free_data);
+		//if (execute_node(free_data))
+		//{
+		//	g_last_exit_status = 1;
+		//	return (1);
+		//}
 	}
-	return (0);
+	return (g_last_exit_status);
 }
 
 int	execute_node(t_free_data *free_data)
@@ -38,18 +40,19 @@ int	execute_node(t_free_data *free_data)
 		if (free_data->tree->data != NULL)
 		{
 			handle_node_data(free_data->tree, &vars, &free_data->env);
-			if (vars.error == 1)
-				return (vars.error);
+			if (vars.error != 0)
+				return (g_last_exit_status);
 		}
 		free_data->tree = free_data->tree->child;
 	}
 	vars.args[vars.i] = NULL;
-	if (execute_command(&vars, free_data) == 1)
-	{
-		g_last_exit_status = 154;
-		return (1);
-	}
-	return (0);
+	execute_command(&vars, free_data);
+	//if (execute_command(&vars, free_data) == 1)
+	//{
+	//	g_last_exit_status = 154;
+	//	return (1);
+	//}
+	return (g_last_exit_status);
 }
 
 int	execute_pipeline(t_free_data *free_data)
@@ -62,18 +65,11 @@ int	execute_pipeline(t_free_data *free_data)
 	if (free_data->tree->sibling != NULL)
 	{
 		if (pipe(pipefd) == -1)
-		{
-			g_last_exit_status = 1;
-			return (perror("pipe"), 1);
-		}
+			return (printf_global_error(1, 2, "my(s)hell: pipe\n"), 1);
 	}
 	pid = fork();
 	if (pid == -1)
-	{
-		g_last_exit_status = 1;
-		perror("fork");
-		return (1);
-	}
+		return (printf_global_error(1, 2, "my(s)hell: fork\n"), 1);
 	else if (pid == 0)
 		return (handle_child_process(pipefd, free_data));
 	else

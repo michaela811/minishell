@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	exec_builtins(t_exec_vars *vars, t_free_data *free_data)
 {
@@ -19,6 +19,15 @@ int	exec_builtins(t_exec_vars *vars, t_free_data *free_data)
 	return (2);
 }
 
+int	exec_global_env(t_exec_vars *vars, t_env **env)
+{
+	char	buffer[1024] = "";
+	handle_dollar_sign(vars->args, buffer, env);
+
+	vars->args[0][0] = *ft_strdup(buffer);
+	return (0);
+}
+
 int	ft_atoi_no_minus(const char *nptr)
 {
 	long int	number;
@@ -30,7 +39,7 @@ int	ft_atoi_no_minus(const char *nptr)
 	}
 	if (*nptr == 43)
 		nptr++;
-	if ((*nptr <= 47) || (*nptr >= 58 && *nptr < 127))//removed *nptr >= 0 &&
+	if ((*nptr <= 47) || (*nptr >= 58 && *nptr < 127))
 		return (0);
 	while (*nptr >= 48 && *nptr <= 57)
 	{
@@ -60,7 +69,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *free_data)
 		{
 			if (vars->args[1][0] == '+')
 				i++;
-			result = handle_quotes_echo(&vars->args[1][i], &(vars->error));
+			result = handle_quotes_echo(&vars->args[1][i],  &(vars->error));
 			if (vars->error)
 			{
 				free(result);
@@ -81,6 +90,11 @@ int	exec_exit(t_exec_vars *vars, t_free_data *free_data)
 			}
 			if (result[i] == '+')
 				i++;
+			if (ft_atoi(result) == 0)
+			{
+				g_last_exit_status = 2;
+				exit(g_last_exit_status);
+			}
 			if (ft_isdigit(result[i]) == 0)
 			{
 				free(result);
@@ -104,31 +118,29 @@ int	exec_echo(t_exec_vars *vars)
 
 	i = 1;
 	if (vars->args[i] == NULL || vars->args[i][0] == '\0')
-	{
-		printf("\n");
-		return (0);
-	}
+		return (printf_global_error(0, 1, "\n"), 0);
 	if (ft_strcmp(vars->args[i], "$?") == 0)
 	{
 		printf("%d\n", g_last_exit_status);
-		return (0);
+		g_last_exit_status = 0;
+		return (g_last_exit_status);
 	}
 	else if (ft_strcmp(vars->args[1], "-n") == 0)
 		i++;
 	process_args(vars->args, &(vars->error));
 	if (vars->error) //free the args
-		return (free_env_array(vars->args), perror("echo: odd number of quotes\n"), 1);
+		return (free_env_array(vars->args), g_last_exit_status);
 	while (vars->args[i])
 	{
-		printf("%s", vars->args[i]);
-		if (vars->args[i + 1])
-			printf(" ");
-		i++;
+	        printf("%s", vars->args[i]);
+	        if (vars->args[i + 1])
+	            printf(" ");
+	        i++;
 	}
 	if (ft_strcmp(vars->args[1], "-n") != 0)
 		printf("\n");
-	//free_env_array(vars->args);
-	return (0);
+	g_last_exit_status = 0;
+	return (g_last_exit_status);
 }
 
 void	process_args(char **args, int *error)
@@ -139,7 +151,7 @@ void	process_args(char **args, int *error)
 	i = 1;
 	while (args[i])
 	{
-		new_str = handle_quotes_echo(args[i], error);
+		new_str = handle_quotes_echo((args[i]), error);
 		if (*error)
 		{
 			free(new_str);
@@ -162,8 +174,8 @@ char *handle_quotes_echo(const char *input, int *error)
     result = MY_MALLOC(ft_strlen(input) + 1);
     if (!result)
 	{
-		*error = 1;
-		return (perror("echo: memory allocation\n"), NULL);
+		*error = 1;//Do we need this error or can be handle with g_last_exit_status
+		return (printf_global_error(1, 2, "echo: memory allocation\n"), NULL);
 	}
     i = 0;
 	j = 0;
@@ -177,7 +189,7 @@ char *handle_quotes_echo(const char *input, int *error)
             if (input[i] != quote)
 			{
                 *error = 1;
-				return (perror("echo: no closing quote"), free(result), NULL);
+				return (printf_global_error(1, 2, "echo: no closing quote\n"), free(result), NULL);
 			}
 			i++;
 		}
@@ -194,9 +206,9 @@ int	exec_cd(char **args, t_env **env)
 
 	cwd = getcwd(NULL, 0);
 	if (cwd == NULL)
-		return (perror("getcwd"), 1);
+		return (printf_global_error(1, 2, "getcwd\n"), g_last_exit_status);
 	if (args[1] != NULL && args[2])
-		return (perror("cd: too many arguments\n"), free(cwd), 1);
+		return (printf_global_error(1, 2, "cd: too many arguments\n"), free(cwd), g_last_exit_status);
 	else if (args[1] == NULL || ft_strcmp(args[1], "~") == 0)
 		return (change_directory_and_update(get_env_var(*env, "HOME"),
 				env, cwd));
@@ -206,18 +218,36 @@ int	exec_cd(char **args, t_env **env)
 		return (change_directory_and_update(args[1], env, cwd));
 }
 
+int	exec_dollar_pwd(void)
+{
+	char	*cwd;
+
+	cwd = getcwd(NULL, 0);
+	if (cwd == NULL)
+		return (printf_global_error(1, 2, "getcwd\n"), g_last_exit_status);
+	else
+	{
+		ft_putstr_fd(cwd, 1);
+		ft_putstr_fd(": Is a directory\n", 1);
+		g_last_exit_status = 126;
+		free(cwd);
+		return (g_last_exit_status);
+	}
+}
+
 int	exec_pwd(void)
 {
 	char	*cwd;
 
 	cwd = getcwd(NULL, 0);
 	if (cwd == NULL)
-		return (perror("getcwd"), 1);
+		return (printf_global_error(1, 2, "getcwd\n"), g_last_exit_status);
 	else
 	{
 		printf("%s\n", cwd);
 		free(cwd);
-		return (0);
+		g_last_exit_status = 0;
+		return (g_last_exit_status);
 	}
 }
 
@@ -233,13 +263,14 @@ int	exec_export(char **args, t_env **env)
 		return (exec_export_no_args(*env), 0);
 	control = var_control(args[1]);
 	if (control == 1)
-		return (1);
+		return (g_last_exit_status);
 	else
 	{
-		if (split_var(args[1], &name, &value))//think how to handle the error
-			return (1);
+		if (split_var(args[1], &name, &value))
+			return (g_last_exit_status);
 		if (update_add_env_var(env, name, value))
-			return (free(name), free(value), 1);
+			return (free(name), free(value), g_last_exit_status);
 	}
-	return (0);
+	g_last_exit_status = 0;
+	return (g_last_exit_status);
 }
