@@ -94,7 +94,7 @@ void	handle_parse_tree(t_token_list **token_list, t_env **envmt)
 	root = NULL;
 	if (is_pipe_sequence(token_list, &root) == SUBTREE_OK)
 	{
-		if (execute_parse_tree(root, envmt))
+		if (execute_parse_tree(&root, envmt))
 		{
 			free_parse_tree(root);
 		}

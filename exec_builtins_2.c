@@ -9,7 +9,8 @@ int	exec_env(char **args, char **environment)
 		return (perror("env: too many arguments\n"), 1);
 	while (environment[i] != NULL)
 		printf("%s\n", environment[i++]);
-	return (0);
+	g_last_exit_status = 0;
+	return (g_last_exit_status);
 }
 
 int	exec_unset(char **args, t_env **env)
@@ -32,10 +33,12 @@ int	exec_unset(char **args, t_env **env)
 			free(current->name);
 			free(current->value);
 			free(current);
-			return (0);
+			g_last_exit_status = 0;
+			return (g_last_exit_status);
 		}
 		prev = current;
 		current = current->next;
 	}
+	g_last_exit_status = 0;
 	return (0);//IF NOT FOUND, IT IS NOT AN ERROR?
 }

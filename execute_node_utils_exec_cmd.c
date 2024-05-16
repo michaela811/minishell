@@ -25,7 +25,7 @@ int	execute_command(t_exec_vars *vars, t_env **env)
 	}
 	else if (return_builtins == 1)
 	{
-		g_last_exit_status = 1;
+		//g_last_exit_status = 1;
 		return (free_env_array(environment), g_last_exit_status);
 	}
 	return (free_env_array(environment), g_last_exit_status);
@@ -44,16 +44,22 @@ int is_directory(const char *path)
     return S_ISDIR(path_stat.st_mode);
 }
 
+int get_args_count(char **args)
+{
+    int count = 0;
+    while (args[count] != NULL)
+        count++;
+    return (count);
+}
+
 int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 {
 	char	*path;
 	int		path_status;
 
-	//if (ft_strcmp(vars->args[0], "") == 0)
-		//return(0);
-	process_args(vars->args, &(vars->error));
+	process_args(vars->args, &vars->error);
 	if (vars->error)
-		return (perror("execve preprocessing: odd number of quotes\n"), 1);
+		return (g_last_exit_status);
 	if (vars->fd_in != 0)
 	{
 		dup2(vars->fd_in, 0);
@@ -68,38 +74,19 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	{
 	    int dir_check = is_directory(vars->args[0]);
 	    if (dir_check == -1)
-	    {
-	        ft_putstr_fd(vars->args[0], 2);
-	        ft_putstr_fd(": No such file or directory\n", 2);
-	        g_last_exit_status = 127;
-	        return(g_last_exit_status);
-	    }
+			return (printf_global_error(127, 2, "my(s)hell: %s: No such file or directory\n", vars->args[0]), 127);
 	    else if (dir_check)
-	    {
-	        ft_putstr_fd(vars->args[0], 2);
-	        ft_putstr_fd(": Is a directory\n", 2);
-	        g_last_exit_status = 126;
-	        return(g_last_exit_status);
-	    }
+			return (printf_global_error(126, 2, "my(s)hell: %s: Is a directory\n", vars->args[0]), 126);
 	}
 	path_status = get_path(vars->args[0], *env, &path);
 	if (path_status == 1)
-	{
-		g_last_exit_status = 138;
 		return (g_last_exit_status);
-	}
 	if (path_status == -1)
 	{
     	struct stat path_stat;
     	stat(path, &path_stat);
     	if (access(path, F_OK) == -1 || S_ISDIR(path_stat.st_mode))
-    	{
-        	ft_putstr_fd("my(s)hell: ", 2);
-        	ft_putstr_fd(vars->args[0], 2);
-        	ft_putstr_fd(": command not found\n", 2);
-        	g_last_exit_status = 127;
-        	return (g_last_exit_status);
-    	}
+			return (printf_global_error(127, 2, "my(s)hell: %s: command not found\n", vars->args[0]), 127);
     	if (access(vars->args[0], X_OK) == -1)
 		{
         if (S_ISREG(path_stat.st_mode))
@@ -108,8 +95,8 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
         	    ft_putstr_fd(vars->args[0], 2);
 				if ((path_stat.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) == 0) {
                 // The file has execute bits set but isn't executable, perhaps due to other restrictions
-				ft_putstr_fd(": command not found\n", 2);
-        	        return (g_last_exit_status = 127);
+				//ft_putstr_fd(": command not found\n", 2);
+        	        //return (g_last_exit_status = 127);
                 ft_putstr_fd(": Permission denied\n", 2);
         	        return (g_last_exit_status = 126);
             } else {
@@ -130,15 +117,10 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	}
 //free(path); //probably freed later as lexem
 	if (execve(path, vars->args, environment) < 0)
-	{
-		g_last_exit_status = 127;
-		perror("execve");
-		//exit(EXIT_FAILURE);
-		return(1);
-	}
-	//g_last_exit_status = 0;
-	//exit(EXIT_SUCCESS);
-	return (g_last_exit_status);
+		return (printf_global_error(127, 2, "my(s)hell: execve\n", vars->args[0]), 127);
+	g_last_exit_status = 0;
+	exit(EXIT_SUCCESS);
+	//return (g_last_exit_status);
 }
 
 int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
@@ -149,17 +131,13 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	pid = fork();
 	if (pid == -1)
 	{
-		perror("fork");
-		g_last_exit_status = 128;
+		printf_global_error(128, 2, "fork\n");
 		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)
 	{
 		if (handle_child_cmd(vars, env, environment))
-		{
-			//g_last_exit_status = 155;
 			return (g_last_exit_status);
-		}
 	}
 	else
 	{

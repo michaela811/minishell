@@ -53,7 +53,7 @@ typedef struct s_exec_vars
 {
     int fd_in;
     int fd_out;
-    char *args[10];
+    char **args;//char *args[10];
     int i;
     int error;
 } t_exec_vars;
@@ -121,19 +121,22 @@ t_token_list	*create_node_lexer(t_token *newToken);
 enum token_type	determine_token_type(char *token_value);
 
 // Execute
-int             execute_parse_tree(t_parse_tree *root, t_env **env);
+int             execute_parse_tree(t_parse_tree **root, t_env **env);
 int             exec_exit(t_exec_vars *vars, t_env **env);
 int             get_path(char *cmd, t_env *env, char **exec);
 int             get_exec(char **path, int i, char *cmd, char **exec);
-int             handle_child_process(t_parse_tree *node, t_env **env, int *pipefd);
-int             handle_sibling_process(t_parse_tree *node, t_env **env, int *pipefd);
-int             handle_parent_process(t_parse_tree *node, t_env **env, int *pipefd, pid_t pid);
-int             execute_pipeline(t_parse_tree *node, t_env **env);
+int             handle_child_process(t_parse_tree **node, t_env **env, int *pipefd);
+int             handle_sibling_process(t_parse_tree **node, t_env **env, int *pipefd);
+int             handle_parent_process(t_parse_tree **node, t_env **env, int *pipefd, pid_t pid);
+int             execute_pipeline(t_parse_tree **node, t_env **env);
 
 void            handle_redirection(t_parse_tree **node, t_exec_vars *vars);
 void            handle_redirection_from(t_parse_tree **node, t_exec_vars *vars);
+//void            handle_redirection_from(t_exec_vars *vars, int *i);
 void            handle_redirection_to(t_parse_tree **node, t_exec_vars *vars);
+//void            handle_redirection_to(t_exec_vars *vars, int *i);
 void            handle_redirection_append(t_parse_tree **node, t_exec_vars *vars);
+//void            handle_redirection_append(t_exec_vars *vars, int *i);
 void            handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars);
 char            *handle_here_doc(t_parse_tree **node, t_exec_vars *vars);
 
@@ -142,12 +145,12 @@ int             handle_child_cmd(t_exec_vars *vars, t_env **env, char **environm
 int             handle_fork(t_exec_vars *vars, t_env **env, char **environment);
 int             execute_command(t_exec_vars *vars,  t_env **env);
 void            init_exec_vars(t_exec_vars *vars);
-void            handle_node_data(t_parse_tree *node, t_exec_vars *vars, t_env **env);
+void            handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env);
 int             split_variable(char *arg, int i, t_exec_vars *vars);
-int             execute_node(t_parse_tree *node, t_env **env);
-void            handle_global_env(t_parse_tree *node, char **args, int i, t_env **env);
+int             execute_node(t_parse_tree **node, t_env **env);
+void            handle_global_env(t_parse_tree **node, char **args, int i, t_env **env);
 //void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
-void            handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
+void            handle_quotes_global(t_parse_tree **node, char **args, int i, t_env **env);
 void            handle_dollar_sign(char **start, char *buffer, t_env **env);
 
 // To delete later when working

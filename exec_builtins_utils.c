@@ -16,7 +16,8 @@ int	change_directory_and_update(char *path, t_env **env, char *cwd)
 		return (1);
 	}
 	free(cwd);
-	return (0);
+	g_last_exit_status = 0;
+	return (g_last_exit_status);
 }
 
 void	exec_export_no_args(t_env *env)
@@ -52,7 +53,7 @@ int	split_var(char *var, char **name, char **value)
 	char	*equals;
 	int		i;
 
-	i = 0;
+	i = 1;
 	equals = ft_strchr(var, '=');
 	if (equals)
 		*name = ft_strndup(var, equals - var);

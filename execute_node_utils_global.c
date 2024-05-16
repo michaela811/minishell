@@ -1,12 +1,12 @@
 #include "minishell.h"
 
-void	handle_global_env(t_parse_tree *node, char **args, int i, t_env **env)
+void	handle_global_env(t_parse_tree **node, char **args, int i, t_env **env)
 {
 	char	*str;
 	char	buffer[1024] = "";
 	char	*start;
-	str = node->data->lexeme;
-	if (*node->data->lexeme == 39)
+	str = (*node)->data->lexeme;
+	if (*(*node)->data->lexeme == 39)
 	{
 		args[i] = ft_strdup(str);//MEMORY LEAK
 		return ;
@@ -65,15 +65,15 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env)
 		ft_strcat(buffer, *start);
 }
 
-void	handle_quotes_global(t_parse_tree *node, char **args,
+void	handle_quotes_global(t_parse_tree **node, char **args,
 	int i, t_env **env)
 {
 	char	*str;
 	char	buffer[1024] = "";
 	char	*start;
 
-	str = node->data->lexeme; //Probably a memory leak (first quote)
-	if (*node->data->lexeme == 39)
+	str = (*node)->data->lexeme; //Probably a memory leak (first quote)
+	if (*(*node)->data->lexeme == 39)
 	{
 		args[i] = ft_strdup(str);//MEMORY LEAK
 		return ;

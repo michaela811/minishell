@@ -68,7 +68,7 @@ int	exec_exit(t_exec_vars *vars, t_env **env)
 		{
 			if (vars->args[1][0] == '+')
 				i++;
-			result = handle_quotes_echo(&vars->args[1][i], &(vars->error));
+			result = handle_quotes_echo(&vars->args[1][i],  &(vars->error));
 			if (vars->error)
 			{
 				g_last_exit_status = vars->error;
@@ -109,30 +109,29 @@ int	exec_echo(t_exec_vars *vars)
 
 	i = 1;
 	if (vars->args[i] == NULL || vars->args[i][0] == '\0')
-	{
-		printf("\n");
-		return (0);
-	}
+		return (printf_global_error(0, 1, "\n"), 0);
 	if (ft_strcmp(vars->args[i], "$?") == 0)
 	{
 		printf("%d\n", g_last_exit_status);
-		return (0);
+		g_last_exit_status = 0;
+		return (g_last_exit_status);
 	}
 	else if (ft_strcmp(vars->args[1], "-n") == 0)
 		i++;
 	process_args(vars->args, &(vars->error));
 	if (vars->error)
-		return (printf_global_error(1, 2, "echo: odd number of quotes\n"), g_last_exit_status);
+		return (g_last_exit_status);
 	while (vars->args[i])
 	{
-		printf("%s", vars->args[i]);
-		if (vars->args[i + 1])
-			printf(" ");
-		i++;
+	        printf("%s", vars->args[i]);
+	        if (vars->args[i + 1])
+	            printf(" ");
+	        i++;
 	}
 	if (ft_strcmp(vars->args[1], "-n") != 0)
 		printf("\n");
-	return (0);
+	g_last_exit_status = 0;
+	return (g_last_exit_status);
 }
 
 void	process_args(char **args, int *error)
@@ -143,7 +142,7 @@ void	process_args(char **args, int *error)
 	i = 1;
 	while (args[i])
 	{
-		new_str = handle_quotes_echo(args[i], error);
+		new_str = handle_quotes_echo((args[i]), error);
 		if (*error)
 		{
 			free(new_str);
@@ -238,7 +237,8 @@ int	exec_pwd(void)
 	{
 		printf("%s\n", cwd);
 		free(cwd);
-		return (0);
+		g_last_exit_status = 0;
+		return (g_last_exit_status);
 	}
 }
 
@@ -262,5 +262,6 @@ int	exec_export(char **args, t_env **env)
 		if (update_add_env_var(env, name, value))
 			return (free(name), free(value), g_last_exit_status);
 	}
+	g_last_exit_status = 0;
 	return (g_last_exit_status);
 }
