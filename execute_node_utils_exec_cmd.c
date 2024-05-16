@@ -1,33 +1,33 @@
 #include "lexer.h"
 #include <errno.h>
 
-int	execute_command(t_exec_vars *vars, t_env **env)
+int	execute_command(t_exec_vars *vars, t_free_data *free_data)
 {
-	char	**environment;
+	//char	**environment;
 	int		return_builtins;
 
-	environment = env_list_to_array(*env);
-	if (environment == NULL)
+	free_data->environment = env_list_to_array(free_data->env);
+	if (free_data->environment == NULL)
 	{
 		g_last_exit_status = 1;
-		return (1);
+		return (free_command_data(free_data), 1);
 	}
-	return_builtins = exec_builtins(vars, env, environment);
+	return_builtins = exec_builtins(vars, free_data);
 	if (return_builtins == 2)
 	{
-		if (handle_fork(vars, env, environment))
+		if (handle_fork(vars, &free_data->env, free_data->environment))
 		{
 			g_last_exit_status = 1;
-			return (free_env_array(environment), 1);
+			return (free_command_data(free_data), 1);
 		}
 	}
 	else if (return_builtins == 1)
 	{
 		g_last_exit_status = 1;
-		return (free_env_array(environment), 1);
+		return (free_command_data(free_data), 1);
 	}
 	g_last_exit_status = 0;
-	return (free_env_array(environment), 0);
+	return (free_command_data(free_data), 0);
 }
 
 int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
@@ -67,6 +67,7 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	pid = fork();
 	if (pid == -1)
 	{
+		free_env_array(environment);
 		perror("fork");
 		g_last_exit_status = 128;
 		exit(EXIT_FAILURE);
@@ -75,6 +76,7 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	{
 		if (handle_child_cmd(vars, env, environment))
 		{
+			free_env_array(environment);
 			g_last_exit_status = 155;
 			return (1);
 		}
@@ -84,5 +86,6 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 		waitpid(pid, &status, 0);
 		g_last_exit_status = WEXITSTATUS(status);
 	}
+	free_env_array(environment);
 	return (0);
 }

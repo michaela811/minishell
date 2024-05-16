@@ -1,16 +1,16 @@
 #include "lexer.h"
 
-int	handle_child_process(t_parse_tree *node, t_env **env, int *pipefd)
+int	handle_child_process(int *pipefd, t_free_data *free_data)
 {
 	int	return_value;
 
-	if (node->sibling != NULL)
+	if (free_data->tree->sibling != NULL)
 	{
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
 		close(pipefd[1]);
 	}
-	return_value = execute_node(node, env);
+	return_value = execute_node(free_data);
 	if (return_value != 0)
 	{
 		g_last_exit_status = return_value;
@@ -20,7 +20,7 @@ int	handle_child_process(t_parse_tree *node, t_env **env, int *pipefd)
 	exit(EXIT_SUCCESS);
 }
 
-int	handle_sibling_process(t_parse_tree *node, t_env **env, int *pipefd)
+int	handle_sibling_process(int *pipefd, t_free_data *free_data)
 {
 	pid_t	pid2;
 	int		return_value;
@@ -30,7 +30,7 @@ int	handle_sibling_process(t_parse_tree *node, t_env **env, int *pipefd)
 	{
 		dup2(pipefd[0], STDIN_FILENO);
 		close(pipefd[0]);
-		return_value = execute_pipeline(node->sibling->sibling, env);
+		return_value = execute_pipeline(free_data);
 		if (return_value != 0)
 		{
 			g_last_exit_status = return_value;
@@ -46,11 +46,11 @@ int	handle_sibling_process(t_parse_tree *node, t_env **env, int *pipefd)
 	}
 	else
 		return (perror("fork"), 1);
+	//free_env(*env);
 	return (0);
 }
 
-int	handle_parent_process(t_parse_tree *node, t_env **env,
-	int *pipefd, pid_t pid)
+int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *free_data)
 {
 	int	status;
 
@@ -60,10 +60,10 @@ int	handle_parent_process(t_parse_tree *node, t_env **env,
 		g_last_exit_status = WEXITSTATUS(status);
 		return (perror("Child process failed"), 1);
 	}
-	if (node->sibling != NULL)
+	if (free_data->tree->sibling != NULL)
 	{
 		close(pipefd[1]);
-		if (handle_sibling_process(node, env, pipefd))
+		if (handle_sibling_process(pipefd, free_data))
 			return (1);
 	}
 	wait(NULL);

@@ -32,7 +32,7 @@ t_token_list **current, int *error)
 			perror("Memory allocation error"), 1);
 	new_node = create_node_lexer(new_token);
 	if (new_node == NULL)
-		return (free_token(new_token), free_token_list(*token_list),
+		return (free_token(new_token), free_token_list(*token_list), // check later if necessary
 			perror("Memory allocation error"), 1);
 	if (*token_list == NULL)
 	{
@@ -55,7 +55,7 @@ t_token	*create_token_lexer(char *token_value)
 {
 	t_token	*new_token;
 
-	new_token = malloc(sizeof(t_token));
+	new_token = MY_MALLOC(sizeof(t_token));
 	if (new_token == NULL)
 		return (NULL);
 	new_token->type = determine_token_type(token_value);
@@ -72,7 +72,7 @@ t_token_list	*create_node_lexer(t_token *new_token)
 {
 	t_token_list	*new_node;
 
-	new_node = malloc(sizeof(t_token_list));
+	new_node = MY_MALLOC(sizeof(t_token_list));
 	if (new_node == NULL)
 	{
 		free(new_token);

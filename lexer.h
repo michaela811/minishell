@@ -10,6 +10,9 @@
 #include <readline/history.h>
 #include "libft/libft.h"
 
+#define MY_MALLOC(size) custom_malloc(size, __FILE__, __LINE__)
+#define free(ptr) custom_free(ptr, __FILE__, __LINE__)
+
 enum token_type
 {
     PIPE = 1,   // 1
@@ -20,6 +23,14 @@ enum token_type
     HERE_DOC,   // 6 <<
     //ASSIGNMENT_WORD, // to delete when possible
 };
+
+typedef struct MemoryBlock {
+    void *address;
+    size_t size;
+    const char *file;
+    int line;
+    struct MemoryBlock *next;
+} MemoryBlock;
 
 typedef struct s_token
 {
@@ -57,6 +68,14 @@ typedef struct s_exec_vars
     int error;
 } t_exec_vars;
 
+// Building struct to free when exiting
+typedef struct s_free_data {
+    t_parse_tree *tree;
+    t_env *env;
+    t_token_list *token_list;
+    char **environment;
+} t_free_data;
+
 // Return values
 #define SYNTAX_ERROR -1
 #define SUBTREE_OK 0
@@ -68,15 +87,16 @@ extern int		g_last_exit_status;
 
 //MAIN
 void			handle_signal(int signal);
-void			handle_input(char* input, t_env *envmt);
-void			handle_preprocess_input(char* input, t_token_list **tokenList);
-void			handle_parse_tree(t_token_list **tokenList, t_env **envmt);
+void	        handle_input(char *input, t_free_data *free_data);
+void	        handle_preprocess_input(char *input, t_free_data *free_data);
+void	        handle_parse_tree(t_free_data *free_data);
 
 // Allocs and frees
 t_parse_tree*	alloc_parse_tree();
 void			free_parse_tree(t_parse_tree *tree);
 void			free_token(t_token* tok);
 void			free_token_list(t_token_list* list);
+void	        free_command_data(t_free_data *free_data);
 
 // Errors
 void			handle_memory_error(t_token **token_list, int num_tokens);
@@ -92,13 +112,10 @@ bool			is_redirection_token(enum token_type type);
 int				is_cmd_prefix(t_token_list **tok, t_parse_tree **prefix_node);
 int				is_cmd_suffix(t_token_list **tok, t_parse_tree **suffix_node);
 void			link_pipe(t_parse_tree **current, t_parse_tree *newNode);
-int				is_pipe_sequence(t_token_list **tok, t_parse_tree **new);
+int             is_pipe_sequence(t_free_data *free_data);
 
 // Printing
 void			print_parse_tree(t_parse_tree* tree, int depth);
-
-// Testing
-void			test_parser(); // to delete later
 
 // Tokens
 t_token_list	*create_token(enum token_type type, char* lexeme); //probably to delete later
@@ -119,14 +136,14 @@ t_token_list	*create_node_lexer(t_token *newToken);
 enum token_type	determine_token_type(char *token_value);
 
 // Execute
-int             execute_parse_tree(t_parse_tree *root, t_env **env);
-int             exec_exit(t_exec_vars *vars, t_env **env);
+int             execute_parse_tree(t_free_data *free_data);
+int             exec_exit(t_exec_vars *vars, t_free_data *free_data);
 int             get_path(char *cmd, t_env *env, char **exec);
 int             get_exec(char **path, int i, char *cmd, char **exec);
-int             handle_child_process(t_parse_tree *node, t_env **env, int *pipefd);
-int             handle_sibling_process(t_parse_tree *node, t_env **env, int *pipefd);
-int             handle_parent_process(t_parse_tree *node, t_env **env, int *pipefd, pid_t pid);
-int             execute_pipeline(t_parse_tree *node, t_env **env);
+int             handle_child_process(int *pipefd, t_free_data *free_data);
+int             handle_sibling_process(int *pipefd, t_free_data *free_data);
+int             handle_parent_process(int *pipefd, pid_t pid, t_free_data *free_data);
+int             execute_pipeline(t_free_data *free_data);
 
 void            handle_redirection(t_parse_tree **node, t_exec_vars *vars);
 void            handle_redirection_from(t_parse_tree **node, t_exec_vars *vars);
@@ -135,13 +152,13 @@ void            handle_redirection_append(t_parse_tree **node, t_exec_vars *vars
 void            handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars);
 char            *handle_here_doc(t_parse_tree **node, t_exec_vars *vars);
 
-int             exec_builtins(t_exec_vars *vars, t_env **env, char **environment);
+int             exec_builtins(t_exec_vars *vars, t_free_data *free_data);
 int             handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment);
 int             handle_fork(t_exec_vars *vars, t_env **env, char **environment);
-int             execute_command(t_exec_vars *vars,  t_env **env);
+int             execute_command(t_exec_vars *vars, t_free_data *free_data);
 void            init_exec_vars(t_exec_vars *vars);
 void            handle_node_data(t_parse_tree *node, t_exec_vars *vars, t_env **env);
-int             execute_node(t_parse_tree *node, t_env **env);
+int             execute_node(t_free_data *free_data);
 void            handle_global_env(t_parse_tree *node, char **args, int i, t_env **env);
 //void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
 void            handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
@@ -153,19 +170,15 @@ void            free_array(char **array);
 int             error_message(char *str);
 
 // Libft
-/*
-static void     ft_free(char **array, int j);
-static size_t   n_words(const char *str, char c);
-static size_t   size_word(const char *s, char c, int i);
+
 char            **ft_split(char const *s, char c);
 size_t          ft_strlen(const char *s);
 int             ft_strcmp(const char *s1, const char *s2);
 char            *ft_strjoin(char const *s1, char const *s2);
 void            ft_putstr_fd(char *s, int fd);
 void            ft_putendl_fd(char *s, int fd);
-static size_t   ft_special_cases(char const *s, unsigned int start, size_t len);
 char            *ft_substr(char const *s, unsigned int start, size_t len);
-*/
+
 
 
 
@@ -193,4 +206,13 @@ void            exec_export_no_args(t_env *env);
 int             var_control(char *args);
 int             split_var(char *var, char **name, char **value);
 int             exec_export(char **args, t_env **env);
+
+t_free_data     *init_command_data(char **envp);
+
+
+
+
+void check_for_memory_leaks();
+void custom_free(void *ptr, const char *file, int line);
+void *custom_malloc(size_t size, const char *file, int line);
 

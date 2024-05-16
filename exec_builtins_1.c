@@ -1,21 +1,21 @@
 #include "lexer.h"
 
-int	exec_builtins(t_exec_vars *vars, t_env **env, char **environment)
+int	exec_builtins(t_exec_vars *vars, t_free_data *free_data)
 {
 	if (ft_strcmp(vars->args[0], "exit") == 0)
-		return (exec_exit(vars, env));
+		return (exec_exit(vars, free_data));
 	else if (ft_strcmp(vars->args[0], "cd") == 0)
-		return (exec_cd(vars->args, env));
+		return (exec_cd(vars->args, &free_data->env));
 	else if (ft_strcmp(vars->args[0], "pwd") == 0)
 		return (exec_pwd());
 	else if (ft_strcmp(vars->args[0], "echo") == 0)
 		return (exec_echo(vars));
 	else if (ft_strcmp(vars->args[0], "export") == 0)
-		return (exec_export(vars->args, env));
+		return (exec_export(vars->args, &free_data->env));
 	else if (ft_strcmp(vars->args[0], "unset") == 0)
-		return (exec_unset(vars->args, env));
+		return (exec_unset(vars->args, &free_data->env));
 	else if (ft_strcmp(vars->args[0], "env") == 0)
-		return (exec_env(vars->args, environment));
+		return (exec_env(vars->args, free_data->environment));
 	return (2);
 }
 
@@ -40,7 +40,7 @@ int	ft_atoi_no_minus(const char *nptr)
 	return (number);
 }
 
-int	exec_exit(t_exec_vars *vars, t_env **env)
+int	exec_exit(t_exec_vars *vars, t_free_data *free_data)
 {
 	int	i;
 	char *result;
@@ -52,6 +52,7 @@ int	exec_exit(t_exec_vars *vars, t_env **env)
 		if (vars->args[2] != NULL)
 		{
 			//printf("exit: too many arguments");
+			free_command_data(free_data);
 			g_last_exit_status = 1;
 			exit(g_last_exit_status);
 		}
@@ -62,6 +63,8 @@ int	exec_exit(t_exec_vars *vars, t_env **env)
 			result = handle_quotes_echo(&vars->args[1][i], &(vars->error));
 			if (vars->error)
 			{
+				free(result);
+				free_command_data(free_data);
 				g_last_exit_status = vars->error;
 				exit(g_last_exit_status);
 			}
@@ -71,6 +74,8 @@ int	exec_exit(t_exec_vars *vars, t_env **env)
 		{
 			if (result[i] == '+' && vars->args[1][0] == '+')
 			{
+				free(result);
+				free_command_data(free_data);
 				g_last_exit_status = 156;
 				exit(g_last_exit_status);
 			}
@@ -78,6 +83,8 @@ int	exec_exit(t_exec_vars *vars, t_env **env)
 				i++;
 			if (ft_isdigit(result[i]) == 0)
 			{
+				free(result);
+				free_command_data(free_data);
 				g_last_exit_status = 156;
 				exit(g_last_exit_status);
 			}
@@ -85,7 +92,9 @@ int	exec_exit(t_exec_vars *vars, t_env **env)
 		}
 		g_last_exit_status = ft_atoi(result);
 	}
-	free_env(*env);
+	free(result);
+	free_command_data(free_data);
+	check_for_memory_leaks();
 	exit(g_last_exit_status);
 }
 
@@ -107,8 +116,8 @@ int	exec_echo(t_exec_vars *vars)
 	else if (ft_strcmp(vars->args[1], "-n") == 0)
 		i++;
 	process_args(vars->args, &(vars->error));
-	if (vars->error)
-		return (perror("echo: odd number of quotes\n"), 1);
+	if (vars->error) //free the args
+		return (free_env_array(vars->args), perror("echo: odd number of quotes\n"), 1);
 	while (vars->args[i])
 	{
 		printf("%s", vars->args[i]);
@@ -118,6 +127,7 @@ int	exec_echo(t_exec_vars *vars)
 	}
 	if (ft_strcmp(vars->args[1], "-n") != 0)
 		printf("\n");
+	//free_env_array(vars->args);
 	return (0);
 }
 
@@ -149,7 +159,7 @@ char *handle_quotes_echo(const char *input, int *error)
 	int j;
 	char quote;
 
-    result = malloc(ft_strlen(input) + 1);
+    result = MY_MALLOC(ft_strlen(input) + 1);
     if (!result)
 	{
 		*error = 1;
