@@ -1,21 +1,21 @@
 #include "lexer.h"
 
-int	exec_builtins(t_exec_vars *vars, t_env **env, char **environment, t_token_list *token_list, t_parse_tree *root)
+int	exec_builtins(t_exec_vars *vars, t_free_data *free_data)
 {
 	if (ft_strcmp(vars->args[0], "exit") == 0)
-		return (exec_exit(vars, env, environment, token_list, root));
+		return (exec_exit(vars, free_data));
 	else if (ft_strcmp(vars->args[0], "cd") == 0)
-		return (exec_cd(vars->args, env));
+		return (exec_cd(vars->args, &free_data->env));
 	else if (ft_strcmp(vars->args[0], "pwd") == 0)
 		return (exec_pwd());
 	else if (ft_strcmp(vars->args[0], "echo") == 0)
 		return (exec_echo(vars));
 	else if (ft_strcmp(vars->args[0], "export") == 0)
-		return (exec_export(vars->args, env));
+		return (exec_export(vars->args, &free_data->env));
 	else if (ft_strcmp(vars->args[0], "unset") == 0)
-		return (exec_unset(vars->args, env));
+		return (exec_unset(vars->args, &free_data->env));
 	else if (ft_strcmp(vars->args[0], "env") == 0)
-		return (exec_env(vars->args, environment));
+		return (exec_env(vars->args, free_data->environment));
 	return (2);
 }
 
@@ -40,7 +40,7 @@ int	ft_atoi_no_minus(const char *nptr)
 	return (number);
 }
 
-int	exec_exit(t_exec_vars *vars, t_env **env, char **environment, t_token_list *token_list, t_parse_tree *root)
+int	exec_exit(t_exec_vars *vars, t_free_data *free_data)
 {
 	int	i;
 	char *result;
@@ -52,10 +52,7 @@ int	exec_exit(t_exec_vars *vars, t_env **env, char **environment, t_token_list *
 		if (vars->args[2] != NULL)
 		{
 			//printf("exit: too many arguments");
-			free_parse_tree(root);
-			free_token_list(token_list);
-			free_env_array(environment);
-			free_env(*env);
+			free_command_data(free_data);
 			g_last_exit_status = 1;
 			exit(g_last_exit_status);
 		}
@@ -67,10 +64,7 @@ int	exec_exit(t_exec_vars *vars, t_env **env, char **environment, t_token_list *
 			if (vars->error)
 			{
 				free(result);
-				free_parse_tree(root);
-				free_token_list(token_list);
-				free_env(*env);
-				free_env_array(environment);
+				free_command_data(free_data);
 				g_last_exit_status = vars->error;
 				exit(g_last_exit_status);
 			}
@@ -81,10 +75,7 @@ int	exec_exit(t_exec_vars *vars, t_env **env, char **environment, t_token_list *
 			if (result[i] == '+' && vars->args[1][0] == '+')
 			{
 				free(result);
-				free_parse_tree(root);
-				free_token_list(token_list);
-				free_env(*env);
-				free_env_array(environment);
+				free_command_data(free_data);
 				g_last_exit_status = 156;
 				exit(g_last_exit_status);
 			}
@@ -93,10 +84,7 @@ int	exec_exit(t_exec_vars *vars, t_env **env, char **environment, t_token_list *
 			if (ft_isdigit(result[i]) == 0)
 			{
 				free(result);
-				free_parse_tree(root);
-				free_token_list(token_list);
-				free_env_array(environment);
-				free_env(*env);
+				free_command_data(free_data);
 				g_last_exit_status = 156;
 				exit(g_last_exit_status);
 			}
@@ -105,10 +93,7 @@ int	exec_exit(t_exec_vars *vars, t_env **env, char **environment, t_token_list *
 		g_last_exit_status = ft_atoi(result);
 	}
 	free(result);
-	free_parse_tree(root);
-	free_token_list(token_list);
-	free_env_array(environment);
-	free_env(*env);
+	free_command_data(free_data);
 	check_for_memory_leaks();
 	exit(g_last_exit_status);
 }
@@ -142,7 +127,7 @@ int	exec_echo(t_exec_vars *vars)
 	}
 	if (ft_strcmp(vars->args[1], "-n") != 0)
 		printf("\n");
-	free_env_array(vars->args);
+	//free_env_array(vars->args);
 	return (0);
 }
 

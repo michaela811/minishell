@@ -1,33 +1,33 @@
 #include "lexer.h"
 #include <errno.h>
 
-int	execute_command(t_exec_vars *vars, t_env **env, t_token_list *token_list, t_parse_tree *root)
+int	execute_command(t_exec_vars *vars, t_free_data *free_data)
 {
-	char	**environment;
+	//char	**environment;
 	int		return_builtins;
 
-	environment = env_list_to_array(*env);
-	if (environment == NULL)
+	free_data->environment = env_list_to_array(free_data->env);
+	if (free_data->environment == NULL)
 	{
 		g_last_exit_status = 1;
-		return (free_env(*env), 1);
+		return (free_command_data(free_data), 1);
 	}
-	return_builtins = exec_builtins(vars, env, environment, token_list, root);
+	return_builtins = exec_builtins(vars, free_data);
 	if (return_builtins == 2)
 	{
-		if (handle_fork(vars, env, environment))
+		if (handle_fork(vars, &free_data->env, free_data->environment))
 		{
 			g_last_exit_status = 1;
-			return (free_env(*env), free_env_array(environment), 1);
+			return (free_command_data(free_data), 1);
 		}
 	}
 	else if (return_builtins == 1)
 	{
 		g_last_exit_status = 1;
-		return (free_env(*env), free_env_array(environment), 1);
+		return (free_command_data(free_data), 1);
 	}
 	g_last_exit_status = 0;
-	return (free_env(*env), free_env_array(environment), 0);
+	return (free_command_data(free_data), 0);
 }
 
 int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)

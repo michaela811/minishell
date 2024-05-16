@@ -39,14 +39,14 @@ void	handle_input(char *input, t_free_data *free_data)
     if (*input)
     {
         add_history(input);
-        handle_preprocess_input(input, &free_data->token_list);
+        handle_preprocess_input(input, free_data);
         if (!free_data->token_list)
             return ;
-        handle_parse_tree(&free_data->token_list, &free_data->env);
+        handle_parse_tree(free_data);
     }
 }
 
-void	handle_preprocess_input(char *input, t_token_list **token_list)
+void	handle_preprocess_input(char *input, t_free_data *free_data)
 {
 	char	*processed_input;
 
@@ -59,7 +59,7 @@ void	handle_preprocess_input(char *input, t_token_list **token_list)
 		input = NULL;
 		return ;
 	}
-	if (lexer(processed_input, token_list))
+	if (lexer(processed_input, &(free_data->token_list)))
 	{
 		g_last_exit_status = 3;
 		free(input);
@@ -71,16 +71,16 @@ void	handle_preprocess_input(char *input, t_token_list **token_list)
 	free(processed_input);
 }
 
-void	handle_parse_tree(t_token_list **token_list, t_env **envmt)
+void	handle_parse_tree(t_free_data *free_data)
 {
-	t_parse_tree	*root;
+	//t_parse_tree	*root;
 	t_token_list	*start;
 
-	start = *token_list;;
-	root = NULL;
-	if (is_pipe_sequence(token_list, &root) == SUBTREE_OK)
+	start = free_data->token_list;;
+	//root = NULL;
+	if (is_pipe_sequence(free_data) == SUBTREE_OK)
 	{
-		if (execute_parse_tree(root, envmt, start))
+		if (execute_parse_tree(free_data))
 			g_last_exit_status = PARSING_ERROR;
 	}
 	else
@@ -88,7 +88,7 @@ void	handle_parse_tree(t_token_list **token_list, t_env **envmt)
 		g_last_exit_status = 4;
 		printf("Parser returned an error: %d\n", SYNTAX_ERROR);
 	}
-	free_token_list(start);
-    free_parse_tree(root);
+	//free_token_list(start);
+    // free_parse_tree(root);
     check_for_memory_leaks();
 }

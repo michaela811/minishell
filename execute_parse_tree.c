@@ -1,15 +1,15 @@
 #include "lexer.h"
 
-int	execute_parse_tree(t_parse_tree *root, t_env **env, t_token_list *token_list)
+int	execute_parse_tree(t_free_data *free_data)
 {
-	t_parse_tree	*start;
+	//t_parse_tree	*start;
 
-	start = root;
-	if (root == NULL)
+	//start = root;
+	if (free_data->tree == NULL)
 		return (0); //NO IMPUT, NOT A MISTAKE
-	if (root->sibling)
+	if (free_data->tree->sibling)
 	{
-		if (execute_pipeline(root, env, token_list, start))
+		if (execute_pipeline(free_data))
 		{
 			g_last_exit_status = 1;
 			return (1);
@@ -17,7 +17,7 @@ int	execute_parse_tree(t_parse_tree *root, t_env **env, t_token_list *token_list
 	}
 	else
 	{
-		if (execute_node(root->child, env, token_list, start))
+		if (execute_node(free_data))
 		{
 			g_last_exit_status = 1;
 			return (1);
@@ -26,25 +26,25 @@ int	execute_parse_tree(t_parse_tree *root, t_env **env, t_token_list *token_list
 	return (0);
 }
 
-int	execute_node(t_parse_tree *node, t_env **env, t_token_list *token_list, t_parse_tree *tree)
+int	execute_node(t_free_data *free_data)
 {
 	t_exec_vars	vars;
 
 	init_exec_vars(&vars);
-	if (node == NULL)
+	if (free_data->tree == NULL)
 		return (0);
-	while (node != NULL)
+	while (free_data->tree != NULL)
 	{
-		if (node->data != NULL)
+		if (free_data->tree->data != NULL)
 		{
-			handle_node_data(node, &vars, env);
+			handle_node_data(free_data->tree, &vars, &free_data->env);
 			if (vars.error == 1)
 				return (vars.error);
 		}
-		node = node->child;
+		free_data->tree = free_data->tree->child;
 	}
 	vars.args[vars.i] = NULL;
-	if (execute_command(&vars, env, token_list, tree) == 1)
+	if (execute_command(&vars, free_data) == 1)
 	{
 		g_last_exit_status = 154;
 		return (1);
@@ -52,14 +52,14 @@ int	execute_node(t_parse_tree *node, t_env **env, t_token_list *token_list, t_pa
 	return (0);
 }
 
-int	execute_pipeline(t_parse_tree *node, t_env **env, t_token_list *token_list, t_parse_tree *tree)
+int	execute_pipeline(t_free_data *free_data)
 {
 	int		pipefd[2];
 	pid_t	pid;
 
-	if (node == NULL)
+	if (free_data->tree == NULL)
 		return (0);
-	if (node->sibling != NULL)
+	if (free_data->tree->sibling != NULL)
 	{
 		if (pipe(pipefd) == -1)
 		{
@@ -75,7 +75,7 @@ int	execute_pipeline(t_parse_tree *node, t_env **env, t_token_list *token_list, 
 		return (1);
 	}
 	else if (pid == 0)
-		return (handle_child_process(node, env, pipefd, token_list, tree));
+		return (handle_child_process(pipefd, free_data));
 	else
-		return (handle_parent_process(node, env, pipefd, pid, token_list, tree));
+		return (handle_parent_process(pipefd, pid, free_data));
 }

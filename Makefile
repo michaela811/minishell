@@ -28,6 +28,7 @@ SOURCES = env_main.c \
 			parser_utils.c \
 			init.c \
 			custom_malloc.c \
+			libft.c \
 
 OBJ = $(SOURCES:.c=.o)
 

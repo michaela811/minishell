@@ -9,7 +9,7 @@ t_free_data *init_command_data(char **envp)
     token_list = NULL;
     parse_tree = NULL;
     environment = NULL;
-    t_free_data *free_data = malloc(sizeof(t_free_data));
+    t_free_data *free_data = MY_MALLOC(sizeof(t_free_data));
     if (!free_data)
         return NULL;
     free_data->env = init_environment(envp);
