@@ -39,7 +39,7 @@ int	execute_node(t_free_data *free_data)
 	{
 		if (free_data->tree->data != NULL)
 		{
-			handle_node_data(free_data->tree, &vars, &free_data->env);
+			handle_node_data(&free_data->tree, &vars, &free_data->env);
 			if (vars.error != 0)
 				return (g_last_exit_status);
 		}
