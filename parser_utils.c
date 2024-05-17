@@ -4,7 +4,7 @@ t_parse_tree	*alloc_parse_tree(void)
 {
 	t_parse_tree	*tree;
 
-	tree = MY_MALLOC(sizeof(t_parse_tree));
+	tree = malloc(sizeof(t_parse_tree));
 	if (tree == NULL)
 		return (NULL);
 	tree->data = NULL;
@@ -52,7 +52,7 @@ t_token_list	*create_token(enum token_type type, char *lexeme)
 	t_token			*new_token;
 	t_token_list	*new_list_node;
 
-	new_token = MY_MALLOC(sizeof(t_token));
+	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 	{
 		perror("Failed to allocate memory for token");
@@ -60,7 +60,7 @@ t_token_list	*create_token(enum token_type type, char *lexeme)
 	}
 	new_token->lexeme = ft_strdup(lexeme);
 	new_token->type = type;
-	new_list_node = MY_MALLOC(sizeof(t_token_list));
+	new_list_node = malloc(sizeof(t_token_list));
 	if (!new_list_node)
 	{
 		free_token(new_token);

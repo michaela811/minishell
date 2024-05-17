@@ -108,7 +108,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *free_data)
 	}
 	free(result);
 	free_command_data(free_data);
-	check_for_memory_leaks();
+	//check_for_memory_leaks();
 	exit(g_last_exit_status);
 }
 
@@ -171,7 +171,7 @@ char *handle_quotes_echo(const char *input, int *error)
 	int j;
 	char quote;
 
-    result = MY_MALLOC(ft_strlen(input) + 1);
+    result = malloc(ft_strlen(input) + 1);
     if (!result)
 	{
 		*error = 1;//Do we need this error or can be handle with g_last_exit_status
