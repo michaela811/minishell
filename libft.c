@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 static size_t	ft_special_cases(char const *s, unsigned int start, size_t len)
 {

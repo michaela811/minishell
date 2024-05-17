@@ -161,12 +161,12 @@ int             handle_child_cmd(t_exec_vars *vars, t_env **env, char **environm
 int             handle_fork(t_exec_vars *vars, t_env **env, char **environment);
 int             execute_command(t_exec_vars *vars, t_free_data *free_data);
 void            init_exec_vars(t_exec_vars *vars);
-void            handle_node_data(t_parse_tree *node, t_exec_vars *vars, t_env **env);
+void            handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env);
 int             split_variable(char *arg, int i, t_exec_vars *vars);
 int             execute_node(t_free_data *free_data);
-void            handle_global_env(t_parse_tree *node, char **args, int i, t_env **env);
+void            handle_global_env(t_parse_tree **node, char **args, int i, t_env **env);
 //void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
-void            handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
+void            handle_quotes_global(t_parse_tree **node, char **args, int i, t_env **env);
 void            handle_dollar_sign(char **start, char *buffer, t_env **env);
 
 // To delete later when working

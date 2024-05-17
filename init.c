@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 t_free_data *init_command_data(char **envp)
 {

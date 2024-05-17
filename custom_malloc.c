@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 MemoryBlock *allocated_blocks = NULL;
 

@@ -74,9 +74,9 @@ void	handle_preprocess_input(char *input, t_free_data *free_data)
 void	handle_parse_tree(t_free_data *free_data)
 {
 	//t_parse_tree	*root;
-	t_token_list	*start;
+	//t_token_list	*start;
 
-	start = free_data->token_list;;
+	//start = free_data->token_list;;
 	//root = NULL;
 	if (is_pipe_sequence(free_data) == SUBTREE_OK)
 	{
