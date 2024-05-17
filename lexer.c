@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	count_additional_chars(char *input, const char *delim)
 {
@@ -33,7 +33,6 @@ char	*preprocess_input(char *str, const char *delim)
 		return (perror("Memory allocation error"), NULL);
 	dest = preprocessed;
 	process_input_str(str, delim, dest);
-	//printf("Preprocessed input is %s\n", dest);
 	return (preprocessed);
 }
 

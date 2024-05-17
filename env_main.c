@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 t_env	*init_environment(char **envt)
 {
@@ -90,21 +90,18 @@ int	get_path(char *cmd, t_env *env, char **exec)
 	i = -1;
 	path = ft_split(get_env_var(env, "PATH"), ':');
 	if (path == NULL)
-		return (error_message("MY_MALLOC error in split function"));
+		return (printf_global_error(1, 2, "MY_MALLOC error in split function\n"), 1);
 	while (path[++i])
 	{
 		if (get_exec(path, i, cmd, exec))
-		{
-			g_last_exit_status = 1;
-			return (free_array(path), 1);
-		}
+			return (free_array(path), g_last_exit_status);
 		if (access(*exec, F_OK | X_OK) == 0)
-			return (0);
+			return (free_array(path), 0);
 		free(*exec);
 	}
-	free_array(path);
+	free_array(path);//maybe will be freed later as lexem!
 	*exec = cmd;
-	return (0);
+	return (-1);
 }
 
 int	get_exec(char **path, int i, char *cmd, char **exec)
@@ -113,12 +110,12 @@ int	get_exec(char **path, int i, char *cmd, char **exec)
 
 	path_part = ft_strjoin(path[i], "/");
 	if (path_part == NULL)
-		return (error_message("MY_MALLOC error in strjoin function"));
+		return (printf_global_error(1, 2, "MY_MALLOC error in strjoin function\n"), 1);
 	*exec = ft_strjoin(path_part, cmd);
 	if (*exec == NULL)
 	{
 		free(path_part);
-		return (error_message("MY_MALLOC error in strjoin function"));
+		return (printf_global_error(1, 2, "MY_MALLOC error in strjoin function\n"), 1);
 	}
 	free(path_part);
 	return (0);

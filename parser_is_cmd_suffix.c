@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	handle_redirection_token(t_token_list **tok, t_parse_tree **suffix_node)
 {

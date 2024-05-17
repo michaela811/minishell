@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "minishell.h"
 
 int	lexer(char *input, t_token_list **token_list)
 {
