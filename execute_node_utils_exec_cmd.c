@@ -132,7 +132,7 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	pid = fork();
 	if (pid == -1)
 	{
-		free_env_array(environment);
+		//free_env_array(environment);//Should be freeed later?
 		printf_global_error(128, 2, "fork\n");
 		exit(EXIT_FAILURE);
 	}
@@ -146,6 +146,6 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 		waitpid(pid, &status, 0);
 		g_last_exit_status = WEXITSTATUS(status);
 	}
-	free_env_array(environment);
+	//free_env_array(environment);
 	return (0);
 }
