@@ -4,6 +4,7 @@
 int	handle_child_process(int *pipefd, t_free_data *free_data)
 {
 	//int	return_value;
+	//printf("Entering handle_child_process function\n");
 
 	if (free_data->tree->sibling != NULL)
 	{
@@ -15,16 +16,17 @@ int	handle_child_process(int *pipefd, t_free_data *free_data)
         }
 		close(pipefd[1]);
 	}
-	//return_value = execute_node(node, env);
+	//return_value = execute_node(free_data);
 	if (execute_node(free_data))
 	{
 		//g_last_exit_status = return_value;
-		//exit(EXIT_FAILURE);
-		exit(g_last_exit_status);
+		exit(EXIT_FAILURE);
+		//exit(g_last_exit_status);
 	}
-	//g_last_exit_status = 0;
-	//exit(EXIT_SUCCESS);
-	exit(g_last_exit_status);
+	g_last_exit_status = 0;
+	//printf("Exiting handle_child_process function with success\n");
+	exit(EXIT_SUCCESS);
+	//exit(g_last_exit_status);
 }
 
 pid_t handle_sibling_process(int *pipefd, t_free_data *free_data)
@@ -32,7 +34,10 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *free_data)
     pid_t	pid2;
     int		return_value;
 
+	//printf("Entering handle_sibling_process function\n");
     pid2 = fork();
+	if (pid2 == -1)
+		return (printf_global_error(1, 2, "my(s)hell: fork in sibling process\n"), 1);
     if (pid2 == 0)
     {
         if (dup2(pipefd[0], STDIN_FILENO) == -1)
@@ -49,6 +54,7 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *free_data)
             exit(EXIT_FAILURE);
         }
         g_last_exit_status = 0;
+		//printf("Exiting handle_sibling_process function with success\n");
         exit(EXIT_SUCCESS);
     }
     else if (pid2 > 0)
@@ -131,7 +137,9 @@ int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *free_data)
 	if (free_data->tree->sibling != NULL)
 	{
 		close(pipefd[1]);  // Close the unused write end of the pipe
-		pid_t sibling_pid = handle_sibling_process(pipefd, free_data);
+		t_free_data sibling_free_data = *free_data;  // Copy the current free_data
+    	sibling_free_data.tree = free_data->tree->sibling->sibling;
+		pid_t sibling_pid = handle_sibling_process(pipefd, &sibling_free_data);
 		if (sibling_pid == -1)
 			return (1); // Early exit on error in handling sibling, may want to adjust depending on desired behavior
 		pids[num_commands] = sibling_pid;

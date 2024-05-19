@@ -53,8 +53,8 @@ void	handle_preprocess_input(char *input, t_free_data *free_data)
 	processed_input = preprocess_input(input, " |><");
 	if (processed_input == NULL)
 	{
-		g_last_exit_status = 2;
-		perror("preprocess_input failed");
+		//g_last_exit_status = 2;
+		//perror("preprocess_input failed");
 		free(input);
 		input = NULL;
 		return ;

@@ -59,12 +59,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *free_data)
 	if (vars->args[1] != NULL)
 	{
 		if (vars->args[2] != NULL)
-		{
-			//printf("exit: too many arguments");
-			free_command_data(free_data);
-			g_last_exit_status = 1;
-			exit(g_last_exit_status);
-		}
+			return (printf_global_error(1, 2, "my(s)hell: too many arguments"),1);// Actually in bush +exit should be printed
 		if (vars->args[1][i])
 		{
 			if (vars->args[1][0] == '+')

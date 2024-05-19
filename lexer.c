@@ -30,7 +30,7 @@ char	*preprocess_input(char *str, const char *delim)
 	additional_chars = count_additional_chars(str, delim);
 	preprocessed = malloc(original_len + additional_chars + 1);
 	if (preprocessed == NULL)
-		return (perror("Memory allocation error"), NULL);
+		return(printf_global_error(1, 2, "Memory allocation error\n"), NULL);
 	dest = preprocessed;
 	process_input_str(str, delim, dest);
 	return (preprocessed);
