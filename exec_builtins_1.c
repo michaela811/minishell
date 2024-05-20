@@ -102,7 +102,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *free_data)
 		}
 		g_last_exit_status = ft_atoi(result);
 	}
-	if (!g_last_exit_status && ft_isdigit(result[i]) == 0)
+	if (vars->args[1] && !g_last_exit_status && ft_isdigit(result[i]) == 0)
 			{
 				free(result);
 				free_command_data(free_data);

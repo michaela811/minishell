@@ -29,7 +29,6 @@ int	main(int argc, char **argv, char **envp)
 		if (!input)
 			break ;
 		handle_input(input, free_data);
-		//free_command_data(free_data);
 	}
 	rl_on_new_line();
 	return (0);
@@ -55,8 +54,6 @@ void	handle_preprocess_input(char *input, t_free_data *free_data)
 	processed_input = preprocess_input(input, " |><");
 	if (processed_input == NULL)
 	{
-		//g_last_exit_status = 2;
-		//perror("preprocess_input failed");
 		free(input);
 		input = NULL;
 		return ;
@@ -75,23 +72,9 @@ void	handle_preprocess_input(char *input, t_free_data *free_data)
 
 void	handle_parse_tree(t_free_data *free_data)
 {
-	//t_parse_tree	*root;
-	//t_token_list	*start;
-
-	//start = free_data->token_list;;
-	//root = NULL;
 	if (is_pipe_sequence(free_data) == SUBTREE_OK)
-	{
         execute_parse_tree(free_data);
-		//if (execute_parse_tree(free_data))
-			//g_last_exit_status = PARSING_ERROR;
-	}
 	else
-	{
-		//g_last_exit_status = 4;
 		printf("Parser returned an error: %d\n", SYNTAX_ERROR);
-	}
-	//free_token_list(start);
-    // free_parse_tree(root);
     check_for_memory_leaks();
 }
