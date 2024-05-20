@@ -150,3 +150,23 @@ void	free_command_data(t_free_data *free_data)
         //free(free_data);
     }
 }
+
+
+void	free_data_exit(t_free_data *free_data)
+{
+    if (free_data) {
+        if (free_data->tree) {
+            free_parse_tree(free_data->tree);
+        }
+        if (free_data->env) {
+            free_env(free_data->env);
+        }
+        if (free_data->token_list) {
+            free_token_list(free_data->token_list);
+        }
+        if (free_data->environment) {
+			free_env_array(free_data->environment);
+        }
+        free(free_data);
+    }
+}

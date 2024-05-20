@@ -59,7 +59,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *free_data)
 	if (vars->args[1] != NULL)
 	{
 		if (vars->args[2] != NULL)
-			return (printf_global_error(1, 2, "my(s)hell: too many arguments"),1);// Actually in bush +exit should be printed
+			return (printf_global_error(1, 2, "my(s)hell: too many arguments\n"),1);// Actually in bush +exit should be printed
 		if (vars->args[1][i])
 		{
 			if (vars->args[1][0] == '+')
@@ -68,7 +68,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *free_data)
 			if (vars->error)
 			{
 				free(result);
-				free_command_data(free_data);
+				free_data_exit(free_data);
 				g_last_exit_status = vars->error;
 				exit(g_last_exit_status);
 			}
@@ -79,7 +79,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *free_data)
 			if (result[i] == '+' && vars->args[1][0] == '+')
 			{
 				free(result);
-				free_command_data(free_data);
+				free_data_exit(free_data);
 				g_last_exit_status = 156;
 				exit(g_last_exit_status);
 			}
@@ -93,7 +93,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *free_data)
 			if (ft_isdigit(result[i]) == 0)
 			{
 				free(result);
-				free_command_data(free_data);
+				free_data_exit(free_data);
 				g_last_exit_status = 156;
 				exit(g_last_exit_status);
 			}
@@ -102,8 +102,8 @@ int	exec_exit(t_exec_vars *vars, t_free_data *free_data)
 		g_last_exit_status = ft_atoi(result);
 	}
 	free(result);
-	free_command_data(free_data);
-	//check_for_memory_leaks();
+	free_data_exit(free_data);
+	check_for_memory_leaks();
 	exit(g_last_exit_status);
 }
 

@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-/*MemoryBlock *allocated_blocks = NULL;
+MemoryBlock *allocated_blocks = NULL;
 
 void *custom_malloc(size_t size, const char *file, int line) {
     void *ptr = malloc(size);
@@ -55,4 +55,4 @@ void check_for_memory_leaks()
         printf("Memory leak detected: %zu bytes allocated at %s:%d\n", curr->size, curr->file, curr->line);
         curr = curr->next;
     }
-}*/
+}

@@ -11,8 +11,8 @@
 #include "libft/libft.h"
 #include <errno.h>
 
-//#define MY_MALLOC(size) custom_malloc(size, __FILE__, __LINE__)
-//#define free(ptr) custom_free(ptr, __FILE__, __LINE__)
+#define MY_MALLOC(size) custom_malloc(size, __FILE__, __LINE__)
+#define free(ptr) custom_free(ptr, __FILE__, __LINE__)
 
 enum token_type
 {
@@ -24,13 +24,13 @@ enum token_type
     HERE_DOC,   // 6 <<
 };
 
-/*typedef struct MemoryBlock {
+typedef struct MemoryBlock {
     void *address;
     size_t size;
     const char *file;
     int line;
     struct MemoryBlock *next;
-} MemoryBlock;*/
+} MemoryBlock;
 
 typedef struct s_token
 {
@@ -97,6 +97,7 @@ void			free_parse_tree(t_parse_tree *tree);
 void			free_token(t_token* tok);
 void			free_token_list(t_token_list* list);
 void	        free_command_data(t_free_data *free_data);
+void	        free_data_exit(t_free_data *free_data);
 
 // Errors
 void			handle_memory_error(t_token **token_list, int num_tokens);
@@ -221,8 +222,7 @@ int             exec_global_env(t_exec_vars *vars, t_env **env);
 
 t_free_data     *init_command_data(char **envp);
 
-/*
+
 void check_for_memory_leaks();
 void custom_free(void *ptr, const char *file, int line);
 void *custom_malloc(size_t size, const char *file, int line);
-*/

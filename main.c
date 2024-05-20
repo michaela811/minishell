@@ -91,5 +91,5 @@ void	handle_parse_tree(t_free_data *free_data)
 	}
 	//free_token_list(start);
     // free_parse_tree(root);
-    //check_for_memory_leaks();
+    check_for_memory_leaks();
 }
