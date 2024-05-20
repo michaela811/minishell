@@ -29,6 +29,7 @@ int	main(int argc, char **argv, char **envp)
 		if (!input)
 			break ;
 		handle_input(input, free_data);
+		//free_command_data(free_data);
 	}
 	rl_on_new_line();
 	return (0);
@@ -43,6 +44,7 @@ void	handle_input(char *input, t_free_data *free_data)
         if (!free_data->token_list)
             return ;
         handle_parse_tree(free_data);
+		free_command_data(free_data);
     }
 }
 
@@ -86,7 +88,7 @@ void	handle_parse_tree(t_free_data *free_data)
 	}
 	else
 	{
-		g_last_exit_status = 4;
+		//g_last_exit_status = 4;
 		printf("Parser returned an error: %d\n", SYNTAX_ERROR);
 	}
 	//free_token_list(start);
