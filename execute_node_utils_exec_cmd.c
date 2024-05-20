@@ -1,38 +1,38 @@
 #include "minishell.h"
 #include <errno.h>
 
-int	execute_command(t_exec_vars *vars, t_free_data *free_data)
+int	execute_command(t_exec_vars *vars, t_free_data *exec_data)
 {
 	//char	**environment;
 	int		return_builtins;
 
 	if (!vars->args[0])
 		return (0);
-	free_data->environment = env_list_to_array(free_data->env);
-	if (free_data->environment == NULL)
+	exec_data->environment = env_list_to_array(exec_data->env);
+	if (exec_data->environment == NULL)
 	{
 		g_last_exit_status = 1;
-		return (free_command_data(free_data), 1);
+		return (free_command_data(exec_data), 1);
 		return (g_last_exit_status);
 	}
-	return_builtins = exec_builtins(vars, free_data);
+	return_builtins = exec_builtins(vars, exec_data);
 	if (return_builtins == 2)
 	{
-		if (handle_fork(vars, &free_data->env, free_data->environment))
+		if (handle_fork(vars, &exec_data->env, exec_data->environment))
 		{
 			//g_last_exit_status = 1;
 			return (g_last_exit_status);
-			//return (free_command_data(free_data), g_last_exit_status);
+			//return (free_command_data(exec_data), g_last_exit_status);
 		}
 	}
 	return (g_last_exit_status);
-			//return (free_command_data(free_data), g_last_exit_status);
+			//return (free_command_data(exec_data), g_last_exit_status);
 	/* else if (return_builtins == 1)
 	{
 		return (g_last_exit_status);
-			//return (free_command_data(free_data), g_last_exit_status);
+			//return (free_command_data(exec_data), g_last_exit_status);
 	}
-	return (free_command_data(free_data), g_last_exit_status); */
+	return (free_command_data(exec_data), g_last_exit_status); */
 }
 
 #include <sys/types.h>

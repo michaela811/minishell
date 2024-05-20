@@ -17,37 +17,40 @@ void	handle_signal(int signal)
 int	main(int argc, char **argv, char **envp)
 {
 	char	        *input;
-    t_free_data     *free_data;
+    t_free_data     *exec_data;
 
     (void)argc;
     (void)argv;
 	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, handle_signal);
-    free_data = init_command_data(envp);
+    exec_data = init_command_data(envp);
 	while ((input = readline("my(s)hell> ")))
 	{
 		if (!input)
 			break ;
-		handle_input(input, free_data);
+		handle_input(input, exec_data);
+		//free_command_data(exec_data);
 	}
 	rl_on_new_line();
 	return (0);
 }
 
-void	handle_input(char *input, t_free_data *free_data)
+void	handle_input(char *input, t_free_data *exec_data)
 {
     if (*input)
     {
         add_history(input);
-        handle_preprocess_input(input, free_data);
-        if (!free_data->token_list)
+        handle_preprocess_input(input, exec_data);
+        if (!exec_data->token_list)
             return ;
-        handle_parse_tree(free_data);
-		free_command_data(free_data);
+
+		exec_data->token_list_start = exec_data->token_list;
+        handle_parse_tree(exec_data);
+		//free_command_data(exec_data);
     }
 }
 
-void	handle_preprocess_input(char *input, t_free_data *free_data)
+void	handle_preprocess_input(char *input, t_free_data *exec_data)
 {
 	char	*processed_input;
 
@@ -58,7 +61,7 @@ void	handle_preprocess_input(char *input, t_free_data *free_data)
 		input = NULL;
 		return ;
 	}
-	if (lexer(processed_input, &(free_data->token_list)))
+	if (lexer(processed_input, &(exec_data->token_list)))
 	{
 		g_last_exit_status = 3;
 		free(input);
@@ -70,11 +73,14 @@ void	handle_preprocess_input(char *input, t_free_data *free_data)
 	free(processed_input);
 }
 
-void	handle_parse_tree(t_free_data *free_data)
+void	handle_parse_tree(t_free_data *exec_data)
 {
-	if (is_pipe_sequence(free_data) == SUBTREE_OK)
-        execute_parse_tree(free_data);
-	else
-		printf("Parser returned an error: %d\n", SYNTAX_ERROR);
-    check_for_memory_leaks();
+	if (is_pipe_sequence(exec_data) == 0)
+    {
+		execute_parse_tree(exec_data);
+		free_command_data(exec_data);
+	}
+	//else
+		//printf("Parser returned an error: %d\n", g_last_exit_status);
+	return ;
 }
