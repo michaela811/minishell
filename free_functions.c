@@ -72,12 +72,12 @@ void	free_token_list(t_token_list *list)
 	while (current != NULL)
 	{
 		next = current->next;
-		/* if (current->token->lexeme != NULL)
+		if (current->token->lexeme != NULL)
 		{
 			free(current->token->lexeme);
 			current->token->lexeme = NULL;
 		}
-		*/if (current->token != NULL)
+		if (current->token != NULL)
 		{
 			free(current->token);
 			current->token = NULL;
@@ -126,6 +126,7 @@ void	free_env_array(char **env_array)
 	i = 0;
 	while (env_array[i] != NULL)
 	{
+		//printf("%d: %s\n", i, env_array[i]);
 		free(env_array[i]);
 		i++;
 	}
@@ -137,7 +138,7 @@ void	free_exit_data(t_free_data *exec_data, t_exec_vars *vars)
 {
     if (exec_data) {
 		free_env_array(vars->args);
-		//vars->args = NULL;
+		vars->args = NULL;
 		if (exec_data->token_list_start) {
             free_token_list(exec_data->token_list_start);
 			//free(exec_data->token_list_start);
