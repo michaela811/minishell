@@ -71,8 +71,10 @@ typedef struct s_exec_vars
 // Building struct to free when exiting
 typedef struct s_free_data {
     t_parse_tree *tree;
+    t_parse_tree *tree_start;
     t_env *env;
     t_token_list *token_list;
+    t_token_list *token_list_start;
     char **environment;
 } t_free_data;
 
@@ -87,16 +89,16 @@ extern int		g_last_exit_status;
 
 //MAIN
 void			handle_signal(int signal);
-void	        handle_input(char *input, t_free_data *free_data);
-void	        handle_preprocess_input(char *input, t_free_data *free_data);
-void	        handle_parse_tree(t_free_data *free_data);
+void	        handle_input(char *input, t_free_data *exec_data);
+void	        handle_preprocess_input(char *input, t_free_data *exec_data);
+void	        handle_parse_tree(t_free_data *exec_data);
 
 // Allocs and frees
 t_parse_tree*	alloc_parse_tree();
 void			free_parse_tree(t_parse_tree *tree);
 void			free_token(t_token* tok);
 void			free_token_list(t_token_list* list);
-void	        free_command_data(t_free_data *free_data);
+void	        free_command_data(t_free_data *exec_data);
 
 // Errors
 void			handle_memory_error(t_token **token_list, int num_tokens);
@@ -113,7 +115,7 @@ bool			is_redirection_token(enum token_type type);
 int				is_cmd_prefix(t_token_list **tok, t_parse_tree **prefix_node);
 int				is_cmd_suffix(t_token_list **tok, t_parse_tree **suffix_node);
 void			link_pipe(t_parse_tree **current, t_parse_tree *newNode);
-int             is_pipe_sequence(t_free_data *free_data);
+int             is_pipe_sequence(t_free_data *exec_data);
 
 // Printing
 void			print_parse_tree(t_parse_tree* tree, int depth);
@@ -140,14 +142,14 @@ t_token_list	*create_node_lexer(t_token *newToken);
 enum token_type	determine_token_type(char *token_value);
 
 // Execute
-int             execute_parse_tree(t_free_data *free_data);
-int             exec_exit(t_exec_vars *vars, t_free_data *free_data);
+int             execute_parse_tree(t_free_data *exec_data);
+int             exec_exit(t_exec_vars *vars, t_free_data *exec_data);
 int             get_path(char *cmd, t_env *env, char **exec);
 int             get_exec(char **path, int i, char *cmd, char **exec);
-int             handle_child_process(int *pipefd, t_free_data *free_data);
-int             handle_sibling_process(int *pipefd, t_free_data *free_data);
-int             handle_parent_process(int *pipefd, pid_t pid, t_free_data *free_data);
-int             execute_pipeline(t_free_data *free_data);
+int             handle_child_process(int *pipefd, t_free_data *exec_data);
+int             handle_sibling_process(int *pipefd, t_free_data *exec_data);
+int             handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data);
+int             execute_pipeline(t_free_data *exec_data);
 
 void            handle_redirection(t_parse_tree **node, t_exec_vars *vars);
 void            handle_redirection_from(t_parse_tree **node, t_exec_vars *vars);
@@ -156,14 +158,14 @@ void            handle_redirection_append(t_parse_tree **node, t_exec_vars *vars
 void            handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars);
 char            *handle_here_doc(t_parse_tree **node, t_exec_vars *vars);
 
-int             exec_builtins(t_exec_vars *vars, t_free_data *free_data);
+int             exec_builtins(t_exec_vars *vars, t_free_data *exec_data);
 int             handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment);
 int             handle_fork(t_exec_vars *vars, t_env **env, char **environment);
-int             execute_command(t_exec_vars *vars, t_free_data *free_data);
+int             execute_command(t_exec_vars *vars, t_free_data *exec_data);
 void            init_exec_vars(t_exec_vars *vars);
 void            handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env);
 int             split_variable(char *arg, int i, t_exec_vars *vars);
-int             execute_node(t_free_data *free_data);
+int             execute_node(t_free_data *exec_data);
 void            handle_global_env(t_parse_tree **node, char **args, int i, t_env **env);
 //void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
 void            handle_quotes_global(t_parse_tree **node, char **args, int i, t_env **env);

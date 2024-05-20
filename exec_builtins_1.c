@@ -1,21 +1,21 @@
 #include "minishell.h"
 
-int	exec_builtins(t_exec_vars *vars, t_free_data *free_data)
+int	exec_builtins(t_exec_vars *vars, t_free_data *exec_data)
 {
 	if (ft_strcmp(vars->args[0], "exit") == 0)
-		return (exec_exit(vars, free_data));
+		return (exec_exit(vars, exec_data));
 	else if (ft_strcmp(vars->args[0], "cd") == 0)
-		return (exec_cd(vars->args, &free_data->env));
+		return (exec_cd(vars->args, &exec_data->env));
 	else if (ft_strcmp(vars->args[0], "pwd") == 0)
 		return (exec_pwd());
 	else if (ft_strcmp(vars->args[0], "echo") == 0)
 		return (exec_echo(vars));
 	else if (ft_strcmp(vars->args[0], "export") == 0)
-		return (exec_export(vars->args, &free_data->env));
+		return (exec_export(vars->args, &exec_data->env));
 	else if (ft_strcmp(vars->args[0], "unset") == 0)
-		return (exec_unset(vars->args, &free_data->env));
+		return (exec_unset(vars->args, &exec_data->env));
 	else if (ft_strcmp(vars->args[0], "env") == 0)
-		return (exec_env(vars->args, free_data->environment));
+		return (exec_env(vars->args, exec_data->environment));
 	return (2);
 }
 
@@ -49,7 +49,7 @@ int	ft_atoi_no_minus(const char *nptr)
 	return (number);
 }
 
-int	exec_exit(t_exec_vars *vars, t_free_data *free_data)
+int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 {
 	int	i;
 	char *result;
@@ -68,7 +68,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *free_data)
 			if (vars->error)
 			{
 				free(result);
-				free_command_data(free_data);
+				free_command_data(exec_data);
 				g_last_exit_status = vars->error;
 				exit(g_last_exit_status);
 			}
@@ -79,7 +79,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *free_data)
 			if (result[i] == '+' && vars->args[1][0] == '+')
 			{
 				free(result);
-				free_command_data(free_data);
+				free_command_data(exec_data);
 				g_last_exit_status = 156;
 				exit(g_last_exit_status);
 			}
@@ -93,7 +93,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *free_data)
 			/* if (ft_isdigit(result[i]) == 0)
 			{
 				free(result);
-				free_command_data(free_data);
+				free_command_data(exec_data);
 				printf_global_error(156, 2, "my(s)hell: numeric argument required\n");
 				//g_last_exit_status = 156;
 				exit(g_last_exit_status);
@@ -102,17 +102,15 @@ int	exec_exit(t_exec_vars *vars, t_free_data *free_data)
 		}
 		g_last_exit_status = ft_atoi(result);
 	}
-	if (!g_last_exit_status && ft_isdigit(result[i]) == 0)
+	if (vars->args[1] != NULL && !g_last_exit_status && ft_isdigit(result[i]) == 0)
 			{
 				free(result);
-				free_command_data(free_data);
+				free_command_data(exec_data);
 				printf_global_error(156, 2, "my(s)hell: numeric argument required\n");
-				//g_last_exit_status = 156;
 				exit(g_last_exit_status);
 			}
 	free(result);
-	free_command_data(free_data);
-	//check_for_memory_leaks();
+	free_command_data(exec_data);
 	exit(g_last_exit_status);
 }
 
@@ -132,7 +130,7 @@ int	exec_echo(t_exec_vars *vars)
 	else if (ft_strcmp(vars->args[1], "-n") == 0)
 		i++;
 	process_args(vars->args, &(vars->error));
-	if (vars->error) //free the args
+	if (vars->error)
 		return (free_env_array(vars->args), g_last_exit_status);
 	while (vars->args[i])
 	{
@@ -178,7 +176,7 @@ char *handle_quotes_echo(const char *input, int *error)
     result = malloc(ft_strlen(input) + 1);
     if (!result)
 	{
-		*error = 1;//Do we need this error or can be handle with g_last_exit_status
+		*error = 1;
 		return (printf_global_error(1, 2, "echo: memory allocation\n"), NULL);
 	}
     i = 0;

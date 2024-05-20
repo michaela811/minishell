@@ -132,21 +132,22 @@ void	free_env_array(char **env_array)
 	free(env_array);
 }
 
-void	free_command_data(t_free_data *free_data)
+void	free_command_data(t_free_data *exec_data)
 {
-    if (free_data) {
-        if (free_data->tree) {
-            free_parse_tree(free_data->tree);
+    if (exec_data) {
+        if (exec_data->tree_start) {
+            free_parse_tree(exec_data->tree_start);
         }
-        //if (free_data->env) {
-            //free_env(free_data->env);
+        //if (exec_data->env) {
+            //free_env(exec_data->env);
         //}
-        if (free_data->token_list) {
-            free_token_list(free_data->token_list);
+        if (exec_data->token_list_start) {
+            //free_token_list(exec_data->token_list_start);
+			free(exec_data->token_list_start);
         }
-        if (free_data->environment) {
-			free_env_array(free_data->environment);
+        if (exec_data->environment) {
+			free_env_array(exec_data->environment);
         }
-        //free(free_data);
+        //free(exec_data);
     }
 }
