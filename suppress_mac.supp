@@ -1,0 +1,7 @@
+{
+	libreadline
+	Memcheck:Leak
+	...
+	obj:/usr/lib64/libreadline.so.*
+	...
+}

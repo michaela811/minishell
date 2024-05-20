@@ -1,7 +1,0 @@
-{
-	libreadline
-	Memcheck:Leak
-	...
-	obj:/usr/lib/aarch64-linux-gnu/libreadline.so.*
-	...
-}

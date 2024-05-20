@@ -37,6 +37,7 @@ int	execute_node(t_free_data *exec_data)
 	}
 	vars.args[vars.i] = NULL;
 	execute_command(&vars, exec_data);
+    free_env_array(vars.args);
 	//if (execute_command(&vars, exec_data) == 1)
 	//{
 	//	g_last_exit_status = 154;

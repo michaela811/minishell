@@ -99,6 +99,7 @@ void			free_parse_tree(t_parse_tree *tree);
 void			free_token(t_token* tok);
 void			free_token_list(t_token_list* list);
 void	        free_command_data(t_free_data *exec_data);
+void	free_exit_data(t_free_data *exec_data, t_exec_vars *vars);
 
 // Errors
 void			handle_memory_error(t_token **token_list, int num_tokens);
