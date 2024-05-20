@@ -27,9 +27,15 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 		handle_redirection(node, vars);
 		return ;
 	}
-	if ((*node)->data->lexeme[0] == '$'
-		&& strcmp((*node)->data->lexeme, "$?") == 0)
-		vars->args[vars->i] = "$?";
+	if ((*node)->data->lexeme[0] == '$' && strcmp((*node)->data->lexeme, "$?") == 0)
+	{
+		vars->args[vars->i] = ft_strdup("$?");
+		if (!vars->args[vars->i])
+		{
+			vars->error = 1;
+			return(printf_global_error(1, 2, "my(s)hell: ft_strdup error\n"));
+		}
+	}
 	else if ((*node)->data->lexeme[0] == '"' || (*node)->data->lexeme[0] == 39 || (*node)->data->lexeme[0] == '$')
 	{
 		handle_quotes_global(node, vars->args, vars->i, env);
@@ -37,7 +43,14 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 			return ;
 	}
 	else
-		vars->args[vars->i] = (*node)->data->lexeme;
+	{
+		vars->args[vars->i] = ft_strdup((*node)->data->lexeme);
+		if (!vars->args[vars->i])
+		{
+			vars->error = 1;
+			return(printf_global_error(1, 2, "my(s)hell: ft_strdup error\n"));
+		}
+	}
 	if ((*node)->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' '))
 		vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
 	vars->i++;

@@ -125,6 +125,7 @@ int	exec_echo(t_exec_vars *vars)
 	{
 		printf("%d\n", g_last_exit_status);
 		g_last_exit_status = 0;
+		
 		return (g_last_exit_status);
 	}
 	else if (ft_strcmp(vars->args[1], "-n") == 0)
