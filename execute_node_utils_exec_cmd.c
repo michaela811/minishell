@@ -21,15 +21,18 @@ int	execute_command(t_exec_vars *vars, t_free_data *free_data)
 		if (handle_fork(vars, &free_data->env, free_data->environment))
 		{
 			//g_last_exit_status = 1;
-			return (free_command_data(free_data), g_last_exit_status);
+			return (g_last_exit_status);
+			//return (free_command_data(free_data), g_last_exit_status);
 		}
 	}
-	else if (return_builtins == 1)
+	return (g_last_exit_status);
+			//return (free_command_data(free_data), g_last_exit_status);
+	/* else if (return_builtins == 1)
 	{
-		//g_last_exit_status = 1;
-		return (free_command_data(free_data), g_last_exit_status);
+		return (g_last_exit_status);
+			//return (free_command_data(free_data), g_last_exit_status);
 	}
-	return (free_command_data(free_data), g_last_exit_status);
+	return (free_command_data(free_data), g_last_exit_status); */
 }
 
 #include <sys/types.h>
