@@ -1,12 +1,12 @@
 #include "minishell.h"
 
 
-int	handle_child_process(int *pipefd, t_free_data *free_data)
+int	handle_child_process(int *pipefd, t_free_data *exec_data)
 {
 	//int	return_value;
 	//printf("Entering handle_child_process function\n");
 
-	if (free_data->tree->sibling != NULL)
+	if (exec_data->tree->sibling != NULL)
 	{
 		close(pipefd[0]);
 		if (dup2(pipefd[1], STDOUT_FILENO) == -1)
@@ -16,8 +16,8 @@ int	handle_child_process(int *pipefd, t_free_data *free_data)
         }
 		close(pipefd[1]);
 	}
-	//return_value = execute_node(free_data);
-	if (execute_node(free_data))
+	//return_value = execute_node(exec_data);
+	if (execute_node(exec_data))
 	{
 		//g_last_exit_status = return_value;
 		exit(EXIT_FAILURE);
@@ -29,7 +29,7 @@ int	handle_child_process(int *pipefd, t_free_data *free_data)
 	//exit(g_last_exit_status);
 }
 
-pid_t handle_sibling_process(int *pipefd, t_free_data *free_data)
+pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)
 {
     pid_t	pid2;
     int		return_value;
@@ -47,7 +47,7 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *free_data)
         }
         close(pipefd[0]);
 		close(pipefd[1]);//New trial
-        return_value = execute_pipeline(free_data);
+        return_value = execute_pipeline(exec_data);
         if (return_value != 0)
         {
             g_last_exit_status = return_value;
@@ -116,7 +116,7 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *free_data)
 	if ((*node)->sibling != NULL)
 	{
 		close(pipefd[1]);
-		if (handle_sibling_process(pipefd, free_data))
+		if (handle_sibling_process(pipefd, exec_data))
 			return (1);
 	}
 	wait(NULL);
@@ -124,7 +124,7 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *free_data)
 	return (0);
 } */
 
-int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *free_data)
+int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 {
 	int	status;
 	pid_t pids [10];//[MAX_COMMANDS];  // Array to store PIDs of child processes
@@ -134,11 +134,11 @@ int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *free_data)
 	num_commands++;
 
 	// Handle sibling commands in the pipeline
-	if (free_data->tree->sibling != NULL)
+	if (exec_data->tree->sibling != NULL)
 	{
 		close(pipefd[1]);  // Close the unused write end of the pipe
-		t_free_data sibling_free_data = *free_data;  // Copy the current free_data
-    	sibling_free_data.tree = free_data->tree->sibling->sibling;
+		t_free_data sibling_free_data = *exec_data;  // Copy the current exec_data
+    	sibling_free_data.tree = exec_data->tree->sibling->sibling;
 		pid_t sibling_pid = handle_sibling_process(pipefd, &sibling_free_data);
 		if (sibling_pid == -1)
 			return (1); // Early exit on error in handling sibling, may want to adjust depending on desired behavior
