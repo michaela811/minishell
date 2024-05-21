@@ -48,19 +48,19 @@ void	free_parse_tree(t_parse_tree *tree)
     child = tree->child;
     sibling = tree->sibling;
 
-    if (tree->data != NULL)
+    /* if (tree->data != NULL)
     {
         free_token(tree->data);
         tree->data = NULL;
-    }
-
-    free(tree);
-    tree = NULL;
-
-    if (sibling != NULL)
+    } */
+	if (sibling != NULL)
         free_parse_tree(sibling);
     if (child != NULL)
         free_parse_tree(child);
+    free(tree);
+    tree = NULL;
+
+
 }
 
 void	free_token_list(t_token_list *list)
@@ -126,25 +126,55 @@ void	free_env_array(char **env_array)
 	i = 0;
 	while (env_array[i] != NULL)
 	{
+		//printf("%d: %s\n", i, env_array[i]);
 		free(env_array[i]);
 		i++;
 	}
 	free(env_array);
+	env_array = NULL;
+}
+
+void	free_exit_data(t_free_data *exec_data, t_exec_vars *vars)
+{
+    if (exec_data) {
+		free_env_array(vars->args);
+		vars->args = NULL;
+		if (exec_data->token_list_start) {
+            free_token_list(exec_data->token_list_start);
+			//free(exec_data->token_list_start);
+			exec_data->token_list_start = NULL;
+        }
+        if (exec_data->tree_start) {
+            free_parse_tree(exec_data->tree_start);
+			exec_data->tree_start = NULL;
+        }
+        if (exec_data->env) {
+            free_env(exec_data->env);
+			exec_data->env = NULL;
+        }
+        if (exec_data->environment) {
+			free_env_array(exec_data->environment);
+			exec_data->environment = NULL;
+        }
+        free(exec_data);
+		exec_data = NULL;
+    }
 }
 
 void	free_command_data(t_free_data *exec_data)
 {
     if (exec_data) {
+		if (exec_data->token_list_start) {
+            free_token_list(exec_data->token_list_start);
+			exec_data->token_list_start = NULL;
+        }
         if (exec_data->tree_start) {
             free_parse_tree(exec_data->tree_start);
+			exec_data->tree_start = NULL;
         }
         //if (exec_data->env) {
             //free_env(exec_data->env);
         //}
-        if (exec_data->token_list_start) {
-            //free_token_list(exec_data->token_list_start);
-			free(exec_data->token_list_start);
-        }
         if (exec_data->environment) {
 			free_env_array(exec_data->environment);
         }

@@ -20,23 +20,27 @@ int	execute_parse_tree(t_free_data *exec_data)
 
 int	execute_node(t_free_data *exec_data)
 {
-	t_exec_vars	vars;
+	t_exec_vars	*vars;
 
-	init_exec_vars(&vars);
+    vars = malloc(sizeof(t_exec_vars));
+    if (!vars)
+        {return (printf_global_error(1, 2, "my(s)hell: execute_node malloc error\n"), 1);}
+	init_exec_vars(vars);
 	if (exec_data->tree == NULL)
 		return (0);
 	while (exec_data->tree != NULL)
 	{
 		if (exec_data->tree->data != NULL)
 		{
-			handle_node_data(&exec_data->tree, &vars, &exec_data->env);
-			if (vars.error != 0)
+			handle_node_data(&exec_data->tree, vars, &exec_data->env);
+			if (vars->error != 0)
 				return (g_last_exit_status);
 		}
 		exec_data->tree = exec_data->tree->child;
 	}
-	vars.args[vars.i] = NULL;
-	execute_command(&vars, exec_data);
+	vars->args[vars->i] = NULL;
+	execute_command(vars, exec_data);
+    free_env_array(vars->args);
 	//if (execute_command(&vars, exec_data) == 1)
 	//{
 	//	g_last_exit_status = 154;
