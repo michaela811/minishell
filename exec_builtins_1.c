@@ -125,7 +125,7 @@ int	exec_echo(t_exec_vars *vars)
 	{
 		printf("%d\n", g_last_exit_status);
 		g_last_exit_status = 0;
-		
+
 		return (g_last_exit_status);
 	}
 	else if (ft_strcmp(vars->args[1], "-n") == 0)
@@ -192,7 +192,9 @@ char *handle_quotes_echo(const char *input, int *error)
             if (input[i] != quote)
 			{
                 *error = 1;
-				return (printf_global_error(1, 2, "echo: no closing quote\n"), free(result), NULL);
+				//return (printf_global_error(1, 2, "echo: no closing quote\n"), free(result), NULL);
+				g_last_exit_status = 1;
+				return (NULL);
 			}
 			i++;
 		}

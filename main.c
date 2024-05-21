@@ -24,13 +24,29 @@ int	main(int argc, char **argv, char **envp)
 	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, handle_signal);
     exec_data = init_command_data(envp);
-	while ((input = readline("my(s)hell> ")))
+	/* while ((input = readline("my(s)hell> ")))
 	{
 		if (!input)
 			break ;
 		handle_input(input, exec_data);
 		//free_command_data(exec_data);
-	}
+	} */
+	while (1)
+    {
+        if (isatty(fileno(stdin)))
+            input = readline("my(s)hell> ");
+        else
+        {
+            char *line;
+            line = get_next_line(fileno(stdin));
+            input = ft_strtrim(line, "\n");
+            free(line);
+        }
+        if (!input)
+            break ;
+        handle_input(input, exec_data);
+        //free_command_data(exec_data);
+    }
 	rl_on_new_line();
 	return (0);
 }
