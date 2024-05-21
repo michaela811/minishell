@@ -61,3 +61,7 @@ minishell
 
 #Tester
 minishel_tester
+42_minishell_tester
+$HOME
+$USER
+$USER'$USER'

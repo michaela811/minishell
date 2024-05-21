@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mmasarov <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/13 16:14:04 by mmasarov          #+#    #+#              #
-#    Updated: 2023/09/14 10:25:14 by mmasarov         ###   ########.fr        #
+#    Updated: 2024/05/21 11:26:49 by dpadenko         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,6 @@ SOURCES = ft_isdigit.c \
 		  ft_isalnum.c \
 		  ft_isascii.c \
 		  ft_isprint.c \
-		  ft_strlen.c \
 		  ft_memset.c \
 		  ft_bzero.c \
 		  ft_memcpy.c \
@@ -38,7 +37,6 @@ SOURCES = ft_isdigit.c \
 		  ft_calloc.c \
 		  ft_strdup.c \
 		  ft_substr.c \
-		  ft_strjoin.c \
 		  ft_strtrim.c \
 		  ft_split.c \
 		  ft_itoa.c \
@@ -73,6 +71,10 @@ SOURCES = ft_isdigit.c \
 		  ft_strndup.c \
 		  ft_strncpy.c \
 		  ft_strncat.c \
+		  get_next_line.c \
+		  get_next_line_utils.c \
+		  ft_strlen.c \
+		  ft_strjoin.c \
 
 OBJECT = $(SOURCES:.c=.o)
 
