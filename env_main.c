@@ -62,7 +62,7 @@ char	**env_list_to_array(t_env *head)
 	int		i;
 
 	count = count_env_list(head);
-	env_array = malloc((count + 1) * sizeof(char *));
+	env_array = MY_MALLOC((count + 1) * sizeof(char *));
 	if (env_array == NULL)
 		return (NULL);
 	current = head;
@@ -90,7 +90,7 @@ int	get_path(char *cmd, t_env *env, char **exec)
 	i = -1;
 	path = ft_split(get_env_var(env, "PATH"), ':');
 	if (path == NULL)
-		return (printf_global_error(1, 2, "malloc error in split function\n"), 1);
+		return (printf_global_error(1, 2, "MY_MALLOC error in split function\n"), 1);
 	while (path[++i])
 	{
 		if (get_exec(path, i, cmd, exec))
@@ -110,12 +110,12 @@ int	get_exec(char **path, int i, char *cmd, char **exec)
 
 	path_part = ft_strjoin(path[i], "/");
 	if (path_part == NULL)
-		return (printf_global_error(1, 2, "malloc error in strjoin function\n"), 1);
+		return (printf_global_error(1, 2, "MY_MALLOC error in strjoin function\n"), 1);
 	*exec = ft_strjoin(path_part, cmd);
 	if (*exec == NULL)
 	{
 		free(path_part);
-		return (printf_global_error(1, 2, "malloc error in strjoin function\n"), 1);
+		return (printf_global_error(1, 2, "MY_MALLOC error in strjoin function\n"), 1);
 	}
 	free(path_part);
 	return (0);

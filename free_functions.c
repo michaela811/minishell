@@ -138,9 +138,9 @@ void	free_command_data(t_free_data *exec_data)
         if (exec_data->tree_start) {
             free_parse_tree(exec_data->tree_start);
         }
-        //if (exec_data->env) {
-            //free_env(exec_data->env);
-        //}
+        /*if (exec_data->env) {
+            free_env(exec_data->env);
+        }*/
         if (exec_data->token_list_start) {
             //free_token_list(exec_data->token_list_start);
 			free(exec_data->token_list_start);
@@ -149,5 +149,32 @@ void	free_command_data(t_free_data *exec_data)
 			free_env_array(exec_data->environment);
         }
         //free(exec_data);
+    }
+}
+
+void	free_exit_data(t_free_data *exec_data, t_exec_vars *vars)
+{
+    if (exec_data) {
+        if (exec_data->tree_start) {
+            free_parse_tree(exec_data->tree_start);
+			exec_data->tree_start = NULL;
+        }
+        if (exec_data->env) {
+            free_env(exec_data->env);
+			exec_data->env = NULL;
+        }
+        if (exec_data->token_list_start) {
+            free_token_list(exec_data->token_list_start);
+			exec_data->token_list_start = NULL;
+			//free(exec_data->token_list_start);
+        }
+        if (exec_data->environment) {
+			free_env_array(exec_data->environment);
+			exec_data->environment = NULL;
+        }
+		free_env_array(vars->args);
+		vars->args = NULL;
+		vars = NULL;
+        free(exec_data);
     }
 }

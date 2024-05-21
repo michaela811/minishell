@@ -46,7 +46,8 @@ void	handle_input(char *input, t_free_data *exec_data)
 
 		exec_data->token_list_start = exec_data->token_list;
         handle_parse_tree(exec_data);
-		//free_command_data(exec_data);
+		free_command_data(exec_data);
+		check_for_memory_leaks();
     }
 }
 
@@ -78,9 +79,7 @@ void	handle_parse_tree(t_free_data *exec_data)
 	if (is_pipe_sequence(exec_data) == 0)
     {
 		execute_parse_tree(exec_data);
-		free_command_data(exec_data);
+		//free_command_data(exec_data);
 	}
-	//else
-		//printf("Parser returned an error: %d\n", g_last_exit_status);
 	return ;
 }

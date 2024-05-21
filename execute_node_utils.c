@@ -6,7 +6,7 @@ void	init_exec_vars(t_exec_vars *vars)
 
 	vars->fd_in = 0;
 	vars->fd_out = 1;
-	vars->args = malloc(10 * sizeof(char *));  // Allocate memory for args
+	vars->args = MY_MALLOC(10 * sizeof(char *));  // Allocate memory for args
     if (!vars->args)
     {
         // Handle memory allocation error

@@ -68,7 +68,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 			if (vars->error)
 			{
 				free(result);
-				free_command_data(exec_data);
+				free_exit_data(exec_data, vars);
 				g_last_exit_status = vars->error;
 				exit(g_last_exit_status);
 			}
@@ -79,7 +79,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 			if (result[i] == '+' && vars->args[1][0] == '+')
 			{
 				free(result);
-				free_command_data(exec_data);
+				free_exit_data(exec_data, vars);
 				g_last_exit_status = 156;
 				exit(g_last_exit_status);
 			}
@@ -105,12 +105,13 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 	if (vars->args[1] != NULL && !g_last_exit_status && ft_isdigit(result[i]) == 0)
 			{
 				free(result);
-				free_command_data(exec_data);
+				free_exit_data(exec_data, vars);
 				printf_global_error(156, 2, "my(s)hell: numeric argument required\n");
 				exit(g_last_exit_status);
 			}
 	free(result);
-	free_command_data(exec_data);
+	free_exit_data(exec_data, vars);
+	check_for_memory_leaks();
 	exit(g_last_exit_status);
 }
 
@@ -173,7 +174,7 @@ char *handle_quotes_echo(const char *input, int *error)
 	int j;
 	char quote;
 
-    result = malloc(ft_strlen(input) + 1);
+    result = MY_MALLOC(ft_strlen(input) + 1);
     if (!result)
 	{
 		*error = 1;

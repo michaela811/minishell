@@ -224,6 +224,7 @@ int             exec_global_env(t_exec_vars *vars, t_env **env);
 t_free_data     *init_command_data(char **envp);
 
 
-void check_for_memory_leaks();
-void custom_free(void *ptr, const char *file, int line);
-void *custom_malloc(size_t size, const char *file, int line);
+void        check_for_memory_leaks();
+void        custom_free(void *ptr, const char *file, int line);
+void        *custom_malloc(size_t size, const char *file, int line);
+void	    free_exit_data(t_free_data *exec_data, t_exec_vars *vars);

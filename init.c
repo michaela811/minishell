@@ -2,7 +2,7 @@
 
 t_free_data *init_command_data(char **envp)
 {
-    t_free_data *exec_data = malloc(sizeof(t_free_data));
+    t_free_data *exec_data = MY_MALLOC(sizeof(t_free_data));
     if (!exec_data)
         return NULL;
     exec_data->env = init_environment(envp);
