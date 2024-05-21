@@ -97,7 +97,7 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)
 	}
 	else
 		return (perror("fork"), 1);
-	//free_env(*env);
+	//MY_FREE_env(*env);
 	return (0);
 } */
 
@@ -137,9 +137,9 @@ int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 	if (exec_data->tree->sibling != NULL)
 	{
 		close(pipefd[1]);  // Close the unused write end of the pipe
-		t_free_data sibling_free_data = *exec_data;  // Copy the current exec_data
-    	sibling_free_data.tree = exec_data->tree->sibling->sibling;
-		pid_t sibling_pid = handle_sibling_process(pipefd, &sibling_free_data);
+		t_free_data sibling_MY_FREE_data = *exec_data;  // Copy the current exec_data
+    	sibling_MY_FREE_data.tree = exec_data->tree->sibling->sibling;
+		pid_t sibling_pid = handle_sibling_process(pipefd, &sibling_MY_FREE_data);
 		if (sibling_pid == -1)
 			return (1); // Early exit on error in handling sibling, may want to adjust depending on desired behavior
 		pids[num_commands] = sibling_pid;

@@ -22,9 +22,9 @@ int	execute_node(t_free_data *exec_data)
 {
 	t_exec_vars	*vars;
 
-    vars = malloc(sizeof(t_exec_vars));
+    vars = MY_MALLOC(sizeof(t_exec_vars));
     if (!vars)
-        {return (printf_global_error(1, 2, "my(s)hell: execute_node malloc error\n"), 1);}
+        {return (printf_global_error(1, 2, "my(s)hell: execute_node MY_MALLOC error\n"), 1);}
 	init_exec_vars(vars);
 	if (exec_data->tree == NULL)
 		return (0);

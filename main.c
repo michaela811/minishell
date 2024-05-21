@@ -46,6 +46,7 @@ void	handle_input(char *input, t_free_data *exec_data)
 
 		exec_data->token_list_start = exec_data->token_list;
         handle_parse_tree(exec_data);
+		check_for_memory_leaks();
 		//free_command_data(exec_data);
     }
 }
@@ -57,20 +58,20 @@ void	handle_preprocess_input(char *input, t_free_data *exec_data)
 	processed_input = preprocess_input(input, " |><");
 	if (processed_input == NULL)
 	{
-		free(input);
+		MY_FREE(input);
 		input = NULL;
 		return ;
 	}
 	if (lexer(processed_input, &(exec_data->token_list)))
 	{
 		g_last_exit_status = 3;
-		free(input);
+		MY_FREE(input);
 		input = NULL;
-		free(processed_input);
+		MY_FREE(processed_input);
 		processed_input = NULL;
 		return ;
 	}
-	free(processed_input);
+	MY_FREE(processed_input);
 }
 
 void	handle_parse_tree(t_free_data *exec_data)

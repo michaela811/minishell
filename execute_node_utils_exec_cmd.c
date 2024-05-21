@@ -119,7 +119,7 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
         	}
 		}
 	}
-//free(path); //probably freed later as lexem
+//MY_FREE(path); //probably MY_FREEd later as lexem
 	if (execve(path, vars->args, environment) < 0)
 		return (printf_global_error(127, 2, "my(s)hell: execve\n", vars->args[0]), 127);
 	g_last_exit_status = 0;
@@ -135,7 +135,7 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	pid = fork();
 	if (pid == -1)
 	{
-		//free_env_array(environment);//Should be freeed later?
+		//MY_FREE_env_array(environment);//Should be MY_FREEed later?
 		printf_global_error(128, 2, "fork\n");
 		exit(EXIT_FAILURE);
 	}
@@ -149,6 +149,6 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 		waitpid(pid, &status, 0);
 		g_last_exit_status = WEXITSTATUS(status);
 	}
-	//free_env_array(environment);
+	//MY_FREE_env_array(environment);
 	return (0);
 }

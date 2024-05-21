@@ -12,7 +12,7 @@
 #include <errno.h>
 
 #define MY_MALLOC(size) custom_malloc(size, __FILE__, __LINE__)
-#define free(ptr) custom_free(ptr, __FILE__, __LINE__)
+#define MY_FREE(ptr) custom_free(ptr, __FILE__, __LINE__)
 
 enum token_type
 {
