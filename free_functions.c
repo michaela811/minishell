@@ -158,6 +158,7 @@ void	free_exit_data(t_free_data *exec_data, t_exec_vars *vars)
         }
         free(exec_data);
 		exec_data = NULL;
+		clear_history();
     }
 }
 
