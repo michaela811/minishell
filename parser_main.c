@@ -74,7 +74,7 @@ int	is_simple_command(t_token_list **tok, t_parse_tree **new)
 	if (cmd_word_node == NULL && (*new)->child)// PROBABLY CHECK WHETHER THE TOKEN LIST IS EMPTY
 		return (0);
 	if (cmd_word_node == NULL && !(*new)->child)
-		return (printf_global_error(1, 2, "my(s)hell: syntax error\n"), 1);
+		return (free_parse_tree(*new), printf_global_error(1, 2, "my(s)hell: syntax error\n"), 1);
 	link_node(&((*new)->child), cmd_word_node);
 	cmd_suffix_node = NULL;
 	if (is_cmd_suffix(tok, &cmd_suffix_node) == 0)

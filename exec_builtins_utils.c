@@ -6,16 +6,16 @@ int	change_directory_and_update(char *path, t_env **env, char *cwd)
 	{
 		g_last_exit_status = 1;
 		perror("chdir");
-		MY_FREE(cwd);
+		free(cwd);
 		return (1);
 	}
 	if (update_pwd(env, cwd))
 	{
 		g_last_exit_status = 1;
-		MY_FREE(cwd);
+		free(cwd);
 		return (1);
 	}
-	MY_FREE(cwd);
+	free(cwd);
 	g_last_exit_status = 0;
 	return (g_last_exit_status);
 }
@@ -60,11 +60,11 @@ int	split_var(char *var, char **name, char **value)
 	else
 		*name = ft_strdup(var);
 	if (name == NULL)
-		return (printf_global_error(1, 2, "split_var: strndup error\n"), MY_FREE(*name), g_last_exit_status);
+		return (printf_global_error(1, 2, "split_var: strndup error\n"), free(*name), g_last_exit_status);
 	while ((*name)[i] != '\0')
 	{
 		if (ft_isalpha((*name)[i]) == 0)//add underscore and probably numbers
-			return(printf_global_error(1, 2, "export: %s: not a valid identifier\n", *name), MY_FREE(*name), g_last_exit_status);
+			return(printf_global_error(1, 2, "export: %s: not a valid identifier\n", *name), free(*name), g_last_exit_status);
 		i++;
 	}
 	(*name)[i] = '\0';
@@ -72,13 +72,13 @@ int	split_var(char *var, char **name, char **value)
 	{
 		*value = ft_strdup("");
 		if (value == NULL)
-			return (printf_global_error(1, 2, "split_var: strndup error\n"), MY_FREE(*name), g_last_exit_status);
+			return (printf_global_error(1, 2, "split_var: strndup error\n"), free(*name), g_last_exit_status);
 		return (0);
 	}
 	if (export_quotes(equals + 1, value))
-		return (printf_global_error(1, 2, "split_var: export_quotes error\n"), MY_FREE(*name), g_last_exit_status);
+		return (printf_global_error(1, 2, "split_var: export_quotes error\n"), free(*name), g_last_exit_status);
 	//if (value == NULL)//Do we need this check?
-		//return (printf_global_error("split_var: strndup error\n"), MY_FREE(*name), 1);
+		//return (printf_global_error("split_var: strndup error\n"), free(*name), 1);
 	return (0);
 }
 
@@ -125,6 +125,6 @@ int	update_pwd(t_env **env, char *cwd)
 	if (cwd == NULL)
 		return (perror("getcwd"), 1);
 	if (update_add_env_var(env, "PWD", cwd))
-		return (MY_FREE(cwd), 1);
-	return (MY_FREE(cwd), 0);
+		return (free(cwd), 1);
+	return (free(cwd), 0);
 }

@@ -24,7 +24,7 @@ size_t	ft_strlen_gnl(char *s)
 	return (i);
 }
 
-void	my_free(char **str)
+void	my_free_gnl(char **str)
 {
 	if (*str)
 		free(*str);
@@ -41,7 +41,7 @@ char	*ft_strjoin_gnl(char *read_str, char *buff)
 		return (NULL);
 	str = malloc(sizeof(char) * ((ft_strlen_gnl(read_str) + ft_strlen_gnl(buff)) + 1));
 	if (str == NULL)
-		return (my_free(&read_str), my_free(&buff), NULL);
+		return (my_free_gnl(&read_str), my_free_gnl(&buff), NULL);
 	i = 0;
 	j = 0;
 	while (read_str && read_str[i] != '\0')
@@ -52,5 +52,5 @@ char	*ft_strjoin_gnl(char *read_str, char *buff)
 	while (buff[j] != '\0')
 		str[i++] = buff[j++];
 	str[i] = '\0';
-	return (my_free(&read_str), my_free(&buff), str);
+	return (my_free_gnl(&read_str), my_free_gnl(&buff), str);
 }

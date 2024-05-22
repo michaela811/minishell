@@ -92,7 +92,7 @@ char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars)
 			break ;
 		write(file, buffer, ft_strlen(buffer));
 		write(file, "\n", 1);
-		MY_FREE(buffer);
+		free(buffer);
 	}
 	close(file);
 	return (filename);

@@ -30,9 +30,9 @@ int	exec_unset(char **args, t_env **env)
 				*env = current->next;
 			else
 				prev->next = current->next;
-			MY_FREE(current->name);
-			MY_FREE(current->value);
-			MY_FREE(current);
+			free(current->name);
+			free(current->value);
+			free(current);
 			g_last_exit_status = 0;
 			return (g_last_exit_status);
 		}

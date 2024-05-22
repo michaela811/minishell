@@ -67,7 +67,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 			result = handle_quotes_echo(&vars->args[1][i],  &(vars->error));
 			if (vars->error)
 			{
-				MY_FREE(result);
+				free(result);
 				free_command_data(exec_data);
 				g_last_exit_status = vars->error;
 				exit(g_last_exit_status);
@@ -78,7 +78,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 		{
 			if (result[i] == '+' && vars->args[1][0] == '+')
 			{
-				MY_FREE(result);
+				free(result);
 				free_command_data(exec_data);
 				g_last_exit_status = 156;
 				exit(g_last_exit_status);
@@ -96,15 +96,17 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 	}
 	if (vars->args[1] != NULL && !g_last_exit_status && ft_isdigit(result[i]) == 0)
 			{
-				MY_FREE(result);
+				free(result);
 				free_command_data(exec_data);
 				printf_global_error(156, 2, "my(s)hell: numeric argument required\n");
 				exit(g_last_exit_status);
 			}
 	if (result)
-		MY_FREE(result);
-	free_exit_data(exec_data, vars);
-	check_for_memory_leaks();
+		free(result);
+	free_exit_data(exec_data);
+	free_env_array(vars->args);
+	free(vars);
+	//check_for_memory_leaks();
 	exit(g_last_exit_status);
 }
 
@@ -151,11 +153,11 @@ void	process_args(char **args, int *error)
 		new_str = handle_quotes_echo((args[i]), error);
 		if (*error)
 		{
-			MY_FREE(new_str);
+			free(new_str);
 			return ;
 		}
 		if (args[i])
-			MY_FREE(args[i]);
+			free(args[i]);
         args[i] = new_str;
         i++;
 	}
@@ -168,7 +170,7 @@ char *handle_quotes_echo(const char *input, int *error)
 	int j;
 	char quote;
 
-    result = MY_MALLOC(ft_strlen(input) + 1);
+    result = malloc(ft_strlen(input) + 1);
     if (!result)
 	{
 		*error = 1;
@@ -207,7 +209,7 @@ int	exec_cd(char **args, t_env **env)
 	if (cwd == NULL)
 		return (printf_global_error(1, 2, "getcwd\n"), g_last_exit_status);
 	if (args[1] != NULL && args[2])
-		return (printf_global_error(1, 2, "cd: too many arguments\n"), MY_FREE(cwd), g_last_exit_status);
+		return (printf_global_error(1, 2, "cd: too many arguments\n"), free(cwd), g_last_exit_status);
 	else if (args[1] == NULL || ft_strcmp(args[1], "~") == 0)
 		return (change_directory_and_update(get_env_var(*env, "HOME"),
 				env, cwd));
@@ -229,7 +231,7 @@ int	exec_dollar_pwd(void)
 		ft_putstr_fd(cwd, 1);
 		ft_putstr_fd(": Is a directory\n", 1);
 		g_last_exit_status = 126;
-		MY_FREE(cwd);
+		free(cwd);
 		return (g_last_exit_status);
 	}
 }
@@ -244,7 +246,7 @@ int	exec_pwd(void)
 	else
 	{
 		printf("%s\n", cwd);
-		MY_FREE(cwd);
+		free(cwd);
 		g_last_exit_status = 0;
 		return (g_last_exit_status);
 	}
@@ -268,7 +270,7 @@ int	exec_export(char **args, t_env **env)
 		if (split_var(args[1], &name, &value))
 			return (g_last_exit_status);
 		if (update_add_env_var(env, name, value))
-			return (MY_FREE(name), MY_FREE(value), g_last_exit_status);
+			return (free(name), free(value), g_last_exit_status);
 	}
 	g_last_exit_status = 0;
 	return (g_last_exit_status);

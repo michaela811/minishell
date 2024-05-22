@@ -2,7 +2,7 @@
 
 t_free_data *init_command_data(char **envp)
 {
-    t_free_data *exec_data = MY_MALLOC(sizeof(t_free_data));
+    t_free_data *exec_data = malloc(sizeof(t_free_data));
     if (!exec_data)
         return NULL;
     exec_data->env = init_environment(envp);
@@ -10,7 +10,7 @@ t_free_data *init_command_data(char **envp)
 	{
 		g_last_exit_status = 1;
 		printf("init_environment failed");
-        MY_FREE(exec_data);
+        free(exec_data);
         return (NULL);
 	}
     exec_data->token_list = NULL;

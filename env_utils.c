@@ -4,15 +4,15 @@ t_env	*create_env_var(const char *name, const char *value)
 {
 	t_env	*var;
 
-	var = MY_MALLOC(sizeof(t_env));
+	var = malloc(sizeof(t_env));
 	if (var == NULL)
 		return (NULL);
 	var->name = ft_strdup(name);
 	if (var->name == NULL)
-		return (MY_FREE(var), NULL);
+		return (free(var), NULL);
 	var->value = ft_strdup(value);
 	if (var->value == NULL)
-		return (MY_FREE(var->name), MY_FREE(var), NULL);
+		return (free(var->name), free(var), NULL);
 	var->next = NULL;
 	return (var);
 }
@@ -58,7 +58,7 @@ char	*create_env_str(t_env *current)
 {
 	char	*env_str;
 
-	env_str = MY_MALLOC(ft_strlen(current->name) + ft_strlen(current->value) + 2);
+	env_str = malloc(ft_strlen(current->name) + ft_strlen(current->value) + 2);
 	if (env_str == NULL)
 		return (NULL);
 	ft_strcpy(env_str, current->name);
