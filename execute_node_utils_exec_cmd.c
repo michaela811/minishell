@@ -3,7 +3,6 @@
 
 int	execute_command(t_exec_vars *vars, t_free_data *exec_data)
 {
-	//char	**environment;
 	int		return_builtins;
 
 	if (!vars->args[0])
@@ -17,22 +16,8 @@ int	execute_command(t_exec_vars *vars, t_free_data *exec_data)
 	}
 	return_builtins = exec_builtins(vars, exec_data);
 	if (return_builtins == 2)
-	{
-		if (handle_fork(vars, &exec_data->env, exec_data->environment))
-		{
-			//g_last_exit_status = 1;
-			return (g_last_exit_status);
-			//return (free_command_data(exec_data), g_last_exit_status);
-		}
-	}
+		handle_fork(vars, &exec_data->env, exec_data->environment);
 	return (g_last_exit_status);
-			//return (free_command_data(exec_data), g_last_exit_status);
-	/* else if (return_builtins == 1)
-	{
-		return (g_last_exit_status);
-			//return (free_command_data(exec_data), g_last_exit_status);
-	}
-	return (free_command_data(exec_data), g_last_exit_status); */
 }
 
 #include <sys/types.h>
@@ -55,7 +40,6 @@ int get_args_count(char **args)
         count++;
     return (count);
 }
-
 int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 {
 	char	*path;
@@ -89,42 +73,17 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	{
     	struct stat path_stat;
     	stat(path, &path_stat);
+		if (access(path, F_OK) != -1 && access(vars->args[0], X_OK) == -1 && vars->args[0][0] == '.' && vars->args[0][1] == '/')
+			return (printf_global_error(126, 2, "my(s)hell: %s: Permission denied\n", vars->args[0]), 126);
+		else
+			return (printf_global_error(127, 2, "my(s)hell: %s: command not found\n", vars->args[0]), 127);
     	if (access(path, F_OK) == -1 || S_ISDIR(path_stat.st_mode))
 			return (printf_global_error(127, 2, "my(s)hell: %s: command not found\n", vars->args[0]), 127);
-    	if (access(vars->args[0], X_OK) == -1)
-		{
-        if (S_ISREG(path_stat.st_mode))
-			{
-        	    ft_putstr_fd("my(s)hell: ", 2);
-        	    ft_putstr_fd(vars->args[0], 2);
-				if ((path_stat.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) == 0) {
-                // The file has execute bits set but isn't executable, perhaps due to other restrictions
-				//ft_putstr_fd(": command not found\n", 2);
-        	        //return (g_last_exit_status = 127);
-                ft_putstr_fd(": Permission denied\n", 2);
-        	        return (g_last_exit_status = 126);
-            } else {
-                // The file has no execute bits set
-                ft_putstr_fd(": Permission denied\n", 2);
-        	        return (g_last_exit_status = 126);
-            }
-        	    /*if ((path_stat.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) != 0)
-				{
-        	        ft_putstr_fd(": command not found\n", 2);
-        	        return (g_last_exit_status = 127);
-        	    } else {
-        	        ft_putstr_fd(": Permission denied\n", 2);
-        	        return (g_last_exit_status = 126);
-        	    }*/
-        	}
-		}
 	}
-//free(path); //probably freed later as lexem
 	if (execve(path, vars->args, environment) < 0)
 		return (printf_global_error(127, 2, "my(s)hell: execve\n", vars->args[0]), 127);
 	g_last_exit_status = 0;
 	exit(EXIT_SUCCESS);
-	//return (g_last_exit_status);
 }
 
 int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
@@ -135,7 +94,6 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	pid = fork();
 	if (pid == -1)
 	{
-		//free_env_array(environment);//Should be freeed later?
 		printf_global_error(128, 2, "fork\n");
 		exit(EXIT_FAILURE);
 	}
@@ -149,6 +107,5 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 		waitpid(pid, &status, 0);
 		g_last_exit_status = WEXITSTATUS(status);
 	}
-	//free_env_array(environment);
 	return (0);
 }
