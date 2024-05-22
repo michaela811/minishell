@@ -65,3 +65,5 @@ minishel_tester
 $HOME
 $USER
 $USER'$USER'
+
+*.swp

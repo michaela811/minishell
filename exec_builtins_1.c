@@ -122,13 +122,6 @@ int	exec_echo(t_exec_vars *vars)
 	i = 1;
 	if (vars->args[i] == NULL || vars->args[i][0] == '\0')
 		return (printf_global_error(0, 1, "\n"), 0);
-	if (ft_strcmp(vars->args[i], "$?") == 0)
-	{
-		printf("%d\n", g_last_exit_status);
-		g_last_exit_status = 0;
-
-		return (g_last_exit_status);
-	}
 	else if (ft_strcmp(vars->args[1], "-n") == 0)
 		i++;
 	process_args(vars->args, &(vars->error));
