@@ -68,39 +68,44 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 			if (vars->error)
 			{
 				free(result);
-				free_command_data(exec_data);
+				//free_command_data(exec_data);
 				g_last_exit_status = vars->error;
-				exit(g_last_exit_status);
+				//exit(g_last_exit_status);
+				return (g_last_exit_status);
 			}
 		}
 		i = 0;
-		while (result && result[i])
-		{
+		//while (result && result[i])
+		//{
 			if (result[i] == '+' && vars->args[1][0] == '+')
 			{
 				free(result);
-				free_command_data(exec_data);
+				//free_command_data(exec_data);
 				g_last_exit_status = 156;
-				exit(g_last_exit_status);
+				return (g_last_exit_status);
 			}
 			if (result[i] == '+')
 				i++;
-			if (ft_atoi(result) == 0)
+			if (ft_atoi(result) == 0 && ft_strchr(vars->args[1], '0') != NULL)
 			{
-				g_last_exit_status = 2;
+				g_last_exit_status = 0;
+				free(result);
+				free_exit_data(exec_data);
+				free_env_array(vars->args);
+				free(vars);
 				exit(g_last_exit_status);
 			}
-			i++;
-		}
+			//i++;
+		//}
 		g_last_exit_status = ft_atoi(result);
 	}
-	if (vars->args[1] != NULL && !g_last_exit_status && ft_isdigit(result[i]) == 0)
-			{
-				free(result);
-				free_command_data(exec_data);
-				printf_global_error(156, 2, "my(s)hell: numeric argument required\n");
-				exit(g_last_exit_status);
-			}
+	if (vars->args[1] != NULL && !g_last_exit_status)// && ft_isdigit(result[i]) == 0)
+	{
+		free(result);
+		//free_command_data(exec_data);
+		printf_global_error(156, 2, "my(s)hell: numeric argument required\n");
+		return (g_last_exit_status);
+	}
 	if (result)
 		free(result);
 	free_exit_data(exec_data);
