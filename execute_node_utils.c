@@ -29,14 +29,16 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 	}
 	if ((*node)->data->lexeme[0] == '$' && strcmp((*node)->data->lexeme, "$?") == 0)
 	{
-		vars->args[vars->i] = ft_strdup("$?");
+		//vars->args[vars->i] = ft_strdup("$?");
+		vars->args[vars->i] = ft_strdup(ft_itoa(g_last_exit_status));
 		if (!vars->args[vars->i])
 		{
 			vars->error = 1;
 			return(printf_global_error(1, 2, "my(s)hell: ft_strdup error\n"));
 		}
 	}
-	else if ((*node)->data->lexeme[0] == '"' || (*node)->data->lexeme[0] == 39 || (*node)->data->lexeme[0] == '$')
+	//else if ((*node)->data->lexeme[0] == '"' || (*node)->data->lexeme[0] == 39 || (*node)->data->lexeme[0] == '$')
+	else if ((*node)->data->lexeme)
 	{
 		handle_quotes_global(node, vars->args, vars->i, env);
 		if (ft_strcmp(vars->args[vars->i], "") == 0)
@@ -44,6 +46,7 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 	}
 	else
 	{
+
 		vars->args[vars->i] = ft_strdup((*node)->data->lexeme);
 		if (!vars->args[vars->i])
 		{
@@ -71,7 +74,7 @@ int split_variable(char *arg, int i, t_exec_vars *vars)
         j++;
     }
     free(split_args);
-    return i + j;
+    return i + (j - 1);
 }
 
 void	handle_redirection(t_parse_tree **node, t_exec_vars *vars)

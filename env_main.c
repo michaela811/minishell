@@ -99,7 +99,7 @@ int	get_path(char *cmd, t_env *env, char **exec)
 			return (free_array(path), 0);
 		free(*exec);
 	}
-	free_array(path);//maybe will be freed later as lexem!
+	free_array(path);
 	*exec = cmd;
 	return (-1);
 }
