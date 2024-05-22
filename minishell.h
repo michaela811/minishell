@@ -10,9 +10,10 @@
 #include <readline/history.h>
 #include "libft/libft.h"
 #include <errno.h>
+#include <signal.h>
 
-//#define MY_MALLOC(size) custom_malloc(size, __FILE__, __LINE__)
-//#define free(ptr) custom_free(ptr, __FILE__, __LINE__)
+/*#define MY_MALLOC(size) custom_malloc(size, __FILE__, __LINE__)
+#define MY_FREE(ptr) custom_free(ptr, __FILE__, __LINE__)*/
 
 enum token_type
 {
@@ -99,7 +100,7 @@ void			free_parse_tree(t_parse_tree *tree);
 void			free_token(t_token* tok);
 void			free_token_list(t_token_list* list);
 void	        free_command_data(t_free_data *exec_data);
-void	free_exit_data(t_free_data *exec_data, t_exec_vars *vars);
+void	        free_exit_data(t_free_data *exec_data);
 
 // Errors
 void			handle_memory_error(t_token **token_list, int num_tokens);
@@ -227,5 +228,4 @@ t_free_data     *init_command_data(char **envp);
 /*
 void check_for_memory_leaks();
 void custom_free(void *ptr, const char *file, int line);
-void *custom_malloc(size_t size, const char *file, int line);
-*/
+void *custom_malloc(size_t size, const char *file, int line);*/

@@ -90,14 +90,6 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 				g_last_exit_status = 2;
 				exit(g_last_exit_status);
 			}
-			/* if (ft_isdigit(result[i]) == 0)
-			{
-				free(result);
-				free_command_data(exec_data);
-				printf_global_error(156, 2, "my(s)hell: numeric argument required\n");
-				//g_last_exit_status = 156;
-				exit(g_last_exit_status);
-			} */
 			i++;
 		}
 		g_last_exit_status = ft_atoi(result);
@@ -109,8 +101,12 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 				printf_global_error(156, 2, "my(s)hell: numeric argument required\n");
 				exit(g_last_exit_status);
 			}
-	//free(result);
-	free_exit_data(exec_data, vars);
+	if (result)
+		free(result);
+	free_exit_data(exec_data);
+	free_env_array(vars->args);
+	free(vars);
+	//check_for_memory_leaks();
 	exit(g_last_exit_status);
 }
 

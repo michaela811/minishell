@@ -134,11 +134,12 @@ void	free_env_array(char **env_array)
 	env_array = NULL;
 }
 
-void	free_exit_data(t_free_data *exec_data, t_exec_vars *vars)
+void	free_exit_data(t_free_data *exec_data)
 {
     if (exec_data) {
-		free_env_array(vars->args);
+		/*free_env_array(vars->args);
 		vars->args = NULL;
+		free(vars);*/
 		if (exec_data->token_list_start) {
             free_token_list(exec_data->token_list_start);
 			//free(exec_data->token_list_start);
@@ -158,6 +159,7 @@ void	free_exit_data(t_free_data *exec_data, t_exec_vars *vars)
         }
         free(exec_data);
 		exec_data = NULL;
+		clear_history();
     }
 }
 

@@ -24,15 +24,15 @@ char	*del_buf_return_res(char **buffer, char *res, int len_to_del)
 	while ((*buffer)[i++])
 		new_len++;
 	if (new_len == 0)
-		return (my_free(buffer), res);
+		return (my_free_gnl(buffer), res);
 	new_buffer = (char *)malloc(new_len + 1);
 	if (!new_buffer)
-		return (free(res), my_free(buffer), NULL);
+		return (free(res), my_free_gnl(buffer), NULL);
 	i = 0;
 	while ((*buffer)[len_to_del])
 		new_buffer[i++] = (*buffer)[len_to_del++];
 	new_buffer[i] = '\0';
-	my_free(buffer);
+	my_free_gnl(buffer);
 	*buffer = new_buffer;
 	return (res);
 }
@@ -53,7 +53,7 @@ char	*extract_til_nl_or_end(char **buff)
 	}
 	res = (char *)malloc(i + 1);
 	if (!res)
-		return (my_free(buff), NULL);
+		return (my_free_gnl(buff), NULL);
 	j = 0;
 	while (j < i)
 	{
@@ -71,12 +71,12 @@ char	*read_buff_size(int fd, char **buffer)
 
 	temp = (char *)malloc(BUFFER_SIZE + 1);
 	if (!temp)
-		return (my_free(buffer), NULL);
+		return (my_free_gnl(buffer), NULL);
 	read_bytes = read(fd, temp, BUFFER_SIZE);
 	if (read_bytes == 0)
 		return (free(temp), NULL);
 	if (read_bytes < 0)
-		return (free(temp), my_free(buffer), NULL);
+		return (free(temp), my_free_gnl(buffer), NULL);
 	temp[read_bytes] = '\0';
 	return (temp);
 }

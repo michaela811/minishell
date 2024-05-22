@@ -37,7 +37,7 @@ void custom_free(void *ptr, const char *file, int line)
             }
             free(curr->address);
             free(curr);
-			printf("Freed memory at %p (Size: %zu, File: %s, Line: %d)\n", ptr,  curr->size, file, line);
+			printf("Freed memory at %p (File: %s, Line: %d)\n", ptr, file, line);
             return;
         }
         prev = curr;
