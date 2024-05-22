@@ -16,7 +16,7 @@ int	exec_builtins(t_exec_vars *vars, t_free_data *exec_data)
 		return (exec_unset(vars->args, &exec_data->env));
 	else if (ft_strcmp(vars->args[0], "env") == 0)
 		return (exec_env(vars->args, exec_data->environment));
-	return (2);
+	return (3);
 }
 
 int	exec_global_env(t_exec_vars *vars, t_env **env)
@@ -103,7 +103,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 	{
 		free(result);
 		//free_command_data(exec_data);
-		printf_global_error(156, 2, "my(s)hell: numeric argument required\n");
+		printf_global_error(2, 2, "my(s)hell: numeric argument required\n");
 		return (g_last_exit_status);
 	}
 	if (result)
