@@ -47,7 +47,7 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 
 	process_args(vars->args, &vars->error);
 	if (vars->error)
-		return (g_last_exit_status);
+		exit (g_last_exit_status);
 	if (vars->fd_in != 0)
 	{
 		dup2(vars->fd_in, 0);
@@ -58,30 +58,31 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 		dup2(vars->fd_out, 1);
 		close(vars->fd_out);
 	}
-	if (ft_strchr(vars->args[0], '/'))
+	if (access(vars->args[0], F_OK | X_OK) == 0 && vars->args[0][0] == '/')
 	{
-	    int dir_check = is_directory(vars->args[0]);
-	    if (dir_check == -1)
-			return (printf_global_error(127, 2, "my(s)hell: %s: No such file or directory\n", vars->args[0]), 127);
-	    else if (dir_check)
-			return (printf_global_error(126, 2, "my(s)hell: %s: Is a directory\n", vars->args[0]), 126);
+		path = vars->args[0];
+		path_status = 0;
 	}
-	path_status = get_path(vars->args[0], *env, &path);
+	else
+		path_status = get_path(vars->args[0], *env, &path);
 	if (path_status == 1)
-		return (g_last_exit_status);
+		exit (g_last_exit_status);
 	if (path_status == -1)
 	{
-    	struct stat path_stat;
-    	stat(path, &path_stat);
-		if (access(path, F_OK) != -1 && access(vars->args[0], X_OK) == -1 && vars->args[0][0] == '.' && vars->args[0][1] == '/')
-			return (printf_global_error(126, 2, "my(s)hell: %s: Permission denied\n", vars->args[0]), 126);
-		else
-			return (printf_global_error(127, 2, "my(s)hell: %s: command not found\n", vars->args[0]), 127);
-    	if (access(path, F_OK) == -1 || S_ISDIR(path_stat.st_mode))
-			return (printf_global_error(127, 2, "my(s)hell: %s: command not found\n", vars->args[0]), 127);
+		if (ft_strchr(vars->args[0], '/'))
+		{
+	    int dir_check = is_directory(vars->args[0]);
+	    if (dir_check == -1)
+			(printf_global_error(127, 2, "my(s)hell: %s: No such file or directory\n", vars->args[0]), exit(127));
+	    else if (dir_check)
+			(printf_global_error(126, 2, "my(s)hell: %s: Is a directory\n", vars->args[0]), exit(126));
+		}
+		if (access(vars->args[0], X_OK) == -1 && vars->args[0][0] == '.' && vars->args[0][1] == '/')
+			(printf_global_error(126, 2, "my(s)hell: %s: Permission denied\n", vars->args[0]), exit(126));
+		(printf_global_error(127, 2, "my(s)hell: %s: command not found\n", vars->args[0]), exit(127));
 	}
 	if (execve(path, vars->args, environment) < 0)
-		return (printf_global_error(127, 2, "my(s)hell: execve\n", vars->args[0]), 127);
+		(printf_global_error(127, 2, "my(s)hell: execve\n", vars->args[0]), exit(127));
 	g_last_exit_status = 0;
 	exit(EXIT_SUCCESS);
 }
