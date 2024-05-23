@@ -74,8 +74,6 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 			return (printf_global_error(1, 2, "my(s)hell: too many arguments\n"),1);// Actually in bush +exit should be printed
 		if (vars->args[1][i])
 		{
-			/* if (vars->args[1][0] == '+')
-				i++; */
 			result = handle_quotes_echo(&vars->args[1][i],  &(vars->error));
 			if (vars->error)
 			{
@@ -84,13 +82,6 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 				return(g_last_exit_status);
 			}
 		}
-		//i = 0;
-			/* if (result[i] == '+' && vars->args[1][0] == '+')
-			{
-				free(result);
-				g_last_exit_status = 156;
-				return(g_last_exit_status);
-			} */
 			if (result[i] == '+' || result[i] == '-')
 				i++;
 			while (result[i] == '0')
@@ -107,15 +98,6 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 				printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
 				return(g_last_exit_status);
 			}
-			/* else if (ft_atoi(result) == 0 && ft_strcmp(vars->args[1], '0') != NULL)
-			{
-				g_last_exit_status = 0;
-				free(result);
-				free_exit_data(exec_data);
-				free_env_array(vars->args);
-				free(vars);
-				exit(g_last_exit_status);
-			} */
 		g_last_exit_status = ft_atoi(result);
 	}
 	if (vars->args[1] != NULL && !g_last_exit_status)
