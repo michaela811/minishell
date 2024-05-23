@@ -49,6 +49,18 @@ int	ft_atoi_no_minus(const char *nptr)
 	return (number);
 }
 
+int	overflow_check(char *result)
+{
+	if (*result == '+')
+		result++;
+	while (*result == '0')
+		result++;
+	if (ft_atoi(result) == INT_MAX && (ft_strcmp(result, "2147483647") != 0
+	|| ft_strcmp(result, "9223372036854775807") != 0))
+		return (1);
+	return (0);
+}
+
 int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 {
 	int	i;
@@ -68,21 +80,16 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 			if (vars->error)
 			{
 				free(result);
-				//free_command_data(exec_data);
 				g_last_exit_status = vars->error;
-				//exit(g_last_exit_status);
-				return (g_last_exit_status);
+				return(g_last_exit_status);
 			}
 		}
 		i = 0;
-		//while (result && result[i])
-		//{
 			if (result[i] == '+' && vars->args[1][0] == '+')
 			{
 				free(result);
-				//free_command_data(exec_data);
 				g_last_exit_status = 156;
-				return (g_last_exit_status);
+				return(g_last_exit_status);
 			}
 			if (result[i] == '+')
 				i++;
@@ -95,23 +102,25 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 				free(vars);
 				exit(g_last_exit_status);
 			}
-			//i++;
-		//}
+			else if (overflow_check)
+			{
+				free(result);
+				printf_global_error(156, 2, "my(s)hell: exit: %s: numeric argument required\n", result);
+				return(g_last_exit_status);
+			}
 		g_last_exit_status = ft_atoi(result);
 	}
-	if (vars->args[1] != NULL && !g_last_exit_status)// && ft_isdigit(result[i]) == 0)
-	{
-		free(result);
-		//free_command_data(exec_data);
-		printf_global_error(156, 2, "my(s)hell: numeric argument required\n");
-		return (g_last_exit_status);
-	}
+	if (vars->args[1] != NULL && !g_last_exit_status)
+			{
+				free(result);
+				printf_global_error(156, 2, "my(s)hell: exit: %s: numeric argument required\n", result);
+				return(g_last_exit_status);
+			}
 	if (result)
 		free(result);
 	free_exit_data(exec_data);
 	free_env_array(vars->args);
 	free(vars);
-	//check_for_memory_leaks();
 	exit(g_last_exit_status);
 }
 

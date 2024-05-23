@@ -1,8 +1,6 @@
 $HOME
 $USER
 $USER'$USER'
-42_minishell_tester
-a.out
 custom_malloc.c
 echo
 env_main.c
@@ -46,8 +44,6 @@ tmp_out_minishell
 $HOME
 $USER
 $USER'$USER'
-42_minishell_tester
-a.out
 custom_malloc.c
 echo
 env_main.c
