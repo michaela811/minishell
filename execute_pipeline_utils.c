@@ -63,11 +63,6 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)
 		close(pipefd[1]);//New trial
         wait(NULL);
     }
-    else
-    {
-        perror("fork");
-        return -1;
-    }
     return pid2;
 }
 
