@@ -58,6 +58,14 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 		dup2(vars->fd_out, 1);
 		close(vars->fd_out);
 	}
+	if (ft_strchr(vars->args[0], '/'))
+	{
+	    int dir_check = is_directory(vars->args[0]);
+	    if (dir_check == -1)
+			return (printf_global_error(127, 2, "my(s)hell: %s: No such file or directory\n", vars->args[0]), 127);
+	    else if (dir_check)
+			return (printf_global_error(126, 2, "my(s)hell: %s: Is a directory\n", vars->args[0]), 126);
+	}
 	if (access(vars->args[0], F_OK | X_OK) == 0 && vars->args[0][0] == '/')
 	{
 		path = vars->args[0];
@@ -69,14 +77,6 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 		exit (g_last_exit_status);
 	if (path_status == -1)
 	{
-		if (ft_strchr(vars->args[0], '/'))
-		{
-	    int dir_check = is_directory(vars->args[0]);
-	    if (dir_check == -1)
-			(printf_global_error(127, 2, "my(s)hell: %s: No such file or directory\n", vars->args[0]), exit(127));
-	    else if (dir_check)
-			(printf_global_error(126, 2, "my(s)hell: %s: Is a directory\n", vars->args[0]), exit(126));
-		}
 		if (access(vars->args[0], X_OK) == -1 && vars->args[0][0] == '.' && vars->args[0][1] == '/')
 			(printf_global_error(126, 2, "my(s)hell: %s: Permission denied\n", vars->args[0]), exit(126));
 		(printf_global_error(127, 2, "my(s)hell: %s: command not found\n", vars->args[0]), exit(127));
