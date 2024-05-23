@@ -16,7 +16,7 @@ int	exec_builtins(t_exec_vars *vars, t_free_data *exec_data)
 		return (exec_unset(vars->args, &exec_data->env));
 	else if (ft_strcmp(vars->args[0], "env") == 0)
 		return (exec_env(vars->args, exec_data->environment));
-	return (2);
+	return (3);
 }
 
 int	exec_global_env(t_exec_vars *vars, t_env **env)
@@ -74,8 +74,8 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 			return (printf_global_error(1, 2, "my(s)hell: too many arguments\n"),1);// Actually in bush +exit should be printed
 		if (vars->args[1][i])
 		{
-			if (vars->args[1][0] == '+')
-				i++;
+			/* if (vars->args[1][0] == '+')
+				i++; */
 			result = handle_quotes_echo(&vars->args[1][i],  &(vars->error));
 			if (vars->error)
 			{
@@ -84,16 +84,30 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 				return(g_last_exit_status);
 			}
 		}
-		i = 0;
-			if (result[i] == '+' && vars->args[1][0] == '+')
+		//i = 0;
+			/* if (result[i] == '+' && vars->args[1][0] == '+')
 			{
 				free(result);
 				g_last_exit_status = 156;
 				return(g_last_exit_status);
-			}
-			if (result[i] == '+')
+			} */
+			if (result[i] == '+' || result[i] == '-')
 				i++;
-			if (ft_atoi(result) == 0 && ft_strchr(vars->args[1], '0') != NULL)
+			while (result[i] == '0')
+				i++;
+			if (result[i] == '\0')
+			{
+				g_last_exit_status = 0;
+				exit (g_last_exit_status);
+			}
+			i = 0;
+			if (overflow_check(result))
+			{
+				free(result);
+				printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
+				return(g_last_exit_status);
+			}
+			/* else if (ft_atoi(result) == 0 && ft_strcmp(vars->args[1], '0') != NULL)
 			{
 				g_last_exit_status = 0;
 				free(result);
@@ -101,19 +115,13 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 				free_env_array(vars->args);
 				free(vars);
 				exit(g_last_exit_status);
-			}
-			else if (overflow_check)
-			{
-				free(result);
-				printf_global_error(156, 2, "my(s)hell: exit: %s: numeric argument required\n", result);
-				return(g_last_exit_status);
-			}
+			} */
 		g_last_exit_status = ft_atoi(result);
 	}
 	if (vars->args[1] != NULL && !g_last_exit_status)
 			{
 				free(result);
-				printf_global_error(156, 2, "my(s)hell: exit: %s: numeric argument required\n", result);
+				printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
 				return(g_last_exit_status);
 			}
 	if (result)

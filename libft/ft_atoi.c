@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 16:14:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/05/23 15:16:28 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/05/23 16:48:41 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,40 +36,7 @@ int	ft_atoi(const char *nptr)
 		number = number * 10 + (*nptr - '0');
 		nptr++;
 	}
-	if (minus == 1)
+	if (minus == 1 && number != 0)
 		return (-number);
 	return (number);
-}
-
-int ft_atoi(const char *nptr) {
-    int minus = 0;
-    long long number = 0;
-
-    // Skip whitespace
-    while (*nptr && isspace(*nptr)) {
-        nptr++;
-    }
-
-    // Check for sign
-    if (*nptr == '-' || *nptr == '+') {
-        if (*nptr == '-') {
-            minus = 1;
-        }
-        nptr++;
-    }
-
-    // Convert digits to number
-    while (*nptr >= '0' && *nptr <= '9') {
-        if (number > (LLONG_MAX - (*nptr - '0')) / 10) {
-            // Overflow detected
-            return (minus ? INT_MIN : INT_MAX);
-        }
-        number = number * 10 + (*nptr - '0');
-        nptr++;
-    }
-
-    if (minus) {
-        return (int)(-number);
-    }
-    return (int)number;
 }
