@@ -9,7 +9,7 @@ int	lexer(char *input, t_token_list **token_list)
 	error = 0;
 	*token_list = NULL;
 	current = NULL;
-	token_value = ft_strtok(input, "@", &error);
+	token_value = ft_strtok(input, (char[]){-1, 0}, &error);
 	if (error)
 		return (perror("Memory allocation error"), 1);
 	while (token_value != NULL)
@@ -44,7 +44,7 @@ t_token_list **current, int *error)
 		(*current)->next = new_node;
 		*current = (*current)->next;
 	}
-	*token_value = ft_strtok(NULL, "@", error);
+	*token_value = ft_strtok(NULL, (char[]){-1, 0}, error);
 	if (*error)
 		return (free_token_list(*token_list),
 			perror("Memory allocation error"), 1);

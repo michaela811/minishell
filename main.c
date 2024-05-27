@@ -72,7 +72,7 @@ void	handle_preprocess_input(char *input, t_free_data *exec_data)
 {
 	char	*processed_input;
 
-	processed_input = preprocess_input(input, " |><");
+	processed_input = preprocess_input(input, " |><\t");
 	if (processed_input == NULL)
 	{
 		free(input);
