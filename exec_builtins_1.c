@@ -191,7 +191,14 @@ char *handle_quotes_echo(const char *input, int *error)
 			}
 			i++;
 		}
-        else
+        else if (input[i] == '$' && input[i + 1] == '?')
+		{
+			
+			result[j] = ft_itoa(g_last_exit_status)[0];
+			i += 2;
+			j = j + ft_strlen(&ft_itoa(g_last_exit_status)[0]);
+		}
+		else
             result[j++] = input[i++];
 	}
     result[j] = '\0';
