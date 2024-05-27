@@ -40,6 +40,11 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 	else if ((*node)->data->lexeme)
 	{
 		handle_quotes_global(node, vars->args, vars->i, env);
+		if (g_last_exit_status)
+		{
+			vars->error = 1;
+			return ;
+		}
 		if (ft_strcmp(vars->args[vars->i], "") == 0)
 			return ;
 	}

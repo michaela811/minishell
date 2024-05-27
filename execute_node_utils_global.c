@@ -75,8 +75,9 @@ void	handle_quotes_global(t_parse_tree **node, char **args,
 	str = (*node)->data->lexeme; //Probably a memory leak (first quote)
 	if (*(*node)->data->lexeme == 39)
 	{
-		args[i] = ft_strdup(str);//MEMORY LEAK
-		return ;
+		args[i] = ft_strdup(str);
+		if (!args[i])
+			return (printf_global_error(1, 2, "echo: memory allocation\n"), NULL);//MEMORY LEAK
 	}
 	start = str;
 	while (1)
@@ -86,4 +87,6 @@ void	handle_quotes_global(t_parse_tree **node, char **args,
 			break ;
 	}
 	args[i] = ft_strdup(buffer);//ADD MEMORY CHECK
+	if (!args[i])
+			return (printf_global_error(1, 2, "echo: memory allocation\n"), NULL);
 }
