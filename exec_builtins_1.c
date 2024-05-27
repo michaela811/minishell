@@ -106,6 +106,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 				printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
 				return(g_last_exit_status);
 			}
+
 	if (result)
 		free(result);
 	free_exit_data(exec_data);
