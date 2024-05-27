@@ -31,6 +31,7 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env)
 	char	*start_store;
 
 	//buffer = NULL;
+	buffer[0] = '\0';
 	start_store = *start;
 	while ((dollar = ft_strchr(*start, '$')) != NULL)
 	{
@@ -61,6 +62,7 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env)
 	}
 	if ((dollar = ft_strchr(start_store, '$')) == NULL)
 		ft_strcpy(buffer, start_store);//Probably use strncpy!
+		//return ;
 	else if (*start)
 		ft_strcat(buffer, *start);
 }
@@ -78,6 +80,7 @@ void	handle_quotes_global(t_parse_tree **node, char **args,
 		args[i] = ft_strdup(str);
 		if (!args[i])
 			return (printf_global_error(1, 2, "echo: memory allocation\n"));//MEMORY LEAK
+		return ;
 	}
 	start = str;
 	while (1)
