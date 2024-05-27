@@ -77,7 +77,7 @@ void	handle_quotes_global(t_parse_tree **node, char **args,
 	{
 		args[i] = ft_strdup(str);
 		if (!args[i])
-			return (printf_global_error(1, 2, "echo: memory allocation\n"), NULL);//MEMORY LEAK
+			return (printf_global_error(1, 2, "echo: memory allocation\n"));//MEMORY LEAK
 	}
 	start = str;
 	while (1)
@@ -88,5 +88,5 @@ void	handle_quotes_global(t_parse_tree **node, char **args,
 	}
 	args[i] = ft_strdup(buffer);//ADD MEMORY CHECK
 	if (!args[i])
-			return (printf_global_error(1, 2, "echo: memory allocation\n"), NULL);
+			return (printf_global_error(1, 2, "echo: memory allocation\n"));
 }
