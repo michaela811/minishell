@@ -172,6 +172,7 @@ int             execute_node(t_free_data *exec_data);
 void            handle_global_env(t_parse_tree **node, char **args, int i, t_env **env);
 //void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
 void            handle_quotes_global(t_parse_tree **node, char **args, int i, t_env **env);
+void	handle_quotes_glob(char **arg, t_env **env);
 void            handle_dollar_sign(char **start, char *buffer, t_env **env);
 
 // To delete later when working
