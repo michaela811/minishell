@@ -53,24 +53,24 @@ void	process_input_str(char *str, const char *delim, char *dest)
 		}
 		if (in_quotes == 0 && ft_strchr(delim, *str) != NULL)
 		{
-			if (*str == ' ' )
+			if (*str == ' ' || *str == '\t')
 			{
-				*dest++ = '@';
-				*dest++ = '@';
+				*dest++ = -1;
+				*dest++ = -1;
 			}
 			else if ((*str == '<' && *(str + 1) == '<') || (*str == '>'
 					&& *(str + 1) == '>'))
 			{
-				*dest++ = '@';
+				*dest++ = -1;
 				*dest++ = *str;
 				*dest++ = *++str;
-				*dest++ = '@';
+				*dest++ = -1;
 			}
 			else
 			{
-				*dest++ = '@';
+				*dest++ = -1;
 				*dest++ = *str;
-				*dest++ = '@';
+				*dest++ = -1;
 			}
 		}
 		else

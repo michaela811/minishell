@@ -11,6 +11,7 @@
 #include "libft/libft.h"
 #include <errno.h>
 #include <signal.h>
+#include <limits.h>
 
 /*#define MY_MALLOC(size) custom_malloc(size, __FILE__, __LINE__)
 #define MY_FREE(ptr) custom_free(ptr, __FILE__, __LINE__)*/
@@ -171,6 +172,7 @@ int             execute_node(t_free_data *exec_data);
 void            handle_global_env(t_parse_tree **node, char **args, int i, t_env **env);
 //void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
 void            handle_quotes_global(t_parse_tree **node, char **args, int i, t_env **env);
+void	handle_quotes_glob(char **arg, t_env **env);
 void            handle_dollar_sign(char **start, char *buffer, t_env **env);
 
 // To delete later when working

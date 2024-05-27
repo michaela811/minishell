@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 16:14:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/04/19 14:38:22 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/05/23 16:48:41 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,28 +15,28 @@
 int	ft_atoi(const char *nptr)
 {
 	int			minus;
-	long int	number;
+	long long int	number;
 
 	number = 0;
 	minus = 0;
 	while (*nptr && (*nptr == 32 || (*nptr >= 9 && *nptr <= 13)))
-	{
 		nptr++;
-	}
-	if (*nptr == 45 || *nptr == 43)
-	{
-		if (*nptr == 45)
-			minus++;
+	if (*nptr == '-')
+		minus++;
+	if (*nptr == '-' || *nptr == '+')
 		nptr++;
-	}
-	if ((*nptr <= 47) || (*nptr >= 58 && *nptr < 127))//removed *nptr >= 0 &&
+	if (ft_strcmp(nptr, "9223372036854775808") == 0 && minus == 1)
+		return (INT_MIN);
+	if ((*nptr <= 47) || (*nptr >= 58 && *nptr < 127))
 		return (0);
-	while (*nptr >= 48 && *nptr <= 57)
+	while (*nptr >= '0' && *nptr <= '9')
 	{
-		number = number * 10 + (*nptr - 48);
+		if (number > (LLONG_MAX - (*nptr - '0')) / 10)
+			return (INT_MAX);
+		number = number * 10 + (*nptr - '0');
 		nptr++;
 	}
-	if (minus == 1)
+	if (minus == 1 && number != 0)
 		return (-number);
 	return (number);
 }

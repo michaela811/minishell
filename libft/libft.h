@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/14 10:29:25 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/05/21 11:28:43 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/05/23 15:00:51 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdio.h>
 # include <printf.h>
 # include <stdarg.h>
+# include <limits.h>
 //# include <ft_printf_fd.h>
 
 /* part one functions*/
