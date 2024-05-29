@@ -72,7 +72,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 	{
 		if (vars->args[2] != NULL)
 			return (printf_global_error(1, 2, "my(s)hell: too many arguments\n"),1);// Actually in bush +exit should be printed
-		if (vars->args[1][i])
+		/* if (vars->args[1][i])
 		{
 			result = handle_quotes_echo(&vars->args[1][i],  &(vars->error));
 			if (vars->error)
@@ -81,7 +81,8 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 				g_last_exit_status = vars->error;
 				return(g_last_exit_status);
 			}
-		}
+		} */
+		result = vars->args[1];
 			if (result[i] == '+' || result[i] == '-')
 				i++;
 			while (result[i] == '0')
@@ -124,9 +125,9 @@ int	exec_echo(t_exec_vars *vars)
 		return (printf_global_error(0, 1, "\n"), 0);
 	else if (ft_strcmp(vars->args[1], "-n") == 0)
 		i++;
-	process_args(vars->args, &(vars->error));
-	if (vars->error)
-		return (free_env_array(vars->args), g_last_exit_status);
+	//process_args(vars->args, &(vars->error));
+	//if (vars->error)
+		//return (free_env_array(vars->args), g_last_exit_status);
 	while (vars->args[i])
 	{
 	        printf("%s", vars->args[i]);
@@ -194,7 +195,7 @@ char *handle_quotes_echo(const char *input, int *error)
 		}
         else if (input[i] == '$' && input[i + 1] == '?')
 		{
-			
+
 			result[j] = ft_itoa(g_last_exit_status)[0];
 			i += 2;
 			j = j + ft_strlen(&ft_itoa(g_last_exit_status)[0]);
