@@ -19,7 +19,7 @@ void	init_exec_vars(t_exec_vars *vars)
 	vars->error = 0;
 }
 
-void	handle_quotes_glob(char **arg, t_env **env)
+void	handle_quotes_glob(char **arg, t_env **env, int *error)
 {
     char *result;
     int k;
@@ -29,9 +29,13 @@ void	handle_quotes_glob(char **arg, t_env **env)
     char *start;
     char	buffer[1024] = "";
 
+    *error = 0;
     result = malloc(ft_strlen(*arg) + 1);
     if (!result)
+    {
+        *error = 1;
         return (printf_global_error(1, 2, "echo: memory allocation\n"));
+    }
     k = 0;
     j = 0;
     while ((*arg)[k] != '\0')
@@ -48,6 +52,7 @@ void	handle_quotes_glob(char **arg, t_env **env)
             }
             if ((*arg)[k] != quote)
             {
+                *error = 1;
                 g_last_exit_status = 1;
                 return(free(result));
             }
@@ -59,7 +64,10 @@ void	handle_quotes_glob(char **arg, t_env **env)
                 free(result);
                 result = malloc(ft_strlen(buffer) + 1);
                 if (!result)
-                return (printf_global_error(1, 2, "echo: memory allocation\n"));
+                {
+                    *error = 1;
+                    return (printf_global_error(1, 2, "echo: memory allocation\n"));
+                }
                 ft_strcpy(result, buffer);
                 j = ft_strlen(result);
             }
@@ -72,7 +80,10 @@ void	handle_quotes_glob(char **arg, t_env **env)
             free(result);
             result = malloc(ft_strlen(buffer) + 1);
             if (!result)
+            {
+                *error = 1;
                 return (printf_global_error(1, 2, "echo: memory allocation\n"));
+            }
             ft_strcpy(result, buffer);
             j = ft_strlen(result);
             k = ft_strlen(*arg);
@@ -102,10 +113,10 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
         vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
     while (index <= vars->i)
     {
-        handle_quotes_glob(&vars->args[index++], env);
-        if (g_last_exit_status)
+        handle_quotes_glob(&vars->args[index++], env, &vars->error);
+        if (vars->error)
         {
-            vars->error = 1;
+            g_last_exit_status = 1;
             return ;
         }
     }

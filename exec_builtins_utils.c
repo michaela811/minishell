@@ -75,6 +75,7 @@ int	split_var(char *var, char **name, char **value)
 			return (printf_global_error(1, 2, "split_var: strndup error\n"), free(*name), g_last_exit_status);
 		return (0);
 	}
+	*value = ft_strdup(equals + 1);//MEMORY!!!
 	//if (export_quotes(equals + 1, value))
 		//return (printf_global_error(1, 2, "split_var: export_quotes error\n"), free(*name), g_last_exit_status);
 	//if (value == NULL)//Do we need this check?

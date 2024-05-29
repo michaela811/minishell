@@ -71,7 +71,10 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 	if (vars->args[1] != NULL)
 	{
 		if (vars->args[2] != NULL)
-			return (printf_global_error(1, 2, "my(s)hell: too many arguments\n"),1);// Actually in bush +exit should be printed
+		{
+			printf_global_error(1, 2, "my(s)hell: too many arguments\n");// Actually in bush +exit should be printed
+			return(g_last_exit_status);
+		}
 		/* if (vars->args[1][i])
 		{
 			result = handle_quotes_echo(&vars->args[1][i],  &(vars->error));
@@ -90,12 +93,14 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 			if (result[i] == '\0')
 			{
 				g_last_exit_status = 0;
+				free_exit_data(exec_data);
+				free_env_array(vars->args);
+				free(vars);
 				exit (g_last_exit_status);
 			}
 			i = 0;
 			if (overflow_check(result))
 			{
-				free(result);
 				printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
 				return(g_last_exit_status);
 			}
@@ -103,13 +108,15 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 	}
 	if (vars->args[1] != NULL && !g_last_exit_status)
 			{
-				free(result);
+				//free(result);
 				printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
 				return(g_last_exit_status);
 			}
 
-	if (result)
-		free(result);
+	//if (result)
+		//free(result);
+	//printf("result: %s\n", result);
+	//printf("result: %s\n", vars->args[1]);
 	free_exit_data(exec_data);
 	free_env_array(vars->args);
 	free(vars);
