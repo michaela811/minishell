@@ -19,11 +19,12 @@ void	init_exec_vars(t_exec_vars *vars)
 	vars->error = 0;
 }
 
-/* void	handle_quotes_glob(char **arg, t_env **env)
+void	handle_quotes_glob(char **arg, t_env **env)
 {
     char *result;
     int k;
     int j;
+    int count;
     char quote;
     char *start;
     char	buffer[1024] = "";
@@ -39,15 +40,20 @@ void	init_exec_vars(t_exec_vars *vars)
         {
             quote = (*arg)[k++];
             start = &(*arg)[k];
+            count = 0;
             while ((*arg)[k] != '\0' && (*arg)[k] != quote)
+            {
                 result[j++] = (*arg)[k++];
+                count++;
+            }
             if ((*arg)[k] != quote)
             {
                 g_last_exit_status = 1;
                 return(free(result));
             }
-            //result[j] = '\0';
-            if (quote == '\"' && *start != '\"')
+            //if (start[j] == '"')
+                start[count] = '\0';
+            if (quote == '\"' && ft_strchr(start, '$') != NULL)
             {
                 handle_dollar_sign(&start, buffer, env);
                 free(result);
@@ -64,12 +70,12 @@ void	init_exec_vars(t_exec_vars *vars)
             start = &(*arg)[k];
             handle_dollar_sign(&start, buffer, env);
             free(result);
-            result = malloc(ft_strlen(*arg) + ft_strlen(buffer) + 1);
+            result = malloc(ft_strlen(buffer) + 1);
             if (!result)
                 return (printf_global_error(1, 2, "echo: memory allocation\n"));
             ft_strcpy(result, buffer);
             j = ft_strlen(result);
-            k = start - *arg;
+            k = ft_strlen(*arg);
         }
         else
             result[j++] = (*arg)[k++];
@@ -104,9 +110,9 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
         }
     }
     vars->i++;
-} */
+}
 
-void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
+/* void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
 	if ((*node)->data->type == RED_FROM || (*node)->data->type == RED_TO
 		|| (*node)->data->type == APPEND || (*node)->data->type == HERE_DOC)
@@ -147,7 +153,7 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 	if ((*node)->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' '))
 		vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
 	vars->i++;
-}
+} */
 
 int split_variable(char *arg, int i, t_exec_vars *vars)
 {
