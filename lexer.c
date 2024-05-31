@@ -28,7 +28,7 @@ char	*preprocess_input(char *str, const char *delim)
 
 	original_len = ft_strlen(str);
 	additional_chars = count_additional_chars(str, delim);
-	preprocessed = malloc(original_len + additional_chars + 1);
+	preprocessed = MY_MALLOC(original_len + additional_chars + 1);
 	if (preprocessed == NULL)
 		return(printf_global_error(1, 2, "Memory allocation error\n"), NULL);
 	dest = preprocessed;

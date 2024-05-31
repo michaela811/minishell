@@ -96,6 +96,9 @@ void	handle_parse_tree(t_free_data *exec_data)
 	if (is_pipe_sequence(exec_data) == 0)
     {
 		execute_parse_tree(exec_data);
+		//free_command_data(exec_data);
+	}
+	else
 		free_command_data(exec_data);
 	}
 	else

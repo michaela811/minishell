@@ -23,7 +23,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 
 	i = 0;
 	len = ft_special_cases(s, start, len);
-	str = malloc(sizeof(char) * (len + 1));
+	str = MY_MALLOC(sizeof(char) * (len + 1));
 	if (!str)
 		return (NULL);
 	while (i < len)
@@ -83,7 +83,7 @@ char	*ft_itoa(int n)
 	if (n < 0)
 		n = n * (-1);
 	len = ft_numlen(n) + minus;
-	num_str = malloc((sizeof(char) * (len + 1)));
+	num_str = MY_MALLOC((sizeof(char) * (len + 1)));
 	if (num_str == NULL)
 		return (NULL);
 	if (n == -2147483648)
@@ -152,7 +152,7 @@ char	**ft_split(char const *s, char c)
 
 	i = 0;
 	j = -1;
-	array = malloc(sizeof(char *) * (n_words(s, c) + 1));
+	array = MY_MALLOC(sizeof(char *) * (n_words(s, c) + 1));
 	if (!array)
 		return (NULL);
 	while (++j < n_words(s, c))
@@ -180,7 +180,7 @@ char	*ft_strdup(const char *s)
 
 	i = 0;
 	len = ft_strlen(s);
-	copy = malloc(sizeof(char) * (len + 1));
+	copy = MY_MALLOC(sizeof(char) * (len + 1));
 	if (!copy)
 		return (NULL);
 	while (s[i])
@@ -200,7 +200,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	i = 0;
 	x = 0;
-	new_str = (char *)malloc(sizeof(char)
+	new_str = (char *)MY_MALLOC(sizeof(char)
 			* (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (!new_str)
 		return (NULL);

@@ -72,7 +72,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 	{
 		if (vars->args[2] != NULL)
 			return (printf_global_error(1, 2, "my(s)hell: too many arguments\n"),1);// Actually in bush +exit should be printed
-		/* if (vars->args[1][i])
+		if (vars->args[1][i])
 		{
 			result = handle_quotes_echo(&vars->args[1][i],  &(vars->error));
 			if (vars->error)
@@ -101,7 +101,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 			}
 		g_last_exit_status = ft_atoi(result);
 	}
-	if (vars->args[1] != NULL && !g_last_exit_status)
+	if (vars->args[1] != NULL && !g_last_exit_status && ft_isdigit(result[i]) == 0)
 			{
 				free(result);
 				printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
@@ -169,7 +169,7 @@ char *handle_quotes_echo(const char *input, int *error)
 	int j;
 	char quote;
 
-    result = malloc(ft_strlen(input) + 1);
+    result = MY_MALLOC(ft_strlen(input) + 1);
     if (!result)
 	{
 		*error = 1;
