@@ -19,14 +19,14 @@ int	exec_builtins(t_exec_vars *vars, t_free_data *exec_data)
 	return (3);
 }
 
-int	exec_global_env(t_exec_vars *vars, t_env **env)
+/* int	exec_global_env(t_exec_vars *vars, t_env **env, int *k)
 {
 	char	buffer[1024] = "";
-	handle_dollar_sign(vars->args, buffer, env);
+	handle_dollar_sign(vars->args, buffer, env, k);
 
 	vars->args[0][0] = *ft_strdup(buffer);
 	return (0);
-}
+} */
 
 int	ft_atoi_no_minus(const char *nptr)
 {

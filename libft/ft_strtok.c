@@ -39,12 +39,12 @@ char *update_pointer(char *str)
         return str;
 }
 
-char	*ft_strtok(char *str, const char *delim, int *error)
+char	*ft_strtok(char *str, const char *delim)//, int *error)
 {
 	static char	*i;
 	char		*result;
 	//size_t len;
-	*error = 0;
+	//*error = 0;
 
 	result = str;
 	if (str)
