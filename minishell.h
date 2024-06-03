@@ -12,6 +12,8 @@
 #include <errno.h>
 #include <signal.h>
 #include <limits.h>
+#include <termios.h>
+#include <sys/ioctl.h>
 
 /*#define MY_MALLOC(size) custom_malloc(size, __FILE__, __LINE__)
 #define MY_FREE(ptr) custom_free(ptr, __FILE__, __LINE__)*/

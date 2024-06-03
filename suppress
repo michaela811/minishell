@@ -1,8 +1,7 @@
 {
-   suppress
+   libreadline
    Memcheck:Leak
-   match-leak-kinds: possible,definite
-   fun:malloc
-   fun:readline
+   ...
    obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.*
+   ...
 }
