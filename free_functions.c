@@ -136,7 +136,8 @@ void	free_env_array(char **env_array)
 
 void	free_exit_data(t_free_data *exec_data)
 {
-    if (exec_data) {
+    if (exec_data)
+	{
 		/*free_env_array(vars->args);
 		vars->args = NULL;
 		free(vars);*/
