@@ -128,9 +128,9 @@ int	exec_echo(t_exec_vars *vars)
 	int	i;
 
 	i = 1;
-	if (vars->args[i] == NULL || vars->args[i][0] == '\0')
-		return (printf_global_error(0, 1, "\n"), 0);
-	else if (ft_strcmp(vars->args[1], "-n") == 0)
+	//if (vars->args[i] == NULL || vars->args[i][0] == '\0')
+		//return (printf_global_error(0, 1, "\n"), 0);
+	if (ft_strcmp(vars->args[1], "-n") == 0)
 		i++;
 	//process_args(vars->args, &(vars->error));
 	//if (vars->error)
