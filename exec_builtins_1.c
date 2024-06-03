@@ -71,6 +71,8 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 	if (vars->args[1] != NULL)
 	{
 		if (vars->args[2] != NULL)
+			return (printf_global_error(1, 2, "my(s)hell: too many arguments\n"),1);// Actually in bush +exit should be printed
+		/*if (vars->args[1][i])
 		{
 			printf_global_error(1, 2, "my(s)hell: too many arguments\n");// Actually in bush +exit should be printed
 			return(g_last_exit_status);
@@ -107,6 +109,13 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 		g_last_exit_status = ft_atoi(result);
 	}
 	if (vars->args[1] != NULL && !g_last_exit_status)
+	{
+		free(result);
+		printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
+		return(g_last_exit_status);
+	}
+	if (result)
+		free(result);
 			{
 				//free(result);
 				printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
