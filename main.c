@@ -66,7 +66,7 @@ int main(int argc, char **argv, char **envp)
         }
         if (!input)
         {
-            printf("exit\n");
+            //printf("exit\n");
             free_exit_data(exec_data);
             break;
         }
