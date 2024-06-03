@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void	handle_global_env(t_parse_tree **node, char **args, int i, t_env **env)
+/* void	handle_global_env(t_parse_tree **node, char **args, int i, t_env **env)
 {
 	char	*str;
 	char	buffer[1024] = "";
@@ -19,9 +19,27 @@ void	handle_global_env(t_parse_tree **node, char **args, int i, t_env **env)
 			break ;
 	}
 	args[i] = ft_strdup(buffer);
+} */
+
+int	ft_lennbr(int nbr)
+{
+	int count;
+
+	count = 0;
+	if (nbr < 0)
+	{
+		count++;
+		nbr *= -1;
+	}
+	while (nbr/10 != 0)
+	{
+		count++;
+		nbr = nbr/10;
+	}
+	return(++count);
 }
 
-void	handle_dollar_sign(char **start, char *buffer, t_env **env)
+void	handle_dollar_sign(char **start, char *buffer, t_env **env)//, int *k)
 {
 	char	*dollar;
 	char	*var_start;
@@ -40,11 +58,13 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env)
 		{
 			ft_strcat(buffer, ft_itoa(g_last_exit_status));
 			*start = dollar + 2;
+			//*k += 2;//ft_lennbr(g_last_exit_status);
 		}
 		else if (*(dollar + 1) == '\0' || *(dollar + 1) == '$' || *(dollar + 1) == ' ' || *(dollar + 1) == '"')
 		{
 			ft_strcat(buffer, "$");
 			*start = dollar + 1;
+			//(*k)++;
 		}
 		else
 		{
@@ -55,6 +75,7 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env)
 			ft_strncpy(var_name, var_start, var_end - var_start);
 			var_name[var_end - var_start] = '\0';
 			var_value = get_env_var(*env, var_name);
+			//*k += ft_strlen(var_name);
 			if (var_value != NULL)
 				ft_strcat(buffer, var_value);
 			*start = var_end;
@@ -62,12 +83,14 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env)
 	}
 	if ((dollar = ft_strchr(start_store, '$')) == NULL)
 		ft_strcpy(buffer, start_store);//Probably use strncpy!
+		//*start = start_store + strlen(start_store);}
 		//return ;
 	else if (*start)
 		ft_strcat(buffer, *start);
+		//*start = *start + strlen(*start);}
 }
 
-void	handle_quotes_global(t_parse_tree **node, char **args,
+/* void	handle_quotes_global(t_parse_tree **node, char **args,
 	int i, t_env **env)
 {
 	char	*str;
@@ -92,4 +115,4 @@ void	handle_quotes_global(t_parse_tree **node, char **args,
 	args[i] = ft_strdup(buffer);//ADD MEMORY CHECK
 	if (!args[i])
 			return (printf_global_error(1, 2, "echo: memory allocation\n"));
-}
+} */

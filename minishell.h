@@ -138,7 +138,7 @@ void			process_input_str(char *str, const char *delim, char *dest);
 // Lexer
 int				lexer(char *input, t_token_list **tokenList);
 int				create_and_add_token(char **tokenValue, t_token_list **tokenList,
-t_token_list	**current, int *error);
+t_token_list	**current);//, int *error);
 t_token			*create_token_lexer(char *tokenValue);
 t_token_list	*create_node_lexer(t_token *newToken);
 
@@ -172,8 +172,8 @@ int             execute_node(t_free_data *exec_data);
 void            handle_global_env(t_parse_tree **node, char **args, int i, t_env **env);
 //void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
 void            handle_quotes_global(t_parse_tree **node, char **args, int i, t_env **env);
-void	handle_quotes_glob(char **arg, t_env **env);
-void            handle_dollar_sign(char **start, char *buffer, t_env **env);
+void	handle_quotes_glob(char **arg, t_env **env, int *error);
+void            handle_dollar_sign(char **start, char *buffer, t_env **env);//, int *k);
 
 // To delete later when working
 void            execve_error(char **s_cmd);

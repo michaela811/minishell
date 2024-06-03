@@ -19,14 +19,14 @@ int	exec_builtins(t_exec_vars *vars, t_free_data *exec_data)
 	return (3);
 }
 
-int	exec_global_env(t_exec_vars *vars, t_env **env)
+/* int	exec_global_env(t_exec_vars *vars, t_env **env, int *k)
 {
 	char	buffer[1024] = "";
-	handle_dollar_sign(vars->args, buffer, env);
+	handle_dollar_sign(vars->args, buffer, env, k);
 
 	vars->args[0][0] = *ft_strdup(buffer);
 	return (0);
-}
+} */
 
 int	ft_atoi_no_minus(const char *nptr)
 {
@@ -71,7 +71,10 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 	if (vars->args[1] != NULL)
 	{
 		if (vars->args[2] != NULL)
-			return (printf_global_error(1, 2, "my(s)hell: too many arguments\n"),1);// Actually in bush +exit should be printed
+		{
+			printf_global_error(1, 2, "my(s)hell: too many arguments\n");// Actually in bush +exit should be printed
+			return(g_last_exit_status);
+		}
 		/* if (vars->args[1][i])
 		{
 			result = handle_quotes_echo(&vars->args[1][i],  &(vars->error));
@@ -90,12 +93,14 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 			if (result[i] == '\0')
 			{
 				g_last_exit_status = 0;
+				free_exit_data(exec_data);
+				free_env_array(vars->args);
+				free(vars);
 				exit (g_last_exit_status);
 			}
 			i = 0;
 			if (overflow_check(result))
 			{
-				free(result);
 				printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
 				return(g_last_exit_status);
 			}
@@ -103,13 +108,15 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 	}
 	if (vars->args[1] != NULL && !g_last_exit_status)
 			{
-				free(result);
+				//free(result);
 				printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
 				return(g_last_exit_status);
 			}
 
-	if (result)
-		free(result);
+	//if (result)
+		//free(result);
+	//printf("result: %s\n", result);
+	//printf("result: %s\n", vars->args[1]);
 	free_exit_data(exec_data);
 	free_env_array(vars->args);
 	free(vars);
@@ -121,9 +128,9 @@ int	exec_echo(t_exec_vars *vars)
 	int	i;
 
 	i = 1;
-	if (vars->args[i] == NULL || vars->args[i][0] == '\0')
-		return (printf_global_error(0, 1, "\n"), 0);
-	else if (ft_strcmp(vars->args[1], "-n") == 0)
+	//if (vars->args[i] == NULL || vars->args[i][0] == '\0')
+		//return (printf_global_error(0, 1, "\n"), 0);
+	if (ft_strcmp(vars->args[1], "-n") == 0)
 		i++;
 	//process_args(vars->args, &(vars->error));
 	//if (vars->error)

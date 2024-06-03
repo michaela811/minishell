@@ -46,10 +46,12 @@ void	process_input_str(char *str, const char *delim, char *dest)
 	{
 		if (*str == '"' || *str == '\'')
 		{
+			if (!in_quotes)
+				c = *str;
 			if (!c || c == *str)
             	in_quotes = !in_quotes;
-			if (!c)
-				c = *str;
+			//if (!c)
+				//c = *str;
 		}
 		if (in_quotes == 0 && ft_strchr(delim, *str) != NULL)
 		{

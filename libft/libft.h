@@ -60,7 +60,7 @@ void	ft_putnbr_fd(int n, int fd);
 void	ft_putstr_fd(char *s, int fd);
 
 /* Added functions*/
-char	*ft_strtok(char *str, const char *delim, int *error);
+char	*ft_strtok(char *str, const char *delim);//, int *error);
 char    *ft_strpbrk(char *str, char *delim);
 char *ft_strncat(char *dest, const char *src, size_t n);
 char *ft_strcat(char *dest, const char *src);

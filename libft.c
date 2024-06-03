@@ -192,7 +192,7 @@ char	*ft_strdup(const char *s)
 	return (copy);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+/* char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*new_str;
 	int		i;
@@ -219,4 +219,4 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	}
 	new_str[x] = '\0';
 	return (new_str);
-}
+} */

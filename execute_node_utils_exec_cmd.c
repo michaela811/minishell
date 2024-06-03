@@ -45,9 +45,9 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	char	*path;
 	int		path_status;
 
-	process_args(vars->args, &vars->error);
-	if (vars->error)
-		exit (g_last_exit_status);
+	//process_args(vars->args, &vars->error);
+	//if (vars->error)
+		//exit (g_last_exit_status);
 	if (vars->fd_in != 0)
 	{
 		dup2(vars->fd_in, 0);
