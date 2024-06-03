@@ -1,6 +1,30 @@
 #include "minishell.h"
 
 int			g_last_exit_status = 0;
+struct		termios orig_termios;
+
+void reset_terminal_mode()
+{
+    tcsetattr(STDIN_FILENO, TCSANOW, &orig_termios);
+}
+
+void set_raw_mode()
+{
+    struct termios raw;
+
+    tcgetattr(STDIN_FILENO, &orig_termios);
+    atexit(reset_terminal_mode);
+
+    raw = orig_termios;
+    raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+    raw.c_iflag &= ~(IXON | ICRNL | BRKINT | INPCK | ISTRIP);
+    raw.c_cflag |= (CS8);
+    raw.c_oflag &= ~(OPOST);
+    raw.c_cc[VMIN] = 1;
+    raw.c_cc[VTIME] = 0;
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &raw);
+}
 
 void	handle_signal(int signal)
 {
@@ -8,13 +32,67 @@ void	handle_signal(int signal)
 
 	prompt = "\nmy(s)hell> ";
 	if (signal == SIGINT)
-		write(1, prompt, ft_strlen(prompt));
+	{
+        rl_replace_line("", 0);
+		rl_on_new_line();
+        write(STDOUT_FILENO, "my(s)hell> ", ft_strlen(prompt));
+		rl_redisplay();
+    }
 	else if (signal == SIGQUIT)
 	{
 	}
 }
 
-int	main(int argc, char **argv, char **envp)
+int main(int argc, char **argv, char **envp)
+{
+    char *input;
+    t_free_data *exec_data;
+
+    (void)argc;
+    (void)argv;
+    exec_data = init_command_data(envp);
+    signal(SIGINT, handle_signal);
+    signal(SIGQUIT, SIG_IGN);
+    /*while (1)
+    {
+        set_raw_mode();
+        input = readline("my(s)hell> ");
+        reset_terminal_mode();
+        if (!input)
+        {
+            printf("exit\n");
+            free_exit_data(exec_data);
+            break;
+        }
+        handle_input(input, exec_data);
+    }*/
+    while (1)
+    {
+        if (isatty(fileno(stdin)))
+        {
+            set_raw_mode();
+            input = readline("my(s)hell> ");
+            reset_terminal_mode();
+        }
+        else
+        {
+            char *line;
+            line = get_next_line(fileno(stdin));
+            input = ft_strtrim(line, "\n");
+            free(line);
+        }
+        if (!input)
+        {
+            //printf("exit\n");
+            free_exit_data(exec_data);
+            break;
+        }
+        handle_input(input, exec_data);
+    }
+    return 0;
+}
+
+/*int	main(int argc, char **argv, char **envp)
 {
 	char	        *input;
     t_free_data     *exec_data;
@@ -24,13 +102,13 @@ int	main(int argc, char **argv, char **envp)
 	exec_data = init_command_data(envp);
 	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, handle_signal);
-	/* while ((input = readline("my(s)hell> ")))
+	while ((input = readline("my(s)hell> ")))
 	{
 		if (!input)
 			break ;
 		handle_input(input, exec_data);
 		//free_command_data(exec_data);
-	} */
+	}
 	while (1)
     {
         if (isatty(fileno(stdin)))
@@ -55,7 +133,7 @@ int	main(int argc, char **argv, char **envp)
     }
 	//rl_on_new_line();
 	return (0);
-}
+}*/
 
 void	handle_input(char *input, t_free_data *exec_data)
 {
@@ -100,7 +178,7 @@ void	handle_parse_tree(t_free_data *exec_data)
 	if (is_pipe_sequence(exec_data) == 0)
     {
 		execute_parse_tree(exec_data);
-		free_command_data(exec_data);
+		free_command_data(exec_data); //commented out?
 	}
 	else
 		free_command_data(exec_data);
