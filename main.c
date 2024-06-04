@@ -22,7 +22,7 @@ void set_raw_mode()
     raw.c_oflag &= ~(OPOST);
     raw.c_cc[VMIN] = 1;
     raw.c_cc[VTIME] = 0;
-
+    raw.c_lflag |= ECHO;
     tcsetattr(STDIN_FILENO, TCSANOW, &raw);
 }
 
@@ -35,7 +35,7 @@ void	handle_signal(int signal)
 	{
         rl_replace_line("", 0);
 		rl_on_new_line();
-        write(STDOUT_FILENO, "my(s)hell> ", ft_strlen(prompt));
+        write(STDOUT_FILENO, prompt, ft_strlen(prompt));
 		rl_redisplay();
     }
 	else if (signal == SIGQUIT)
@@ -143,7 +143,6 @@ void	handle_input(char *input, t_free_data *exec_data)
         handle_preprocess_input(input, exec_data);
         if (!exec_data->token_list)
             return ;
-
 		exec_data->token_list_start = exec_data->token_list;
         handle_parse_tree(exec_data);
 		//check_for_memory_leaks();

@@ -76,42 +76,37 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 			return(g_last_exit_status);
 		}
 		result = vars->args[1];
-			if (result[i] == '+' || result[i] == '-')
-				i++;
-			while (result[i] == '0')
-				i++;
-			if (result[i] == '\0')
-			{
-				g_last_exit_status = 0;
-				free_exit_data(exec_data);
-				free_env_array(vars->args);
-				free(vars);
-				exit (g_last_exit_status);
-			}
-			i = 0;
-			if (overflow_check(result))
-			{
-				printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
-				return(g_last_exit_status);
-			}
+		if (result[i] == '+' || result[i] == '-')
+			i++;
+		while (result[i] == '0')
+			i++;
+		if (result[i] == '\0')
+		{
+			g_last_exit_status = 0;
+			free_exit_data(exec_data);
+			free_env_array(vars->args);
+			free(vars);
+			exit (g_last_exit_status);
+		}
+		i = 0;
+		if (overflow_check(result))
+		{
+			printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
+			return(g_last_exit_status);
+		}
 		g_last_exit_status = ft_atoi(result);
 	}
 	if (vars->args[1] != NULL && !g_last_exit_status)
-			{
-				//free(result);
-				printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
-				return(g_last_exit_status);
-			}
+	{
+		//free(result);
+		printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
+		return(g_last_exit_status);
+	}
 
 	//if (result)
 		//free(result);
 	//printf("result: %s\n", result);
 	//printf("result: %s\n", vars->args[1]);
-	{
-		free(result);
-		printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
-		return(g_last_exit_status);
-	}
 	if (result)
 		free(result);
 	free_exit_data(exec_data);
