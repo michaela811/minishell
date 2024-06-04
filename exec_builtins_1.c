@@ -107,8 +107,8 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 		//free(result);
 	//printf("result: %s\n", result);
 	//printf("result: %s\n", vars->args[1]);
-	if (result)
-		free(result);
+	//if (result)
+	//	free(result);
 	free_exit_data(exec_data);
 	free_env_array(vars->args);
 	free(vars);
