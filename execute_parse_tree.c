@@ -26,6 +26,8 @@ int	execute_node(t_free_data *exec_data)
 		if (exec_data->tree->data != NULL)
 		{
 			handle_node_data(&exec_data->tree, vars, &exec_data->env);
+            if (vars->args[0] == NULL)
+                vars->i = 0;    
 			if (vars->error != 0)
 				return (g_last_exit_status);
 		}

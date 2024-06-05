@@ -60,7 +60,7 @@ void handle_quotes_glob(char **arg, t_env **env, int *error) {
     *error = 0;
 
     while (*current != '\0') {
-        memset(buffer, 0, sizeof(buffer));
+        memset(buffer, 0, sizeof(buffer)); //this function is not allowed
         if (inside_single_quotes) {
             token = current;
             current = strchr(current, '\'');
@@ -91,13 +91,15 @@ void handle_quotes_glob(char **arg, t_env **env, int *error) {
         } else {
             token = current;
             current = strpbrk(current, delimiters);
-            if (current == NULL) {
-                if (strchr(token, '$') != NULL) {
+            if (current == NULL)
+            {
+                if (strchr(token, '$') != NULL)
+                {
                 handle_dollar_sign(&token, buffer, env);
                 result = ft_strjoin(result, buffer);
-                } else {
-                result = ft_strjoin(result, token);
-            }
+                }
+                else
+                    result = ft_strjoin(result, token);
                 break;
             }
             char delimiter = *current;
@@ -117,13 +119,13 @@ void handle_quotes_glob(char **arg, t_env **env, int *error) {
             current++;
         }
     }
-
-    if (!*error) {
+    if (!*error)
+    {
         free(*arg);
         *arg = result;
-    } else {
-        free(result); // Free the partially constructed result in case of error
     }
+    else
+        free(result); // Free the partially constructed result in case of error
 }
 
 /* void handle_quotes_glob(char **arg, t_env **env, int *error) {
@@ -317,12 +319,13 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
         vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
     while (index <= vars->i)
     {
-        handle_quotes_glob(&vars->args[index++], env, &vars->error);
+        handle_quotes_glob(&vars->args[index], env, &vars->error);
         if (vars->error)
         {
             g_last_exit_status = 1;
             return ;
         }
+        index++; //needed? Im not sure
     }
     vars->i++;
 }
