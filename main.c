@@ -28,14 +28,11 @@ void set_raw_mode()
 
 void	handle_signal(int signal)
 {
-	const char	*prompt;
-
-	prompt = "\nmy(s)hell> ";
 	if (signal == SIGINT)
 	{
+        write(STDOUT_FILENO, "\n", 1);
         rl_replace_line("", 0);
 		rl_on_new_line();
-        write(STDOUT_FILENO, prompt, ft_strlen(prompt));
 		rl_redisplay();
     }
 	else if (signal == SIGQUIT)
