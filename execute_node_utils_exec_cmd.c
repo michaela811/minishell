@@ -79,15 +79,11 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	if (path_status == -1)
 	{
 		if (access(vars->args[0], X_OK) == -1 && vars->args[0][0] == '.' && vars->args[0][1] == '/')
-			(printf_global_error(126, 2, "my(s)hell: %s: Permission denied\n", vars->args[0]));
-		(printf_global_error(127, 2, "my(s)hell: %s: command not found\n", vars->args[0]));
-		return (g_last_exit_status);
+			(printf_global_error(126, 2, "my(s)hell: %s: Permission denied\n", vars->args[0]), exit(126));
+		(printf_global_error(127, 2, "my(s)hell: %s: command not found\n", vars->args[0]), exit(127));
 	}
 	if (execve(path, vars->args, environment) < 0)
-	{
-		(printf_global_error(127, 2, "my(s)hell: execve\n", vars->args[0]));
-		return (g_last_exit_status);
-	}
+		(printf_global_error(127, 2, "my(s)hell: execve\n", vars->args[0]), exit(127));
 	g_last_exit_status = 0;
 	exit(EXIT_SUCCESS);
 }
