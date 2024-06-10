@@ -91,11 +91,13 @@ char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 		/*buffer = readline("heredoc> ");
 		if (buffer == NULL)
 			break ;*/
-		printf("heredoc> ");
+		printf("heredoc> "); //for the tester from this line
 		fflush(stdout);
 		line = get_next_line(fileno(stdin));
+		if (line == NULL)
+            break;
         buffer = ft_strtrim(line, "\n");
-		free(line);
+		free(line); // to this line
 		start = buffer;
 		expanded_buffer = malloc(4096);
 		if (!expanded_buffer)
