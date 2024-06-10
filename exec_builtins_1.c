@@ -188,6 +188,7 @@ char *handle_quotes_echo(const char *input, int *error)
                 *error = 1;
 				//return (printf_global_error(1, 2, "echo: no closing quote\n"), free(result), NULL);
 				g_last_exit_status = 1;
+				free(result); //necessary?
 				return (NULL);
 			}
 			i++;

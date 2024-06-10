@@ -36,10 +36,16 @@ void	handle_redirection_to(t_parse_tree **node, t_exec_vars *vars)
 
 void	handle_redirection_append(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
-	(*node)->child->data->lexeme = handle_quotes_echo((*node)->child->data->lexeme, &vars->error);
+	int is_dir;
+	char *start;
+	char *expanded_lexeme;
+
+	//(*node)->child->data->lexeme = handle_quotes_echo((*node)->child->data->lexeme, &vars->error);
+	handle_quotes_glob(&(*node)->child->data->lexeme, env, &vars->error);
+	printf("quoted lexeme is %s\n", (*node)->child->data->lexeme);
 	if (g_last_exit_status)
 		return ;
-	char *expanded_lexeme = malloc(4096); 
+	expanded_lexeme = malloc(4096); 
     if (!expanded_lexeme)
 	{
         perror("malloc");
@@ -47,9 +53,10 @@ void	handle_redirection_append(t_parse_tree **node, t_exec_vars *vars, t_env **e
         return;
     }
     expanded_lexeme[0] = '\0';
-    char *start = (*node)->child->data->lexeme;
+    start = (*node)->child->data->lexeme;
     handle_dollar_sign(&start, expanded_lexeme, env);
-	int is_dir = is_directory(expanded_lexeme);
+	printf("expanded lexeme is %s\n", expanded_lexeme);
+	is_dir = is_directory(expanded_lexeme);
 	if (is_dir == 1)
 	{
         vars->error = 1;
