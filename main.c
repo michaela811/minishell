@@ -67,9 +67,9 @@ int main(int argc, char **argv, char **envp)
     {
         if (isatty(fileno(stdin)))
         {
-            //set_raw_mode();
+            set_raw_mode();
             input = readline("my(s)hell> ");
-            //reset_terminal_mode();
+            reset_terminal_mode();
         }
         else
         {

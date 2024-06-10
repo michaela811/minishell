@@ -53,11 +53,11 @@ void	handle_redirection_append(t_parse_tree **node, t_exec_vars *vars)
 	vars->i++;
 }
 
-void	handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars)
+void	handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
 	char	*filename;
 
-	filename = handle_here_doc(node, vars);
+	filename = handle_here_doc(node, vars, env);
 	if (vars->error)
 		return ;
 	vars->fd_in = open(filename, O_RDONLY);
@@ -70,43 +70,45 @@ void	handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars)
 	vars->i++;
 }
 
-char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars)
+char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
 	char	*buffer;
 	char	*filename;
 	int		file;
-	/*int		expand_vars;
-	char	*delimiter;
-	char	*expanded_buffer;*/
+	char	*expanded_buffer;
+	char	*start;
 
 	filename = "/tmp/heredoc.txt";
-	file = open(filename, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
+	file = open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	if (file == -1)
 	{
 		vars->error = 1;
 		return (perror("open"), NULL);
 	}
-	//delimiter = (*node)->child->data->lexeme;
-    //expand_vars = !(delimiter[0] == '\'' || delimiter[0] == '\"');
 	while (1)
 	{
 		buffer = readline("heredoc> ");
 		if (buffer == NULL)
 			break ;
+		start = buffer;
+		expanded_buffer = malloc(4096);
+		if (!expanded_buffer)
+        {
+            free(buffer);
+            perror("malloc");
+            return NULL;
+        }
+		expanded_buffer[0] = '\0';
+		handle_dollar_sign(&start, expanded_buffer, env);
 		if (ft_strcmp(buffer, (*node)->child->data->lexeme) == 0)
 		{
 			free(buffer);
 			break ;
 		}
-		/*if (expand_vars)
-		{
-			expanded_buffer = expand_variables(buffer, vars->env);
-			write(file, expanded_buffer, ft_strlen(expanded_buffer));
-			free(expanded_buffer);
-		}*/
-		write(file, buffer, ft_strlen(buffer));
+		write(file, expanded_buffer, ft_strlen(expanded_buffer));
 		write(file, "\n", 1);
 		free(buffer);
+		free(expanded_buffer);
 	}
 	close(file);
 	return (filename);
