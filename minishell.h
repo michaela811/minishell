@@ -156,10 +156,10 @@ int             handle_sibling_process(int *pipefd, t_free_data *exec_data);
 int             handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data);
 int             execute_pipeline(t_free_data *exec_data);
 
-void            handle_redirection(t_parse_tree **node, t_exec_vars *vars);
+void            handle_redirection(t_parse_tree **node, t_exec_vars *vars, t_env **env);
 void            handle_redirection_from(t_parse_tree **node, t_exec_vars *vars);
 void            handle_redirection_to(t_parse_tree **node, t_exec_vars *vars);
-void            handle_redirection_append(t_parse_tree **node, t_exec_vars *vars);
+void            handle_redirection_append(t_parse_tree **node, t_exec_vars *vars, t_env **env);
 void            handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars);
 char            *handle_here_doc(t_parse_tree **node, t_exec_vars *vars);
 
@@ -228,6 +228,7 @@ int             export_quotes(char *input, char **output);
 int             exec_global_env(t_exec_vars *vars, t_env **env);
 
 t_free_data     *init_command_data(char **envp);
+int             is_directory(const char *path);
 
 /*
 void check_for_memory_leaks();

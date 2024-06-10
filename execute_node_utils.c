@@ -307,7 +307,7 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
     int index;
 	if ((*node)->data->type == RED_FROM || (*node)->data->type == RED_TO
 		|| (*node)->data->type == APPEND || (*node)->data->type == HERE_DOC)
-	    return (handle_redirection(node, vars));
+	    return (handle_redirection(node, vars, env));
     vars->args[vars->i] = ft_strdup((*node)->data->lexeme);
 	if (!vars->args[vars->i])
 	{
@@ -391,14 +391,14 @@ int split_variable(char *arg, int i, t_exec_vars *vars)
     return i + (j - 1);
 }
 
-void	handle_redirection(t_parse_tree **node, t_exec_vars *vars)
+void	handle_redirection(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
 	if ((*node)->data->type == RED_FROM)
 		return (handle_redirection_from(node, vars));
 	else if ((*node)->data->type == RED_TO)
 		return (handle_redirection_to(node, vars));
 	else if ((*node)->data->type == APPEND)
-		return (handle_redirection_append(node, vars));
+		return (handle_redirection_append(node, vars, env));
 	else if ((*node)->data->type == HERE_DOC)
 		return (handle_redirection_here_doc(node, vars));
 }

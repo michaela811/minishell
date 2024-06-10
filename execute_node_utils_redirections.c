@@ -34,20 +34,38 @@ void	handle_redirection_to(t_parse_tree **node, t_exec_vars *vars)
 	vars->i++;
 }
 
-void	handle_redirection_append(t_parse_tree **node, t_exec_vars *vars)
+void	handle_redirection_append(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
 	(*node)->child->data->lexeme = handle_quotes_echo((*node)->child->data->lexeme, &vars->error);
 	if (g_last_exit_status)
 		return ;
-	vars->fd_out = open((*node)->child->data->lexeme,
-			O_WRONLY | O_CREAT | O_APPEND, 0644);
+	char *expanded_lexeme = malloc(4096); 
+    if (!expanded_lexeme)
+	{
+        perror("malloc");
+        vars->error = 1;
+        return;
+    }
+    expanded_lexeme[0] = '\0';
+    char *start = (*node)->child->data->lexeme;
+    handle_dollar_sign(&start, expanded_lexeme, env);
+	int is_dir = is_directory(expanded_lexeme);
+	if (is_dir == 1)
+	{
+        vars->error = 1;
+        printf_global_error(1, 2, "my(s)hell: %s: Is a directory\n", expanded_lexeme);
+        free(expanded_lexeme);
+        return;
+	}
+	vars->fd_out = open(expanded_lexeme, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (vars->fd_out == -1)
 	{
 		vars->error = 1;
+		free(expanded_lexeme);
 		if (errno == EACCES)
         	printf_global_error(1, 2, "my(s)hell: %s: Permission denied\n", (*node)->child->data->lexeme);
-    	else
-        printf_global_error(1, 2, "my(s)hell: %s: No such file or directory\n", (*node)->child->data->lexeme);
+		else
+        	printf_global_error(1, 2, "my(s)hell: %s: No such file or directory\n", (*node)->child->data->lexeme);
 	}
 	*node = (*node)->child;
 	vars->i++;
@@ -75,8 +93,6 @@ char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars)
 	char	*buffer;
 	char	*filename;
 	int		file;
-	//char	*expanded_buffer;
-	//char	*start;
 	char	*line;
 
 	filename = "/tmp/heredoc.txt";
@@ -96,15 +112,6 @@ char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars)
             break;
         buffer = ft_strtrim(line, "\n");
 		free(line); // to this line
-		//start = buffer;
-		//expanded_buffer = malloc(4096);
-		/*if (!expanded_buffer)
-        {
-            free(buffer);
-            perror("malloc");
-            return NULL;
-        }
-		handle_dollar_sign(&start, expanded_buffer, env);*/
 		if (ft_strcmp(buffer, (*node)->child->data->lexeme) == 0)
 		{
 			free(buffer);
@@ -113,7 +120,6 @@ char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars)
 		write(file, buffer, ft_strlen(buffer));
 		write(file, "\n", 1);
 		free(buffer);
-		//free(expanded_buffer);
 	}
 	close(file);
 	return (filename);
