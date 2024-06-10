@@ -57,11 +57,11 @@ void	handle_redirection_append(t_parse_tree **node, t_exec_vars *vars, t_env **e
         free(expanded_lexeme);
         return;
 	}
-	vars->fd_out = open(expanded_lexeme, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	free(expanded_lexeme);
+	vars->fd_out = open((*node)->child->data->lexeme, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (vars->fd_out == -1)
 	{
 		vars->error = 1;
-		free(expanded_lexeme);
 		if (errno == EACCES)
         	printf_global_error(1, 2, "my(s)hell: %s: Permission denied\n", (*node)->child->data->lexeme);
 		else
