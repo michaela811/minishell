@@ -53,11 +53,11 @@ void	handle_redirection_append(t_parse_tree **node, t_exec_vars *vars)
 	vars->i++;
 }
 
-void	handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars, t_env **env)
+void	handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars)
 {
 	char	*filename;
 
-	filename = handle_here_doc(node, vars, env);
+	filename = handle_here_doc(node, vars);
 	if (vars->error)
 		return ;
 	vars->fd_in = open(filename, O_RDONLY);
@@ -70,13 +70,13 @@ void	handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars, t_env *
 	vars->i++;
 }
 
-char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars, t_env **env)
+char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars)
 {
 	char	*buffer;
 	char	*filename;
 	int		file;
-	char	*expanded_buffer;
-	char	*start;
+	//char	*expanded_buffer;
+	//char	*start;
 	char	*line;
 
 	filename = "/tmp/heredoc.txt";
@@ -91,31 +91,29 @@ char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 		/*buffer = readline("heredoc> ");
 		if (buffer == NULL)
 			break ;*/
-		//printf("heredoc> "); //for the tester from this line
-		//fflush(stdout);
-		line = get_next_line(fileno(stdin));
+		line = get_next_line(fileno(stdin)); // for tester from this line
 		if (line == NULL)
             break;
         buffer = ft_strtrim(line, "\n");
 		free(line); // to this line
-		start = buffer;
-		expanded_buffer = malloc(4096);
-		if (!expanded_buffer)
+		//start = buffer;
+		//expanded_buffer = malloc(4096);
+		/*if (!expanded_buffer)
         {
             free(buffer);
             perror("malloc");
             return NULL;
         }
-		handle_dollar_sign(&start, expanded_buffer, env);
+		handle_dollar_sign(&start, expanded_buffer, env);*/
 		if (ft_strcmp(buffer, (*node)->child->data->lexeme) == 0)
 		{
 			free(buffer);
 			break ;
 		}
-		write(file, expanded_buffer, ft_strlen(expanded_buffer));
+		write(file, buffer, ft_strlen(buffer));
 		write(file, "\n", 1);
 		free(buffer);
-		free(expanded_buffer);
+		//free(expanded_buffer);
 	}
 	close(file);
 	return (filename);
