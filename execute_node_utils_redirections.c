@@ -77,6 +77,7 @@ char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 	int		file;
 	char	*expanded_buffer;
 	char	*start;
+	char	*line;
 
 	filename = "/tmp/heredoc.txt";
 	file = open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
@@ -87,9 +88,14 @@ char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 	}
 	while (1)
 	{
-		buffer = readline("heredoc> ");
+		/*buffer = readline("heredoc> ");
 		if (buffer == NULL)
-			break ;
+			break ;*/
+		printf("heredoc> ");
+		fflush(stdout);
+		line = get_next_line(fileno(stdin));
+        buffer = ft_strtrim(line, "\n");
+		free(line);
 		start = buffer;
 		expanded_buffer = malloc(4096);
 		if (!expanded_buffer)
@@ -98,7 +104,6 @@ char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars, t_env **env)
             perror("malloc");
             return NULL;
         }
-		expanded_buffer[0] = '\0';
 		handle_dollar_sign(&start, expanded_buffer, env);
 		if (ft_strcmp(buffer, (*node)->child->data->lexeme) == 0)
 		{
