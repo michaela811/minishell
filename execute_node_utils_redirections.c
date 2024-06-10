@@ -91,8 +91,8 @@ char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 		/*buffer = readline("heredoc> ");
 		if (buffer == NULL)
 			break ;*/
-		printf("heredoc> "); //for the tester from this line
-		fflush(stdout);
+		//printf("heredoc> "); //for the tester from this line
+		//fflush(stdout);
 		line = get_next_line(fileno(stdin));
 		if (line == NULL)
             break;
