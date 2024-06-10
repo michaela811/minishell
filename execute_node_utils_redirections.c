@@ -75,21 +75,35 @@ char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars)
 	char	*buffer;
 	char	*filename;
 	int		file;
+	/*int		expand_vars;
+	char	*delimiter;
+	char	*expanded_buffer;*/
 
 	filename = "/tmp/heredoc.txt";
-	file = open(filename, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR); //CHECK HOW TO REPLACE FOPEN	WITH OPEN PROPERLY
+	file = open(filename, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
 	if (file == -1)
 	{
 		vars->error = 1;
 		return (perror("open"), NULL);
 	}
+	//delimiter = (*node)->child->data->lexeme;
+    //expand_vars = !(delimiter[0] == '\'' || delimiter[0] == '\"');
 	while (1)
 	{
 		buffer = readline("heredoc> ");
-		if (buffer == NULL)// DON'T KNOW WHETHER REPLACES CORRECTLY PREVIOUS STATEMENT while (buffer = readline("heredoc> ") != NULL)
+		if (buffer == NULL)
 			break ;
 		if (ft_strcmp(buffer, (*node)->child->data->lexeme) == 0)
+		{
+			free(buffer);
 			break ;
+		}
+		/*if (expand_vars)
+		{
+			expanded_buffer = expand_variables(buffer, vars->env);
+			write(file, expanded_buffer, ft_strlen(expanded_buffer));
+			free(expanded_buffer);
+		}*/
 		write(file, buffer, ft_strlen(buffer));
 		write(file, "\n", 1);
 		free(buffer);

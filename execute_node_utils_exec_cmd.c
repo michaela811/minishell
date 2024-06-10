@@ -11,8 +11,7 @@ int	execute_command(t_exec_vars *vars, t_free_data *exec_data)
 	if (exec_data->environment == NULL)
 	{
 		g_last_exit_status = 1;
-		return (free_command_data(exec_data), 1);
-		return (g_last_exit_status);
+		return (free_command_data(exec_data), g_last_exit_status);
 	}
 	return_builtins = exec_builtins(vars, exec_data);
 	if (return_builtins == 3)
