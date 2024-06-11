@@ -48,7 +48,8 @@ void	init_exec_vars(t_exec_vars *vars)
     return result;
 } */
 
-void handle_quotes_glob(char **arg, t_env **env, int *error) {
+void handle_quotes_glob(char **arg, t_env **env, int *error)
+{
     char *result = NULL;
     char *current = *arg;
     char *token;
@@ -59,12 +60,15 @@ void handle_quotes_glob(char **arg, t_env **env, int *error) {
 
     *error = 0;
 
-    while (*current != '\0') {
+    while (*current != '\0')
+    {
         memset(buffer, 0, sizeof(buffer)); //this function is not allowed
-        if (inside_single_quotes) {
+        if (inside_single_quotes)
+        {
             token = current;
             current = strchr(current, '\'');
-            if (current == NULL) {
+            if (current == NULL)
+            {
                 *error = 1; // Error: unmatched single quote
                 break;
             }
@@ -72,31 +76,37 @@ void handle_quotes_glob(char **arg, t_env **env, int *error) {
             result = ft_strjoin(result, token);
             inside_single_quotes = 0;
             current++;
-        } else if (inside_double_quotes) {
+        }
+        else if (inside_double_quotes)
+        {
             token = current;
-            current = strchr(current, '\"');
-            if (current == NULL) {
+            current = ft_strchr(current, '\"');
+            if (current == NULL)
+            {
                 *error = 1; // Error: unmatched double quote
                 break;
             }
             *current = '\0';
-            if (strchr(token, '$') != NULL) {
+            if (ft_strchr(token, '$') != NULL)
+            {
                 handle_dollar_sign(&token, buffer, env);
                 result = ft_strjoin(result, buffer);
-            } else {
-                result = ft_strjoin(result, token);
             }
+            else
+                result = ft_strjoin(result, token);
             inside_double_quotes = 0;
             current++;
-        } else {
+        }
+        else
+        {
             token = current;
             current = strpbrk(current, delimiters);
             if (current == NULL)
             {
                 if (strchr(token, '$') != NULL)
                 {
-                handle_dollar_sign(&token, buffer, env);
-                result = ft_strjoin(result, buffer);
+                    handle_dollar_sign(&token, buffer, env);
+                    result = ft_strjoin(result, buffer);
                 }
                 else
                     result = ft_strjoin(result, token);
@@ -104,18 +114,18 @@ void handle_quotes_glob(char **arg, t_env **env, int *error) {
             }
             char delimiter = *current;
             *current = '\0';
-            if (strchr(token, '$') != NULL) {
+            if (strchr(token, '$') != NULL) 
+            {
                 handle_dollar_sign(&token, buffer, env);
                 result = ft_strjoin(result, buffer);
-            } else {
+            }
+            else
                 result = ft_strjoin(result, token);
-            }
             *current = delimiter; // Restore the delimiter
-            if (*current == '\'') {
+            if (*current == '\'')
                 inside_single_quotes = 1;
-            } else if (*current == '\"') {
+            else if (*current == '\"')
                 inside_double_quotes = 1;
-            }
             current++;
         }
     }

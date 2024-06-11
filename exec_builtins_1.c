@@ -122,6 +122,8 @@ int	exec_echo(t_exec_vars *vars)
 	i = 1;
 	//if (vars->args[i] == NULL || vars->args[i][0] == '\0')
 		//return (printf_global_error(0, 1, "\n"), 0);
+	if (vars->args[1] == NULL)
+		return (printf("\n"), 1);
 	if (ft_strcmp(vars->args[1], "-n") == 0)
 		i++;
 	//process_args(vars->args, &(vars->error));
@@ -263,6 +265,47 @@ int	exec_export(char **args, t_env **env)
 	char	*name;
 	char	*value;
 	int		control;
+	int		i;
+
+	i = 1;
+	name = NULL;
+	value = NULL;
+	if (args[1] == NULL)
+		return (exec_export_no_args(*env), 0);
+	while (args[i] != NULL)
+	{
+		control = var_control(args[1]);
+		if (control == 1)
+			return (g_last_exit_status);
+		else
+		{
+			if (split_var(args[i], &name, &value))
+			{
+				g_last_exit_status = 1;
+				i++;
+				continue;
+			}
+			if (update_add_env_var(env, name, value))
+			{
+				free(name);
+				free(value);
+				g_last_exit_status = 1;
+				continue;
+			}
+			free(name);
+			free(value);
+			i++;
+		}
+	}
+	g_last_exit_status = 0;
+	return (g_last_exit_status);
+}
+
+/*int	exec_export(char **args, t_env **env)
+{while (args[i] != NULL)
+	char	*name;
+	char	*value;
+	int		control;
 
 	name = NULL;
 	value = NULL;
@@ -280,4 +323,4 @@ int	exec_export(char **args, t_env **env)
 	}
 	g_last_exit_status = 0;
 	return (g_last_exit_status);
-}
+}*/
