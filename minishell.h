@@ -174,7 +174,7 @@ int             execute_node(t_free_data *exec_data);
 void            handle_global_env(t_parse_tree **node, char **args, int i, t_env **env);
 //void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
 void            handle_quotes_global(t_parse_tree **node, char **args, int i, t_env **env);
-void	handle_quotes_glob(char **arg, t_env **env, int *error);
+void	        handle_quotes_glob(char **arg, t_env **env, int *error);
 void            handle_dollar_sign(char **start, char *buffer, t_env **env);//, int *k);
 
 // To delete later when working
@@ -182,9 +182,8 @@ void            execve_error(char **s_cmd);
 void            free_array(char **array);
 int             error_message(char *str);
 
-// Libft
-/*
-static void     ft_free(char **array, int j);
+/*Libft*/
+/*static void     ft_free(char **array, int j);
 static size_t   n_words(const char *str, char c);
 static size_t   size_word(const char *s, char c, int i);
 char            **ft_split(char const *s, char c);
@@ -196,8 +195,6 @@ void            ft_putendl_fd(char *s, int fd);
 static size_t   ft_special_cases(char const *s, unsigned int start, size_t len);
 char            *ft_substr(char const *s, unsigned int start, size_t len);
 */
-
-
 
 t_env           *create_env_var(const char *name, const char *value);
 t_env           *init_environment(char **envp);
