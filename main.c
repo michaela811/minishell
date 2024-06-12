@@ -63,6 +63,7 @@ int main(int argc, char **argv, char **envp)
         }
         handle_input(input, exec_data);
     }*/
+    exec_data->line = 1;
     while (1)
     {
         if (isatty(fileno(stdin)))
@@ -85,6 +86,7 @@ int main(int argc, char **argv, char **envp)
             break;
         }
         handle_input(input, exec_data);
+        exec_data->line++;
     }
     return 0;
 }
