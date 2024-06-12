@@ -50,19 +50,21 @@ void	init_exec_vars(t_exec_vars *vars)
 
 void handle_quotes_glob(char **arg, t_env **env, int *error)
 {
-    char *result = NULL;
-    char *current = *arg;
-    char *token;
-    char *delimiters = "'\"";
-    int inside_single_quotes = 0;
-    int inside_double_quotes = 0;
-    char buffer[1024] = "";
+    char    *result = NULL;
+    char    *current = *arg;
+    char    *token;
+    char    *delimiters = "'\"";
+    int     inside_single_quotes = 0;
+    int     inside_double_quotes = 0;
+    char    buffer[1024] = "";
+    char    delimiter;
 
     *error = 0;
 
     while (*current != '\0')
     {
-        memset(buffer, 0, sizeof(buffer)); //this function is not allowed
+        //memset(buffer, 0, sizeof(buffer)); //this function is not allowed
+        buffer[0] = '\0';
         if (inside_single_quotes)
         {
             token = current;
@@ -112,7 +114,7 @@ void handle_quotes_glob(char **arg, t_env **env, int *error)
                     result = ft_strjoin(result, token);
                 break;
             }
-            char delimiter = *current;
+            delimiter = *current;
             *current = '\0';
             if (strchr(token, '$') != NULL) 
             {
