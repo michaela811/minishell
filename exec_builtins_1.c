@@ -120,15 +120,12 @@ int	exec_echo(t_exec_vars *vars)
 	int	i;
 
 	i = 1;
-	//if (vars->args[i] == NULL || vars->args[i][0] == '\0')
-		//return (printf_global_error(0, 1, "\n"), 0);
 	if (vars->args[1] == NULL)
 		return (printf("\n"), 1);
+	if (vars->args[1][0] == '-' && vars->args[1][1] == 'n' && vars->args[1][2] == 'n' && vars->args[2] == NULL)
+		return (g_last_exit_status);
 	if (ft_strcmp(vars->args[1], "-n") == 0)
 		i++;
-	//process_args(vars->args, &(vars->error));
-	//if (vars->error)
-		//return (free_env_array(vars->args), g_last_exit_status);
 	while (vars->args[i])
 	{
 	        printf("%s", vars->args[i]);
