@@ -68,7 +68,7 @@ void handle_quotes_glob(char **arg, t_env **env, int *error)
         if (inside_single_quotes)
         {
             token = current;
-            current = strchr(current, '\'');
+            current = ft_strchr(current, '\'');
             if (current == NULL)
             {
                 *error = 1; // Error: unmatched single quote
@@ -128,7 +128,7 @@ void handle_quotes_glob(char **arg, t_env **env, int *error)
                 inside_single_quotes = 1;
             else if (*current == '\"')
                 inside_double_quotes = 1;
-            current++;
+            //current++;
         }
     }
     if (!*error)
