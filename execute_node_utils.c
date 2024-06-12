@@ -127,8 +127,10 @@ void handle_quotes_glob(char **arg, t_env **env, int *error)
             if (*current == '\'')
                 inside_single_quotes = 1;
             else if (*current == '\"')
+            {
                 inside_double_quotes = 1;
-            //current++;
+            }
+            current++;
         }
     }
     if (!*error)
@@ -327,8 +329,8 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 		return(printf_global_error(1, 2, "my(s)hell: ft_strdup error\n"));
 	}
     index = vars->i;
-    if ((*node)->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' '))
-        vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
+    //if ((*node)->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' '))
+    //    vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
     while (index <= vars->i)
     {
         handle_quotes_glob(&vars->args[index], env, &vars->error);
@@ -402,6 +404,24 @@ int split_variable(char *arg, int i, t_exec_vars *vars)
     free(split_args);
     return i + (j - 1);
 }
+
+/*int split_variable(char *arg, int i, t_exec_vars *vars)
+{
+    char **split_args;
+    int j;
+
+    j = 0;
+    split_args = ft_split(arg, ' ');
+    if (!split_args)
+        return i;
+    while (split_args[j])
+	{
+        vars->args[i + j] = split_args[j];
+        j++;
+    }
+    free(split_args);
+    return i + (j - 1);
+}*/
 
 void	handle_redirection(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
