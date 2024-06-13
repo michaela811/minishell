@@ -39,10 +39,19 @@ int	var_control(char *args)
 	int	i;
 
 	i = 0;
-	if (args[i++] == '=' || args[i++] == 0)
+	if (args[i] == '=' || args[i] == 0 || (!ft_isalpha(args[i]) && args[i] != '_'))
 	{
 		return (printf_global_error(1, 2, "minishell: export: '%s': not a valid identifier\n", args), g_last_exit_status);
 	}
+	i++;
+	while (args[i])
+    {
+        if (!ft_isalnum(args[i]) || args[i] != '_')
+        {
+            return (printf_global_error(1, 2, "minishell: export: '%s': not a valid identifier\n", args), g_last_exit_status);
+        }
+        i++;
+    }
 	return (0);
 }
 
