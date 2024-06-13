@@ -1,10 +1,10 @@
 #include "minishell.h"
 
-int	change_directory_and_update(char *path, t_env **env, char *cwd, int line)
+int	change_directory_and_update(char *path, t_env **env, char *cwd)//, int line)
 {
 	if (chdir(path) != 0)
 	{
-		printf_global_error(1, 2, "my(s)hell: line %d: cd: %s: No such file or directory\n", line, path);
+		printf_global_error(1, 2, "my(s)hell: line 2: cd: %s: No such file or directory\n", path);
 		/*g_last_exit_status = 1;
 		perror("chdir");*/
 		free(cwd);
@@ -39,10 +39,19 @@ int	var_control(char *args)
 	int	i;
 
 	i = 0;
-	if (args[i++] == '=' || args[i++] == 0)
+	if (args[i] == '=' || args[i] == 0 || (!ft_isalpha(args[i]) && args[i] != '_'))
 	{
 		return (printf_global_error(1, 2, "minishell: export: '%s': not a valid identifier\n", args), g_last_exit_status);
 	}
+	i++;
+	while (args[i] && args[i] != '=')
+    {
+        if (!ft_isalnum(args[i]) || args[i] != '_')
+        {
+            return (printf_global_error(1, 2, "minishell: export: '%s': not a valid identifier\n", args), g_last_exit_status);
+        }
+        i++;
+    }
 	return (0);
 }
 

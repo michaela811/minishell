@@ -117,7 +117,7 @@ void handle_quotes_glob(char **arg, t_env **env, int *error, int *exit_code)
             }
             delimiter = *current;
             *current = '\0';
-            if (strchr(token, '$') != NULL) 
+            if (strchr(token, '$') != NULL)
             {
                 handle_dollar_sign(&token, buffer, env, exit_code);
                 result = ft_strjoin(result, buffer);
@@ -330,12 +330,14 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 		return(printf_global_error(1, 2, "my(s)hell: ft_strdup error\n"));
 	}
     index = vars->i;
-    if ((*node)->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' '))
+    /*if ((*node)->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' '))
     {
         if (ft_strchr(vars->args[vars->i], '\'') || ft_strchr(vars->args[vars->i], '\"'))
             handle_quotes_glob(&vars->args[vars->i], env, &vars->error, &vars->exit_code);
         vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
-    }
+    }*/
+    //if ((*node)->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' ') && !ft_strchr(vars->args[vars->i], '\''))
+        //vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
     while (index <= vars->i)
     {
         handle_quotes_glob(&vars->args[index], env, &vars->error, &vars->exit_code);
@@ -431,11 +433,11 @@ int split_variable(char *arg, int i, t_exec_vars *vars)
 void	handle_redirection(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
 	if ((*node)->data->type == RED_FROM)
-		return (handle_redirection_from(node, vars));
+		return (handle_redirection_from(node, vars, env));
 	else if ((*node)->data->type == RED_TO)
-		return (handle_redirection_to(node, vars));
+		return (handle_redirection_to(node, vars, env));
 	else if ((*node)->data->type == APPEND)
 		return (handle_redirection_append(node, vars, env));
 	else if ((*node)->data->type == HERE_DOC)
-		return (handle_redirection_here_doc(node, vars));
+		return (handle_redirection_here_doc(node, vars));//, env));
 }
