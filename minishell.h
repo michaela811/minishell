@@ -158,11 +158,11 @@ int             handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_
 int             execute_pipeline(t_free_data *exec_data);
 
 void            handle_redirection(t_parse_tree **node, t_exec_vars *vars, t_env **env);
-void            handle_redirection_from(t_parse_tree **node, t_exec_vars *vars);
-void            handle_redirection_to(t_parse_tree **node, t_exec_vars *vars);
+void            handle_redirection_from(t_parse_tree **node, t_exec_vars *vars, t_env **env);
+void            handle_redirection_to(t_parse_tree **node, t_exec_vars *vars, t_env **env);
 void            handle_redirection_append(t_parse_tree **node, t_exec_vars *vars, t_env **env);
-void            handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars);
-char            *handle_here_doc(t_parse_tree **node, t_exec_vars *vars);
+void            handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars);//, t_env **env);
+char            *handle_here_doc(t_parse_tree **node, t_exec_vars *vars);//, t_env **env);
 
 int             exec_builtins(t_exec_vars *vars, t_free_data *exec_data);
 int             handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment);

@@ -116,7 +116,7 @@ void handle_quotes_glob(char **arg, t_env **env, int *error)
             }
             delimiter = *current;
             *current = '\0';
-            if (strchr(token, '$') != NULL) 
+            if (strchr(token, '$') != NULL)
             {
                 handle_dollar_sign(&token, buffer, env);
                 result = ft_strjoin(result, buffer);
@@ -426,11 +426,11 @@ int split_variable(char *arg, int i, t_exec_vars *vars)
 void	handle_redirection(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
 	if ((*node)->data->type == RED_FROM)
-		return (handle_redirection_from(node, vars));
+		return (handle_redirection_from(node, vars, env));
 	else if ((*node)->data->type == RED_TO)
-		return (handle_redirection_to(node, vars));
+		return (handle_redirection_to(node, vars, env));
 	else if ((*node)->data->type == APPEND)
 		return (handle_redirection_append(node, vars, env));
 	else if ((*node)->data->type == HERE_DOC)
-		return (handle_redirection_here_doc(node, vars));
+		return (handle_redirection_here_doc(node, vars));//, env));
 }
