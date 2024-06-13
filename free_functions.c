@@ -39,20 +39,20 @@ void	free_token(t_token *tok)
 
 void	free_parse_tree(t_parse_tree *tree)
 {
-    //t_parse_tree	*sibling;
-    //t_parse_tree	*child;
+    t_parse_tree	*sibling;
+    t_parse_tree	*child;
 
     if (tree == NULL)
         return ;
 
-    //child = tree->child;
-    //sibling = tree->sibling;
+    child = tree->child;
+    sibling = tree->sibling;
 
-    /* if (tree->data != NULL)
+     if (tree->data != NULL)
     {
         free_token(tree->data);
         tree->data = NULL;
-    } */
+    }
 	if (tree->sibling != NULL) {
         free_parse_tree(tree->sibling);
         tree->sibling = NULL;
