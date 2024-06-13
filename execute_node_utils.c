@@ -9,9 +9,10 @@ void	init_exec_vars(t_exec_vars *vars)
 	vars->args = malloc(10 * sizeof(char *));  // Allocate memory for args
     if (!vars->args)
     {
-        // Handle memory allocation error
+        vars->error = 1;
         return;
     }
+    vars->exit_code = g_last_exit_status;
 	i = 0;
 	while (i < 10)
 		vars->args[i++] = NULL;
@@ -48,7 +49,7 @@ void	init_exec_vars(t_exec_vars *vars)
     return result;
 } */
 
-void handle_quotes_glob(char **arg, t_env **env, int *error)
+void handle_quotes_glob(char **arg, t_env **env, int *error, int *exit_code)
 {
     char    *result = NULL;
     char    *current = *arg;
@@ -91,7 +92,7 @@ void handle_quotes_glob(char **arg, t_env **env, int *error)
             *current = '\0';
             if (ft_strchr(token, '$') != NULL)
             {
-                handle_dollar_sign(&token, buffer, env);
+                handle_dollar_sign(&token, buffer, env, exit_code);
                 result = ft_strjoin(result, buffer);
             }
             else
@@ -107,7 +108,7 @@ void handle_quotes_glob(char **arg, t_env **env, int *error)
             {
                 if (strchr(token, '$') != NULL)
                 {
-                    handle_dollar_sign(&token, buffer, env);
+                    handle_dollar_sign(&token, buffer, env, exit_code);
                     result = ft_strjoin(result, buffer);
                 }
                 else
@@ -118,7 +119,7 @@ void handle_quotes_glob(char **arg, t_env **env, int *error)
             *current = '\0';
             if (strchr(token, '$') != NULL) 
             {
-                handle_dollar_sign(&token, buffer, env);
+                handle_dollar_sign(&token, buffer, env, exit_code);
                 result = ft_strjoin(result, buffer);
             }
             else
@@ -332,12 +333,12 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
     if ((*node)->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' '))
     {
         if (ft_strchr(vars->args[vars->i], '\'') || ft_strchr(vars->args[vars->i], '\"'))
-            handle_quotes_glob(&vars->args[vars->i], env, &vars->error);
+            handle_quotes_glob(&vars->args[vars->i], env, &vars->error, &vars->exit_code);
         vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
     }
     while (index <= vars->i)
     {
-        handle_quotes_glob(&vars->args[index], env, &vars->error);
+        handle_quotes_glob(&vars->args[index], env, &vars->error, &vars->exit_code);
         if (vars->error)
         {
             g_last_exit_status = 1;

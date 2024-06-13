@@ -41,7 +41,7 @@ void	handle_redirection_append(t_parse_tree **node, t_exec_vars *vars, t_env **e
 	char *expanded_lexeme;
 
 	//(*node)->child->data->lexeme = handle_quotes_echo((*node)->child->data->lexeme, &vars->error);
-	handle_quotes_glob(&(*node)->child->data->lexeme, env, &vars->error);
+	handle_quotes_glob(&(*node)->child->data->lexeme, env, &vars->error, &vars->exit_code);
 	if (g_last_exit_status)
 		return ;
 	expanded_lexeme = malloc(4096); 
@@ -53,7 +53,7 @@ void	handle_redirection_append(t_parse_tree **node, t_exec_vars *vars, t_env **e
     }
     expanded_lexeme[0] = '\0';
     start = (*node)->child->data->lexeme;
-    handle_dollar_sign(&start, expanded_lexeme, env);
+    handle_dollar_sign(&start, expanded_lexeme, env, &vars->exit_code);
 	is_dir = is_directory(expanded_lexeme);
 	if (is_dir == 1)
 	{
