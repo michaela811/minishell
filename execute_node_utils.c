@@ -12,7 +12,6 @@ void	init_exec_vars(t_exec_vars *vars)
         vars->error = 1;
         return;
     }
-    vars->exit_code = g_last_exit_status;
 	i = 0;
 	while (i < 10)
 		vars->args[i++] = NULL;
@@ -49,7 +48,7 @@ void	init_exec_vars(t_exec_vars *vars)
     return result;
 } */
 
-void handle_quotes_glob(char **arg, t_env **env, int *error, int *exit_code)
+void handle_quotes_glob(char **arg, t_env **env, int *error)
 {
     char    *result = NULL;
     char    *current = *arg;
@@ -92,7 +91,7 @@ void handle_quotes_glob(char **arg, t_env **env, int *error, int *exit_code)
             *current = '\0';
             if (ft_strchr(token, '$') != NULL)
             {
-                handle_dollar_sign(&token, buffer, env, exit_code);
+                handle_dollar_sign(&token, buffer, env);
                 result = ft_strjoin(result, buffer);
             }
             else
@@ -108,7 +107,7 @@ void handle_quotes_glob(char **arg, t_env **env, int *error, int *exit_code)
             {
                 if (strchr(token, '$') != NULL)
                 {
-                    handle_dollar_sign(&token, buffer, env, exit_code);
+                    handle_dollar_sign(&token, buffer, env);
                     result = ft_strjoin(result, buffer);
                 }
                 else
@@ -119,7 +118,7 @@ void handle_quotes_glob(char **arg, t_env **env, int *error, int *exit_code)
             *current = '\0';
             if (strchr(token, '$') != NULL)
             {
-                handle_dollar_sign(&token, buffer, env, exit_code);
+                handle_dollar_sign(&token, buffer, env);
                 result = ft_strjoin(result, buffer);
             }
             else
@@ -342,7 +341,7 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
         //vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
     while (index <= vars->i)
     {
-        handle_quotes_glob(&vars->args[index], env, &vars->error, &vars->exit_code);
+        handle_quotes_glob(&vars->args[index], env, &vars->error);
         if (vars->error)
         {
             g_last_exit_status = 1;

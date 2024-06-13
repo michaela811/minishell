@@ -68,7 +68,6 @@ typedef struct s_exec_vars
     int fd_in;
     int fd_out;
     char **args;//char *args[10];
-    int exit_code;
     int i;
     int error;
 } t_exec_vars;
@@ -91,7 +90,7 @@ typedef struct s_free_data {
 //#define PARSING_ERROR 2
 
 // Global variable for signal handling
-extern int		g_last_exit_status;
+extern int   g_last_exit_status;
 
 //MAIN
 void			handle_signal(int signal);
@@ -176,8 +175,8 @@ int             execute_node(t_free_data *exec_data);
 void            handle_global_env(t_parse_tree **node, char **args, int i, t_env **env);
 //void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
 void            handle_quotes_global(t_parse_tree **node, char **args, int i, t_env **env);
-void	        handle_quotes_glob(char **arg, t_env **env, int *error, int *exit_code);
-void            handle_dollar_sign(char **start, char *buffer, t_env **env, int *exit_code);//, int *k);
+void	        handle_quotes_glob(char **arg, t_env **env, int *error);
+void            handle_dollar_sign(char **start, char *buffer, t_env **env);//, int *k);
 
 // To delete later when working
 void            execve_error(char **s_cmd);

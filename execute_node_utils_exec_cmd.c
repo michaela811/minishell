@@ -40,51 +40,6 @@ int get_args_count(char **args)
     return (count);
 }
 
-/*void replace_placeholder_with_exit_code(char **args, int exit_code)
-{
-    for (int i = 0; args[i] != NULL; i++)
-	{
-        if (strcmp(args[i], "[INT]") == 0)
-		{
-            char *exit_code_str = ft_itoa(exit_code);
-            free(args[i]);
-            args[i] = exit_code_str;
-        }
-    }
-}*/
-
-void replace_placeholder_with_exit_code(char **args, int exit_code)
-{
-    int i;
-	char *pos;
-	char *exit_code_str;
-	size_t new_arg_len;
-	char *new_arg;
-
-	i = 0;
-    while (args[i] != NULL)
-	{
-        while ((pos = strstr(args[i], "[INT]")) != NULL) {
-            exit_code_str = ft_itoa(exit_code);
-            new_arg_len = ft_strlen(args[i]) - ft_strlen("[INT]") + ft_strlen(exit_code_str) + 1;
-            new_arg = malloc(new_arg_len);
-            if (!new_arg)
-			{
-                free(exit_code_str);
-                return;
-            }
-            ft_strncpy(new_arg, args[i], pos - args[i]);
-            new_arg[pos - args[i]] = '\0';
-            ft_strcat(new_arg, exit_code_str);
-            ft_strcat(new_arg, pos + strlen("[INT]"));
-            free(args[i]);
-            free(exit_code_str);
-            args[i] = new_arg;
-        }
-        i++;
-    }
-}
-
 int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 {
 	char	*path;
@@ -126,7 +81,6 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 			(printf_global_error(126, 2, "my(s)hell: %s: Permission denied\n", vars->args[0]), exit(126));
 		(printf_global_error(127, 2, "my(s)hell: %s: command not found\n", vars->args[0]), exit(127));
 	}
-	replace_placeholder_with_exit_code(vars->args, g_last_exit_status);
 	if (execve(path, vars->args, environment) < 0)
 		(printf_global_error(127, 2, "my(s)hell: execve\n", vars->args[0]), exit(127));
 	g_last_exit_status = 0;

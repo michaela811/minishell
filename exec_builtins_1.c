@@ -68,46 +68,40 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 
 	i = 0;
 	result = NULL;
-	if (vars->args[1] != NULL && ft_strcmp(vars->args[1], "[INT]") != 0)
+	if (vars->args[1] != NULL)
 	{
-		if (ft_strcmp(vars->args[1], "[INT]") != 0)
+		if (vars->args[2] != NULL)
 		{
-			if (vars->args[2] != NULL)
-			{
-				printf_global_error(1, 2, "my(s)hell: too many arguments\n");// Actually in bush +exit should be printed
-				return(g_last_exit_status);
-			}
-			result = vars->args[1];
-			if (result[i] == '+' || result[i] == '-')
-				i++;
-			while (result[i] == '0')
-				i++;
-			if (result[i] == '\0')
-			{
-				g_last_exit_status = 0;
-				free_exit_data(exec_data);
-				free_env_array(vars->args);
-				free(vars);
-				exit (g_last_exit_status);
-			}
-			i = 0;
-			if (overflow_check(result))
-			{
-				printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
-				return(g_last_exit_status);
-			}
-			g_last_exit_status = ft_atoi(result);
+			printf_global_error(1, 2, "my(s)hell: too many arguments\n");// Actually in bush +exit should be printed
+			return(g_last_exit_status);
 		}
-		if (vars->args[1] != NULL && !g_last_exit_status)
+		result = vars->args[1];
+		if (result[i] == '+' || result[i] == '-')
+			i++;
+		while (result[i] == '0')
+			i++;
+		if (result[i] == '\0')
 		{
-		//free(result);
+			g_last_exit_status = 0;
+			free_exit_data(exec_data);
+			free_env_array(vars->args);
+			free(vars);
+			exit (g_last_exit_status);
+		}
+		i = 0;
+		if (overflow_check(result))
+		{
 			printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
 			return(g_last_exit_status);
 		}
+		g_last_exit_status = ft_atoi(result);
 	}
-	if (vars->args[1])
-		if (ft_strcmp(vars->args[1], "[INT]") == 0)
-			g_last_exit_status = vars->exit_code;
+	if (vars->args[1] != NULL && !g_last_exit_status)
+	{
+		//free(result);
+		printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
+		return(g_last_exit_status);
+	}
 	//if (result)
 		//free(result);
 	//printf("result: %s\n", result);
@@ -133,10 +127,7 @@ int	exec_echo(t_exec_vars *vars)
 		i++;
 	while (vars->args[i])
 	{
-		if (ft_strcmp(vars->args[i], "[INT]") == 0)
-			printf("%d", vars->exit_code);
-		else
-	    	printf("%s", vars->args[i]);
+	   	printf("%s", vars->args[i]);
 	    if (vars->args[i + 1])
 	        printf(" ");
 	    i++;
