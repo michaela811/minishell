@@ -48,19 +48,15 @@ void	free_parse_tree(t_parse_tree *tree)
     child = tree->child;
     sibling = tree->sibling;
 
-     if (tree->data != NULL)
+    /* if (tree->data != NULL)
     {
         free_token(tree->data);
         tree->data = NULL;
-    }
-	if (tree->sibling != NULL) {
-        free_parse_tree(tree->sibling);
-        tree->sibling = NULL;
-    }
-    if (tree->child != NULL) {
-        free_parse_tree(tree->child);
-        tree->child = NULL;
-    }
+    } */
+	if (sibling != NULL)
+        free_parse_tree(sibling);
+    if (child != NULL)
+        free_parse_tree(child);
     free(tree);
     tree = NULL;
 }
