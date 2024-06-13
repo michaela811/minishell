@@ -5,7 +5,7 @@ int	exec_builtins(t_exec_vars *vars, t_free_data *exec_data)
 	if (ft_strcmp(vars->args[0], "exit") == 0)
 		return (exec_exit(vars, exec_data));
 	else if (ft_strcmp(vars->args[0], "cd") == 0)
-		return (exec_cd(vars->args, &exec_data->env, exec_data->line));
+		return (exec_cd(vars->args, &exec_data->env));//, exec_data->line));
 	else if (ft_strcmp(vars->args[0], "pwd") == 0)
 		return (exec_pwd());
 	else if (ft_strcmp(vars->args[0], "echo") == 0)
@@ -214,7 +214,7 @@ char *handle_quotes_echo(const char *input, int *error)
     return result;
 }
 
-int	exec_cd(char **args, t_env **env, int line)
+int	exec_cd(char **args, t_env **env)//, int line)
 {
 	char	*cwd;
 
@@ -225,11 +225,11 @@ int	exec_cd(char **args, t_env **env, int line)
 		return (printf_global_error(1, 2, "cd: too many arguments\n"), free(cwd), g_last_exit_status);
 	else if (args[1] == NULL || ft_strcmp(args[1], "~") == 0)
 		return (change_directory_and_update(get_env_var(*env, "HOME"),
-				env, cwd, line));
+				env, cwd));//, line));
 	else if (ft_strcmp(args[1], "..") == 0)
-		return (change_directory_and_update("..", env, cwd, line));
+		return (change_directory_and_update("..", env, cwd));// line));
 	else
-		return (change_directory_and_update(args[1], env, cwd, line));
+		return (change_directory_and_update(args[1], env, cwd));//, line));
 }
 
 int	exec_dollar_pwd(void)

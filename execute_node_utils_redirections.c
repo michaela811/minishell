@@ -1,8 +1,9 @@
 #include "minishell.h"
 
-void	handle_redirection_from(t_parse_tree **node, t_exec_vars *vars)
+void	handle_redirection_from(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
-	(*node)->child->data->lexeme = handle_quotes_echo((*node)->child->data->lexeme, &vars->error);
+	//(*node)->child->data->lexeme = handle_quotes_echo((*node)->child->data->lexeme, &vars->error);
+	handle_quotes_glob(&(*node)->child->data->lexeme, env, &vars->error, &vars->exit_code);
 	if (vars->error)//maybe better vars->error
 		return ;
 	vars->fd_in = open((*node)->child->data->lexeme, O_RDONLY);
@@ -15,9 +16,10 @@ void	handle_redirection_from(t_parse_tree **node, t_exec_vars *vars)
 	//vars->i++;
 }
 
-void	handle_redirection_to(t_parse_tree **node, t_exec_vars *vars)
+void	handle_redirection_to(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
-	(*node)->child->data->lexeme = handle_quotes_echo((*node)->child->data->lexeme, &vars->error);
+	//(*node)->child->data->lexeme = handle_quotes_echo((*node)->child->data->lexeme, &vars->error);
+	handle_quotes_glob(&(*node)->child->data->lexeme, env, &vars->error, &vars->exit_code);
 	if (g_last_exit_status)
 		return ;
 	vars->fd_out = open((*node)->child->data->lexeme,
@@ -44,7 +46,7 @@ void	handle_redirection_append(t_parse_tree **node, t_exec_vars *vars, t_env **e
 	handle_quotes_glob(&(*node)->child->data->lexeme, env, &vars->error, &vars->exit_code);
 	if (g_last_exit_status)
 		return ;
-	expanded_lexeme = malloc(4096); 
+	expanded_lexeme = malloc(4096);
     if (!expanded_lexeme)
 	{
         perror("malloc");
@@ -76,11 +78,11 @@ void	handle_redirection_append(t_parse_tree **node, t_exec_vars *vars, t_env **e
 	vars->i++;
 }
 
-void	handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars)
+void	handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars)//, t_env **env)
 {
 	char	*filename;
 
-	filename = handle_here_doc(node, vars);
+	filename = handle_here_doc(node, vars);//, env);
 	if (vars->error)
 		return ;
 	vars->fd_in = open(filename, O_RDONLY);
@@ -93,7 +95,7 @@ void	handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars)
 	vars->i++;
 }
 
-char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars)
+char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars)//, t_env **env)
 {
 	char	*buffer;
 	char	*filename;
@@ -101,6 +103,8 @@ char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars)
 	char	*line;
 
 	filename = "/tmp/heredoc.txt";
+	(*node)->child->data->lexeme = handle_quotes_echo((*node)->child->data->lexeme, &vars->error);
+	//handle_quotes_glob(&(*node)->child->data->lexeme, env, &vars->error);
 	file = open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	if (file == -1)
 	{

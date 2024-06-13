@@ -178,7 +178,7 @@ void	handle_parse_tree(t_free_data *exec_data)
 		execute_parse_tree(exec_data);
 		free_command_data(exec_data); //commented out?
 	}
-	else
-		free_command_data(exec_data);
+	//else
+		//free_command_data(exec_data);
 	return ;
 }
