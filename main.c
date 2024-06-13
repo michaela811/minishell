@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int   g_last_exit_status = '0';
+int   g_last_exit_status = 0;
 struct          termios orig_termios;
 
 void reset_terminal_mode()
@@ -68,9 +68,9 @@ int main(int argc, char **argv, char **envp)
     {
         if (isatty(fileno(stdin)))
         {
-            //set_raw_mode();
+            set_raw_mode();
             input = readline("my(s)hell> ");
-            //reset_terminal_mode();
+            reset_terminal_mode();
         }
         else
         {
