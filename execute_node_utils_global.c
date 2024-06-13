@@ -39,7 +39,13 @@ int	ft_lennbr(int nbr)
 	return(++count);
 }
 
-void	handle_dollar_sign(char **start, char *buffer, t_env **env)//, int *k)
+void append_int_to_buffer(char *buffer, int *buf_size, int num)
+{
+    ft_memcpy(buffer + *buf_size, &num, sizeof(int));
+    *buf_size += sizeof(int);
+}
+
+/*void	handle_dollar_sign(char **start, char *buffer, t_env **env)//, int *k)
 {
 	char	*dollar;
 	char	*var_start;
@@ -58,13 +64,11 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env)//, int *k)
 		{
 			ft_strcat(buffer, ft_itoa(g_last_exit_status));
 			*start = dollar + 2;
-			//*k += 2;//ft_lennbr(g_last_exit_status);
 		}
 		else if (*(dollar + 1) == '\0' || *(dollar + 1) == '$' || *(dollar + 1) == ' ' || *(dollar + 1) == '"')
 		{
 			ft_strcat(buffer, "$");
 			*start = dollar + 1;
-			//(*k)++;
 		}
 		else
 		{
@@ -75,19 +79,66 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env)//, int *k)
 			ft_strncpy(var_name, var_start, var_end - var_start);
 			var_name[var_end - var_start] = '\0';
 			var_value = get_env_var(*env, var_name);
-			//*k += ft_strlen(var_name);
 			if (var_value != NULL)
 				ft_strcat(buffer, var_value);
 			*start = var_end;
 		}
 	}
 	if ((dollar = ft_strchr(start_store, '$')) == NULL)
-		ft_strcpy(buffer, start_store);//Probably use strncpy!
-		//*start = start_store + strlen(start_store);}
-		//return ;
+		ft_strcpy(buffer, start_store);
 	else if (*start)
 		ft_strcat(buffer, *start);
-		//*start = *start + strlen(*start);}
+}*/
+
+void handle_dollar_sign(char **start, char *buffer, t_env **env) {
+    char *dollar;
+    char *var_start;
+    char *var_end;
+    char var_name[1024];
+    char *var_value;
+    char *start_store;
+    int buf_size = 0;
+    char temp_buffer[1024] = ""; // Temporary buffer for intermediate string operations
+
+    buffer[0] = '\0';
+    start_store = *start;
+
+    while ((dollar = strchr(*start, '$')) != NULL) {
+        strncat(temp_buffer, *start, dollar - *start);
+        if (*(dollar + 1) == '?') {
+            // Copy current temp_buffer to main buffer before appending binary data
+            strcat(buffer, temp_buffer);
+            buf_size += strlen(temp_buffer);
+
+            // Append the integer in binary form
+            append_int_to_buffer(buffer, &buf_size, g_last_exit_status);
+            *start = dollar + 2;
+        } else if (*(dollar + 1) == '\0' || *(dollar + 1) == '$' || *(dollar + 1) == ' ' || *(dollar + 1) == '"') {
+            strcat(temp_buffer, "$");
+            *start = dollar + 1;
+        } else {
+            var_start = dollar + 1;
+            var_end = strpbrk(var_start, " \t\n\"'$/");
+            if (var_end == NULL)
+                var_end = var_start + strlen(var_start);
+            strncpy(var_name, var_start, var_end - var_start);
+            var_name[var_end - var_start] = '\0';
+            var_value = get_env_var(*env, var_name);
+            if (var_value != NULL)
+                strcat(temp_buffer, var_value);
+            *start = var_end;
+        }
+    }
+
+    // Copy remaining temp_buffer to main buffer
+    strcat(buffer, temp_buffer);
+    buf_size += strlen(temp_buffer);
+
+    if ((dollar = strchr(start_store, '$')) == NULL) {
+        strcpy(buffer, start_store); // Probably use strncpy!
+    } else if (*start) {
+        strcat(buffer, *start);
+    }
 }
 
 /* void	handle_quotes_global(t_parse_tree **node, char **args,
