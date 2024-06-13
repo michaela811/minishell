@@ -44,7 +44,7 @@ int	var_control(char *args)
 		return (printf_global_error(1, 2, "minishell: export: '%s': not a valid identifier\n", args), g_last_exit_status);
 	}
 	i++;
-	while (args[i])
+	while (args[i] && args[i] != '=')
     {
         if (!ft_isalnum(args[i]) || args[i] != '_')
         {
