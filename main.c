@@ -22,20 +22,17 @@ void set_raw_mode()
     raw.c_oflag &= ~(OPOST);
     raw.c_cc[VMIN] = 1;
     raw.c_cc[VTIME] = 0;
-
+    raw.c_lflag |= ECHO;
     tcsetattr(STDIN_FILENO, TCSANOW, &raw);
 }
 
 void	handle_signal(int signal)
 {
-	const char	*prompt;
-
-	prompt = "\nmy(s)hell> ";
 	if (signal == SIGINT)
 	{
+        write(STDOUT_FILENO, "\n", 1);
         rl_replace_line("", 0);
 		rl_on_new_line();
-        write(STDOUT_FILENO, "my(s)hell> ", ft_strlen(prompt));
 		rl_redisplay();
     }
 	else if (signal == SIGQUIT)
@@ -66,6 +63,7 @@ int main(int argc, char **argv, char **envp)
         }
         handle_input(input, exec_data);
     }*/
+    exec_data->line = 1;
     while (1)
     {
         if (isatty(fileno(stdin)))
@@ -88,6 +86,7 @@ int main(int argc, char **argv, char **envp)
             break;
         }
         handle_input(input, exec_data);
+        exec_data->line++;
     }
     return 0;
 }
@@ -143,7 +142,6 @@ void	handle_input(char *input, t_free_data *exec_data)
         handle_preprocess_input(input, exec_data);
         if (!exec_data->token_list)
             return ;
-
 		exec_data->token_list_start = exec_data->token_list;
         handle_parse_tree(exec_data);
 		//check_for_memory_leaks();

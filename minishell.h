@@ -74,12 +74,13 @@ typedef struct s_exec_vars
 
 // Building struct to free when exiting
 typedef struct s_free_data {
-    t_parse_tree *tree;
-    t_parse_tree *tree_start;
-    t_env *env;
-    t_token_list *token_list;
-    t_token_list *token_list_start;
-    char **environment;
+    t_parse_tree    *tree;
+    t_parse_tree    *tree_start;
+    t_env           *env;
+    t_token_list    *token_list;
+    t_token_list    *token_list_start;
+    char            **environment;
+    int             line;
 } t_free_data;
 
 // Return values
@@ -156,10 +157,10 @@ int             handle_sibling_process(int *pipefd, t_free_data *exec_data);
 int             handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data);
 int             execute_pipeline(t_free_data *exec_data);
 
-void            handle_redirection(t_parse_tree **node, t_exec_vars *vars);
+void            handle_redirection(t_parse_tree **node, t_exec_vars *vars, t_env **env);
 void            handle_redirection_from(t_parse_tree **node, t_exec_vars *vars);
 void            handle_redirection_to(t_parse_tree **node, t_exec_vars *vars);
-void            handle_redirection_append(t_parse_tree **node, t_exec_vars *vars);
+void            handle_redirection_append(t_parse_tree **node, t_exec_vars *vars, t_env **env);
 void            handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *vars);
 char            *handle_here_doc(t_parse_tree **node, t_exec_vars *vars);
 
@@ -174,7 +175,7 @@ int             execute_node(t_free_data *exec_data);
 void            handle_global_env(t_parse_tree **node, char **args, int i, t_env **env);
 //void handle_quotes_global(t_parse_tree *node, char **args, int i, t_env **env);
 void            handle_quotes_global(t_parse_tree **node, char **args, int i, t_env **env);
-void	handle_quotes_glob(char **arg, t_env **env, int *error);
+void	        handle_quotes_glob(char **arg, t_env **env, int *error);
 void            handle_dollar_sign(char **start, char *buffer, t_env **env);//, int *k);
 
 // To delete later when working
@@ -182,9 +183,8 @@ void            execve_error(char **s_cmd);
 void            free_array(char **array);
 int             error_message(char *str);
 
-// Libft
-/*
-static void     ft_free(char **array, int j);
+/*Libft*/
+/*static void     ft_free(char **array, int j);
 static size_t   n_words(const char *str, char c);
 static size_t   size_word(const char *s, char c, int i);
 char            **ft_split(char const *s, char c);
@@ -197,8 +197,6 @@ static size_t   ft_special_cases(char const *s, unsigned int start, size_t len);
 char            *ft_substr(char const *s, unsigned int start, size_t len);
 */
 
-
-
 t_env           *create_env_var(const char *name, const char *value);
 t_env           *init_environment(char **envp);
 t_env           *find_env_var(t_env *head, const char *name);
@@ -210,9 +208,9 @@ char            *create_env_str(t_env *current);
 void            free_env_array(char **env_array);
 char            *get_env_var(t_env *head, const char *name);
 char            **env_list_to_array(t_env *head);
-int             exec_cd(char **args, t_env **env);
+int             exec_cd(char **args, t_env **env, int line);
 int             update_pwd(t_env **env, char *cwd);
-int             change_directory_and_update(char *path, t_env **env, char *cwd);
+int             change_directory_and_update(char *path, t_env **env, char *cwd, int line);
 int             exec_echo(t_exec_vars *vars);
 char            *handle_quotes_echo(const char *input, int *error);
 void            process_args(char **args, int *error);
@@ -228,6 +226,7 @@ int             export_quotes(char *input, char **output);
 int             exec_global_env(t_exec_vars *vars, t_env **env);
 
 t_free_data     *init_command_data(char **envp);
+int             is_directory(const char *path);
 
 /*
 void check_for_memory_leaks();

@@ -34,20 +34,43 @@ void	handle_redirection_to(t_parse_tree **node, t_exec_vars *vars)
 	vars->i++;
 }
 
-void	handle_redirection_append(t_parse_tree **node, t_exec_vars *vars)
+void	handle_redirection_append(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
-	(*node)->child->data->lexeme = handle_quotes_echo((*node)->child->data->lexeme, &vars->error);
+	int is_dir;
+	char *start;
+	char *expanded_lexeme;
+
+	//(*node)->child->data->lexeme = handle_quotes_echo((*node)->child->data->lexeme, &vars->error);
+	handle_quotes_glob(&(*node)->child->data->lexeme, env, &vars->error);
 	if (g_last_exit_status)
 		return ;
-	vars->fd_out = open((*node)->child->data->lexeme,
-			O_WRONLY | O_CREAT | O_APPEND, 0644);
+	expanded_lexeme = malloc(4096); 
+    if (!expanded_lexeme)
+	{
+        perror("malloc");
+        vars->error = 1;
+        return;
+    }
+    expanded_lexeme[0] = '\0';
+    start = (*node)->child->data->lexeme;
+    handle_dollar_sign(&start, expanded_lexeme, env);
+	is_dir = is_directory(expanded_lexeme);
+	if (is_dir == 1)
+	{
+        vars->error = 1;
+        printf_global_error(1, 2, "my(s)hell: %s: Is a directory\n", expanded_lexeme);
+        free(expanded_lexeme);
+        return;
+	}
+	free(expanded_lexeme);
+	vars->fd_out = open((*node)->child->data->lexeme, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (vars->fd_out == -1)
 	{
 		vars->error = 1;
 		if (errno == EACCES)
         	printf_global_error(1, 2, "my(s)hell: %s: Permission denied\n", (*node)->child->data->lexeme);
-    	else
-        printf_global_error(1, 2, "my(s)hell: %s: No such file or directory\n", (*node)->child->data->lexeme);
+		else
+        	printf_global_error(1, 2, "my(s)hell: %s: No such file or directory\n", (*node)->child->data->lexeme);
 	}
 	*node = (*node)->child;
 	vars->i++;
@@ -75,9 +98,10 @@ char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars)
 	char	*buffer;
 	char	*filename;
 	int		file;
+	char	*line;
 
 	filename = "/tmp/heredoc.txt";
-	file = open(filename, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR); //CHECK HOW TO REPLACE FOPEN	WITH OPEN PROPERLY
+	file = open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	if (file == -1)
 	{
 		vars->error = 1;
@@ -85,11 +109,19 @@ char	*handle_here_doc(t_parse_tree **node, t_exec_vars *vars)
 	}
 	while (1)
 	{
-		buffer = readline("heredoc> ");
-		if (buffer == NULL)// DON'T KNOW WHETHER REPLACES CORRECTLY PREVIOUS STATEMENT while (buffer = readline("heredoc> ") != NULL)
-			break ;
+		/*buffer = readline("heredoc> ");
+		if (buffer == NULL)
+			break ;*/
+		line = get_next_line(fileno(stdin)); // for tester from this line
+		if (line == NULL)
+            break;
+        buffer = ft_strtrim(line, "\n");
+		free(line); // to this line
 		if (ft_strcmp(buffer, (*node)->child->data->lexeme) == 0)
+		{
+			free(buffer);
 			break ;
+		}
 		write(file, buffer, ft_strlen(buffer));
 		write(file, "\n", 1);
 		free(buffer);

@@ -5,7 +5,7 @@ int	exec_builtins(t_exec_vars *vars, t_free_data *exec_data)
 	if (ft_strcmp(vars->args[0], "exit") == 0)
 		return (exec_exit(vars, exec_data));
 	else if (ft_strcmp(vars->args[0], "cd") == 0)
-		return (exec_cd(vars->args, &exec_data->env));
+		return (exec_cd(vars->args, &exec_data->env, exec_data->line));
 	else if (ft_strcmp(vars->args[0], "pwd") == 0)
 		return (exec_pwd());
 	else if (ft_strcmp(vars->args[0], "echo") == 0)
@@ -76,44 +76,39 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 			return(g_last_exit_status);
 		}
 		result = vars->args[1];
-			if (result[i] == '+' || result[i] == '-')
-				i++;
-			while (result[i] == '0')
-				i++;
-			if (result[i] == '\0')
-			{
-				g_last_exit_status = 0;
-				free_exit_data(exec_data);
-				free_env_array(vars->args);
-				free(vars);
-				exit (g_last_exit_status);
-			}
-			i = 0;
-			if (overflow_check(result))
-			{
-				printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
-				return(g_last_exit_status);
-			}
+		if (result[i] == '+' || result[i] == '-')
+			i++;
+		while (result[i] == '0')
+			i++;
+		if (result[i] == '\0')
+		{
+			g_last_exit_status = 0;
+			free_exit_data(exec_data);
+			free_env_array(vars->args);
+			free(vars);
+			exit (g_last_exit_status);
+		}
+		i = 0;
+		if (overflow_check(result))
+		{
+			printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
+			return(g_last_exit_status);
+		}
 		g_last_exit_status = ft_atoi(result);
 	}
 	if (vars->args[1] != NULL && !g_last_exit_status)
-			{
-				//free(result);
-				printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
-				return(g_last_exit_status);
-			}
+	{
+		//free(result);
+		printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
+		return(g_last_exit_status);
+	}
 
 	//if (result)
 		//free(result);
 	//printf("result: %s\n", result);
 	//printf("result: %s\n", vars->args[1]);
-	{
-		free(result);
-		printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
-		return(g_last_exit_status);
-	}
-	if (result)
-		free(result);
+	//if (result)
+	//	free(result);
 	free_exit_data(exec_data);
 	free_env_array(vars->args);
 	free(vars);
@@ -125,13 +120,12 @@ int	exec_echo(t_exec_vars *vars)
 	int	i;
 
 	i = 1;
-	//if (vars->args[i] == NULL || vars->args[i][0] == '\0')
-		//return (printf_global_error(0, 1, "\n"), 0);
+	if (vars->args[1] == NULL)
+		return (printf("\n"), 1);
+	if (vars->args[1][0] == '-' && vars->args[1][1] == 'n' && vars->args[1][2] == 'n' && vars->args[2] == NULL)
+		return (g_last_exit_status);
 	if (ft_strcmp(vars->args[1], "-n") == 0)
 		i++;
-	//process_args(vars->args, &(vars->error));
-	//if (vars->error)
-		//return (free_env_array(vars->args), g_last_exit_status);
 	while (vars->args[i])
 	{
 	        printf("%s", vars->args[i]);
@@ -193,6 +187,7 @@ char *handle_quotes_echo(const char *input, int *error)
                 *error = 1;
 				//return (printf_global_error(1, 2, "echo: no closing quote\n"), free(result), NULL);
 				g_last_exit_status = 1;
+				free(result); //necessary?
 				return (NULL);
 			}
 			i++;
@@ -211,7 +206,7 @@ char *handle_quotes_echo(const char *input, int *error)
     return result;
 }
 
-int	exec_cd(char **args, t_env **env)
+int	exec_cd(char **args, t_env **env, int line)
 {
 	char	*cwd;
 
@@ -222,11 +217,11 @@ int	exec_cd(char **args, t_env **env)
 		return (printf_global_error(1, 2, "cd: too many arguments\n"), free(cwd), g_last_exit_status);
 	else if (args[1] == NULL || ft_strcmp(args[1], "~") == 0)
 		return (change_directory_and_update(get_env_var(*env, "HOME"),
-				env, cwd));
+				env, cwd, line));
 	else if (ft_strcmp(args[1], "..") == 0)
-		return (change_directory_and_update("..", env, cwd));
+		return (change_directory_and_update("..", env, cwd, line));
 	else
-		return (change_directory_and_update(args[1], env, cwd));
+		return (change_directory_and_update(args[1], env, cwd, line));
 }
 
 int	exec_dollar_pwd(void)
@@ -267,6 +262,47 @@ int	exec_export(char **args, t_env **env)
 	char	*name;
 	char	*value;
 	int		control;
+	int		i;
+
+	i = 1;
+	name = NULL;
+	value = NULL;
+	if (args[1] == NULL)
+		return (exec_export_no_args(*env), 0);
+	while (args[i] != NULL)
+	{
+		control = var_control(args[1]);
+		if (control == 1)
+			return (g_last_exit_status);
+		else
+		{
+			if (split_var(args[i], &name, &value))
+			{
+				g_last_exit_status = 1;
+				i++;
+				continue;
+			}
+			if (update_add_env_var(env, name, value))
+			{
+				free(name);
+				free(value);
+				g_last_exit_status = 1;
+				continue;
+			}
+			free(name);
+			free(value);
+			i++;
+		}
+	}
+	g_last_exit_status = 0;
+	return (g_last_exit_status);
+}
+
+/*int	exec_export(char **args, t_env **env)
+{while (args[i] != NULL)
+	char	*name;
+	char	*value;
+	int		control;
 
 	name = NULL;
 	value = NULL;
@@ -284,4 +320,4 @@ int	exec_export(char **args, t_env **env)
 	}
 	g_last_exit_status = 0;
 	return (g_last_exit_status);
-}
+}*/

@@ -59,8 +59,6 @@ void	free_parse_tree(t_parse_tree *tree)
         free_parse_tree(child);
     free(tree);
     tree = NULL;
-
-
 }
 
 void	free_token_list(t_token_list *list)
