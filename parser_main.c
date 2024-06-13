@@ -46,7 +46,7 @@ int	is_pipe_sequence(t_free_data *exec_data)
 	current_command = NULL;
 	if (is_simple_command(&exec_data->token_list, &current_command) != 0
 		|| !current_command->child)
-		return (free_parse_tree(exec_data->tree), g_last_exit_status);
+		return (free_command_data(exec_data), g_last_exit_status);
 	exec_data->tree->child = current_command;
 	while (exec_data->token_list != NULL && exec_data->token_list->token->type == PIPE)
 	{
