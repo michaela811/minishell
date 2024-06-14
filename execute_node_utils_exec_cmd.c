@@ -62,9 +62,15 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	{
 	    int dir_check = is_directory(vars->args[0]);
 	    if (dir_check == -1)
+		{
+			fprintf(stderr, "Exiting with status 127 due to no such file or directory\n");
 			return (printf_global_error(127, 2, "my(s)hell: %s: No such file or directory\n", vars->args[0]), 127);
-	    else if (dir_check)
+		}
+		else if (dir_check)
+		{
+			fprintf(stderr, "Exiting with status 126 due to is a directory\n");
 			return (printf_global_error(126, 2, "my(s)hell: %s: Is a directory\n", vars->args[0]), 126);
+		}
 	}
 	if (access(vars->args[0], F_OK | X_OK) == 0 && vars->args[0][0] == '/')
 	{
@@ -74,16 +80,27 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	else
 		path_status = get_path(vars->args[0], *env, &path);
 	if (path_status == 1)
+	{
+		fprintf(stderr, "Exiting with g_last_exit_status %d\n", g_last_exit_status);
 		exit (g_last_exit_status);
+	}
 	if (path_status == -1)
 	{
 		if (access(vars->args[0], X_OK) == -1 && vars->args[0][0] == '.' && vars->args[0][1] == '/')
+		{
+			fprintf(stderr, "Exiting with status 126 due to permission denied\n");
 			(printf_global_error(126, 2, "my(s)hell: %s: Permission denied\n", vars->args[0]), exit(126));
+		}
+		fprintf(stderr, "Exiting with status 127 due to command not found\n");
 		(printf_global_error(127, 2, "my(s)hell: %s: command not found\n", vars->args[0]), exit(127));
 	}
 	if (execve(path, vars->args, environment) < 0)
+	{
+		fprintf(stderr, "Exiting with status 127 due to execve failure\n");
 		(printf_global_error(127, 2, "my(s)hell: execve\n", vars->args[0]), exit(127));
+	}
 	g_last_exit_status = 0;
+	fprintf(stderr, "Exiting with status EXIT_SUCCESS\n");
 	exit(EXIT_SUCCESS);
 }
 
