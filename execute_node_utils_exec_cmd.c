@@ -74,25 +74,28 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	else
 		path_status = get_path(vars->args[0], *env, &path);
 	if (path_status == 1)
-		exit (g_last_exit_status);
+		return (g_last_exit_status);
 	if (path_status == -1)
 	{
 		if (access(vars->args[0], X_OK) == -1 && vars->args[0][0] == '.' && vars->args[0][1] == '/')
 		{
 			printf_global_error(126, 2, "my(s)hell: %s: Permission denied\n", vars->args[0]);
-			if (vars->fd_in != 0) close(vars->fd_in);
-            if (vars->fd_out != 1) close(vars->fd_out);
-			exit(126);
+			//if (vars->fd_in != 0) close(vars->fd_in);
+            //if (vars->fd_out != 1) close(vars->fd_out);
+			return (126);
 		}
 		printf_global_error(127, 2, "my(s)hell: %s: command not found\n", vars->args[0]);
-		if (vars->fd_in != 0) close(vars->fd_in);
-    	if (vars->fd_out != 1) close(vars->fd_out);
-		exit(127);
+		//if (vars->fd_in != 0) close(vars->fd_in);
+    	//if (vars->fd_out != 1) close(vars->fd_out);
+		return (127);
 	}
 	if (execve(path, vars->args, environment) < 0)
-		(printf_global_error(127, 2, "my(s)hell: execve\n", vars->args[0]), exit(127));
+	{
+		(printf_global_error(127, 2, "my(s)hell: execve\n", vars->args[0]));
+		return (127);
+	}
 	g_last_exit_status = 0;
-	exit(EXIT_SUCCESS);
+	return (EXIT_SUCCESS);
 }
 
 int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
@@ -108,8 +111,10 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	}
 	else if (pid == 0)
 	{
-		if (handle_child_cmd(vars, env, environment))
-			return (g_last_exit_status);
+		int child_status = handle_child_cmd(vars, env, environment);
+		_exit(child_status);
+		//if (handle_child_cmd(vars, env, environment))
+		//	return (g_last_exit_status);
 	}
 	/*else
 	{
