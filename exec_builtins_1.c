@@ -235,7 +235,7 @@ int	exec_dollar_pwd(void)
 	{
 		ft_putstr_fd(cwd, 1);
 		ft_putstr_fd(": Is a directory\n", 1);
-		g_last_exit_status = 126;
+		g_last_exit_status = 1;
 		free(cwd);
 		return (g_last_exit_status);
 	}

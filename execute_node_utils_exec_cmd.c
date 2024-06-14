@@ -64,7 +64,7 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	    if (dir_check == -1)
 			return (printf_global_error(127, 2, "my(s)hell: %s: No such file or directory\n", vars->args[0]), 127);
 	    else if (dir_check)
-			return (printf_global_error(126, 2, "my(s)hell: %s: Is a directory\n", vars->args[0]), 126);
+			return (printf_global_error(1, 2, "my(s)hell: %s: Is a directory\n", vars->args[0]), 126);
 	}
 	if (access(vars->args[0], F_OK | X_OK) == 0 && vars->args[0][0] == '/')
 	{
