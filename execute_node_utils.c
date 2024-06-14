@@ -337,8 +337,8 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
             handle_quotes_glob(&vars->args[vars->i], env, &vars->error, &vars->exit_code);
         vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
     }*/
-    //if ((*node)->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' ') && !ft_strchr(vars->args[vars->i], '\''))
-        //vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
+    if ((*node)->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' ') && !ft_strchr(vars->args[vars->i], '\''))
+        vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
     while (index <= vars->i)
     {
         handle_quotes_glob(&vars->args[index], env, &vars->error);
