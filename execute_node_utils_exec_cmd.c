@@ -109,7 +109,7 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 		g_last_exit_status = WEXITSTATUS(status);
 	}*/
 	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		g_last_exit_status = WEXITSTATUS(status);
+	//if (WIFEXITED(status))
+	g_last_exit_status = WEXITSTATUS(status);
 	return (0);
 }

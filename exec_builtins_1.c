@@ -216,11 +216,11 @@ int	exec_cd(char **args, t_env **env)
 		return (printf_global_error(1, 2, "cd: too many arguments\n"), free(cwd), g_last_exit_status);
 	else if (args[1] == NULL || ft_strcmp(args[1], "~") == 0)
 		return (change_directory_and_update(get_env_var(*env, "HOME"),
-				env, cwd));
+				env, cwd, args));
 	else if (ft_strcmp(args[1], "..") == 0)
-		return (change_directory_and_update("..", env, cwd));
+		return (change_directory_and_update("..", env, cwd, args));
 	else
-		return (change_directory_and_update(args[1], env, cwd));
+		return (change_directory_and_update(args[1], env, cwd, args));
 }
 
 int	exec_dollar_pwd(void)
