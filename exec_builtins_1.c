@@ -138,7 +138,7 @@ int	exec_echo(t_exec_vars *vars)
 	i = 1;
 	if (vars->args[1] == NULL)
 		return (printf("\n"), 1);
-	while (echo_n_control(vars->args[i]))
+	while (vars->args[i] && echo_n_control(vars->args[i]))
 		i++;
 	while (vars->args[i])
 	{
