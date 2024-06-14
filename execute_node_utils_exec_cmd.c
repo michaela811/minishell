@@ -124,5 +124,5 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 		else
 			g_last_exit_status = 128;
 	}
-	return (0);
+	return (g_last_exit_status);
 }
