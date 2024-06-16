@@ -124,8 +124,8 @@ void handle_quotes_glob_1(t_parse_tree **node, t_exec_vars *vars, t_env **env)
                 handle_dollar_sign(&token, buffer, env);
                 result = ft_strjoin(result, buffer);
                 if (strchr((*node)->data->lexeme, '$') != NULL && ft_strchr(buffer, ' ')) //&& !ft_strchr(vars->args[vars->i], '\'')) FIRST CHECK IS NOT NEEDED
-                vars->i = split_variable(result, vars->i, vars);
-                result = vars->args[vars->i];//or might be NULL?
+                {vars->i = split_variable(result, vars->i, vars);
+                result = vars->args[vars->i];}//or might be NULL?
                 //*current = delimiter;
                 //continue;
             }
