@@ -48,6 +48,108 @@ void	init_exec_vars(t_exec_vars *vars)
     return result;
 } */
 
+void handle_quotes_glob_1(t_parse_tree **node, t_exec_vars *vars, t_env **env)
+{
+    char    *result = NULL;
+    char    *current = vars->args[vars->i];
+    char    *token;
+    char    *delimiters = "'\"";
+    int     inside_single_quotes = 0;
+    int     inside_double_quotes = 0;
+    char    buffer[1024] = "";
+    char    delimiter;
+
+    vars->error = 0;
+
+    while (*current != '\0')
+    {
+        //memset(buffer, 0, sizeof(buffer)); //this function is not allowed
+        buffer[0] = '\0';
+        if (inside_single_quotes)
+        {
+            token = current;
+            current = ft_strchr(current, '\'');
+            if (current == NULL)
+            {
+                vars->error = 1; // Error: unmatched single quote
+                break;
+            }
+            *current = '\0';
+            result = ft_strjoin(result, token);
+            inside_single_quotes = 0;
+            current++;
+        }
+        else if (inside_double_quotes)
+        {
+            token = current;
+            current = ft_strchr(current, '\"');
+            if (current == NULL)
+            {
+                vars->error = 1; // Error: unmatched double quote
+                break;
+            }
+            *current = '\0';
+            if (ft_strchr(token, '$') != NULL)
+            {
+                handle_dollar_sign(&token, buffer, env);
+                result = ft_strjoin(result, buffer);
+            }
+            else
+                result = ft_strjoin(result, token);
+            inside_double_quotes = 0;
+            current++;
+        }
+        else
+        {
+            token = current;
+            current = strpbrk(current, delimiters);
+            if (current == NULL)
+            {
+                if (strchr(token, '$') != NULL)
+                {
+                    handle_dollar_sign(&token, buffer, env);
+                    result = ft_strjoin(result, buffer);
+                    if (strchr((*node)->data->lexeme, '$') != NULL && ft_strchr(buffer, ' ')) //&& !ft_strchr(vars->args[vars->i], '\'')) FIRST CHECK IS NOT NEEDED
+                vars->i = split_variable(result, vars->i, vars);
+                current = vars->args[vars->i];
+                }
+                else
+                    result = ft_strjoin(result, token);
+                break;
+            }
+            delimiter = *current;
+            *current = '\0';
+            if (strchr(token, '$') != NULL)
+            {
+                handle_dollar_sign(&token, buffer, env);
+                result = ft_strjoin(result, buffer);
+                if (strchr((*node)->data->lexeme, '$') != NULL && ft_strchr(buffer, ' ')) //&& !ft_strchr(vars->args[vars->i], '\'')) FIRST CHECK IS NOT NEEDED
+                vars->i = split_variable(result, vars->i, vars);
+                result = vars->args[vars->i];//or might be NULL?
+                //*current = delimiter;
+                //continue;
+            }
+            else
+                result = ft_strjoin(result, token);
+            *current = delimiter; // Restore the delimiter
+            if (*current == '\'')
+                inside_single_quotes = 1;
+            else if (*current == '\"')
+            {
+                inside_double_quotes = 1;
+            }
+            current++;
+        }
+    }
+    if (!vars->error)
+    {
+        free(vars->args[vars->i]);
+        vars->args[vars->i] = result;
+    }
+    else
+        free(result); // Free the partially constructed result in case of error
+}
+
 void handle_quotes_glob(char **arg, t_env **env, int *error)
 {
     char    *result = NULL;
@@ -318,7 +420,7 @@ void handle_quotes_glob(char **arg, t_env **env, int *error)
 
 void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
-    int index;
+    //int index;
 	if ((*node)->data->type == RED_FROM || (*node)->data->type == RED_TO
 		|| (*node)->data->type == APPEND || (*node)->data->type == HERE_DOC)
 	    return (handle_redirection(node, vars, env));
@@ -328,19 +430,22 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 		vars->error = 1;
 		return(printf_global_error(1, 2, "my(s)hell: ft_strdup error\n"));
 	}
-    index = vars->i;
-    //if ((*node)->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' ') && !ft_strchr(vars->args[vars->i], '\''))
+    //index = vars->i;
+    //if ((*node)->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' ')) //&& !ft_strchr(vars->args[vars->i], '\''))
         //vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
-    while (index <= vars->i)
-    {
-        handle_quotes_glob(&vars->args[index], env, &vars->error);
+    //while (index <= vars->i)
+    //{
+        //handle_quotes_glob(&vars->args[index], env, &vars->error);
+        handle_quotes_glob_1(node, vars, env);
         if (vars->error)
         {
             g_last_exit_status = 1;
             return ;
         }
-        index++; //needed? Im not sure
-    }
+        //if ((*node)->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' ')) //&& !ft_strchr(vars->args[vars->i], '\''))
+        //vars->i = split_variable(vars->args[vars->i], vars->i, vars);
+        //index++; //needed? Im not sure
+    //}
     vars->i++;
 }
 
