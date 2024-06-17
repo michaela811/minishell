@@ -243,7 +243,13 @@ int	exec_cd(char **args, t_env **env)
 	else if (ft_strcmp(args[1], "..") == 0)
 		return (change_directory_and_update("..", env, cwd, args));
 	else if (ft_strcmp(args[1], "-") == 0)
-		return (change_directory_and_update(get_env_var(*env, "OLDPWD"), env, cwd, args));
+	{
+		if (get_env_var(*env, "OLDPWD") == NULL)
+			return (printf_global_error(1, 2, "my(s)hell: %s: OLDPWD not set\n", args[0]), g_last_exit_status);
+		change_directory_and_update(get_env_var(*env, "OLDPWD"), env, cwd, args);
+		printf("%s\n", get_env_var(*env, "PWD"));
+		return (g_last_exit_status);
+	}
 	else
 		return (change_directory_and_update(args[1], env, cwd, args));
 }
