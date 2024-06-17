@@ -102,7 +102,6 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 		printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
 		return(g_last_exit_status);
 	}
-
 	//if (result)
 		//free(result);
 	//printf("result: %s\n", result);
@@ -142,10 +141,10 @@ int	exec_echo(t_exec_vars *vars)
 		i++;
 	while (vars->args[i])
 	{
-	        printf("%s", vars->args[i]);
-	        if (vars->args[i + 1])
-	            printf(" ");
-	        i++;
+	   	printf("%s", vars->args[i]);
+	    if (vars->args[i + 1])
+	        printf(" ");
+	    i++;
 	}
 	if (echo_n_control(vars->args[1]) == 0)
 		printf("\n");
@@ -220,7 +219,7 @@ char *handle_quotes_echo(const char *input, int *error)
     return result;
 }
 
-int	exec_cd(char **args, t_env **env)//, int line)
+int	exec_cd(char **args, t_env **env)
 {
 	char	*cwd;
 
@@ -231,11 +230,11 @@ int	exec_cd(char **args, t_env **env)//, int line)
 		return (printf_global_error(1, 2, "cd: too many arguments\n"), free(cwd), g_last_exit_status);
 	else if (args[1] == NULL || ft_strcmp(args[1], "~") == 0)
 		return (change_directory_and_update(get_env_var(*env, "HOME"),
-				env, cwd));//, line));
+				env, cwd, args));
 	else if (ft_strcmp(args[1], "..") == 0)
-		return (change_directory_and_update("..", env, cwd));// line));
+		return (change_directory_and_update("..", env, cwd, args));
 	else
-		return (change_directory_and_update(args[1], env, cwd));//, line));
+		return (change_directory_and_update(args[1], env, cwd, args));
 }
 
 int	exec_dollar_pwd(void)

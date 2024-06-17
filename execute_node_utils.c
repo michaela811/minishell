@@ -9,7 +9,7 @@ void	init_exec_vars(t_exec_vars *vars)
 	vars->args = malloc(10 * sizeof(char *));  // Allocate memory for args
     if (!vars->args)
     {
-        // Handle memory allocation error
+        vars->error = 1;
         return;
     }
 	i = 0;
@@ -423,7 +423,6 @@ void handle_quotes_glob(char **arg, t_env **env, int *error)
 
 void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
-    //int index;
 	if ((*node)->data->type == RED_FROM || (*node)->data->type == RED_TO
 		|| (*node)->data->type == APPEND || (*node)->data->type == HERE_DOC)
 	    return (handle_redirection(node, vars, env));
@@ -433,23 +432,13 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 		vars->error = 1;
 		return(printf_global_error(1, 2, "my(s)hell: ft_strdup error\n"));
 	}
-    //index = vars->i;
-    //if ((*node)->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' ')) //&& !ft_strchr(vars->args[vars->i], '\''))
-        //vars->i = split_variable(vars->args[vars->i], vars->i, vars);//ADD ERROR HANDLING
-    //while (index <= vars->i)
-    //{
-        //handle_quotes_glob(&vars->args[index], env, &vars->error);
-        handle_quotes_glob_1(node, vars, env);
-        if (vars->error)
-        {
-            g_last_exit_status = 1;
-            return ;
-        }
-        //if ((*node)->data->lexeme[0] == '$' && ft_strchr(vars->args[vars->i], ' ')) //&& !ft_strchr(vars->args[vars->i], '\''))
-        //vars->i = split_variable(vars->args[vars->i], vars->i, vars);
-        //index++; //needed? Im not sure
-    //}
-    vars->i++;
+  handle_quotes_glob_1(node, vars, env);
+  if (vars->error)
+  {
+      g_last_exit_status = 1;
+      return ;
+  }
+  vars->i++;
 }
 
 /* void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)

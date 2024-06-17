@@ -1,7 +1,7 @@
 #include "minishell.h"
 
-int			g_last_exit_status = 0;
-struct		termios orig_termios;
+int   g_last_exit_status = 0;
+struct          termios orig_termios;
 
 void reset_terminal_mode()
 {

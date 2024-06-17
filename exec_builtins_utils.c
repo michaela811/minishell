@@ -1,10 +1,10 @@
 #include "minishell.h"
 
-int	change_directory_and_update(char *path, t_env **env, char *cwd)//, int line)
+int	change_directory_and_update(char *path, t_env **env, char *cwd, char **args)//, int line)
 {
 	if (chdir(path) != 0)
 	{
-		printf_global_error(1, 2, "my(s)hell: line 2: cd: %s: No such file or directory\n", path);
+		printf_global_error(1, 2, "my(s)hell: %s: %s: No such file or directory\n", args[0], path);
 		/*g_last_exit_status = 1;
 		perror("chdir");*/
 		free(cwd);
