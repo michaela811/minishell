@@ -126,7 +126,7 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env)//, int *k)
 		else
 		{
 			var_start = dollar + 1;
-			var_end = ft_strpbrk(var_start, " \t\n\"'$/");
+			var_end = ft_strpbrk(var_start, " \t\n\"'$/.:");
 			if (var_end == NULL)
 				var_end = var_start + ft_strlen(var_start);
 			ft_strncpy(var_name, var_start, var_end - var_start);
