@@ -179,32 +179,32 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	int		status;
 
 	if (error_handeling_before_fork(vars, env))
-		return (g_last_exit_status);
-	pid = fork();
-	if (pid == -1)
+		status =g_last_exit_status;
+	else
 	{
-		printf_global_error(128, 2, "fork\n");
-		exit(EXIT_FAILURE);
-	}
-	else if (pid == 0)
-	{
-		handle_child_cmd(vars, env, environment);
-		return (g_last_exit_status);
-		//if (handle_child_cmd(vars, env, environment))
+		pid = fork();
+		if (pid == -1)
+		{
+			printf_global_error(128, 2, "fork\n");
+			exit(g_last_exit_status);
+		}
+		else if (pid == 0)
+		{
+			handle_child_cmd(vars, env, environment);
+			return (g_last_exit_status);
+	//if (handle_child_cmd(vars, env, environment))
 		//	return (g_last_exit_status);
+		}
 	}
 	/*else
 	{
 		waitpid(pid, &status, 0);
 		g_last_exit_status = WEXITSTATUS(status);
 	}*/
-	else
-	{
-		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			g_last_exit_status = WEXITSTATUS(status);
-		else
-			g_last_exit_status = 128;
-	}
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		g_last_exit_status = WEXITSTATUS(status);
+		//else
+			//g_last_exit_status = 128;
 	return (0);
 }
