@@ -1,11 +1,12 @@
 #include "minishell.h"
 
-int	change_directory_and_update(char *path, t_env **env, char *cwd)
+int	change_directory_and_update(char *path, t_env **env, char *cwd, char **args)//, int line)
 {
 	if (chdir(path) != 0)
 	{
-		g_last_exit_status = 1;
-		perror("chdir");
+		printf_global_error(1, 2, "my(s)hell: %s: %s: No such file or directory\n", args[0], path);
+		/*g_last_exit_status = 1;
+		perror("chdir");*/
 		free(cwd);
 		return (1);
 	}
@@ -27,7 +28,8 @@ void	exec_export_no_args(t_env *env)
 	current = env;
 	while (current != NULL)
 	{
-		printf("declare -x %s=\"%s\"\n", current->name, current->value);
+		//printf("declare -x %s=\"%s\"\n", current->name, current->value);
+		printf("export %s=\"%s\"\n", current->name, current->value);
 		current = current->next;
 	}
 }
@@ -37,15 +39,20 @@ int	var_control(char *args)
 	int	i;
 
 	i = 0;
-	if (args[i++] == '=')
-		return (printf_global_error(1, 2, "export: not a valid identifier\n"), g_last_exit_status);
-	return (0);
-	/*while (args[i])
+	if (args[i] == '=' || args[i] == 0 || (!ft_isalpha(args[i]) && args[i] != '_'))
 	{
-		if (args[i++] == '=')//Seems like in bash it is not a problem not to have =
-			return (0);
+		return (printf_global_error(1, 2, "minishell: export: '%s': not a valid identifier\n", args), g_last_exit_status);
 	}
-	return (perror("export: not a valid identifier\n"), 1);*/
+	i++;
+	while (args[i] && args[i] != '=')
+    {
+        if (!ft_isalnum(args[i]) || args[i] != '_')
+        {
+            return (printf_global_error(1, 2, "minishell: export: '%s': not a valid identifier\n", args), g_last_exit_status);
+        }
+        i++;
+    }
+	return (0);
 }
 
 int	split_var(char *var, char **name, char **value)
