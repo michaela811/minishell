@@ -178,6 +178,7 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	pid_t	pid;
 	int		status;
 
+	pid = 0;
 	if (error_handeling_before_fork(vars, env))
 		status =g_last_exit_status;
 	else
