@@ -25,6 +25,8 @@ int	ft_atoi(const char *nptr)
 		minus++;
 	if (*nptr == '-' || *nptr == '+')
 		nptr++;
+	while (*nptr == '0')
+		nptr++;
 	if (ft_strcmp(nptr, "9223372036854775808") == 0 && minus == 1)
 		return (INT_MIN);
 	if ((*nptr <= 47) || (*nptr >= 58 && *nptr < 127))
