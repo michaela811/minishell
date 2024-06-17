@@ -60,7 +60,7 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env)//, int *k)
 			*start = dollar + 2;
 			//*k += 2;//ft_lennbr(g_last_exit_status);
 		}
-		else if (*(dollar + 1) == '\0' || *(dollar + 1) == '$' || *(dollar + 1) == ' ' || *(dollar + 1) == '"')
+		else if (*(dollar + 1) == '\0' || *(dollar + 1) == '$' || *(dollar + 1) == ' ' || *(dollar + 1) == '"' || *(dollar + 1) == '/')
 		{
 			ft_strcat(buffer, "$");
 			*start = dollar + 1;
