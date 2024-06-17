@@ -189,7 +189,7 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	else if (pid == 0)
 	{
 		handle_child_cmd(vars, env, environment);
-		exit(status);
+		return (g_last_exit_status);
 		//if (handle_child_cmd(vars, env, environment))
 		//	return (g_last_exit_status);
 	}
