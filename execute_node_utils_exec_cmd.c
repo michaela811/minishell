@@ -180,7 +180,7 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 
 	pid = 0;
 	if (error_handeling_before_fork(vars, env))
-		status =g_last_exit_status;
+		return (g_last_exit_status);
 	else
 	{
 		pid = fork();
@@ -207,5 +207,5 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 		g_last_exit_status = WEXITSTATUS(status);
 		//else
 			//g_last_exit_status = 128;
-	return (0);
+	return (g_last_exit_status);
 }
