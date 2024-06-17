@@ -114,6 +114,22 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 	exit(g_last_exit_status);
 }
 
+int echo_n_control (char *arg)
+{
+	int i;
+
+	i = 1;
+	if (arg[0] == '-' && arg[i] == 'n')
+	{
+		i++;
+		while (arg[i] == 'n')
+			i++;
+		if (arg[i] == '\0')
+			return (1);
+	}
+	return (0);
+}
+
 int	exec_echo(t_exec_vars *vars)
 {
 	int	i;
@@ -121,9 +137,7 @@ int	exec_echo(t_exec_vars *vars)
 	i = 1;
 	if (vars->args[1] == NULL)
 		return (printf("\n"), 1);
-	if (vars->args[1][0] == '-' && vars->args[1][1] == 'n' && vars->args[1][2] == 'n' && vars->args[2] == NULL)
-		return (g_last_exit_status);
-	if (ft_strcmp(vars->args[1], "-n") == 0)
+	while (vars->args[i] && echo_n_control(vars->args[i]))
 		i++;
 	while (vars->args[i])
 	{
@@ -132,7 +146,7 @@ int	exec_echo(t_exec_vars *vars)
 	        printf(" ");
 	    i++;
 	}
-	if (ft_strcmp(vars->args[1], "-n") != 0)
+	if (echo_n_control(vars->args[1]) == 0)
 		printf("\n");
 	g_last_exit_status = 0;
 	return (g_last_exit_status);
@@ -234,7 +248,7 @@ int	exec_dollar_pwd(void)
 	{
 		ft_putstr_fd(cwd, 1);
 		ft_putstr_fd(": Is a directory\n", 1);
-		g_last_exit_status = 126;
+		g_last_exit_status = 1;
 		free(cwd);
 		return (g_last_exit_status);
 	}
