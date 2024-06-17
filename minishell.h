@@ -165,7 +165,7 @@ void            handle_redirection_here_doc(t_parse_tree **node, t_exec_vars *va
 char            *handle_here_doc(t_parse_tree **node, t_exec_vars *vars);//, t_env **env);
 
 int             exec_builtins(t_exec_vars *vars, t_free_data *exec_data);
-int             handle_child_cmd(t_exec_vars *vars, char **environment);
+int             handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment);
 int             handle_fork(t_exec_vars *vars, t_env **env, char **environment);
 int             execute_command(t_exec_vars *vars, t_free_data *exec_data);
 void            init_exec_vars(t_exec_vars *vars);
