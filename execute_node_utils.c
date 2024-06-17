@@ -9,7 +9,7 @@ void	init_exec_vars(t_exec_vars *vars)
 	vars->args = malloc(10 * sizeof(char *));  // Allocate memory for args
     if (!vars->args)
     {
-        // Handle memory allocation error
+        vars->error = 1;
         return;
     }
 	i = 0;
@@ -432,13 +432,13 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 		vars->error = 1;
 		return(printf_global_error(1, 2, "my(s)hell: ft_strdup error\n"));
 	}
-    handle_quotes_glob_1(node, vars, env);
-    if (vars->error)
-    {
-        g_last_exit_status = 1;
-        return ;
-    }
-    vars->i++;
+  handle_quotes_glob_1(node, vars, env);
+  if (vars->error)
+  {
+      g_last_exit_status = 1;
+      return ;
+  }
+  vars->i++;
 }
 
 /* void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)

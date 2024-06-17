@@ -90,7 +90,7 @@ typedef struct s_free_data {
 //#define PARSING_ERROR 2
 
 // Global variable for signal handling
-extern int		g_last_exit_status;
+extern int   g_last_exit_status;
 
 //MAIN
 void			handle_signal(int signal);
@@ -211,7 +211,7 @@ char            *get_env_var(t_env *head, const char *name);
 char            **env_list_to_array(t_env *head);
 int             exec_cd(char **args, t_env **env);//, int line);
 int             update_pwd(t_env **env, char *cwd);
-int             change_directory_and_update(char *path, t_env **env, char *cwd);//, int line);
+int             change_directory_and_update(char *path, t_env **env, char *cwd, char **args);//, int line);
 int             exec_echo(t_exec_vars *vars);
 char            *handle_quotes_echo(const char *input, int *error);
 void            process_args(char **args, int *error);
