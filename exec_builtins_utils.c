@@ -46,7 +46,7 @@ int	var_control(char *args)
 	i++;
 	while (args[i] && args[i] != '=')
     {
-        if (!ft_isalnum(args[i]) || args[i] != '_')
+        if (!ft_isalnum(args[i]) && args[i] != '_')
         {
             return (printf_global_error(1, 2, "minishell: export: '%s': not a valid identifier\n", args), g_last_exit_status);
         }
@@ -70,7 +70,7 @@ int	split_var(char *var, char **name, char **value)
 		return (printf_global_error(1, 2, "split_var: strndup error\n"), free(*name), g_last_exit_status);
 	while ((*name)[i] != '\0')
 	{
-		if (ft_isalpha((*name)[i]) == 0)//add underscore and probably numbers
+		if (!ft_isalnum((*name)[i]) && (*name)[i] != '_')
 			return(printf_global_error(1, 2, "export: %s: not a valid identifier\n", *name), free(*name), g_last_exit_status);
 		i++;
 	}
