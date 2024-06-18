@@ -228,6 +228,7 @@ int             exec_global_env(t_exec_vars *vars, t_env **env);
 
 t_free_data     *init_command_data(char **envp);
 int             is_directory(const char *path);
+int             ft_isspace(char c);
 
 /*
 void check_for_memory_leaks();
