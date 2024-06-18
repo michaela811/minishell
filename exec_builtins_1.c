@@ -61,6 +61,21 @@ int	overflow_check(char *result)
 	return (0);
 }
 
+int is_string_numeric(const char *str)
+{
+	if (*str == '+' || *str == '-')
+		str++;
+    if (*str == '\0')
+        return false;
+    while (*str)
+    {
+        if (!ft_isdigit(*str))
+            return (0);
+        str++;
+    }
+    return (1);
+}
+
 int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 {
 	int	i;
@@ -70,44 +85,38 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 	result = NULL;
 	if (vars->args[1] != NULL)
 	{
-		if (vars->args[2] != NULL)
-		{
-			printf_global_error(1, 2, "my(s)hell: too many arguments\n");// Actually in bush +exit should be printed
-			return(g_last_exit_status);
-		}
 		result = vars->args[1];
 		if (result[i] == '+' || result[i] == '-')
 			i++;
 		while (result[i] == '0')
 			i++;
-		if (result[i] == '\0')
+		/*if (result[i] == '\0')
 		{
 			g_last_exit_status = 0;
 			free_exit_data(exec_data);
 			free_env_array(vars->args);
 			free(vars);
 			exit (g_last_exit_status);
-		}
+		}*/
 		i = 0;
-		if (overflow_check(result))
+
+		if (!is_string_numeric(result) || overflow_check(result) || (result[0] == '\0' && result[1] == '\0'))
 		{
 			printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
 			return(g_last_exit_status);
 		}
+		if (vars->args[2] != NULL)
+		{
+			printf_global_error(1, 2, "my(s)hell: %s: too many arguments\n", vars->args[0]);// Actually in bush +exit should be printed
+			return(g_last_exit_status);
+		}
 		g_last_exit_status = ft_atoi(result);
 	}
-	if (vars->args[1] != NULL && !g_last_exit_status)
+	/*if (vars->args[1] != NULL && !g_last_exit_status)
 	{
-		//free(result);
 		printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
 		return(g_last_exit_status);
-	}
-	//if (result)
-		//free(result);
-	//printf("result: %s\n", result);
-	//printf("result: %s\n", vars->args[1]);
-	//if (result)
-	//	free(result);
+	}*/
 	free_exit_data(exec_data);
 	free_env_array(vars->args);
 	free(vars);
@@ -227,12 +236,20 @@ int	exec_cd(char **args, t_env **env)
 	if (cwd == NULL)
 		return (printf_global_error(1, 2, "getcwd\n"), g_last_exit_status);
 	if (args[1] != NULL && args[2])
-		return (printf_global_error(1, 2, "cd: too many arguments\n"), free(cwd), g_last_exit_status);
+		return (printf_global_error(1, 2, "my(s)hell: %s: too many arguments\n", args[0]), free(cwd), g_last_exit_status);
 	else if (args[1] == NULL || ft_strcmp(args[1], "~") == 0)
 		return (change_directory_and_update(get_env_var(*env, "HOME"),
 				env, cwd, args));
 	else if (ft_strcmp(args[1], "..") == 0)
 		return (change_directory_and_update("..", env, cwd, args));
+	else if (ft_strcmp(args[1], "-") == 0)
+	{
+		if (get_env_var(*env, "OLDPWD") == NULL)
+			return (printf_global_error(1, 2, "my(s)hell: %s: OLDPWD not set\n", args[0]), g_last_exit_status);
+		change_directory_and_update(get_env_var(*env, "OLDPWD"), env, cwd, args);
+		printf("%s\n", get_env_var(*env, "PWD"));
+		return (g_last_exit_status);
+	}
 	else
 		return (change_directory_and_update(args[1], env, cwd, args));
 }

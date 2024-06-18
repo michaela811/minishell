@@ -16,7 +16,7 @@ int	is_cmd_word(t_token_list **tok, t_parse_tree **cmd_word_node)
 int	is_io_redirect(t_token_list **tok, t_parse_tree **redirect_node)
 {
 	if (*tok == NULL || (*tok)->token == NULL)
-		return (printf_global_error(1, 2, "my(s)hell: syntax error\n"), 1);
+		return (printf_global_error(1, 2, "my(s)hell: syntax error near unexpected token %s\n", (*tok)->token->lexeme), 1);
 	if (is_redirection_token((*tok)->token->type))
 	{
 		*redirect_node = alloc_parse_tree();
@@ -25,7 +25,7 @@ int	is_io_redirect(t_token_list **tok, t_parse_tree **redirect_node)
 		(*redirect_node)->data = (*tok)->token;
 		*tok = (*tok)->next;
 		if (*tok == NULL || (*tok)->token->type != WORD)
-			return (free_parse_tree(*redirect_node), printf_global_error(1, 2, "my(s)hell: syntax error\n"), 1);
+			return (free_parse_tree(*redirect_node), printf_global_error(1, 2, "my(s)hell: syntax error near unexpected token '%s'\n", (*tok)->token->lexeme), 1);
 		(*redirect_node)->child = alloc_parse_tree();
 		if ((*redirect_node)->child == NULL)
 			return (free_parse_tree(*redirect_node), printf_global_error(1, 2, "my(s)hell: memory error\n"), 1);
@@ -33,7 +33,7 @@ int	is_io_redirect(t_token_list **tok, t_parse_tree **redirect_node)
 		*tok = (*tok)->next;
 		return (0);
 	}
-	return (printf_global_error(1, 2, "my(s)hell: syntax error\n"), 1);
+	return (printf_global_error(1, 2, "my(s)hell: syntax error near unexpected token '%s'\n", (*tok)->token->lexeme), 1);
 }
 
 bool	is_redirection_token(enum token_type type)
