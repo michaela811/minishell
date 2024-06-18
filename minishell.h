@@ -220,7 +220,7 @@ int             exec_dollar_pwd(void);
 int             exec_env(char **args, char **environment);
 int             exec_unset (char **args, t_env **env);
 void            exec_export_no_args(t_env *env);
-int             var_control(char *args);
+int             var_control(char *command, char *args);
 int             split_var(char *var, char **name, char **value);
 int             exec_export(char **args, t_env **env);
 int             export_quotes(char *input, char **output);

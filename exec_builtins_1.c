@@ -340,7 +340,7 @@ int	exec_export(char **args, t_env **env)
 		return (exec_export_no_args(*env), 0);
 	while (args[i] != NULL)
 	{
-		control = var_control(args[1]);
+		control = var_control(args[0], args[1]);
 		if (control == 1)
 			return (g_last_exit_status);
 		else
