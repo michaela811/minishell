@@ -72,7 +72,7 @@ int	overflow_check(char *result)
             return 0; 
         check++;
     }
-	end = '\0';
+	*end = '\0';
 	if (ft_atoi(start) == INT_MAX && (ft_strcmp(start, "2147483647") != 0
 	|| ft_strcmp(start, "9223372036854775807") != 0))
 		return (1);
