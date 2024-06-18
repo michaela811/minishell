@@ -51,26 +51,49 @@ int	exec_builtins(t_exec_vars *vars, t_free_data *exec_data)
 
 int	overflow_check(char *result)
 {
-	char *check;
+	//char	*check;
+	char	*end;
 
 	while (isspace((unsigned char)*result))
         result++;
-	if (*result == '+')
-		result++;
+	int is_negative = (*result == '-');
+	end = result;
+	if (*result == '+' || *result == '-')
+		end++;
 	while (*result == '0')
 		result++;
-	while (ft_isdigit((unsigned char)*result))
-        result++;
-	check = result;
+	//end = result;
+	while (ft_isdigit((unsigned char)*end))
+        end++;
+	long long num = strtoll(result, NULL, 10);
+	/*check = end;
 	while (*check != '\0')
 	{
         if (!ft_isspace((unsigned char)*check))
             return 0; 
         check++;
     }
-	if (ft_atoi(result) == INT_MAX && (ft_strcmp(result, "2147483647") != 0
+	*end = '\0';*/
+    while (*end != '\0') {
+        if (!isspace((unsigned char)*end)) {
+            return 0;  // Invalid if any non-space characters after the number
+        }
+        end++;
+    }
+	//long long num = strtoll(result, NULL, 10);
+	if (is_negative)
+	{
+        if (num < INT_MIN && num != LLONG_MIN)
+            return 1;
+    }
+	else
+	{
+        if (num > INT_MAX && num != LLONG_MAX)
+            return 1;
+    }
+	/*if (ft_atoi(result) == INT_MAX && (ft_strcmp(result, "2147483647") != 0
 	|| ft_strcmp(result, "9223372036854775807") != 0))
-		return (1);
+		return (1);*/
 	return (0);
 }
 
@@ -121,9 +144,9 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 			i++;
 		i = 0;
 		if (!is_string_numeric(result) || overflow_check(result))
-			return (printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]), g_last_exit_status);
+			return (printf_global_error(2, 2, "my(s)hell: %s: %s: numeric argument required\n", vars->args[0], vars->args[1]), g_last_exit_status);
 		if (result[0] == '\0' && ft_strlen(result) == 0)
-			return (printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]), g_last_exit_status);
+			return (printf_global_error(2, 2, "my(s)hell: %s: %s: numeric argument required\n", vars->args[0], vars->args[1]), g_last_exit_status);
 		if (vars->args[2] != NULL)
 			return (printf_global_error(1, 2, "my(s)hell: %s: too many arguments\n", vars->args[0]), g_last_exit_status);
 		g_last_exit_status = ft_atoi(result);
