@@ -51,27 +51,25 @@ int	exec_builtins(t_exec_vars *vars, t_free_data *exec_data)
 
 int	overflow_check(char *result)
 {
-	char *start;
 	char *check;
 
-	start = result;
-	while (isspace((unsigned char)*start))
-        start++;
+	while (isspace((unsigned char)*result))
+        result++;
 	if (*result == '+')
-		start++;
+		result++;
 	while (*result == '0')
-		start++;
-	while (ft_isdigit((unsigned char)*start))
-        start++;
-	check = start;
+		result++;
+	while (ft_isdigit((unsigned char)*result))
+        result++;
+	check = result;
 	while (*check != '\0')
 	{
         if (!ft_isspace((unsigned char)*check))
             return 0; 
         check++;
     }
-	if (ft_atoi(start) == INT_MAX && (ft_strcmp(start, "2147483647") != 0
-	|| ft_strcmp(start, "9223372036854775807") != 0))
+	if (ft_atoi(result) == INT_MAX && (ft_strcmp(result, "2147483647") != 0
+	|| ft_strcmp(result, "9223372036854775807") != 0))
 		return (1);
 	return (0);
 }
