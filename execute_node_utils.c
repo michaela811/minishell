@@ -6,17 +6,38 @@ void	init_exec_vars(t_exec_vars *vars)
 
 	vars->fd_in = 0;
 	vars->fd_out = 1;
-	vars->args = malloc(10 * sizeof(char *));  // Allocate memory for args
+    vars->capacity = 10;
+	vars->args = malloc(vars->capacity * sizeof(char *));
     if (!vars->args)
     {
         vars->error = 1;
         return;
     }
 	i = 0;
-	while (i < 10)
+	while (i < vars->capacity)
 		vars->args[i++] = NULL;
 	vars->i = 0;
 	vars->error = 0;
+}
+
+void	expand_exec_vars(t_exec_vars *vars)
+{
+    int     new_capacity;
+    char    **new_args;
+    int     i;
+
+    i = vars->capacity;
+    new_capacity = vars->capacity * 2;
+	new_args = realloc(vars->args, new_capacity * sizeof(char*));
+    if (new_args == NULL)
+    {
+        vars->error = 1;
+        return ;
+    }
+    vars->args = new_args;
+	while (i < new_capacity)
+		vars->args[i++] = NULL;
+	vars->capacity = new_capacity;
 }
 
 #include <stdio.h>
@@ -432,13 +453,13 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 		vars->error = 1;
 		return(printf_global_error(1, 2, "my(s)hell: ft_strdup error\n"));
 	}
-  handle_quotes_glob_1(node, vars, env);
-  if (vars->error)
-  {
-      g_last_exit_status = 1;
-      return ;
-  }
-  vars->i++;
+    handle_quotes_glob_1(node, vars, env);
+    if (vars->error)
+    {
+        g_last_exit_status = 1;
+        return ;
+    }
+    vars->i++;
 }
 
 /* void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)

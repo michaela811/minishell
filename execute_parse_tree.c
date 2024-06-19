@@ -31,6 +31,12 @@ int	execute_node(t_free_data *exec_data)
 			if (vars->error != 0)
 				return (g_last_exit_status);
 		}
+        if (vars->i > vars->capacity - 1)
+        {
+            expand_exec_vars(vars);
+            if (vars->error)
+                free_env_array(vars->args);
+        }
 		exec_data->tree = exec_data->tree->child;
 	}
 	vars->args[vars->i] = NULL;
