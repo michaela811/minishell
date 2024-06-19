@@ -28,7 +28,7 @@ int	exec_builtins(t_exec_vars *vars, t_free_data *exec_data)
 	return (0);
 } */
 
-int	ft_atoi_no_minus(const char *nptr)
+/*int	ft_atoi_no_minus(const char *nptr)
 {
 	long int	number;
 
@@ -47,29 +47,81 @@ int	ft_atoi_no_minus(const char *nptr)
 		nptr++;
 	}
 	return (number);
-}
+}*/
 
 int	overflow_check(char *result)
 {
-	if (*result == '+')
-		result++;
+	//char	*check;
+	char	*end;
+
+	while (isspace((unsigned char)*result))
+        result++;
+	int is_negative = (*result == '-');
+	end = result;
+	if (*result == '+' || *result == '-')
+		end++;
 	while (*result == '0')
 		result++;
-	if (ft_atoi(result) == INT_MAX && (ft_strcmp(result, "2147483647") != 0
+	//end = result;
+	while (ft_isdigit((unsigned char)*end))
+        end++;
+	long long num = strtoll(result, NULL, 10);
+	/*check = end;
+	while (*check != '\0')
+	{
+        if (!ft_isspace((unsigned char)*check))
+            return 0; 
+        check++;
+    }
+	*end = '\0';*/
+    while (*end != '\0') {
+        if (!isspace((unsigned char)*end)) {
+            return 0;  // Invalid if any non-space characters after the number
+        }
+        end++;
+    }
+	//long long num = strtoll(result, NULL, 10);
+	if (is_negative)
+	{
+        if (num < INT_MIN && num != LLONG_MIN)
+            return 1;
+    }
+	else
+	{
+        if (num > INT_MAX && num != LLONG_MAX)
+            return 1;
+    }
+	/*if (ft_atoi(result) == INT_MAX && (ft_strcmp(result, "2147483647") != 0
 	|| ft_strcmp(result, "9223372036854775807") != 0))
-		return (1);
+		return (1);*/
 	return (0);
+}
+
+int ft_isspace(char c)
+{
+    return c == ' '  ||
+           c == '\f' ||
+           c == '\n' ||
+           c == '\r' ||
+           c == '\t' ||
+           c == '\v';  
 }
 
 int is_string_numeric(const char *str)
 {
+	while (ft_isspace((unsigned char)*str))
+        str++;
 	if (*str == '+' || *str == '-')
 		str++;
-    if (*str == '\0')
-        return false;
-    while (*str)
-    {
-        if (!ft_isdigit(*str))
+	if (!*str)
+    	return (0);
+    while (ft_isdigit(*str))
+	{
+        str++;
+	}
+	while (*str)
+	{
+        if (!ft_isspace((unsigned char)*str))
             return (0);
         str++;
     }
@@ -90,26 +142,13 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 			i++;
 		while (result[i] == '0')
 			i++;
-		/*if (result[i] == '\0')
-		{
-			g_last_exit_status = 0;
-			free_exit_data(exec_data);
-			free_env_array(vars->args);
-			free(vars);
-			exit (g_last_exit_status);
-		}*/
 		i = 0;
-
-		if (!is_string_numeric(result) || overflow_check(result) || (result[0] == '\0' && result[1] == '\0'))
-		{
-			printf_global_error(2, 2, "my(s)hell: exit: %s: numeric argument required\n", vars->args[1]);
-			return(g_last_exit_status);
-		}
+		if (!is_string_numeric(result) || overflow_check(result))
+			return (printf_global_error(2, 2, "my(s)hell: %s: %s: numeric argument required\n", vars->args[0], vars->args[1]), g_last_exit_status);
+		if (result[0] == '\0' && ft_strlen(result) == 0)
+			return (printf_global_error(2, 2, "my(s)hell: %s: %s: numeric argument required\n", vars->args[0], vars->args[1]), g_last_exit_status);
 		if (vars->args[2] != NULL)
-		{
-			printf_global_error(1, 2, "my(s)hell: %s: too many arguments\n", vars->args[0]);// Actually in bush +exit should be printed
-			return(g_last_exit_status);
-		}
+			return (printf_global_error(1, 2, "my(s)hell: %s: too many arguments\n", vars->args[0]), g_last_exit_status);
 		g_last_exit_status = ft_atoi(result);
 	}
 	/*if (vars->args[1] != NULL && !g_last_exit_status)
@@ -301,7 +340,7 @@ int	exec_export(char **args, t_env **env)
 		return (exec_export_no_args(*env), 0);
 	while (args[i] != NULL)
 	{
-		control = var_control(args[1]);
+		control = var_control(args[0], args[1]);
 		if (control == 1)
 			return (g_last_exit_status);
 		else
