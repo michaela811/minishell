@@ -192,7 +192,7 @@ int	exec_echo(t_exec_vars *vars)
 	{
 	   	printf_global_error(g_last_exit_status, vars->fd_out, "%s", vars->args[i]);
 	    if (vars->args[i + 1])
-	        printf(" ");
+	        printf_global_error(g_last_exit_status, vars->fd_out, " ");
 	    i++;
 	}
 	if (echo_n_control(vars->args[1]) == 0)
