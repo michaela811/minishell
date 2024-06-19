@@ -3,9 +3,6 @@
 
 int	handle_child_process(int *pipefd, t_free_data *exec_data)
 {
-	//int	return_value;
-	//printf("Entering handle_child_process function\n");
-
 	if (exec_data->tree->sibling != NULL)
 	{
 		close(pipefd[0]);
@@ -16,17 +13,10 @@ int	handle_child_process(int *pipefd, t_free_data *exec_data)
         }
 		close(pipefd[1]);
 	}
-	//return_value = execute_node(exec_data);
 	if (execute_node(exec_data))
-	{
-		//g_last_exit_status = return_value;
 		exit(EXIT_FAILURE);
-		//exit(g_last_exit_status);
-	}
 	g_last_exit_status = 0;
-	//printf("Exiting handle_child_process function with success\n");
 	exit(EXIT_SUCCESS);
-	//exit(g_last_exit_status);
 }
 
 pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)
@@ -34,7 +24,6 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)
     pid_t	pid2;
     int		return_value;
 
-	//printf("Entering handle_sibling_process function\n");
     pid2 = fork();
 	if (pid2 == -1)
 		return (printf_global_error(1, 2, "my(s)hell: fork in sibling process\n"), 1);
@@ -46,7 +35,7 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)
             exit(EXIT_FAILURE);
         }
         close(pipefd[0]);
-		close(pipefd[1]);//New trial
+		close(pipefd[1]);
         return_value = execute_pipeline(exec_data);
         if (return_value != 0)
         {
@@ -54,13 +43,12 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)
             exit(EXIT_FAILURE);
         }
         g_last_exit_status = 0;
-		//printf("Exiting handle_sibling_process function with success\n");
         exit(EXIT_SUCCESS);
     }
     else if (pid2 > 0)
     {
         close(pipefd[0]);
-		close(pipefd[1]);//New trial
+		close(pipefd[1]);
         wait(NULL);
     }
     return pid2;
@@ -83,7 +71,7 @@ int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 		if (sibling_pid == -1)
 			return (1);
 		pids[num_commands] = sibling_pid;
-	num_commands++;
+		num_commands++;
 	}
 	for (int i = 0; i < num_commands; i++)
 	{
