@@ -74,13 +74,14 @@ int	overflow_check(char *result)
         check++;
     }
 	*end = '\0';*/
-    /*while (*end != '\0') {
+    while (*end != '\0') {
         if (!isspace((unsigned char)*end)) {
             return 0;  // Invalid if any non-space characters after the number
         }
         end++;
     }
-	//long long num = strtoll(result, NULL, 10);
+	char *num = ft_strtok(result, " ");
+	/*long long num = strtoll(result, NULL, 10);
 	if (is_negative)
 	{
         if (num < INT_MIN && num != LLONG_MIN)
@@ -91,8 +92,8 @@ int	overflow_check(char *result)
         if (num > INT_MAX && num != LLONG_MAX)
             return 1;
     }*/
-	if (ft_atoi(result) == INT_MAX && (ft_strcmp(result, "2147483647") != 0
-	|| ft_strcmp(result, "9223372036854775807") != 0))
+	if (ft_atoi(num) == INT_MAX && (ft_strcmp(num, "2147483647") != 0
+	|| ft_strcmp(num, "9223372036854775807") != 0))
 		return (1);
 	return (0);
 }
