@@ -56,7 +56,7 @@ int	overflow_check(char *result)
 
 	while (isspace((unsigned char)*result))
         result++;
-	int is_negative = (*result == '-');
+	//int is_negative = (*result == '-');
 	end = result;
 	if (*result == '+' || *result == '-')
 		end++;
@@ -64,8 +64,8 @@ int	overflow_check(char *result)
 		result++;
 	//end = result;
 	while (ft_isdigit((unsigned char)*end))
-        end++;
-	long long num = strtoll(result, NULL, 10);
+    	end++;
+	//long long num = strtoll(result, NULL, 10);
 	/*check = end;
 	while (*check != '\0')
 	{
@@ -80,7 +80,8 @@ int	overflow_check(char *result)
         }
         end++;
     }
-	//long long num = strtoll(result, NULL, 10);
+	char *num = ft_strtok(result, " ");
+	/*long long num = strtoll(result, NULL, 10);
 	if (is_negative)
 	{
         if (num < INT_MIN && num != LLONG_MIN)
@@ -90,10 +91,10 @@ int	overflow_check(char *result)
 	{
         if (num > INT_MAX && num != LLONG_MAX)
             return 1;
-    }
-	/*if (ft_atoi(result) == INT_MAX && (ft_strcmp(result, "2147483647") != 0
-	|| ft_strcmp(result, "9223372036854775807") != 0))
-		return (1);*/
+    }*/
+	if (ft_atoi(num) == INT_MAX && (ft_strcmp(num, "2147483647") != 0
+	|| ft_strcmp(num, "9223372036854775807") != 0))
+		return (1);
 	return (0);
 }
 
