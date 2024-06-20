@@ -90,7 +90,7 @@ int	error_handeling_before_fork(t_exec_vars *vars, t_env **env)
 		path_status = get_path(vars->args[0], *env, &path);
 	if (path_status == 1)
 		return (g_last_exit_status);
-	if (path_status == -1 || vars->args[0][0] == '\0')
+	if (path_status == -1 || vars->args[0][0] == '\0' || vars->args[0][0] == '.')
 	{
 		if (access(vars->args[0], X_OK) == -1 && vars->args[0][0] == '.' && vars->args[0][1] == '/')
 		{

@@ -230,6 +230,7 @@ t_free_data     *init_command_data(char **envp);
 int             is_directory(const char *path);
 int             ft_isspace(char c);
 void	        expand_exec_vars(t_exec_vars *vars);
+void            print_token_list(t_token_list *list);
 
 /*
 void check_for_memory_leaks();
