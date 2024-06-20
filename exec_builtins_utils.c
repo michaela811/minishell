@@ -1,7 +1,98 @@
 #include "minishell.h"
 
+/*void normalize_path(char **path) {
+    if (path == NULL || *path == NULL) return;
+
+    char *input = *path;
+    int len = strlen(input);
+    char *normalized = calloc(len + 1, sizeof(char));  // Use calloc to initialize to zero
+    if (normalized == NULL) return;
+
+    char **components = malloc(sizeof(char*) * (len + 1)); // For splitting the path
+    if (components == NULL) {
+        free(normalized);
+        return;
+    }
+    int count = 0;
+
+    const char *delim = "/";
+    char *token = strtok(input, delim);
+
+    while (token != NULL) {
+        if (strcmp(token, "..") == 0) {
+            // Go up in the directory tree
+            if (count > 0) count--;
+        } else if (strcmp(token, ".") != 0) {
+            // Ignore '.' which stands for current directory
+            components[count++] = token;
+        }
+        token = strtok(NULL, delim);
+    }
+
+    if (input[0] == '/') {
+        normalized[0] = '/';
+    }
+
+    for (int i = 0; i < count; i++) {
+        if (i > 0 || input[0] == '/') strcat(normalized, "/"); // Only add '/' if not the first component or it's an absolute path
+        strcat(normalized, components[i]);
+    }
+
+    free(components);
+    *path = normalized;  // Update the path with the normalized result
+}*/
+
+void normalize_path(char **path) {
+    if (path == NULL || *path == NULL) return;
+
+    const char *input = *path;
+    int len = strlen(input);
+    char *normalized = calloc(len + 1, sizeof(char));  // Use calloc to initialize to zero
+    if (normalized == NULL) return;
+
+    char **components = malloc(sizeof(char*) * (len + 1)); // For splitting the path
+    if (components == NULL) {
+        free(normalized);
+        return;
+    }
+    int count = 0;
+    char *temp = strdup(input);  // Create a modifiable copy of input
+    if (temp == NULL) {
+        free(components);
+        free(normalized);
+        return;
+    }
+
+    const char *delim = "/";
+    char *token, *saveptr;
+    token = strtok_r(temp, delim, &saveptr);
+
+    while (token != NULL) {
+        if (strcmp(token, "..") == 0) {
+            if (count > 0) count--;  // Go up in the directory tree, ignore if at root
+        } else if (strcmp(token, ".") != 0 && strlen(token) > 0) {
+            components[count++] = token;  // Ignore '.' and empty tokens
+        }
+        token = strtok_r(NULL, delim, &saveptr);
+    }
+
+    if (input[0] == '/') {
+        normalized[0] = '/';
+    }
+
+    for (int i = 0; i < count; i++) {
+        strcat(normalized, components[i]);
+        if (i < count - 1 || input[len-1] == '/') strcat(normalized, "/"); // Add '/' if not the last component or path ends with '/'
+    }
+
+    free(temp);
+    free(components);
+    *path = normalized;  // Update the path with the normalized result
+}
+
 int	change_directory_and_update(char *path, t_env **env, char *cwd, char **args)//, int line)
 {
+	normalize_path(&path);
 	if (chdir(path) != 0)
 	{
 		printf_global_error(1, 2, "my(s)hell: %s: %s: No such file or directory\n", args[0], path);
