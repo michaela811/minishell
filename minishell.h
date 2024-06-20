@@ -70,6 +70,9 @@ typedef struct s_exec_vars
     char **args;//char *args[10];
     int i;
     int error;
+    int inside_single_quotes;
+    int inside_double_quotes;
+    int end;
 } t_exec_vars;
 
 // Building struct to free when exiting

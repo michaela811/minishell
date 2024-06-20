@@ -11,6 +11,14 @@ int	execute_parse_tree(t_free_data *exec_data)
 	return (g_last_exit_status);
 }
 
+void print_args(char **args) {
+    int i = 0;
+    while (args[i] != NULL) {
+        printf("args[%d] = %s\n", i, args[i]);
+        i++;
+    }
+}
+
 int	execute_node(t_free_data *exec_data)
 {
 	t_exec_vars	*vars;
@@ -27,7 +35,7 @@ int	execute_node(t_free_data *exec_data)
 		{
 			handle_node_data(&exec_data->tree, vars, &exec_data->env);
             if (vars->args[0] == NULL)
-                vars->i = 0;    
+                vars->i = 0;
 			if (vars->error != 0)
 				return (g_last_exit_status);
 		}
@@ -35,6 +43,7 @@ int	execute_node(t_free_data *exec_data)
 	}
 	vars->args[vars->i] = NULL;
 	execute_command(vars, exec_data);
+    //print_args(vars->args);
     free_env_array(vars->args);
     free(vars);
 	return (g_last_exit_status);
