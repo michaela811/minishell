@@ -1,15 +1,7 @@
 #include "minishell.h"
 
-char* get_current_command_name(t_free_data *exec_data)
-{
-    if (exec_data && exec_data->tree && exec_data->tree->data)
-        return exec_data->tree->data->lexeme;
-    return "unknown";
-}
-
 int	handle_child_process(int *pipefd, t_free_data *exec_data)
 {
-	char *command_name;
 	if (exec_data->tree->sibling != NULL)
 	{
 		close(pipefd[0]);
@@ -21,11 +13,7 @@ int	handle_child_process(int *pipefd, t_free_data *exec_data)
 		close(pipefd[1]);
 	}
 	if (execute_node(exec_data))
-	{
-		command_name = get_current_command_name(exec_data);
-		printf_global_error(1, 2, "my(s)hell: %s: write error: Broken pipe\n", command_name);
 		exit(EXIT_FAILURE);
-	}
 	g_last_exit_status = 0;
 	exit(EXIT_SUCCESS);
 }
