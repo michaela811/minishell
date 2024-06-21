@@ -1,27 +1,13 @@
 #include "minishell.h"
 
-typedef struct s_handle_vars
-{
-    char buffer[1024];
-    char *token;
-    char *delimiters;
-    char **current;
-    char **result;
-} t_handle_vars;
-
-// Function prototypes
-void handle_single_quotes(char **current, char **result, t_exec_vars *vars);
-void handle_double_quotes(char **current, char **result, t_exec_vars *vars, t_env **env);
-void handle_no_quotes(t_handle_vars *local_vars, t_exec_vars *vars, t_env **env, t_parse_tree **node);
-
-
 void init_handle_vars(t_handle_vars *local_vars, t_exec_vars *vars)
 {
-    char *empty_string = ft_strdup("");
-    local_vars->result = &empty_string;
+	local_vars->result = malloc(sizeof(char *));
+    *local_vars->result = ft_strdup("");
     local_vars->current = &vars->args[vars->i];
     local_vars->delimiters = "'\"";
 }
+
 // Main function
 void handle_quotes_glob_1(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
@@ -40,60 +26,16 @@ void handle_quotes_glob_1(t_parse_tree **node, t_exec_vars *vars, t_env **env)
         if (vars->end)
 		{
 			vars->end = 0;
-            return;
+            return(free_and_null_double_pointer(&local_vars.result));
 		}
         if (vars->error)
             break;
     }
     if (!vars->error)
-    {
-        //free(vars->args[vars->i]);
-        vars->args[vars->i] = *local_vars.result;
-    }
-    else
-		return;
-        //free(local_vars.result);
-}
-
-void handle_single_quotes(char **current, char **result, t_exec_vars *vars)
-{
-    char *token;
-
-	token = *current;
-    *current = ft_strchr(*current, '\'');
-    if (*current == NULL)
-    {
-        vars->error = 1;
-        return;
-    }
-    **current = '\0';
-    *result = ft_strjoin(*result, token);
-	vars->inside_single_quotes = 0;
-    (*current)++;
-}
-
-void handle_double_quotes(char **current, char **result, t_exec_vars *vars, t_env **env)
-{
-    char buffer[1024] = "";
-    char *token;
-
-	token = *current;
-    *current = ft_strchr(*current, '\"');
-    if (*current == NULL)
-    {
-        vars->error = 1;
-        return;
-    }
-    **current = '\0';
-    if (ft_strchr(token, '$') != NULL)
-    {
-        handle_dollar_sign(&token, buffer, env);
-        *result = ft_strjoin(*result, buffer);
-    }
-    else
-        {*result = ft_strjoin(*result, token);}
-	vars->inside_double_quotes = 0;
-    (*current)++;
+		return (handle_quotes_final_assign(&vars->args[vars->i], local_vars.result, vars));
+	//else
+		//return(free_and_null_double_pointer(&local_vars.result)); // NOT SURE IF FREE IS ALSO NEEDED
+	free_and_null_double_pointer(&local_vars.result);
 }
 
 void handle_no_current(t_handle_vars *local_vars, t_exec_vars *vars, t_env **env, t_parse_tree **node)
@@ -102,34 +44,60 @@ void handle_no_current(t_handle_vars *local_vars, t_exec_vars *vars, t_env **env
     {
         handle_dollar_sign(&local_vars->token, local_vars->buffer, env);
         *local_vars->result = ft_strjoin(*local_vars->result, local_vars->buffer);
+		if (!check_null(*local_vars->result, &vars->error))
+			return ;
         if (strchr((*node)->data->lexeme, '$') != NULL && strchr(local_vars->buffer, ' '))
-            vars->i = split_variable(*local_vars->result, vars->i, vars);
+        {
+			vars->i = split_variable(*local_vars->result, vars->i, vars);
+			if (vars->error)
+				return (free(*local_vars->result));
+		}
         else
-            vars->args[vars->i] = *local_vars->result;
+            vars->args[vars->i] = ft_strdup(*local_vars->result);
     }
     else
     {
         vars->args[vars->i] = ft_strjoin(*local_vars->result, local_vars->token);
+		if (!check_null(vars->args[vars->i], &vars->error))
+			return ;
     }
     vars->end = 1;
 }
 
+void handle_with_current_dollar(t_handle_vars *local_vars, t_exec_vars *vars, t_env **env, t_parse_tree **node)
+{
+    handle_dollar_sign(&local_vars->token, local_vars->buffer, env);
+    *local_vars->result = ft_strjoin(*local_vars->result, local_vars->buffer);
+    if (!check_null(*local_vars->result, &vars->error))
+        return ;
+    if (ft_strchr((*node)->data->lexeme, '$') != NULL && ft_strchr(local_vars->buffer, ' '))
+    {
+        vars->i = split_variable(*local_vars->result, vars->i, vars);
+        if (vars->error)
+            return (free(*local_vars->result));
+		free(*local_vars->result);//Needed before new allocation?
+        *local_vars->result = ft_strdup(vars->args[vars->i]);//CHECK THIS
+    }
+}
+
 void handle_with_current(t_handle_vars *local_vars, t_exec_vars *vars, t_env **env, t_parse_tree **node)
 {
-    char delimiter = **local_vars->current;
+    char delimiter;
+
+	delimiter = **local_vars->current;
     **local_vars->current = '\0';
     if (ft_strchr(local_vars->token, '$') != NULL)
     {
-        handle_dollar_sign(&local_vars->token, local_vars->buffer, env);
-        *local_vars->result = ft_strjoin(*local_vars->result, local_vars->buffer);
-        if (strchr((*node)->data->lexeme, '$') != NULL && strchr(local_vars->buffer, ' '))
-        {
-            vars->i = split_variable(*local_vars->result, vars->i, vars);
-            *local_vars->result = vars->args[vars->i];
-        }
+		handle_with_current_dollar(local_vars, vars, env, node);
+		if (vars->error)
+			return ;
     }
     else
-        *local_vars->result = ft_strjoin(*local_vars->result, local_vars->token);
+        {
+			*local_vars->result = ft_strjoin(*local_vars->result, local_vars->token);
+			if (!check_null(*local_vars->result, &vars->error))
+				return ;
+		}
     **local_vars->current = delimiter;
     if (**local_vars->current == '\'')
         vars->inside_single_quotes = 1;
@@ -151,54 +119,7 @@ void handle_no_quotes(t_handle_vars *local_vars, t_exec_vars *vars, t_env **env,
     handle_with_current(local_vars, vars, env, node);
 }
 
-/* void handle_no_quotes(char **current, char **result, t_exec_vars *vars, t_env **env, t_parse_tree **node)
-{
-    char buffer[1024] = "";
-    char *token = *current;
-    char *delimiters = "'\"";
-    *current = strpbrk(*current, delimiters);
-
-    if (*current == NULL)
-    {
-        if (ft_strchr(token, '$') != NULL)
-        {
-            handle_dollar_sign(&token, buffer, env);
-            *result = ft_strjoin(*result, buffer);
-            if (strchr((*node)->data->lexeme, '$') != NULL && strchr(buffer, ' '))
-                vars->i = split_variable(*result, vars->i, vars);
-            else
-                vars->args[vars->i] = *result;
-        }
-        else
-        {
-            vars->args[vars->i] = ft_strjoin(*result, token);
-        }
-		vars->end = 1;
-        return;
-    }
-    char delimiter = **current;
-    **current = '\0';
-    if (ft_strchr(token, '$') != NULL)
-    {
-        handle_dollar_sign(&token, buffer, env);
-        *result = ft_strjoin(*result, buffer);
-        if (strchr((*node)->data->lexeme, '$') != NULL && strchr(buffer, ' '))
-        {
-            vars->i = split_variable(*result, vars->i, vars);
-            *result = vars->args[vars->i];
-        }
-    }
-    else
-        *result = ft_strjoin(*result, token);
-    **current = delimiter;
-	if (**current == '\'')
-        vars->inside_single_quotes = 1;
-    else if (**current == '\"')
-        vars->inside_double_quotes = 1;
-    (*current)++;
-} */
-
-void handle_quotes_glob_2(t_parse_tree **node, t_exec_vars *vars, t_env **env)
+/* void handle_quotes_glob_2(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
     char    *result = NULL;
     char    *current = vars->args[vars->i];
@@ -297,4 +218,4 @@ void handle_quotes_glob_2(t_parse_tree **node, t_exec_vars *vars, t_env **env)
     }
     else
         free(result);
-}
+} */

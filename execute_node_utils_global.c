@@ -1,26 +1,5 @@
 #include "minishell.h"
 
-/* void	handle_global_env(t_parse_tree **node, char **args, int i, t_env **env)
-{
-	char	*str;
-	char	buffer[1024] = "";
-	char	*start;
-	str = (*node)->data->lexeme;
-	if (*(*node)->data->lexeme == 39)
-	{
-		args[i] = ft_strdup(str);//MEMORY LEAK
-		return ;
-	}
-	start = str;
-	while (1)
-	{
-		handle_dollar_sign(&start, buffer, env);
-		if (ft_strchr(start, '$') == NULL)
-			break ;
-	}
-	args[i] = ft_strdup(buffer);
-} */
-
 int	ft_lennbr(int nbr)
 {
 	int count;

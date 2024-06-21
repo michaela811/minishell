@@ -183,3 +183,23 @@ void	free_command_data(t_free_data *exec_data)
         //free(exec_data);
     }
 }
+
+void free_and_null(char **ptr)
+{
+    free(*ptr);
+    *ptr = NULL;
+}
+
+void free_and_null_double_pointer(char ***ptr)
+{
+    if (ptr != NULL && *ptr != NULL)
+    {
+        for (int i = 0; (*ptr)[i] != NULL; i++)
+        {
+            free((*ptr)[i]);
+            (*ptr)[i] = NULL;
+        }
+        free(*ptr);
+        *ptr = NULL;
+    }
+}

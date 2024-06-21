@@ -30,6 +30,8 @@ SOURCES = env_main.c \
 			init.c \
 			custom_malloc.c \
 			handle_quotes.c \
+			handle_quotes_utils.c \
+			handle_quotes_redirect.c \
 
 
 OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))

@@ -86,6 +86,15 @@ typedef struct s_free_data {
     int             line;
 } t_free_data;
 
+typedef struct s_handle_vars
+{
+    char buffer[1024];
+    char *token;
+    char *delimiters;
+    char **current;
+    char **result;
+} t_handle_vars;
+
 // Return values
 #define SYNTAX_ERROR -1
 #define SUBTREE_OK 0
@@ -108,7 +117,8 @@ void			free_token(t_token* tok);
 void			free_token_list(t_token_list* list);
 void	        free_command_data(t_free_data *exec_data);
 void	        free_exit_data(t_free_data *exec_data);
-
+void            free_and_null(char **ptr);
+void free_and_null_double_pointer(char ***ptr);
 // Errors
 void			handle_memory_error(t_token **token_list, int num_tokens);
 void			exit_function(int i); // to delete later
@@ -181,6 +191,24 @@ void            handle_quotes_global(t_parse_tree **node, char **args, int i, t_
 void handle_quotes_glob_1(t_parse_tree **node, t_exec_vars *vars, t_env **env);
 void handle_quotes_glob(char **arg, t_env **env, int *error);
 void            handle_dollar_sign(char **start, char *buffer, t_env **env);//, int *k);
+
+// Handle quotes
+int check_null(void *pointer, int *error_flag);
+void handle_single_quotes(char **current, char **result, t_exec_vars *vars);
+void handle_double_quotes_split(char **current, t_exec_vars *vars);
+void handle_double_quotes(char **current, char **result, t_exec_vars *vars, t_env **env);
+void handle_quotes_final_assign(char **str1, char **str2, t_exec_vars *vars);
+void init_handle_vars(t_handle_vars *local_vars, t_exec_vars *vars);
+void handle_quotes_glob_1(t_parse_tree **node, t_exec_vars *vars, t_env **env);
+void handle_no_current(t_handle_vars *local_vars, t_exec_vars *vars, t_env **env, t_parse_tree **node);
+void handle_with_current_dollar(t_handle_vars *local_vars, t_exec_vars *vars, t_env **env, t_parse_tree **node);
+void handle_with_current(t_handle_vars *local_vars, t_exec_vars *vars, t_env **env, t_parse_tree **node);
+void handle_no_quotes(t_handle_vars *local_vars, t_exec_vars *vars, t_env **env, t_parse_tree **node);
+void init_handle_quote_redirect(t_handle_vars *local_vars, t_parse_tree **node);
+void handle_quotes_glob_redirect(t_parse_tree **node, t_exec_vars *vars, t_env **env);
+void handle_no_current_redirect(t_handle_vars *local_vars, t_exec_vars *vars, t_env **env, t_parse_tree **node);
+void handle_with_current_redirect(t_handle_vars *local_vars, t_exec_vars *vars, t_env **env, t_parse_tree **node);
+void handle_no_quotes_redirect(t_handle_vars *local_vars, t_exec_vars *vars, t_env **env, t_parse_tree **node);
 
 // To delete later when working
 void            execve_error(char **s_cmd);

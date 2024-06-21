@@ -51,7 +51,7 @@ void	init_exec_vars(t_exec_vars *vars)
     return result;
 } */
 
-void handle_quotes_glob(char **arg, t_env **env, int *error)
+/* void handle_quotes_glob(char **arg, t_env **env, int *error)
 {
     char    *result = NULL;
     char    *current = *arg;
@@ -143,7 +143,7 @@ void handle_quotes_glob(char **arg, t_env **env, int *error)
     }
     else
         free(result); // Free the partially constructed result in case of error
-}
+} */
 
 /* void handle_quotes_glob(char **arg, t_env **env, int *error) {
     char *result = NULL;
@@ -390,7 +390,10 @@ int split_variable(char *arg, int i, t_exec_vars *vars)
     j = 0;
     split_args = ft_split(arg, ' ');
     if (!split_args)
+    {
+        vars->error = 1;
         return i;
+    }
     while (split_args[j])
 	{
         vars->args[i + j] = split_args[j];
