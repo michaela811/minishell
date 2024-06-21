@@ -90,9 +90,17 @@ void normalize_path(char **path) {
     *path = normalized;  // Update the path with the normalized result
 }
 
+bool needs_normalization(const char *path)
+{
+    return strstr(path, "//") != NULL || strstr(path, "/./") != NULL || strstr(path, "/../") != NULL;
+}
+
 int	change_directory_and_update(char *path, t_env **env, char *cwd, char **args)//, int line)
 {
-	normalize_path(&path);
+    if (needs_normalization(path))
+    {
+        normalize_path(&path);
+    }
 	if (chdir(path) != 0)
 	{
 		printf_global_error(1, 2, "my(s)hell: %s: %s: No such file or directory\n", args[0], path);
