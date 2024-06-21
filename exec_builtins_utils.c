@@ -99,19 +99,17 @@ int	change_directory_and_update(char *path, t_env **env, char *cwd, char **args)
 {
     if (needs_normalization(path))
     {
-        printf("Needs normalization\n");
+        //printf("Needs normalization\n");
         normalize_path(&path);
-        printf("Normalized path is %s\n", path);
+        //printf("Normalized path is %s\n", path);
     }
 	if (chdir(path) != 0)
 	{
 		printf_global_error(1, 2, "my(s)hell: %s: %s: No such file or directory\n", args[0], path);
-		/*g_last_exit_status = 1;
-		perror("chdir");*/
 		free(cwd);
 		return (1);
 	}
-    printf("Path is %s\n", path);
+    //printf("Path is %s\n", path);
 	if (update_pwd(env, cwd))
 	{
 		g_last_exit_status = 1;
