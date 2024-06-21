@@ -72,7 +72,7 @@ int	is_simple_command(t_token_list **tok, t_parse_tree **new)
 
 	*new = alloc_parse_tree();
 	if (*new == NULL)
-		return (printf_global_error(2, 2, "my(s)hell: syntax error near unexpected token '%s'\n", (*tok)->token->lexeme), 1);
+		return (printf_global_error(2, 2, "my(s)hell: syntax error near unexpected token `%s'\n", (*tok)->token->lexeme), 1);
 	if (is_cmd_prefix(tok, &((*new)->child)) != 0)
 		return (free(*new), g_last_exit_status);
 	cmd_word_node = NULL;
@@ -81,7 +81,7 @@ int	is_simple_command(t_token_list **tok, t_parse_tree **new)
 	if (cmd_word_node == NULL && (*new)->child)// PROBABLY CHECK WHETHER THE TOKEN LIST IS EMPTY
 		return (0);
 	if (cmd_word_node == NULL && !(*new)->child)
-		return (free_parse_tree(*new), printf_global_error(2, 2, "my(s)hell: syntax error near unexpected token '%s'\n", (*tok)->token->lexeme), 1);
+		return (free_parse_tree(*new), printf_global_error(2, 2, "my(s)hell: syntax error near unexpected token `%s'\n", (*tok)->token->lexeme), 1);
 	link_node(&((*new)->child), cmd_word_node);
 	cmd_suffix_node = NULL;
 	if (is_cmd_suffix(tok, &cmd_suffix_node) == 0)
