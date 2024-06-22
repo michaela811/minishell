@@ -8,8 +8,7 @@ t_free_data *init_command_data(char **envp)
     exec_data->env = init_environment(envp);
     if (exec_data->env == NULL)
 	{
-		g_last_exit_status = 1;
-		printf("init_environment failed");
+		printf_global_error(1, 2, "init_environment failed\n");
         free(exec_data);
         return (NULL);
 	}

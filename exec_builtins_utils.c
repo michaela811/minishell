@@ -5,8 +5,6 @@ int	change_directory_and_update(char *path, t_env **env, char *cwd, char **args)
 	if (chdir(path) != 0)
 	{
 		printf_global_error(1, 2, "my(s)hell: %s: %s: No such file or directory\n", args[0], path);
-		/*g_last_exit_status = 1;
-		perror("chdir");*/
 		free(cwd);
 		return (1);
 	}
@@ -41,14 +39,14 @@ int	var_control(char *command, char *args)
 	i = 0;
 	if (args[i] == '=' || args[i] == 0 || (!ft_isalpha(args[i]) && args[i] != '_'))
 	{
-		return (printf_global_error(1, 2, "mini(s)hell: %s: '%s': not a valid identifier\n", command, args), g_last_exit_status);
+		return (printf_global_error(1, 2, "mini(s)hell: %s: `%s': not a valid identifier\n", command, args), g_last_exit_status);
 	}
 	i++;
 	while (args[i] && args[i] != '=')
     {
         if (!ft_isalnum(args[i]) && args[i] != '_')
         {
-            return (printf_global_error(1, 2, "mini(s)hell: %s: '%s': not a valid identifier\n", command, args), g_last_exit_status);
+            return (printf_global_error(1, 2, "mini(s)hell: %s: `%s': not a valid identifier\n", command, args), g_last_exit_status);
         }
         i++;
     }
@@ -71,7 +69,7 @@ int	split_var(char *var, char **name, char **value)
 	while ((*name)[i] != '\0')
 	{
 		if (!ft_isalnum((*name)[i]) && (*name)[i] != '_')
-			return(printf_global_error(1, 2, "mini(s)hell: %s: %s: not a valid identifier\n", var[0], *name), free(*name), g_last_exit_status);
+			return(printf_global_error(1, 2, "mini(s)hell: %s: `%s': not a valid identifier\n", var[0], *name), free(*name), g_last_exit_status);
 		i++;
 	}
 	(*name)[i] = '\0';
