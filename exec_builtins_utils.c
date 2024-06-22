@@ -64,7 +64,7 @@ int	split_var(char *var, char **name, char **value)
 		*name = ft_strndup(var, equals - var);
 	else
 		*name = ft_strdup(var);
-	if (name == NULL)
+	if (*name == NULL)
 		return (printf_global_error(1, 2, "split_var: strndup error\n"), free(*name), g_last_exit_status);
 	while ((*name)[i] != '\0')
 	{
@@ -83,8 +83,8 @@ int	split_var(char *var, char **name, char **value)
 	*value = ft_strdup(equals + 1);//MEMORY!!!
 	//if (export_quotes(equals + 1, value))
 		//return (printf_global_error(1, 2, "split_var: export_quotes error\n"), free(*name), g_last_exit_status);
-	//if (value == NULL)//Do we need this check?
-		//return (printf_global_error("split_var: strndup error\n"), free(*name), 1);
+	if (value == NULL)//Do we need this check?
+		return (printf_global_error(1, 2, "split_var: strndup error\n"), free(*name), g_last_exit_status);
 	return (0);
 }
 
