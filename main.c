@@ -86,7 +86,7 @@ int main(int argc, char **argv, char **envp)
         }
         handle_input(input, exec_data);
     }
-    return 0;
+    return (g_last_exit_status);
 }
 
 /*int	main(int argc, char **argv, char **envp)

@@ -19,16 +19,23 @@ int	create_and_link_pipe(t_token_list **tok, t_parse_tree **new)
 	return (0);
 }
 
-
-void print_token_list(t_token_list *list) {
+void print_token_list(t_token_list *list) 
+{
     t_token_list *current = list;
 
-    while (current != NULL) {
-        if (current->token != NULL) {
-            printf("%s\n", current->token->lexeme);
-        }
+	printf("my(s)hell: \'");
+    while (current != NULL)
+	{
+		if (current->token != NULL)
+		{
+			if (current->next == NULL)
+				printf("%s\'", current->token->lexeme);
+        	else
+            	printf("%s ", current->token->lexeme);
+		}
         current = current->next;
     }
+	printf("\n");
 }
 
 int	is_pipe_sequence(t_free_data *exec_data)
@@ -38,7 +45,7 @@ int	is_pipe_sequence(t_free_data *exec_data)
 	//t_parse_tree	*next_command;
 
 	if (exec_data->token_list == NULL || exec_data->token_list->token == NULL)
-		return (printf_global_error(1, 2, "my(s)hell: syntax error\n"), 1);
+		return (printf_global_error(2, 2, "my(s)hell: syntax error\n"), 1);
 	exec_data->tree = alloc_parse_tree();
 	exec_data->tree_start = exec_data->tree;
 	if (exec_data->tree == NULL)
@@ -65,7 +72,7 @@ int	is_simple_command(t_token_list **tok, t_parse_tree **new)
 
 	*new = alloc_parse_tree();
 	if (*new == NULL)
-		return (printf_global_error(1, 2, "my(s)hell: syntax error near unexpected token '%s'\n", (*tok)->token->lexeme), 1);
+		return (printf_global_error(2, 2, "my(s)hell: syntax error near unexpected token `%s'\n", (*tok)->token->lexeme), 1);
 	if (is_cmd_prefix(tok, &((*new)->child)) != 0)
 		return (free(*new), g_last_exit_status);
 	cmd_word_node = NULL;
@@ -74,7 +81,7 @@ int	is_simple_command(t_token_list **tok, t_parse_tree **new)
 	if (cmd_word_node == NULL && (*new)->child)// PROBABLY CHECK WHETHER THE TOKEN LIST IS EMPTY
 		return (0);
 	if (cmd_word_node == NULL && !(*new)->child)
-		return (free_parse_tree(*new), printf_global_error(1, 2, "my(s)hell: syntax error near unexpected token '%s'\n", (*tok)->token->lexeme), 1);
+		return (free_parse_tree(*new), printf_global_error(2, 2, "my(s)hell: syntax error near unexpected token `%s'\n", (*tok)->token->lexeme), 1);
 	link_node(&((*new)->child), cmd_word_node);
 	cmd_suffix_node = NULL;
 	if (is_cmd_suffix(tok, &cmd_suffix_node) == 0)

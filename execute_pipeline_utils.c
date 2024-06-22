@@ -1,6 +1,5 @@
 #include "minishell.h"
 
-
 int	handle_child_process(int *pipefd, t_free_data *exec_data)
 {
 	if (exec_data->tree->sibling != NULL)
