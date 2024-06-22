@@ -244,7 +244,7 @@ int             exec_cd(char **args, t_env **env);//, int line);
 int             update_pwd(t_env **env, char *cwd);
 int             change_directory_and_update(char *path, t_env **env, char *cwd, char **args);//, int line);
 int             exec_echo(t_exec_vars *vars);
-char            *handle_quotes_echo(const char *input, int *error);
+char            *handle_quotes_echo(char *input, int *error);
 void            process_args(char **args, int *error);
 int             exec_pwd(void);
 int             exec_dollar_pwd(void);
