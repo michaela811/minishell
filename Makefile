@@ -29,7 +29,10 @@ SOURCES = env_main.c \
 			parser_utils.c \
 			init.c \
 			custom_malloc.c \
-			libft.c \
+			handle_quotes.c \
+			handle_quotes_utils.c \
+			handle_quotes_redirect.c \
+
 
 OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))
 
