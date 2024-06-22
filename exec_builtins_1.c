@@ -185,18 +185,18 @@ int	exec_echo(t_exec_vars *vars)
 
 	i = 1;
 	if (vars->args[1] == NULL)
-		return (printf("\n"), 1);
+		return (printf_global_error(g_last_exit_status, vars->fd_out, "\n"), 1);
 	while (vars->args[i] && echo_n_control(vars->args[i]))
 		i++;
 	while (vars->args[i])
 	{
-	   	printf("%s", vars->args[i]);
+	   	printf_global_error(g_last_exit_status, vars->fd_out, "%s", vars->args[i]);
 	    if (vars->args[i + 1])
-	        printf(" ");
+	        printf_global_error(g_last_exit_status, vars->fd_out, " ");
 	    i++;
 	}
 	if (echo_n_control(vars->args[1]) == 0)
-		printf("\n");
+		printf_global_error(g_last_exit_status, vars->fd_out, "\n");
 	g_last_exit_status = 0;
 	return (g_last_exit_status);
 }

@@ -67,6 +67,7 @@ typedef struct s_exec_vars
 {
     int fd_in;
     int fd_out;
+    int capacity;
     char **args;//char *args[10];
     int i;
     int error;
@@ -83,7 +84,6 @@ typedef struct s_free_data {
     t_token_list    *token_list;
     t_token_list    *token_list_start;
     char            **environment;
-    int             line;
 } t_free_data;
 
 typedef struct s_handle_vars
@@ -260,6 +260,7 @@ int             exec_global_env(t_exec_vars *vars, t_env **env);
 t_free_data     *init_command_data(char **envp);
 int             is_directory(const char *path);
 int             ft_isspace(char c);
+void	        expand_exec_vars(t_exec_vars *vars);
 
 /*
 void check_for_memory_leaks();
