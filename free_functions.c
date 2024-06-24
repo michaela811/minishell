@@ -192,12 +192,16 @@ void free_and_null(char **ptr)
 
 void free_and_null_double_pointer(char ***ptr)
 {
+	size_t	i;
+
     if (ptr != NULL && *ptr != NULL)
     {
-        for (int i = 0; (*ptr)[i] != NULL; i++)
-        {
+		i = 0;
+        while ((*ptr)[i] != NULL)
+		{
             free((*ptr)[i]);
             (*ptr)[i] = NULL;
+            i++;
         }
         free(*ptr);
         *ptr = NULL;

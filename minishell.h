@@ -88,11 +88,11 @@ typedef struct s_free_data {
 
 typedef struct s_handle_vars
 {
-    char buffer[1024];
-    char *token;
-    char *delimiters;
-    char **current;
-    char **result;
+    char    buffer[1024];
+    char    *token;
+    char    *delimiters;
+    char    **current;
+    char    **result;
 } t_handle_vars;
 
 // Return values
@@ -190,7 +190,7 @@ void            handle_global_env(t_parse_tree **node, char **args, int i, t_env
 void            handle_quotes_global(t_parse_tree **node, char **args, int i, t_env **env);
 void handle_quotes_glob_1(t_parse_tree **node, t_exec_vars *vars, t_env **env);
 void handle_quotes_glob(char **arg, t_env **env, int *error);
-void            handle_dollar_sign(char **start, char *buffer, t_env **env);//, int *k);
+void            handle_dollar_sign(char **start, char *buffer, t_env **env, int buffer_size);
 
 // Handle quotes
 int check_null(void *pointer, int *error_flag);

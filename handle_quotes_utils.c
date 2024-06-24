@@ -48,7 +48,7 @@ void handle_double_quotes(char **current, char **result, t_exec_vars *vars, t_en
     **current = '\0';
     if (ft_strchr(token, '$') != NULL)
     {
-        handle_dollar_sign(&token, buffer, env);
+        handle_dollar_sign(&token, buffer, env, sizeof(buffer));
         *result = ft_strjoin(*result, buffer);
 		if (!check_null(*result, &vars->error))
 			return ;

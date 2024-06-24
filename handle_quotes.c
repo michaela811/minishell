@@ -42,7 +42,7 @@ void handle_no_current(t_handle_vars *local_vars, t_exec_vars *vars, t_env **env
 {
     if (ft_strchr(local_vars->token, '$') != NULL)
     {
-        handle_dollar_sign(&local_vars->token, local_vars->buffer, env);
+        handle_dollar_sign(&local_vars->token, local_vars->buffer, env, sizeof(local_vars->buffer));
         *local_vars->result = ft_strjoin(*local_vars->result, local_vars->buffer);
 		if (!check_null(*local_vars->result, &vars->error))
 			return ;
@@ -66,7 +66,7 @@ void handle_no_current(t_handle_vars *local_vars, t_exec_vars *vars, t_env **env
 
 void handle_with_current_dollar(t_handle_vars *local_vars, t_exec_vars *vars, t_env **env, t_parse_tree **node)
 {
-    handle_dollar_sign(&local_vars->token, local_vars->buffer, env);
+    handle_dollar_sign(&local_vars->token, local_vars->buffer, env, sizeof(local_vars->buffer));
     *local_vars->result = ft_strjoin(*local_vars->result, local_vars->buffer);
     if (!check_null(*local_vars->result, &vars->error))
         return ;

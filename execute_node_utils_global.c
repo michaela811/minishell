@@ -50,12 +50,14 @@ void handle_var_name(char **start, char *buffer, char *dollar, t_env **env)
     *start = var_end;
 }
 
-void handle_dollar_sign(char **start, char *buffer, t_env **env)
+void handle_dollar_sign(char **start, char *buffer, t_env **env, int buffer_size)
 {
     char *dollar;
     char *start_store;
 
-    ft_memset(buffer, '\0', sizeof(buffer));
+	if (start == NULL || *start == NULL)
+        return;
+    ft_memset(buffer, '\0', buffer_size);
     start_store = *start;
     while ((dollar = ft_strchr(*start, '$')) != NULL)
     {

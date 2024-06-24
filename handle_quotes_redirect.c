@@ -14,7 +14,8 @@ void handle_quotes_glob_redirect(t_parse_tree **node, t_exec_vars *vars, t_env *
     init_handle_quote_redirect(&local_vars, node);
 
     vars->error = 0;
-    while (**local_vars.current != '\0')
+    //vars->end = 0;
+    while (*local_vars.current != NULL && **local_vars.current != '\0')
     {
         if (vars->inside_single_quotes)
             handle_single_quotes(local_vars.current, local_vars.result, vars);
@@ -25,6 +26,7 @@ void handle_quotes_glob_redirect(t_parse_tree **node, t_exec_vars *vars, t_env *
         if (vars->end)
 		{
 			vars->end = 0;
+            g_last_exit_status = 0;
             return(free_and_null_double_pointer(&local_vars.result));
 		}
         if (vars->error)
@@ -42,15 +44,17 @@ void handle_no_current_redirect(t_handle_vars *local_vars, t_exec_vars *vars, t_
 {
     if (ft_strchr(local_vars->token, '$') != NULL)
     {
-        handle_dollar_sign(&local_vars->token, local_vars->buffer, env);
+        handle_dollar_sign(&local_vars->token, local_vars->buffer, env, sizeof(local_vars->buffer));
+        //(*node)->child->data->lexeme = ft_strjoin(*local_vars->result, local_vars->buffer);
         *local_vars->result = ft_strjoin(*local_vars->result, local_vars->buffer);
+        (*node)->child->data->lexeme = ft_strjoin(*local_vars->result, local_vars->token);
 		if (!check_null(*local_vars->result, &vars->error))
 			return ;
     }
     else
     {
         (*node)->child->data->lexeme = ft_strjoin(*local_vars->result, local_vars->token);
-		if (!check_null((*node)->child->data->lexeme, &vars->error))
+        if (!check_null((*node)->child->data->lexeme, &vars->error))
 			return ;
     }
     vars->end = 1;
@@ -64,7 +68,7 @@ void handle_with_current_redirect(t_handle_vars *local_vars, t_exec_vars *vars, 
     **local_vars->current = '\0';
 	if (ft_strchr((*node)->data->lexeme, '$') != NULL)
     {
-		handle_dollar_sign(&local_vars->token, local_vars->buffer, env);
+		handle_dollar_sign(&local_vars->token, local_vars->buffer, env, sizeof(local_vars->buffer));
 		if (vars->error)
 			return ;
     }
@@ -86,7 +90,6 @@ void handle_no_quotes_redirect(t_handle_vars *local_vars, t_exec_vars *vars, t_e
 {
     local_vars->token = *local_vars->current;
     *local_vars->current = ft_strpbrk(*local_vars->current, local_vars->delimiters);
-
     if (*local_vars->current == NULL)
     {
         handle_no_current_redirect(local_vars, vars, env, node);
@@ -138,7 +141,7 @@ void handle_quotes_glob(char **arg, t_env **env, int *error)
             *current = '\0';
             if (ft_strchr(token, '$') != NULL)
             {
-                handle_dollar_sign(&token, buffer, env);
+                handle_dollar_sign(&token, buffer, env, sizeof(buffer));
                 result = ft_strjoin(result, buffer);
             }
             else
@@ -154,7 +157,7 @@ void handle_quotes_glob(char **arg, t_env **env, int *error)
             {
                 if (strchr(token, '$') != NULL)
                 {
-                    handle_dollar_sign(&token, buffer, env);
+                    handle_dollar_sign(&token, buffer, env, sizeof(buffer));
                     result = ft_strjoin(result, buffer);
                 }
                 else
@@ -165,7 +168,7 @@ void handle_quotes_glob(char **arg, t_env **env, int *error)
             *current = '\0';
             if (strchr(token, '$') != NULL)
             {
-                handle_dollar_sign(&token, buffer, env);
+                handle_dollar_sign(&token, buffer, env, sizeof(buffer));
                 result = ft_strjoin(result, buffer);
             }
             else
