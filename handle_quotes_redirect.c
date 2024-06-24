@@ -45,10 +45,9 @@ void handle_no_current_redirect(t_handle_vars *local_vars, t_exec_vars *vars, t_
     if (ft_strchr(local_vars->token, '$') != NULL)
     {
         handle_dollar_sign(&local_vars->token, local_vars->buffer, env, sizeof(local_vars->buffer));
-        //(*node)->child->data->lexeme = ft_strjoin(*local_vars->result, local_vars->buffer);
         *local_vars->result = ft_strjoin(*local_vars->result, local_vars->buffer);
         (*node)->child->data->lexeme = ft_strjoin(*local_vars->result, local_vars->token);
-		if (!check_null(*local_vars->result, &vars->error))
+        if (!check_null(*local_vars->result, &vars->error))
 			return ;
     }
     else

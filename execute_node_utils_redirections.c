@@ -4,10 +4,8 @@
 
 void	handle_redirection_from(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
-	//(*node)->child->data->lexeme = handle_quotes_echo((*node)->child->data->lexeme, &vars->error);
-	//handle_quotes_glob(&(*node)->child->data->lexeme, env, &vars->error);
 	handle_quotes_glob_redirect(node, vars, env);
-	if (vars->error)//maybe better vars->error
+	if (vars->error)
 		return ;
 	vars->fd_in = open((*node)->child->data->lexeme, O_RDONLY);
 	if (vars->fd_in == -1)
@@ -16,13 +14,10 @@ void	handle_redirection_from(t_parse_tree **node, t_exec_vars *vars, t_env **env
 		printf_global_error(1, 2, "my(s)hell: %s: No such file or directory\n", (*node)->child->data->lexeme);
 	}
 	*node = (*node)->child;
-	//vars->i++;
 }
 
 void	handle_redirection_to(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 {
-	//(*node)->child->data->lexeme = handle_quotes_echo((*node)->child->data->lexeme, &vars->error);
-	//handle_quotes_glob(&(*node)->child->data->lexeme, env, &vars->error);
 	handle_quotes_glob_redirect(node, vars, env);
 	if (g_last_exit_status)
 		return ;
