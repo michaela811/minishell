@@ -27,7 +27,7 @@ int	exec_unset(char **args, t_env **env)
 	while (args[i])
 	{
 		current = *env;
-        prev = NULL;
+		prev = NULL;
 		while (current != NULL)
 		{
 			if (ft_strcmp(current->name, args[i]) == 0)
@@ -40,8 +40,6 @@ int	exec_unset(char **args, t_env **env)
 				free(current->value);
 				free(current);
 				break ;
-				//g_last_exit_status = 0;
-				//return (g_last_exit_status);
 			}
 			prev = current;
 			current = current->next;

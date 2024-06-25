@@ -10,7 +10,7 @@ int	is_cmd_word(t_token_list **tok, t_parse_tree **cmd_word_node)
 		(*cmd_word_node)->data = (*tok)->token;
 		*tok = (*tok)->next;
 	}
-	return(0);
+	return (0);
 }
 
 int	is_io_redirect(t_token_list **tok, t_parse_tree **redirect_node)

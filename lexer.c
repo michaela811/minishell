@@ -30,7 +30,7 @@ char	*preprocess_input(char *str, const char *delim)
 	additional_chars = count_additional_chars(str, delim);
 	preprocessed = malloc(original_len + additional_chars + 1);
 	if (preprocessed == NULL)
-		return(printf_global_error(1, 2, "Memory allocation error\n"), NULL);
+		return (printf_global_error(1, 2, "Memory allocation error\n"), NULL);
 	dest = preprocessed;
 	process_input_str(str, delim, dest);
 	return (preprocessed);
@@ -38,9 +38,10 @@ char	*preprocess_input(char *str, const char *delim)
 
 void	process_input_str(char *str, const char *delim, char *dest)
 {
-	int in_quotes = 0;
-	char c;
+	int		in_quotes;
+	char	c;
 
+	in_quotes = 0;
 	c = '\0';
 	while (*str != '\0')
 	{
@@ -49,9 +50,7 @@ void	process_input_str(char *str, const char *delim, char *dest)
 			if (!in_quotes)
 				c = *str;
 			if (!c || c == *str)
-            	in_quotes = !in_quotes;
-			//if (!c)
-				//c = *str;
+				in_quotes = !in_quotes;
 		}
 		if (in_quotes == 0 && ft_strchr(delim, *str) != NULL)
 		{
@@ -84,15 +83,15 @@ void	process_input_str(char *str, const char *delim, char *dest)
 
 enum token_type	determine_token_type(char *token_value)
 {
-	if (strcmp(token_value, "|") == 0) // ad this in libft library
+	if (ft_strcmp(token_value, "|") == 0)
 		return (PIPE);
-	else if (strcmp(token_value, ">") == 0)
+	else if (ft_strcmp(token_value, ">") == 0)
 		return (RED_TO);
-	else if (strcmp(token_value, "<") == 0)
+	else if (ft_strcmp(token_value, "<") == 0)
 		return (RED_FROM);
-	else if (strcmp(token_value, ">>") == 0)
+	else if (ft_strcmp(token_value, ">>") == 0)
 		return (APPEND);
-	else if (strcmp(token_value, "<<") == 0)
+	else if (ft_strcmp(token_value, "<<") == 0)
 		return (HERE_DOC);
 	else
 		return (WORD);
@@ -110,5 +109,5 @@ void	handle_memory_error(t_token **token_list, int num_tokens)
 	}
 	free(*token_list);
 	perror("Memory allocation error");
-	exit(EXIT_FAILURE);//SHOULD BE REPLACED WITH INT?
+	exit(EXIT_FAILURE);
 }

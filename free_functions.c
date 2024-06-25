@@ -39,26 +39,19 @@ void	free_token(t_token *tok)
 
 void	free_parse_tree(t_parse_tree *tree)
 {
-    t_parse_tree	*sibling;
-    t_parse_tree	*child;
+	t_parse_tree	*sibling;
+	t_parse_tree	*child;
 
-    if (tree == NULL)
-        return ;
-
-    child = tree->child;
-    sibling = tree->sibling;
-
-    /* if (tree->data != NULL)
-    {
-        free_token(tree->data);
-        tree->data = NULL;
-    } */
+	if (tree == NULL)
+		return ;
+	child = tree->child;
+	sibling = tree->sibling;
 	if (sibling != NULL)
-        free_parse_tree(sibling);
-    if (child != NULL)
-        free_parse_tree(child);
-    free(tree);
-    tree = NULL;
+		free_parse_tree(sibling);
+	if (child != NULL)
+		free_parse_tree(child);
+	free(tree);
+	tree = NULL;
 }
 
 void	free_token_list(t_token_list *list)
@@ -90,7 +83,6 @@ void	free_token_list(t_token_list *list)
 	list = NULL;
 }
 
-//We probably have this one already
 void	free_array(char **array)
 {
 	size_t	i;
@@ -124,7 +116,6 @@ void	free_env_array(char **env_array)
 	i = 0;
 	while (env_array[i] != NULL)
 	{
-		//printf("%d: %s\n", i, env_array[i]);
 		free(env_array[i]);
 		i++;
 	}
@@ -134,76 +125,76 @@ void	free_env_array(char **env_array)
 
 void	free_exit_data(t_free_data *exec_data)
 {
-    if (exec_data)
+	if (exec_data)
 	{
-		/*free_env_array(vars->args);
-		vars->args = NULL;
-		free(vars);*/
-		if (exec_data->token_list_start) {
-            free_token_list(exec_data->token_list_start);
-			//free(exec_data->token_list_start);
+		if (exec_data->token_list_start)
+		{
+			free_token_list(exec_data->token_list_start);
 			exec_data->token_list_start = NULL;
-        }
-        if (exec_data->tree_start) {
-            free_parse_tree(exec_data->tree_start);
+		}
+		if (exec_data->tree_start)
+		{
+			free_parse_tree(exec_data->tree_start);
 			exec_data->tree_start = NULL;
-        }
-        if (exec_data->env) {
-            free_env(exec_data->env);
+		}
+		if (exec_data->env)
+		{
+			free_env(exec_data->env);
 			exec_data->env = NULL;
-        }
-        if (exec_data->environment) {
+		}
+		if (exec_data->environment)
+		{
 			free_env_array(exec_data->environment);
 			exec_data->environment = NULL;
-        }
-        free(exec_data);
+		}
+		free(exec_data);
 		exec_data = NULL;
 		clear_history();
-    }
+	}
 }
 
 void	free_command_data(t_free_data *exec_data)
 {
-    if (exec_data) {
-		if (exec_data->token_list_start) {
-            free_token_list(exec_data->token_list_start);
+	if (exec_data)
+	{
+		if (exec_data->token_list_start)
+		{
+			free_token_list(exec_data->token_list_start);
 			exec_data->token_list_start = NULL;
-        }
-        if (exec_data->tree_start) {
-            free_parse_tree(exec_data->tree_start);
+		}
+		if (exec_data->tree_start)
+		{
+			free_parse_tree(exec_data->tree_start);
 			exec_data->tree_start = NULL;
-        }
-        //if (exec_data->env) {
-            //free_env(exec_data->env);
-        //}
-        if (exec_data->environment) {
+		}
+		if (exec_data->environment)
+		{
 			free_env_array(exec_data->environment);
 			exec_data->environment = NULL;
-        }
-        //free(exec_data);
-    }
+		}
+	}
 }
 
-void free_and_null(char **ptr)
+void	free_and_null(char **ptr)
 {
-    free(*ptr);
-    *ptr = NULL;
+	free(*ptr);
+	*ptr = NULL;
 }
 
-void free_and_null_double_pointer(char ***ptr)
+void	free_and_null_double_pointer(char ***ptr)
 {
 	size_t	i;
 
-    if (ptr != NULL && *ptr != NULL)
-    {
+	if (ptr != NULL && *ptr != NULL)
+	{
 		i = 0;
-        while ((*ptr)[i] != NULL)
+		while ((*ptr)[i] != NULL)
 		{
-            free((*ptr)[i]);
-            (*ptr)[i] = NULL;
-            i++;
-        }
-        free(*ptr);
-        *ptr = NULL;
-    }
+			free((*ptr)[i]);
+			(*ptr)[i] = NULL;
+			i++;
+		}
+		free(*ptr);
+		*ptr = NULL;
+	}
 }

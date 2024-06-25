@@ -39,7 +39,8 @@ char	*ft_strjoin_gnl(char *read_str, char *buff)
 
 	if ((ft_strlen_gnl(read_str) + ft_strlen_gnl(buff)) == 0)
 		return (NULL);
-	str = malloc(sizeof(char) * ((ft_strlen_gnl(read_str) + ft_strlen_gnl(buff)) + 1));
+	str = malloc(sizeof(char) * ((ft_strlen_gnl(read_str)
+					+ ft_strlen_gnl(buff)) + 1));
 	if (str == NULL)
 		return (my_free_gnl(&read_str), my_free_gnl(&buff), NULL);
 	i = 0;

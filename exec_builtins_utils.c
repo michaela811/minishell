@@ -1,10 +1,11 @@
 #include "minishell.h"
 
-int	change_directory_and_update(char *path, t_env **env, char *cwd, char **args)//, int line)
+int	change_directory_and_update(char *path, t_env **env, char *cwd, char **args)
 {
 	if (chdir(path) != 0)
 	{
-		printf_global_error(1, 2, "my(s)hell: %s: %s: No such file or directory\n", args[0], path);
+		printf_global_error(1, 2,
+			"my(s)hell: %s: %s: No such file or directory\n", args[0], path);
 		free(cwd);
 		return (1);
 	}
@@ -26,7 +27,6 @@ void	exec_export_no_args(t_env *env)
 	current = env;
 	while (current != NULL)
 	{
-		//printf("declare -x %s=\"%s\"\n", current->name, current->value);
 		printf("export %s=\"%s\"\n", current->name, current->value);
 		current = current->next;
 	}
@@ -37,28 +37,35 @@ int	var_control(char *command, char *args)
 	int	i;
 
 	i = 0;
-	if (args[i] == '=' || args[i] == 0 || (!ft_isalpha(args[i]) && args[i] != '_'))
+	if (args[i] == '=' || args[i] == 0 || (!ft_isalpha(args[i])
+			&& args[i] != '_'))
 	{
-		return (printf_global_error(1, 2, "mini(s)hell: %s: `%s': not a valid identifier\n", command, args), g_last_exit_status);
+		return (printf_global_error(1, 2,
+				"mini(s)hell: %s: `%s': not a valid identifier\n",
+				command, args), g_last_exit_status);
 	}
 	i++;
 	while (args[i] && args[i] != '=')
-    {
-        if (!ft_isalnum(args[i]) && args[i] != '_')
-        {
-            return (printf_global_error(1, 2, "mini(s)hell: %s: `%s': not a valid identifier\n", command, args), g_last_exit_status);
-        }
-        i++;
-    }
+	{
+		if (!ft_isalnum(args[i]) && args[i] != '_')
+		{
+			return (printf_global_error(1, 2,
+					"mini(s)hell: %s: `%s': not a valid identifier\n",
+					command, args), g_last_exit_status);
+		}
+		i++;
+	}
 	return (0);
 }
 
-int control_name(char *var, char **name, int *i)
+int	control_name(char *var, char **name, int *i)
 {
 	while ((*name)[*i] != '\0')
 	{
 		if (!ft_isalnum((*name)[*i]) && (*name)[*i] != '_')
-			return(printf_global_error(1, 2, "mini(s)hell: %s: `%s': not a valid identifier\n", var[0], *name), free(*name), g_last_exit_status);
+			return (printf_global_error(1, 2,
+					"mini(s)hell: %s: `%s': not a valid identifier\n",
+					var[0], *name), free(*name), g_last_exit_status);
 		(*i)++;
 	}
 	return (0);
@@ -76,7 +83,8 @@ int	split_var(char *var, char **name, char **value)
 	else
 		*name = ft_strdup(var);
 	if (*name == NULL)
-		return (printf_global_error(1, 2, "split_var: strndup error\n"), free(*name), g_last_exit_status);
+		return (printf_global_error(1, 2,
+				"split_var: strndup error\n"), free(*name), g_last_exit_status);
 	if (control_name(var, name, &i))
 		return (g_last_exit_status);
 	(*name)[i] = '\0';
@@ -84,39 +92,44 @@ int	split_var(char *var, char **name, char **value)
 	{
 		*value = ft_strdup("");
 		if (value == NULL)
-			return (printf_global_error(1, 2, "split_var: strndup error\n"), free(*name), g_last_exit_status);
+			return (printf_global_error(1, 2,
+					"split_var: strndup error\n"), free(*name), g_last_exit_status);
 		return (0);
 	}
-	*value = ft_strdup(equals + 1);//MEMORY!!!
-	if (*value == NULL)//Do we need this check?
-		return (printf_global_error(1, 2, "split_var: strndup error\n"), free(*name), g_last_exit_status);
+	*value = ft_strdup(equals + 1);
+	if (*value == NULL)
+		return (printf_global_error(1, 2,
+				"split_var: strndup error\n"), free(*name), g_last_exit_status);
 	return (0);
 }
 
-int export_quotes(char *input, char **output)
+int	export_quotes(char *input, char **output)
 {
-    int len;
+	int	len;
+
 	len = ft_strlen(input);
-    if (len == 0)
+	if (len == 0)
 	{
-        *output = ft_strdup(""); // Handle empty value
-        return (0);
-    }
+		*output = ft_strdup("");
+		return (0);
+	}
 	if ((input[0] == '"' || input[0] == '\'') && input[0] != input[len - 1])
 	{
-		g_last_exit_status = 1;//maybe to change it to a different number
-		return(ft_printf_fd(1, "export_quotes: unbalanced quotes"), g_last_exit_status);
+		g_last_exit_status = 1;
+		return (ft_printf_fd(1, "export_quotes: unbalanced quotes"),
+												g_last_exit_status);
 	}
-    if ((input[0] == '"' || input[0] == '\'') && input[0] == input[len - 1])
-        *output = ft_strndup(input + 1, len - 2);
+	if ((input[0] == '"' || input[0] == '\'') && input[0] == input[len - 1])
+		*output = ft_strndup(input + 1, len - 2);
 	else
 		*output = ft_strdup(input);
 	if (*output == NULL)
 	{
-        g_last_exit_status = 1;//maybe to change it to a different number
-		return(ft_printf_fd(1, "export_quotes: strndup error"), g_last_exit_status);
-    }
-    return (0);
+		g_last_exit_status = 1;
+		return (ft_printf_fd(1, "export_quotes: strndup error"),
+											g_last_exit_status);
+	}
+	return (0);
 }
 
 int	update_pwd(t_env **env, char *cwd)

@@ -56,7 +56,7 @@ t_token_list	*create_token(enum token_type type, char *lexeme)
 	if (!new_token)
 	{
 		perror("Failed to allocate memory for token");
-		exit(MEMORY_ERROR);//SHOULD BE REPLACED WITH INT?
+		exit(MEMORY_ERROR);
 	}
 	new_token->lexeme = ft_strdup(lexeme);
 	new_token->type = type;
@@ -65,7 +65,7 @@ t_token_list	*create_token(enum token_type type, char *lexeme)
 	{
 		free_token(new_token);
 		perror("Failed to allocate memory for token list node");
-		exit(MEMORY_ERROR);//SHOULD BE REPLACED WITH INT?
+		exit(MEMORY_ERROR);
 	}
 	new_list_node->token = new_token;
 	new_list_node->next = NULL;
@@ -94,7 +94,6 @@ void	add_token(t_token_list **list, enum token_type type, char *lexeme)
 	}
 }
 
-//TO BE DELETED
 void	print_parse_tree(t_parse_tree *tree, int depth)
 {
 	int	i;

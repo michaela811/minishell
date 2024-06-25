@@ -29,7 +29,6 @@ t_env	*init_environment(char **envt)
 	return (head);
 }
 
-//TO DISCUSS ABOUT CONST
 int	update_add_env_var(t_env **head, const char *name, const char *value)
 {
 	t_env	*var;
@@ -90,7 +89,8 @@ int	get_path(char *cmd, t_env *env, char **exec)
 	i = -1;
 	path = ft_split(get_env_var(env, "PATH"), ':');
 	if (path == NULL)
-		return (printf_global_error(1, 2, "malloc error in split function\n"), 1);
+		return (printf_global_error(1, 2,
+				"malloc error in split function\n"), 1);
 	while (path[++i])
 	{
 		if (get_exec(path, i, cmd, exec))
@@ -110,12 +110,14 @@ int	get_exec(char **path, int i, char *cmd, char **exec)
 
 	path_part = ft_strjoin(path[i], "/");
 	if (path_part == NULL)
-		return (printf_global_error(1, 2, "malloc error in strjoin function\n"), 1);
+		return (printf_global_error(1, 2,
+				"malloc error in strjoin function\n"), 1);
 	*exec = ft_strjoin(path_part, cmd);
 	if (*exec == NULL)
 	{
 		free(path_part);
-		return (printf_global_error(1, 2, "malloc error in strjoin function\n"), 1);
+		return (printf_global_error(1, 2,
+				"malloc error in strjoin function\n"), 1);
 	}
 	free(path_part);
 	return (0);
