@@ -65,8 +65,9 @@ char	**env_list_to_array(t_env *head)
 	if (env_array == NULL)
 		return (NULL);
 	current = head;
-	i = 0;
-	while (i < count)
+	i = count - 1;
+	//while (i < count)
+	while (current != NULL)
 	{
 		env_array[i] = create_env_str(current);
 		if (env_array[i] == NULL)
@@ -75,7 +76,7 @@ char	**env_list_to_array(t_env *head)
 			return (NULL);
 		}
 		current = current->next;
-		i++;
+		i--;
 	}
 	env_array[count] = NULL;
 	return (env_array);

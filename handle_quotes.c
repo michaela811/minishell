@@ -3,8 +3,7 @@
 void	init_handle_vars(t_handle_vars *l_vars, t_exec_vars *vars)
 {
 	l_vars->result = malloc(sizeof(char *));
-	*l_vars->result = malloc(1);
-	**l_vars->result = '\0';
+	*l_vars->result = ft_strdup("");
 	l_vars->current = &vars->args[vars->i];
 	l_vars->delimiters = "'\"";
 }

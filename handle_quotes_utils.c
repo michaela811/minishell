@@ -69,5 +69,6 @@ void	handle_quotes_final_assign(char **str1, char **str2, t_exec_vars *vars)
 {
 	*str1 = ft_strdup(*str2);
 	check_null(*str1, &vars->error);
-	free_and_null_double_pointer(&str2);
+	//free_and_null_double_pointer(&str2);
+	free_and_null(str2);
 }
