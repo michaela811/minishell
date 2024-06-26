@@ -14,3 +14,4 @@ void			free_env(t_env *head);
 void			init_exec_vars(t_exec_vars *vars);
 t_free_data		*init_command_data(char **envp);
 void			free_array(char **array);
+void			free_handle_vars(t_handle_vars *l_vars);
