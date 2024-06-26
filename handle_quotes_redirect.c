@@ -3,7 +3,8 @@
 void	init_handle_quote_redirect(t_handle_vars *l_vars, t_parse_tree **node)
 {
 	l_vars->result = malloc(sizeof(char *));
-	*l_vars->result = '\0';
+	*l_vars->result = malloc(1);
+	**l_vars->result = '\0';
 	l_vars->current = &(*node)->child->data->lexeme;
 	l_vars->delimiters = "'\"";
 }
@@ -34,7 +35,7 @@ void	handle_quotes_glob_redirect(t_parse_tree **node, t_exec_vars *vars, t_env *
 	if (!vars->error)
 		return (handle_quotes_final_assign(&(*node)->child->data->lexeme,
 				l_vars.result, vars));
-	free_and_null_double_pointer(&l_vars.result);
+	return (free_and_null_double_pointer(&l_vars.result));
 }
 
 void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars, t_env **env, t_parse_tree **node)
@@ -42,13 +43,13 @@ void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars, t_env 
 	if (ft_strchr(l_vars->token, '$') != NULL)
 	{
 		handle_dollar_sign(&l_vars->token, l_vars->buffer, env, sizeof(l_vars->buffer));
-		(*node)->child->data->lexeme = ft_strjoin(*l_vars->result, l_vars->buffer);
-		if (!check_null((*node)->child->data->lexeme, &vars->error))
+		*l_vars->result = ft_strjoin(*l_vars->result, l_vars->buffer);
+		if (!check_null(*l_vars->result, &vars->error))
 			return ;
+		(*node)->child->data->lexeme = ft_strdup(*l_vars->result);
 	}
 	else
 	{
-		ft_memset(l_vars->buffer, '\0', sizeof(l_vars->buffer));
 		(*node)->child->data->lexeme = ft_strjoin(*l_vars->result, l_vars->token);
 		if (!check_null((*node)->child->data->lexeme, &vars->error))
 			return ;
