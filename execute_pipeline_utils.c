@@ -12,7 +12,7 @@ int	handle_child_process(int *pipefd, t_free_data *exec_data)
 		}
 		close(pipefd[1]);
 	}
-	if (execute_node(exec_data))
+	if ((g_last_exit_status = execute_node(exec_data)))
 		exit(EXIT_FAILURE);
 	g_last_exit_status = 0;
 	exit(EXIT_SUCCESS);
