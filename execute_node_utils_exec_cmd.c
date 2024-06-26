@@ -139,7 +139,7 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 
 int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 {
-	char	*path;
+	char	*path = NULL;
 	//int		path_status;
 	//int		dir_check;
 
