@@ -12,3 +12,5 @@ int			execute_command(t_exec_vars *vars, t_free_data *exec_data);
 void		handle_node_data(t_parse_tree **node, t_exec_vars *vars,
 				t_env **env);
 int			execute_node(t_free_data *exec_data);
+int			error_handeling_before_fork(t_exec_vars *vars, t_env **env,
+				char *path);
