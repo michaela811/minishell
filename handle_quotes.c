@@ -3,7 +3,8 @@
 void	init_handle_vars(t_handle_vars *l_vars, t_exec_vars *vars)
 {
 	l_vars->result = malloc(sizeof(char *));
-	*l_vars->result = ft_strdup("");
+	*l_vars->result = malloc(1);
+	**l_vars->result = '\0';
 	l_vars->current = &vars->args[vars->i];
 	l_vars->delimiters = "'\"";
 }
@@ -28,7 +29,7 @@ void	handle_quotes_glob_1(t_parse_tree **node, t_exec_vars *vars,
 		if (vars->end)
 		{
 			vars->end = 0;
-			return (free_and_null_double_pointer(&l_vars.result));
+			return (free_handle_vars(&l_vars));
 		}
 		if (vars->error)
 			break ;
@@ -36,7 +37,7 @@ void	handle_quotes_glob_1(t_parse_tree **node, t_exec_vars *vars,
 	if (!vars->error)
 		return (handle_quotes_final_assign(&vars->args[vars->i],
 				l_vars.result, vars));
-	free_and_null_double_pointer(&l_vars.result);
+	free_handle_vars(&l_vars);
 }
 
 void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,

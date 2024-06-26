@@ -198,3 +198,16 @@ void	free_and_null_double_pointer(char ***ptr)
 		*ptr = NULL;
 	}
 }
+
+void free_handle_vars(t_handle_vars *l_vars)
+{
+    if (l_vars->result != NULL)
+	{
+        free(*l_vars->result);
+        *l_vars->result = NULL;
+        free(l_vars->result);
+        l_vars->result = NULL;
+    }
+}
+
+

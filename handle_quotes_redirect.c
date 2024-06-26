@@ -27,7 +27,7 @@ void	handle_quotes_glob_redirect(t_parse_tree **node, t_exec_vars *vars, t_env *
 		{
 			vars->end = 0;
 			g_last_exit_status = 0;
-			return (free_and_null_double_pointer(&l_vars.result));
+			return (free_handle_vars(&l_vars));
 		}
 		if (vars->error)
 			break ;
@@ -35,7 +35,7 @@ void	handle_quotes_glob_redirect(t_parse_tree **node, t_exec_vars *vars, t_env *
 	if (!vars->error)
 		return (handle_quotes_final_assign(&(*node)->child->data->lexeme,
 				l_vars.result, vars));
-	return (free_and_null_double_pointer(&l_vars.result));
+	return (free_handle_vars(&l_vars));
 }
 
 void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars, t_env **env, t_parse_tree **node)
