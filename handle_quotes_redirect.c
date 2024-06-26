@@ -2,7 +2,7 @@
 
 void	init_handle_quote_redirect(t_handle_vars *l_vars, t_parse_tree **node)
 {
-	l_vars->result = malloc(1);
+	l_vars->result = malloc(sizeof(char *));
 	*l_vars->result = '\0';
 	l_vars->current = &(*node)->child->data->lexeme;
 	l_vars->delimiters = "'\"";
