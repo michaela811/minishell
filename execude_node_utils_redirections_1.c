@@ -38,4 +38,3 @@ void	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 	*node = (*node)->child;
 	vars->i++;
 }
-

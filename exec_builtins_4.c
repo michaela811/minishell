@@ -103,5 +103,3 @@ int	exec_dollar_pwd(void)
 		return (g_last_exit_status);
 	}
 }
-
-

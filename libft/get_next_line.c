@@ -114,32 +114,3 @@ char	*get_next_line(int fd)
 		buff = ft_strjoin_gnl(buff, read_bytes);
 	}
 }
-
-void	ft_putendl_fd_gnl(char *s, int fd)
-{
-	if (s)
-	{
-		write(fd, s, ft_strlen_gnl(s));
-		write(fd, "\n", 1);
-	}
-}
-
-/* int		main(int argc, char **argv)
-{
-	int		fd;
-	char	*line;
-
-	if (argc == 1)
-		fd = 0;
-	else if (argc == 2)
-		fd = open(argv[1], O_RDONLY);
-	else
-		return (2);
-	while ((line = get_next_line(fd)))
-	{
-		ft_putendl_fd(line, fd);
-		free(line);
-	}
-	if (argc == 2)
-		close(fd);
-} */

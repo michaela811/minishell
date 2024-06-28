@@ -1,18 +1,5 @@
 #include "minishell.h"
 
-t_p_tree	*alloc_parse_tree(void)
-{
-	t_p_tree	*tree;
-
-	tree = malloc(sizeof(t_p_tree));
-	if (tree == NULL)
-		return (NULL);
-	tree->data = NULL;
-	tree->child = NULL;
-	tree->sibling = NULL;
-	return (tree);
-}
-
 void	link_node(t_p_tree **current, t_p_tree *new_node)
 {
 	t_p_tree	*last;

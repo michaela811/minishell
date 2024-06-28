@@ -1,5 +1,18 @@
 #include "minishell.h"
 
+t_p_tree	*alloc_parse_tree(void)
+{
+	t_p_tree	*tree;
+
+	tree = malloc(sizeof(t_p_tree));
+	if (tree == NULL)
+		return (NULL);
+	tree->data = NULL;
+	tree->child = NULL;
+	tree->sibling = NULL;
+	return (tree);
+}
+
 int	handle_redirection_token(t_token_list **tok, t_p_tree **suffix_node)
 {
 	t_p_tree	*redirect_node;

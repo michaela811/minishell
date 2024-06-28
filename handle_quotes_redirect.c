@@ -44,7 +44,7 @@ void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 	else
 	{
 		(*node)->child->data->lexeme = ft_strjoin(*l_vars->result,
-										l_vars->token);
+				l_vars->token);
 		if (!check_null((*node)->child->data->lexeme, &vars->error))
 			return ;
 	}

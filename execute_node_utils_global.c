@@ -66,9 +66,7 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env,
 		ft_strncat(buffer, *start, dollar - *start);
 		if (*(dollar + 1) == '?')
 			handle_question_mark(start, buffer, dollar);
-		else if (*(dollar + 1) == '\0' || *(dollar + 1) == '$'
-			|| *(dollar + 1) == ' ' || *(dollar + 1) == '"'
-			|| *(dollar + 1) == '/')
+		else if (*(dollar + 1) == '\0' || ft_strchr("$ \"'/", *(dollar + 1)))
 			handle_special_chars(start, buffer, dollar);
 		else
 			handle_var_name(start, buffer, dollar, env);

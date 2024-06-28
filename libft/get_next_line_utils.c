@@ -55,3 +55,12 @@ char	*ft_strjoin_gnl(char *read_str, char *buff)
 	str[i] = '\0';
 	return (my_free_gnl(&read_str), my_free_gnl(&buff), str);
 }
+
+void	ft_putendl_fd_gnl(char *s, int fd)
+{
+	if (s)
+	{
+		write(fd, s, ft_strlen_gnl(s));
+		write(fd, "\n", 1);
+	}
+}
