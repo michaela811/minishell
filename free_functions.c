@@ -149,7 +149,6 @@ void	free_exit_data(t_free_data *exec_data)
 		}
 		free(exec_data);
 		exec_data = NULL;
-		clear_history();
 	}
 }
 
@@ -219,30 +218,5 @@ void	free_handle_vars(t_handle_vars *l_vars)
 	}
 }
 
-/*void free_handle_vars(t_handle_vars **l_vars_ptr)
-{
-    if (l_vars_ptr == NULL || *l_vars_ptr == NULL)
-	{
-        // If the pointer to the pointer is NULL, or the pointer it points to is NULL, there's nothing to free.
-        return;
-    }
-
-    t_handle_vars *l_vars = *l_vars_ptr; // Dereference once to get the actual pointer to the structure.
-
-    // Free the l_vars->result's string if it exists.
-    if (l_vars->result != NULL) {
-        free(*l_vars->result);  // Free the string allocated on the heap.
-        *l_vars->result = NULL; // Set the string pointer to NULL to avoid dangling pointer.
-
-        free(l_vars->result);   // Free the pointer to the string.
-        l_vars->result = NULL;  // Again, set it to NULL to avoid dangling pointer.
-    }
-
-    // If there are other dynamically allocated fields, free them in a similar manner here.
-
-    // Now, free the structure itself.
-    free(l_vars);
-    *l_vars_ptr = NULL; // Set the caller's original pointer to NULL to fully clean up.
-}*/
 
 

@@ -13,6 +13,27 @@ int	exec_env(char **args, char **environment)
 	return (g_last_exit_status);
 }
 
+static void	handle_unset(t_env *current, t_env *prev, t_env **env,
+						char **args, int i)
+{
+	while (current != NULL)
+	{
+		if (ft_strcmp(current->name, args[i]) == 0)
+		{
+			if (prev == NULL)
+				*env = current->next;
+			else
+				prev->next = current->next;
+			free(current->name);
+			free(current->value);
+			free(current);
+			break ;
+		}
+		prev = current;
+		current = current->next;
+	}
+}
+
 int	exec_unset(char **args, t_env **env)
 {
 	t_env	*current;
@@ -28,22 +49,7 @@ int	exec_unset(char **args, t_env **env)
 	{
 		current = *env;
 		prev = NULL;
-		while (current != NULL)
-		{
-			if (ft_strcmp(current->name, args[i]) == 0)
-			{
-				if (prev == NULL)
-					*env = current->next;
-				else
-					prev->next = current->next;
-				free(current->name);
-				free(current->value);
-				free(current);
-				break ;
-			}
-			prev = current;
-			current = current->next;
-		}
+		handle_unset(current, prev, env, args, i);
 		i++;
 	}
 	g_last_exit_status = 0;

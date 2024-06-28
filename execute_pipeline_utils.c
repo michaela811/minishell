@@ -18,15 +18,40 @@ int	handle_child_process(int *pipefd, t_free_data *exec_data)
 	exit(EXIT_SUCCESS);
 }
 
+static int	check_return_value(int return_value)
+{
+	if (return_value != 0)
+	{
+		g_last_exit_status = return_value;
+		return (EXIT_FAILURE);
+	}
+	g_last_exit_status = 0;
+	return (0);
+}
+
+static void	close_fd(int *pipefd)
+{
+	close(pipefd[0]);
+	close(pipefd[1]);
+}
+
+static int	pid2_check(pid_t pid2)
+{
+	if (pid2 == -1)
+		return (printf_global_error(1, 2,
+				"my(s)hell: fork in sibling process\n"), 1);
+	else
+		return (0);
+}
+
 pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data)
 {
 	pid_t	pid2;
 	int		return_value;
 
 	pid2 = fork();
-	if (pid2 == -1)
-		return (printf_global_error(1, 2,
-				"my(s)hell: fork in sibling process\n"), 1);
+	if (pid2_check(pid2))
+		return (g_last_exit_status);
 	if (pid2 == 0)
 	{
 		if (dup2(pipefd[0], STDIN_FILENO) == -1)
@@ -34,34 +59,44 @@ pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data)
 			perror("dup2");
 			exit(EXIT_FAILURE);
 		}
-		close(pipefd[0]);
-		close(pipefd[1]);
+		close_fd(pipefd);
 		return_value = execute_pipeline(exec_data);
-		if (return_value != 0)
-		{
-			g_last_exit_status = return_value;
-			exit(EXIT_FAILURE);
-		}
-		g_last_exit_status = 0;
+		if (check_return_value(return_value))
+			exit (EXIT_FAILURE);
 		exit(EXIT_SUCCESS);
 	}
 	else if (pid2 > 0)
 	{
-		close(pipefd[0]);
-		close(pipefd[1]);
+		close_fd(pipefd);
 		wait(NULL);
 	}
 	return (pid2);
 }
 
+static int	ft_waitpid(int num_commands, pid_t *pids)
+{
+	int	i;
+	int	status;
+
+	i = 0;
+	while (i++ < num_commands)
+	{
+		waitpid(pids[i], &status, 0);
+		if (WIFEXITED(status))
+		{
+			g_last_exit_status = WEXITSTATUS(status);
+			return (g_last_exit_status);
+		}
+	}
+	return (g_last_exit_status);
+}
+
 int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 {
-	int			status;
 	pid_t		pids [10];
 	pid_t		sibling_pid;
 	int			num_commands;
 	t_free_data	sibling_free_data;
-	int			i;
 
 	num_commands = 0;
 	pids[num_commands] = pid;
@@ -77,12 +112,6 @@ int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 		pids[num_commands] = sibling_pid;
 		num_commands++;
 	}
-	i = 0;
-	while (i++ < num_commands)
-	{
-		waitpid(pids[i], &status, 0);
-		if (WIFEXITED(status))
-			g_last_exit_status = WEXITSTATUS(status);
-	}
+	ft_waitpid(num_commands, pids);
 	return (g_last_exit_status);
 }

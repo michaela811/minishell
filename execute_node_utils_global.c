@@ -60,7 +60,6 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env,
 		return ;
 	ft_memset(buffer, '\0', buffer_size);
 	start_store = *start;
-	//dollar = ft_strchr(*start, '$');
 	while ((dollar = ft_strchr(*start, '$')) != NULL)
 	{
 		ft_strncat(buffer, *start, dollar - *start);

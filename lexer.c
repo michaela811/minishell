@@ -36,6 +36,29 @@ char	*preprocess_input(char *str, const char *delim)
 	return (preprocessed);
 }
 
+static void	handle_delim_char(char **dest, char **str)
+{
+	if (**str == ' ' || **str == '\t')
+	{
+		*(*dest)++ = -1;
+		*(*dest)++ = -1;
+	}
+	else if ((**str == '<' && *(*str + 1) == '<') || (**str == '>'
+		&& *(*str + 1) == '>'))
+	{
+		*(*dest)++ = -1;
+		*(*dest)++ = **str;
+		*(*dest)++ = **++str;
+		*(*dest)++ = -1;
+	}
+	else
+	{
+		*(*dest)++ = -1;
+		*(*dest)++ = **str;
+		*(*dest)++ = -1;
+	}
+}
+
 void	process_input_str(char *str, const char *delim, char *dest)
 {
 	int		in_quotes;
@@ -53,27 +76,7 @@ void	process_input_str(char *str, const char *delim, char *dest)
 				in_quotes = !in_quotes;
 		}
 		if (in_quotes == 0 && ft_strchr(delim, *str) != NULL)
-		{
-			if (*str == ' ' || *str == '\t')
-			{
-				*dest++ = -1;
-				*dest++ = -1;
-			}
-			else if ((*str == '<' && *(str + 1) == '<') || (*str == '>'
-					&& *(str + 1) == '>'))
-			{
-				*dest++ = -1;
-				*dest++ = *str;
-				*dest++ = *++str;
-				*dest++ = -1;
-			}
-			else
-			{
-				*dest++ = -1;
-				*dest++ = *str;
-				*dest++ = -1;
-			}
-		}
+			handle_delim_char(&dest, &str);
 		else
 			*dest++ = *str;
 		str++;

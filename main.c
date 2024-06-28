@@ -80,6 +80,7 @@ int	main(int argc, char **argv, char **envp)
 		if (!input)
 		{
 			free_exit_data(exec_data);
+			clear_history();
 			break ;
 		}
 		handle_input(input, exec_data);

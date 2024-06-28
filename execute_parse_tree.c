@@ -23,6 +23,34 @@ void	print_args(char **args)
 	}
 }
 
+static void	check_capacity(t_exec_vars *vars)
+{
+	if (vars->i > vars->capacity - 1)
+	{
+		expand_exec_vars(vars);
+		if (vars->error)
+			free_env_array(vars->args);
+	}
+}
+
+static int complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
+{
+	while (exec_data->tree != NULL)
+	{
+		if (exec_data->tree->data != NULL)
+		{
+			handle_node_data(&exec_data->tree, vars, &exec_data->env);
+			if (vars->args[0] == NULL)
+				vars->i = 0;
+			if (vars->error != 0)
+				return (g_last_exit_status);
+		}
+		check_capacity(vars);
+		exec_data->tree = exec_data->tree->child;
+	}
+	return (0);
+}
+
 int	execute_node(t_free_data *exec_data)
 {
 	t_exec_vars	*vars;
@@ -36,24 +64,8 @@ int	execute_node(t_free_data *exec_data)
 	init_exec_vars(vars);
 	if (exec_data->tree == NULL)
 		return (0);
-	while (exec_data->tree != NULL)
-	{
-		if (exec_data->tree->data != NULL)
-		{
-			handle_node_data(&exec_data->tree, vars, &exec_data->env);
-			if (vars->args[0] == NULL)
-				vars->i = 0;
-			if (vars->error != 0)
-				return (g_last_exit_status);
-		}
-		if (vars->i > vars->capacity - 1)
-		{
-			expand_exec_vars(vars);
-			if (vars->error)
-				free_env_array(vars->args);
-		}
-		exec_data->tree = exec_data->tree->child;
-	}
+	if (complex_handle_node_data(exec_data, vars))
+		return (g_last_exit_status);
 	vars->args[vars->i] = NULL;
 	execute_command(vars, exec_data);
 	free_env_array(vars->args);

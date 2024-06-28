@@ -77,6 +77,24 @@ int	is_string_numeric(const char *str)
 	return (1);
 }
 
+static int	handle_exit(char *result, t_exec_vars *vars)
+{
+	if (!is_string_numeric(result) || overflow_check(result))
+		return (printf_global_error(2, 2,
+				"my(s)hell: %s: %s: numeric argument required\n",
+				vars->args[0], vars->args[1]), g_last_exit_status);
+	if (result[0] == '\0' && ft_strlen(result) == 0)
+		return (printf_global_error(2, 2,
+				"my(s)hell: %s: %s: numeric argument required\n",
+				vars->args[0], vars->args[1]), g_last_exit_status);
+	if (vars->args[2] != NULL)
+		return (printf_global_error(1, 2,
+				"my(s)hell: %s: too many arguments\n",
+				vars->args[0]), g_last_exit_status);
+	else
+		return (g_last_exit_status);
+}
+
 int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 {
 	int		i;
@@ -91,16 +109,12 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 			i++;
 		while (result[i] == '0')
 			i++;
-		i = 0;
-		if (!is_string_numeric(result) || overflow_check(result))
-			return (printf_global_error(2, 2, "my(s)hell: %s: %s: numeric argument required\n", vars->args[0], vars->args[1]), g_last_exit_status);
-		if (result[0] == '\0' && ft_strlen(result) == 0)
-			return (printf_global_error(2, 2, "my(s)hell: %s: %s: numeric argument required\n", vars->args[0], vars->args[1]), g_last_exit_status);
-		if (vars->args[2] != NULL)
-			return (printf_global_error(1, 2, "my(s)hell: %s: too many arguments\n", vars->args[0]), g_last_exit_status);
+		if (handle_exit(result, vars))
+			return (g_last_exit_status);
 		g_last_exit_status = ft_atoi(result);
 	}
 	free_exit_data(exec_data);
+	clear_history();
 	free_env_array(vars->args);
 	free(vars);
 	exit(g_last_exit_status);

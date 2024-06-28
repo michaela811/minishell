@@ -39,10 +39,40 @@ void	handle_redirection_to(t_parse_tree **node, t_exec_vars *vars,
 	vars->i++;
 }
 
+static int	helper_is_dir(char	*expanded_lexeme, t_exec_vars *vars)
+{
+	int	is_dir;
+
+	is_dir = is_directory(expanded_lexeme);
+	if (is_dir == 1)
+	{
+		vars->error = 1;
+		printf_global_error(1, 2, "my(s)hell: %s: Is a directory\n",
+			expanded_lexeme);
+		free(expanded_lexeme);
+		return (1);
+	}
+	return (0);
+}
+
+static void	helper_fd_out_checker(t_parse_tree **node, t_exec_vars *vars)
+{
+	if (vars->fd_out == -1)
+	{
+		vars->error = 1;
+		if (errno == EACCES)
+			printf_global_error(1, 2, "my(s)hell: %s: Permission denied\n",
+				(*node)->child->data->lexeme);
+		else
+			printf_global_error(1, 2,
+				"my(s)hell: %s: No such file or directory\n",
+				(*node)->child->data->lexeme);
+	}
+}
+
 void	handle_redirection_append(t_parse_tree **node, t_exec_vars *vars,
 			t_env **env)
 {
-	int		is_dir;
 	char	*start;
 	char	*expanded_lexeme;
 
@@ -59,29 +89,12 @@ void	handle_redirection_append(t_parse_tree **node, t_exec_vars *vars,
 	ft_memset(expanded_lexeme, '\0', sizeof(expanded_lexeme));
 	start = (*node)->child->data->lexeme;
 	handle_dollar_sign(&start, expanded_lexeme, env, sizeof(expanded_lexeme));
-	is_dir = is_directory(expanded_lexeme);
-	if (is_dir == 1)
-	{
-		vars->error = 1;
-		printf_global_error(1, 2, "my(s)hell: %s: Is a directory\n",
-			expanded_lexeme);
-		free(expanded_lexeme);
+	if (helper_is_dir(expanded_lexeme, vars))
 		return ;
-	}
 	free(expanded_lexeme);
 	vars->fd_out = open((*node)->child->data->lexeme, O_WRONLY | O_CREAT
 			| O_APPEND, 0644);
-	if (vars->fd_out == -1)
-	{
-		vars->error = 1;
-		if (errno == EACCES)
-			printf_global_error(1, 2, "my(s)hell: %s: Permission denied\n",
-				(*node)->child->data->lexeme);
-		else
-			printf_global_error(1, 2,
-				"my(s)hell: %s: No such file or directory\n",
-				(*node)->child->data->lexeme);
-	}
+	helper_fd_out_checker(node, vars);
 	*node = (*node)->child;
 	vars->i++;
 }
