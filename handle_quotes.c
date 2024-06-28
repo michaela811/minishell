@@ -1,15 +1,6 @@
 #include "minishell.h"
 
-void	init_handle_vars(t_handle_vars *l_vars, t_exec_vars *vars)
-{
-	l_vars->result = malloc(sizeof(char *));
-	*l_vars->result = ft_strdup("");
-	l_vars->current = &vars->args[vars->i];
-	l_vars->delimiters = "'\"";
-}
-
-// Main function
-void	handle_quotes_glob_1(t_parse_tree **node, t_exec_vars *vars,
+void	handle_quotes_glob_1(t_p_tree **node, t_exec_vars *vars,
 		t_env **env)
 {
 	t_handle_vars	l_vars;
@@ -40,7 +31,7 @@ void	handle_quotes_glob_1(t_parse_tree **node, t_exec_vars *vars,
 }
 
 void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
-		t_env **env, t_parse_tree **node)
+		t_env **env, t_p_tree **node)
 {
 	if (ft_strchr(l_vars->token, '$') != NULL)
 	{
@@ -70,7 +61,7 @@ void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
 }
 
 void	handle_with_current_dollar(t_handle_vars *l_vars,
-			t_exec_vars *vars, t_env **env, t_parse_tree **node)
+			t_exec_vars *vars, t_env **env, t_p_tree **node)
 {
 	handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
 		sizeof(l_vars->buffer));
@@ -84,13 +75,13 @@ void	handle_with_current_dollar(t_handle_vars *l_vars,
 		vars->i = split_variable(*l_vars->result, vars->i, vars);
 		if (vars->error)
 			return (free(*l_vars->result));
-		free(*l_vars->result);//check this
-		*l_vars->result = ft_strdup(vars->args[vars->i]);//CHECK THIS
+		free(*l_vars->result);
+		*l_vars->result = ft_strdup(vars->args[vars->i]);
 	}
 }
 
 void	handle_with_current(t_handle_vars *l_vars,
-		t_exec_vars *vars, t_env **env, t_parse_tree **node)
+		t_exec_vars *vars, t_env **env, t_p_tree **node)
 {
 	char	delimiter;
 
@@ -118,11 +109,11 @@ void	handle_with_current(t_handle_vars *l_vars,
 }
 
 void	handle_no_quotes(t_handle_vars *l_vars, t_exec_vars *vars,
-				t_env **env, t_parse_tree **node)
+				t_env **env, t_p_tree **node)
 {
 	l_vars->token = *l_vars->current;
 	*l_vars->current = ft_strpbrk(*l_vars->current,
-		l_vars->delimiters);
+			l_vars->delimiters);
 	if (*l_vars->current == NULL)
 	{
 		handle_no_current(l_vars, vars, env, node);

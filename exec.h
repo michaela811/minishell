@@ -9,8 +9,8 @@ int			handle_child_cmd(t_exec_vars *vars, t_env **env,
 				char **environment);
 int			handle_fork(t_exec_vars *vars, t_env **env, char **environment);
 int			execute_command(t_exec_vars *vars, t_free_data *exec_data);
-void		handle_node_data(t_parse_tree **node, t_exec_vars *vars,
+void		handle_node_data(t_p_tree **node, t_exec_vars *vars,
 				t_env **env);
 int			execute_node(t_free_data *exec_data);
-int			error_handeling_before_fork(t_exec_vars *vars, t_env **env,
+int			err_check_fork(t_exec_vars *vars, t_env **env,
 				char *path);

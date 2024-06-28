@@ -1,4 +1,4 @@
-enum token_type
+enum e_token_type
 {
 	PIPE = 1,
 	WORD,
@@ -18,8 +18,8 @@ enum token_type
 
 typedef struct s_token
 {
-	char			*lexeme;
-	enum token_type	type;
+	char				*lexeme;
+	enum e_token_type	type;
 }	t_token;
 
 //from lexer
@@ -34,7 +34,7 @@ typedef struct s_parse_tree
 	struct s_token		*data;
 	struct s_parse_tree	*child;
 	struct s_parse_tree	*sibling;
-}	t_parse_tree;
+}	t_p_tree;
 
 typedef struct s_env
 {
@@ -59,8 +59,8 @@ typedef struct s_exec_vars
 // Building struct to free when exiting
 typedef struct s_free_data
 {
-	t_parse_tree	*tree;
-	t_parse_tree	*tree_start;
+	t_p_tree		*tree;
+	t_p_tree		*tree_start;
 	t_env			*env;
 	t_token_list	*token_list;
 	t_token_list	*token_list_start;

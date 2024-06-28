@@ -43,7 +43,7 @@ void	expand_exec_vars(t_exec_vars *vars)
 	vars->capacity = new_capacity;
 }
 
-void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
+void	handle_node_data(t_p_tree **node, t_exec_vars *vars, t_env **env)
 {
 	if ((*node)->data->type == RED_FROM || (*node)->data->type == RED_TO
 		|| (*node)->data->type == APPEND || (*node)->data->type == HERE_DOC)
@@ -52,7 +52,7 @@ void	handle_node_data(t_parse_tree **node, t_exec_vars *vars, t_env **env)
 	if (!vars->args[vars->i])
 	{
 		vars->error = 1;
-		return (printf_global_error(1, 2, "my(s)hell: ft_strdup error\n"));
+		return (print_err(1, 2, "my(s)hell: ft_strdup error\n"));
 	}
 	handle_quotes_glob_1(node, vars, env);
 	if (vars->error)
@@ -84,7 +84,7 @@ int	split_variable(char *arg, int i, t_exec_vars *vars)
 	return (i + (j - 1));
 }
 
-void	handle_redirection(t_parse_tree **node, t_exec_vars *vars, t_env **env)
+void	handle_redirection(t_p_tree **node, t_exec_vars *vars, t_env **env)
 {
 	if ((*node)->data->type == RED_FROM)
 		return (handle_redirection_from(node, vars, env));

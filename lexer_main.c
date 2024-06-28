@@ -75,3 +75,19 @@ t_token_list	*create_node_lexer(t_token *new_token)
 	new_node->next = NULL;
 	return (new_node);
 }
+
+enum e_token_type	determine_token_type(char *token_value)
+{
+	if (ft_strcmp(token_value, "|") == 0)
+		return (PIPE);
+	else if (ft_strcmp(token_value, ">") == 0)
+		return (RED_TO);
+	else if (ft_strcmp(token_value, "<") == 0)
+		return (RED_FROM);
+	else if (ft_strcmp(token_value, ">>") == 0)
+		return (APPEND);
+	else if (ft_strcmp(token_value, "<<") == 0)
+		return (HERE_DOC);
+	else
+		return (WORD);
+}

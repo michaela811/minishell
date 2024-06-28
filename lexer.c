@@ -30,7 +30,7 @@ char	*preprocess_input(char *str, const char *delim)
 	additional_chars = count_additional_chars(str, delim);
 	preprocessed = malloc(original_len + additional_chars + 1);
 	if (preprocessed == NULL)
-		return (printf_global_error(1, 2, "Memory allocation error\n"), NULL);
+		return (print_err(1, 2, "Memory allocation error\n"), NULL);
 	dest = preprocessed;
 	process_input_str(str, delim, dest);
 	return (preprocessed);
@@ -44,7 +44,7 @@ static void	handle_delim_char(char **dest, char **str)
 		*(*dest)++ = -1;
 	}
 	else if ((**str == '<' && *(*str + 1) == '<') || (**str == '>'
-		&& *(*str + 1) == '>'))
+			&& *(*str + 1) == '>'))
 	{
 		*(*dest)++ = -1;
 		*(*dest)++ = **str;
@@ -82,22 +82,6 @@ void	process_input_str(char *str, const char *delim, char *dest)
 		str++;
 	}
 	*dest = '\0';
-}
-
-enum token_type	determine_token_type(char *token_value)
-{
-	if (ft_strcmp(token_value, "|") == 0)
-		return (PIPE);
-	else if (ft_strcmp(token_value, ">") == 0)
-		return (RED_TO);
-	else if (ft_strcmp(token_value, "<") == 0)
-		return (RED_FROM);
-	else if (ft_strcmp(token_value, ">>") == 0)
-		return (APPEND);
-	else if (ft_strcmp(token_value, "<<") == 0)
-		return (HERE_DOC);
-	else
-		return (WORD);
 }
 
 void	handle_memory_error(t_token **token_list, int num_tokens)

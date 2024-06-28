@@ -8,4 +8,4 @@ char	*create_env_str(t_env *current);
 void	free_env_array(char **env_array);
 char	*get_env_var(t_env *head, const char *name);
 char	**env_list_to_array(t_env *head);
-void	handle_global_env(t_parse_tree **node, char **args, int i, t_env **env);
+void	handle_global_env(t_p_tree **node, char **args, int i, t_env **env);

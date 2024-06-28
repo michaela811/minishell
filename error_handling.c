@@ -16,7 +16,7 @@ void	execve_error(char **s_cmd)
 	exit(0);
 }
 
-void	printf_global_error(int status, unsigned int fd, char *format, ...)
+void	print_err(int status, unsigned int fd, char *format, ...)
 {
 	va_list	args;
 	va_list	args_copy;

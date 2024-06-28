@@ -1,10 +1,10 @@
 #include "minishell.h"
 
-t_parse_tree	*alloc_parse_tree(void)
+t_p_tree	*alloc_parse_tree(void)
 {
-	t_parse_tree	*tree;
+	t_p_tree	*tree;
 
-	tree = malloc(sizeof(t_parse_tree));
+	tree = malloc(sizeof(t_p_tree));
 	if (tree == NULL)
 		return (NULL);
 	tree->data = NULL;
@@ -13,9 +13,9 @@ t_parse_tree	*alloc_parse_tree(void)
 	return (tree);
 }
 
-void	link_node(t_parse_tree **current, t_parse_tree *new_node)
+void	link_node(t_p_tree **current, t_p_tree *new_node)
 {
-	t_parse_tree	*last;
+	t_p_tree	*last;
 
 	if (current == NULL || new_node == NULL)
 		return ;
@@ -30,9 +30,9 @@ void	link_node(t_parse_tree **current, t_parse_tree *new_node)
 	}
 }
 
-void	link_pipe(t_parse_tree **current, t_parse_tree *new_node)
+void	link_pipe(t_p_tree **current, t_p_tree *new_node)
 {
-	t_parse_tree	*last;
+	t_p_tree	*last;
 
 	if (current == NULL || new_node == NULL)
 		return ;
@@ -47,7 +47,7 @@ void	link_pipe(t_parse_tree **current, t_parse_tree *new_node)
 	}
 }
 
-t_token_list	*create_token(enum token_type type, char *lexeme)
+t_token_list	*create_token(enum e_token_type type, char *lexeme)
 {
 	t_token			*new_token;
 	t_token_list	*new_list_node;
@@ -72,7 +72,7 @@ t_token_list	*create_token(enum token_type type, char *lexeme)
 	return (new_list_node);
 }
 
-void	add_token(t_token_list **list, enum token_type type, char *lexeme)
+void	add_token(t_token_list **list, enum e_token_type type, char *lexeme)
 {
 	t_token_list	*new_node;
 	t_token_list	*current;
@@ -94,7 +94,7 @@ void	add_token(t_token_list **list, enum token_type type, char *lexeme)
 	}
 }
 
-void	print_parse_tree(t_parse_tree *tree, int depth)
+void	print_p_tree(t_p_tree *tree, int depth)
 {
 	int	i;
 
@@ -107,6 +107,6 @@ void	print_parse_tree(t_parse_tree *tree, int depth)
 		printf("%s (%d)\n", tree->data->lexeme, tree->data->type);
 	else
 		printf("NULL\n");
-	print_parse_tree(tree->child, depth + 1);
-	print_parse_tree(tree->sibling, depth);
+	print_p_tree(tree->child, depth + 1);
+	print_p_tree(tree->sibling, depth);
 }

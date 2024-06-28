@@ -1,18 +1,10 @@
 #include "minishell.h"
 
-void	init_handle_quote_redirect(t_handle_vars *l_vars, t_parse_tree **node)
+void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars, t_env **env)
 {
-	l_vars->result = malloc(sizeof(char *));
-	*l_vars->result = ft_strdup("");
-	l_vars->current = &(*node)->child->data->lexeme;
-	l_vars->delimiters = "'\"";
-}
+	t_handle_vars	l_vars;
 
-void	handle_quotes_glob_redirect(t_parse_tree **node, t_exec_vars *vars, t_env **env)
-{
-	t_handle_vars l_vars;
 	init_handle_quote_redirect(&l_vars, node);
-
 	vars->error = 0;
 	while (*l_vars.current != NULL && **l_vars.current != '\0')
 	{
@@ -37,11 +29,13 @@ void	handle_quotes_glob_redirect(t_parse_tree **node, t_exec_vars *vars, t_env *
 	return (free_handle_vars(&l_vars));
 }
 
-void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars, t_env **env, t_parse_tree **node)
+void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
+		t_env **env, t_p_tree **node)
 {
 	if (ft_strchr(l_vars->token, '$') != NULL)
 	{
-		handle_dollar_sign(&l_vars->token, l_vars->buffer, env, sizeof(l_vars->buffer));
+		handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
+			sizeof(l_vars->buffer));
 		*l_vars->result = ft_strjoin(*l_vars->result, l_vars->buffer);
 		if (!check_null(*l_vars->result, &vars->error))
 			return ;
@@ -49,14 +43,16 @@ void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars, t_env 
 	}
 	else
 	{
-		(*node)->child->data->lexeme = ft_strjoin(*l_vars->result, l_vars->token);
+		(*node)->child->data->lexeme = ft_strjoin(*l_vars->result,
+										l_vars->token);
 		if (!check_null((*node)->child->data->lexeme, &vars->error))
 			return ;
 	}
 	vars->end = 1;
 }
 
-void	handle_with_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars, t_env **env, t_parse_tree **node)
+void	handle_with_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
+		t_env **env, t_p_tree **node)
 {
 	char	delimiter;
 
@@ -64,7 +60,8 @@ void	handle_with_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars, t_en
 	**l_vars->current = '\0';
 	if (ft_strchr((*node)->data->lexeme, '$') != NULL)
 	{
-		handle_dollar_sign(&l_vars->token, l_vars->buffer, env, sizeof(l_vars->buffer));
+		handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
+			sizeof(l_vars->buffer));
 		if (vars->error)
 			return ;
 	}
@@ -82,7 +79,8 @@ void	handle_with_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars, t_en
 	(*l_vars->current)++;
 }
 
-void	handle_no_quotes_redirect(t_handle_vars *l_vars, t_exec_vars *vars, t_env **env, t_parse_tree **node)
+void	handle_no_quotes_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
+		t_env **env, t_p_tree **node)
 {
 	l_vars->token = *l_vars->current;
 	*l_vars->current = ft_strpbrk(*l_vars->current, l_vars->delimiters);
@@ -93,4 +91,3 @@ void	handle_no_quotes_redirect(t_handle_vars *l_vars, t_exec_vars *vars, t_env *
 	}
 	handle_with_current_redirect(l_vars, vars, env, node);
 }
-

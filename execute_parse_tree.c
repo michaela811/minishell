@@ -33,7 +33,7 @@ static void	check_capacity(t_exec_vars *vars)
 	}
 }
 
-static int complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
+static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 {
 	while (exec_data->tree != NULL)
 	{
@@ -58,7 +58,7 @@ int	execute_node(t_free_data *exec_data)
 	vars = malloc(sizeof(t_exec_vars));
 	if (!vars)
 	{
-		return (printf_global_error(1, 2,
+		return (print_err(1, 2,
 				"my(s)hell: execute_node malloc error\n"), 1);
 	}
 	init_exec_vars(vars);
@@ -71,25 +71,4 @@ int	execute_node(t_free_data *exec_data)
 	free_env_array(vars->args);
 	free(vars);
 	return (g_last_exit_status);
-}
-
-int	execute_pipeline(t_free_data *exec_data)
-{
-	int		pipefd[2];
-	pid_t	pid;
-
-	if (exec_data->tree == NULL)
-		return (0);
-	if (exec_data->tree->sibling != NULL)
-	{
-		if (pipe(pipefd) == -1)
-			return (printf_global_error(1, 2, "my(s)hell: pipe\n"), 1);
-	}
-	pid = fork();
-	if (pid == -1)
-		return (printf_global_error(1, 2, "my(s)hell: fork\n"), 1);
-	else if (pid == 0)
-		return (handle_child_process(pipefd, exec_data));
-	else
-		return (handle_parent_process(pipefd, pid, exec_data));
 }
