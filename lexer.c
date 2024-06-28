@@ -48,7 +48,7 @@ static void	handle_delim_char(char **dest, char **str)
 	{
 		*(*dest)++ = -1;
 		*(*dest)++ = **str;
-		*(*dest)++ = **++str;
+		*(*dest)++ = ++(*(*str));
 		*(*dest)++ = -1;
 	}
 	else
