@@ -72,6 +72,7 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env,
 			handle_special_chars(start, buffer, dollar);
 		else
 			handle_var_name(start, buffer, dollar, env);
+		dollar = ft_strchr((dollar + 1), '$');
 	}
 	dollar = ft_strchr(start_store, '$');
 	if (dollar == NULL)
