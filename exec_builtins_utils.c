@@ -48,7 +48,7 @@ static int	is_equals(char **name, char **value, char *equals)
 			return (print_err(1, 2,
 					"split_var: strndup error\n"), free(*name),
 				g_last_exit_status);
-		return (0);
+		return (1);
 	}
 	return (0);
 }
