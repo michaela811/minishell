@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 09:25:16 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/04/23 16:46:46 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/07/01 11:19:14 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

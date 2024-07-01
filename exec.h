@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec.h                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/01 10:35:11 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/07/01 10:35:13 by mmasarov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 int			execute_parse_tree(t_free_data *exec_data);
 int			get_exec(char **path, int i, char *cmd, char **exec);
 int			handle_child_process(int *pipefd, t_free_data *exec_data);

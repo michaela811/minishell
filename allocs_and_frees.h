@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   allocs_and_frees.h                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/01 10:30:16 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/07/01 10:30:19 by mmasarov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 t_p_tree		*alloc_parse_tree(void);
 void			free_parse_tree(t_p_tree *tree);
 void			free_token(t_token *tok);

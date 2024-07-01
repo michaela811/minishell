@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.h                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/01 10:31:13 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/07/01 10:31:15 by mmasarov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 t_env	*create_env_var(const char *name, const char *value);
 t_env	*init_environment(char **envp);
 t_env	*find_env_var(t_env *head, const char *name);

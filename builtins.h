@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtins.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/01 10:30:26 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/07/01 10:30:29 by mmasarov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 int			exec_exit(t_exec_vars *vars, t_free_data *exec_data);
 int			get_path(char *cmd, t_env *env, char **exec);
 int			exec_builtins(t_exec_vars *vars, t_free_data *exec_data);

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_builtins_5.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/01 10:34:12 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/07/01 11:56:10 by mmasarov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <minishell.h>
 
 static int	handle_exit(char *result, t_exec_vars *vars)
@@ -34,12 +46,15 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 			i++;
 		if (handle_exit(result, vars))
 			return (g_last_exit_status);
+		printf("result is %s\n", result);
 		g_last_exit_status = ft_atoi(result);
+		printf("result after is %d\n", g_last_exit_status);
 	}
 	free_exit_data(exec_data);
 	clear_history();
 	free_env_array(vars->args);
 	free(vars);
+	printf("g_last_exit_status is %d\n", g_last_exit_status);
 	exit(g_last_exit_status);
 }
 

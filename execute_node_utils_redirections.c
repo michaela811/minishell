@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute_node_utils_redirections.c                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/01 10:36:03 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/07/01 11:36:41 by mmasarov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	helper_is_dir(char	*expanded_lexeme, t_exec_vars *vars)
@@ -91,7 +103,7 @@ char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars)
 	if (file == -1)
 	{
 		vars->error = 1;
-		return (perror("open"), NULL);
+		return ((vars->error = 1), perror("open"), NULL);
 	}
 	while (1)
 	{

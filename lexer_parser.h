@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_parser.h                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/01 10:37:28 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/07/01 10:37:30 by mmasarov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 t_token_list		*create_token(enum e_token_type type, char *lexeme);
 void				add_token(t_token_list **list, enum e_token_type type,
 						char *lexeme);

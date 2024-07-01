@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   quotes.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/01 10:38:27 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/07/01 10:38:28 by mmasarov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 void	handle_quotes_global(t_p_tree **node, char **args, int i,
 			t_env **env);
 void	handle_quotes_glob_1(t_p_tree **node, t_exec_vars *vars,

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_is_cmd_suffix.c                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/01 10:38:07 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/07/01 11:24:09 by mmasarov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 t_p_tree	*alloc_parse_tree(void)
@@ -59,4 +71,12 @@ int	is_cmd_suffix(t_token_list **tok, t_p_tree **suffix_node)
 		}
 	}
 	return (0);
+}
+
+bool	is_redirection_token(enum e_token_type type)
+{
+	if (type == RED_FROM || type == RED_TO
+		|| type == APPEND || type == HERE_DOC)
+		return (true);
+	return (false);
 }
