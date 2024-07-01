@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:36:16 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/01 15:45:44 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	execute_parse_tree(t_free_data *exec_data)
 		return (0);
 	if (exec_data->tree->sibling)
 	{
-		is_there_here_doc(exec_data);
+		is_there_here_doc(exec_data, exec_data->tree);
 		execute_pipeline(exec_data);
 	}
 	else
@@ -38,7 +38,7 @@ void	print_args(char **args)
 	}
 }
 
-static void	check_capacity(t_exec_vars *vars)
+void	check_capacity(t_exec_vars *vars)
 {
 	if (vars->i > vars->capacity - 1)
 	{

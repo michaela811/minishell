@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:30:16 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:30:19 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/01 14:26:52 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,3 +27,4 @@ void			init_exec_vars(t_exec_vars *vars);
 t_free_data		*init_command_data(char **envp);
 void			free_array(char **array);
 void			free_handle_vars(t_handle_vars *l_vars);
+void			check_capacity(t_exec_vars *vars);

@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:40 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:38:43 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/01 16:17:57 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ typedef struct s_token
 	enum e_token_type	type;
 }	t_token;
 
-//from lexer
 typedef struct s_token_list
 {
 	struct s_token		*token;
@@ -87,3 +86,11 @@ typedef struct s_handle_vars
 	char	**current;
 	char	**result;
 }	t_handle_vars;
+
+void	is_there_here_doc(t_free_data *exec_data, t_p_tree *tree);
+int		pipe_execute_node(t_free_data *exec_data);
+//static int	pipe_complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars);
+char	*pipe_handle_node_data(t_p_tree **node, t_exec_vars *vars);
+char	*pipe_handle_redirection(t_p_tree **node, t_exec_vars *vars);
+char	*pipe_handle_here_doc(t_p_tree **node, t_exec_vars *vars, char *filename);
+char	*pipe_handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars);

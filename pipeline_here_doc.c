@@ -6,31 +6,138 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 11:37:03 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/01 16:26:36 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	is_there_here_doc(t_free_data *exec_data)
+char	*pipe_handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars)
 {
-	t_p_tree *current = exec_data->tree->sibling;
-	//t_p_tree *tree = current->child;
+	char	*contents;
+	char	*filename;
 
-	printf("The sibling is %s\n", current->data->lexeme);
-	printf("The sibling is %d\n", current->data->type);
-	//printf("The sibling is %d\n", current->child->data->type);
+	filename = "/tmp/heredoc.txt";
+	contents = pipe_handle_here_doc(node, vars, filename);
+	printf("Contents = %s\n", contents);
+	if (vars->error)
+		return (NULL);
+	vars->fd_in = open(filename, O_RDONLY);
+	if (vars->fd_in == -1)
+	{
+		perror("open");
+		vars->error = 1;
+	}
+	*node = (*node)->child;
+	vars->i++;
+	return (contents);
+}
+
+char	*pipe_handle_here_doc(t_p_tree **node, t_exec_vars *vars, char *filename)
+{
+	char	*buffer;
+	int		file;
+	char	*line;
+	char	*contents = NULL;
+
+	(*node)->child->data->lexeme = handle_quotes_echo
+		((*node)->child->data->lexeme, &vars->error);
+	file = open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+	if (file == -1)
+	{
+		vars->error = 1;
+		return ((vars->error = 1), perror("open"), NULL);
+	}
+	while (1)
+	{
+		/*buffer = readline("heredoc> ");
+		if (buffer == NULL)
+			break ;*/
+		line = get_next_line(fileno(stdin)); // for tester from this line
+		if (line == NULL)
+			break ;
+		buffer = ft_strtrim(line, "\n");
+		free(line); // to this line
+		if (ft_strcmp(buffer, (*node)->child->data->lexeme) == 0)
+		{
+			free(buffer);
+			break ;
+		}
+		if (contents == NULL)
+		{
+			contents = malloc(ft_strlen(buffer) + 2);
+			 if (contents == NULL)
+        	{
+            	free(buffer);
+            	return NULL;
+        	}
+        	strcpy(contents, buffer);
+		}
+    	else
+    	{
+        	char *temp = realloc(contents, ft_strlen(contents) + ft_strlen(buffer) + 2);
+        	if (temp == NULL)
+        	{
+
+  	        	free(contents);
+    	        free(buffer);
+        	    return NULL;
+        	}
+        	contents = temp;
+        	strcat(contents, buffer);
+    	}
+		ft_strcat(contents, "\n");
+		free(buffer);
+	}
+	close(file);
+	return (contents);
+}
+
+char	*pipe_handle_redirection(t_p_tree **node, t_exec_vars *vars)
+{
+	if ((*node)->data->type == HERE_DOC)
+		return (pipe_handle_redirection_here_doc(node, vars));
+	return (NULL);
+}
+
+char	*pipe_handle_node_data(t_p_tree **node, t_exec_vars *vars)
+{
+	if ((*node)->data->type == RED_FROM || (*node)->data->type == RED_TO
+		|| (*node)->data->type == APPEND || (*node)->data->type == HERE_DOC)
+		return (pipe_handle_redirection(node, vars));
+	return (NULL);
+}
+
+void	is_there_here_doc(t_free_data *exec_data, t_p_tree *tree)
+{
+	t_p_tree	*current = tree;
+	t_exec_vars	*vars;
+	char		*contents = NULL;
+
+	vars = malloc(sizeof(t_exec_vars));
+	if (!vars)
+	{
+		return (print_err(1, 2,
+				"my(s)hell: execute_node malloc error\n"));
+	}
+	init_exec_vars(vars);
 	while (current != NULL)
 	{
-		if (current->data != NULL)
+		if (current->data != NULL && current->data->type == HERE_DOC)
 		{
-			printf("Lexeme is %s\n", current->data->lexeme);
-			if (current != NULL && current->data->type == HERE_DOC)
-			{
-				printf("child lexeme is %s\n", current->data->lexeme);
-				execute_node(exec_data);
-			}
+			printf("HERE_DOC\n");
+			contents = pipe_handle_node_data(&current, vars);
+			t_p_tree *new_node = malloc(sizeof(t_p_tree));
+            new_node->data = malloc(sizeof(t_token));
+            new_node->data->lexeme = contents;
+            new_node->data->type = WORD;
+            new_node->child = NULL;
+            new_node->sibling = current->sibling;
+            current->sibling = new_node;
 		}
+		if (current->child != NULL)
+			is_there_here_doc(exec_data, current->child);
 		current = current->sibling;
 	}
+	//free(vars);
 }
