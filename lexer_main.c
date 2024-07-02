@@ -1,27 +1,35 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_main.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/01 10:37:22 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/07/01 10:37:24 by mmasarov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	lexer(char *input, t_token_list **token_list)
 {
-	//int				error;
 	t_token_list	*current;
 	char			*token_value;
 
-	//error = 0;
 	*token_list = NULL;
 	current = NULL;
-	token_value = ft_strtok(input, (char[]){-1, 0});//, &error);
-	//if (error)
-		//return (perror("Memory allocation error"), 1);
+	token_value = ft_strtok(input, (char []){-1, 0});
 	while (token_value != NULL)
 	{
-		if (create_and_add_token(&token_value, token_list, &current))//, &error))
+		if (create_and_add_token(&token_value, token_list, &current))
 			return (1);
 	}
 	return (0);
 }
 
 int	create_and_add_token(char **token_value, t_token_list **token_list,
-t_token_list **current)//, int *error)
+t_token_list **current)
 {
 	t_token			*new_token;
 	t_token_list	*new_node;
@@ -32,7 +40,7 @@ t_token_list **current)//, int *error)
 			perror("Memory allocation error"), 1);
 	new_node = create_node_lexer(new_token);
 	if (new_node == NULL)
-		return (free_token(new_token), free_token_list(*token_list), // check later if necessary
+		return (free_token(new_token), free_token_list(*token_list),
 			perror("Memory allocation error"), 1);
 	if (*token_list == NULL)
 	{
@@ -44,10 +52,7 @@ t_token_list **current)//, int *error)
 		(*current)->next = new_node;
 		*current = (*current)->next;
 	}
-	*token_value = ft_strtok(NULL, (char[]){-1, 0});//, error);
-	//if (*error)
-		//return (free_token_list(*token_list),
-			//perror("Memory allocation error"), 1);
+	*token_value = ft_strtok(NULL, (char []){-1, 0});
 	return (0);
 }
 
@@ -81,4 +86,20 @@ t_token_list	*create_node_lexer(t_token *new_token)
 	new_node->token = new_token;
 	new_node->next = NULL;
 	return (new_node);
+}
+
+enum e_token_type	determine_token_type(char *token_value)
+{
+	if (ft_strcmp(token_value, "|") == 0)
+		return (PIPE);
+	else if (ft_strcmp(token_value, ">") == 0)
+		return (RED_TO);
+	else if (ft_strcmp(token_value, "<") == 0)
+		return (RED_FROM);
+	else if (ft_strcmp(token_value, ">>") == 0)
+		return (APPEND);
+	else if (ft_strcmp(token_value, "<<") == 0)
+		return (HERE_DOC);
+	else
+		return (WORD);
 }

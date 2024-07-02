@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_main.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/01 10:30:37 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/07/01 10:30:39 by mmasarov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 t_env	*init_environment(char **envt)
@@ -29,7 +41,6 @@ t_env	*init_environment(char **envt)
 	return (head);
 }
 
-//TO DISCUSS ABOUT CONST
 int	update_add_env_var(t_env **head, const char *name, const char *value)
 {
 	t_env	*var;
@@ -66,8 +77,8 @@ char	**env_list_to_array(t_env *head)
 	if (env_array == NULL)
 		return (NULL);
 	current = head;
-	i = 0;
-	while (i < count)
+	i = count - 1;
+	while (current != NULL)
 	{
 		env_array[i] = create_env_str(current);
 		if (env_array[i] == NULL)
@@ -76,7 +87,7 @@ char	**env_list_to_array(t_env *head)
 			return (NULL);
 		}
 		current = current->next;
-		i++;
+		i--;
 	}
 	env_array[count] = NULL;
 	return (env_array);
@@ -90,7 +101,8 @@ int	get_path(char *cmd, t_env *env, char **exec)
 	i = -1;
 	path = ft_split(get_env_var(env, "PATH"), ':');
 	if (path == NULL)
-		return (printf_global_error(1, 2, "malloc error in split function\n"), 1);
+		return (print_err(1, 2,
+				"malloc error in split function\n"), 1);
 	while (path[++i])
 	{
 		if (get_exec(path, i, cmd, exec))
@@ -110,12 +122,14 @@ int	get_exec(char **path, int i, char *cmd, char **exec)
 
 	path_part = ft_strjoin(path[i], "/");
 	if (path_part == NULL)
-		return (printf_global_error(1, 2, "malloc error in strjoin function\n"), 1);
+		return (print_err(1, 2,
+				"malloc error in strjoin function\n"), 1);
 	*exec = ft_strjoin(path_part, cmd);
 	if (*exec == NULL)
 	{
 		free(path_part);
-		return (printf_global_error(1, 2, "malloc error in strjoin function\n"), 1);
+		return (print_err(1, 2,
+				"malloc error in strjoin function\n"), 1);
 	}
 	free(path_part);
 	return (0);

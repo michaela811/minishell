@@ -18,7 +18,7 @@
 # include <printf.h>
 # include <stdarg.h>
 # include <limits.h>
-//# include <ft_printf_fd.h>
+# include <fcntl.h>
 
 /* part one functions*/
 int		ft_atoi(const char *nptr);
@@ -60,26 +60,25 @@ void	ft_putnbr_fd(int n, int fd);
 void	ft_putstr_fd(char *s, int fd);
 
 /* Added functions*/
-char	*ft_strtok(char *str, const char *delim);//, int *error);
-char    *ft_strpbrk(char *str, char *delim);
-char *ft_strncat(char *dest, const char *src, size_t n);
-char *ft_strcat(char *dest, const char *src);
-int ft_strcmp(const char *s1, const char *s2);
-char *ft_strcpy(char *dest, const char *src);
-char *ft_strndup(const char *s, size_t n);
-char *ft_strncpy(char *dest, const char *src, size_t n);
+char	*ft_strtok(char *str, const char *delim);
+char	*ft_strpbrk(char *str, char *delim);
+char	*ft_strncat(char *dest, const char *src, size_t n);
+char	*ft_strcat(char *dest, const char *src);
+int		ft_strcmp(const char *s1, const char *s2);
+char	*ft_strcpy(char *dest, const char *src);
+char	*ft_strndup(const char *s, size_t n);
+char	*ft_strncpy(char *dest, const char *src, size_t n);
 
 /* Printf added*/
 //int	ft_printf(const char *print, ...);
-int	ft_printf_fd(unsigned int fd, const char *print, ...);
-int ft_vprintf_fd(unsigned int fd, const char *print, va_list args);
+int		ft_printf_fd(unsigned int fd, const char *print, ...);
+int		ft_vprintf_fd(unsigned int fd, const char *print, va_list args);
 
 /* get_next_line added*/
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 5
 # endif
 
-# include <fcntl.h>
 //# include <stdio.h>
 //# include <stdlib.h>
 //# include <unistd.h>

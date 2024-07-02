@@ -52,7 +52,7 @@ int	ft_print_hex_fd(unsigned int fd, unsigned int num, char placeholder)
 
 	return_len = 0;
 	if (num == 0)
-		return_len += write(fd, "0", 1);// or just rite(fd, "0", 1)
+		return_len += write(fd, "0", 1);
 	else
 	{
 		return_len += ft_hex_len(num);

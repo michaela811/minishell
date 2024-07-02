@@ -32,6 +32,16 @@ SOURCES = env_main.c \
 			handle_quotes.c \
 			handle_quotes_utils.c \
 			handle_quotes_redirect.c \
+			execute_pipeline_utils_1.c \
+			exec_builtins_utils_1.c \
+			exec_builtins_3.c \
+			exec_builtins_4.c \
+			exec_builtins_5.c \
+			execude_node_utils_redirections_1.c \
+			execute_node_utils_exec_utils.c \
+			free_functions_1.c \
+			free_functions_2.c \
+			pipeline_here_doc.c \
 
 
 OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))

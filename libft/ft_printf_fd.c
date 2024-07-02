@@ -28,7 +28,8 @@ int	ft_format_fd(unsigned int fd, char placeholder, va_list args)
 	else if (placeholder == 'u')
 		print_len += ft_print_unsign_int_fd(fd, va_arg(args, unsigned int));
 	else if (placeholder == 'x' || placeholder == 'X')
-		print_len += ft_print_hex_fd(fd, va_arg(args, unsigned int), placeholder);
+		print_len += ft_print_hex_fd(fd, va_arg(args, unsigned int),
+				placeholder);
 	else if (placeholder == '%')
 		print_len += ft_print_percent_fd(fd);
 	else
@@ -68,27 +69,28 @@ int	ft_printf_fd(unsigned int fd, const char *print, ...)
 	return (return_len);
 }
 
-int ft_vprintf_fd(unsigned int fd, const char *print, va_list args)
+int	ft_vprintf_fd(unsigned int fd, const char *print, va_list args)
 {
-    int return_len = 0;
-    int i = 0;
+	int	return_len;
+	int	i;
 
-    if (!print)
-        return (-1);
-
-    while (print[i])
-    {
-        if (print[i] == '%')
-        {
-            return_len += ft_format_fd(fd, print[i + 1], args);
-            i++;
-        }
-        else
-        {
-            ft_print_char_fd(fd, print[i]);
-            return_len++;
-        }
-        i++;
-    }
-    return return_len;
+	i = 0;
+	return_len = 0;
+	if (!print)
+		return (-1);
+	while (print[i])
+	{
+		if (print[i] == '%')
+		{
+			return_len += ft_format_fd(fd, print[i + 1], args);
+			i++;
+		}
+		else
+		{
+			ft_print_char_fd(fd, print[i]);
+			return_len++;
+		}
+		i++;
+	}
+	return (return_len);
 }

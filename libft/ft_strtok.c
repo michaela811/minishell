@@ -1,22 +1,32 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strtok.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/01 11:20:01 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/07/01 11:20:03 by mmasarov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 
-size_t handle_quotes(char *str, int *error)
+size_t	handle_quotes(char *str, int *error)
 {
-	//char *result;
-	size_t len = 0;
+	size_t	len;
 	char	c;
 
-	if (!str)//WHY?
+	len = 0;
+	if (!str)
 		return (len);
-		//str++;
-	//result = str;
 	c = *str;
-	while(*str)
+	while (*str)
 	{
 		str++;
 		len++;
 		if (*str == c)
-			break;
+			break ;
 	}
 	if (*str == c)
 	{
@@ -28,36 +38,25 @@ size_t handle_quotes(char *str, int *error)
 	return (len);
 }
 
-char *update_pointer(char *str)
+char	*update_pointer(char *str)
 {
-    if (str && *str)
+	if (str && *str)
 	{
-        *str = '\0';
-        return (str + 1);
+		*str = '\0';
+		return (str + 1);
 	}
-    else
-        return str;
+	else
+		return (str);
 }
 
-char	*ft_strtok(char *str, const char *delim)//, int *error)
+char	*ft_strtok(char *str, const char *delim)
 {
 	static char	*i;
 	char		*result;
-	//size_t len;
-	//*error = 0;
 
 	result = str;
 	if (str)
 		i = str;
-	/*if (i && (*i == '"' || *i == '\''))
-	{
-		len = handle_quotes(i, error);
-		result = i;
-		i += len;
-		str = i;
-		i = update_pointer(str);
-		return (result);
-	}*/
 	while (i && *i && ft_strchr(delim, *i))
 		i++;
 	str = i;

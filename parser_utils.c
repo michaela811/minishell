@@ -1,21 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/01 10:38:16 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/07/01 10:38:18 by mmasarov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-t_parse_tree	*alloc_parse_tree(void)
+void	link_node(t_p_tree **current, t_p_tree *new_node)
 {
-	t_parse_tree	*tree;
-
-	tree = malloc(sizeof(t_parse_tree));
-	if (tree == NULL)
-		return (NULL);
-	tree->data = NULL;
-	tree->child = NULL;
-	tree->sibling = NULL;
-	return (tree);
-}
-
-void	link_node(t_parse_tree **current, t_parse_tree *new_node)
-{
-	t_parse_tree	*last;
+	t_p_tree	*last;
 
 	if (current == NULL || new_node == NULL)
 		return ;
@@ -30,9 +29,9 @@ void	link_node(t_parse_tree **current, t_parse_tree *new_node)
 	}
 }
 
-void	link_pipe(t_parse_tree **current, t_parse_tree *new_node)
+void	link_pipe(t_p_tree **current, t_p_tree *new_node)
 {
-	t_parse_tree	*last;
+	t_p_tree	*last;
 
 	if (current == NULL || new_node == NULL)
 		return ;
@@ -47,7 +46,7 @@ void	link_pipe(t_parse_tree **current, t_parse_tree *new_node)
 	}
 }
 
-t_token_list	*create_token(enum token_type type, char *lexeme)
+t_token_list	*create_token(enum e_token_type type, char *lexeme)
 {
 	t_token			*new_token;
 	t_token_list	*new_list_node;
@@ -56,7 +55,7 @@ t_token_list	*create_token(enum token_type type, char *lexeme)
 	if (!new_token)
 	{
 		perror("Failed to allocate memory for token");
-		exit(MEMORY_ERROR);//SHOULD BE REPLACED WITH INT?
+		exit(MEMORY_ERROR);
 	}
 	new_token->lexeme = ft_strdup(lexeme);
 	new_token->type = type;
@@ -65,14 +64,14 @@ t_token_list	*create_token(enum token_type type, char *lexeme)
 	{
 		free_token(new_token);
 		perror("Failed to allocate memory for token list node");
-		exit(MEMORY_ERROR);//SHOULD BE REPLACED WITH INT?
+		exit(MEMORY_ERROR);
 	}
 	new_list_node->token = new_token;
 	new_list_node->next = NULL;
 	return (new_list_node);
 }
 
-void	add_token(t_token_list **list, enum token_type type, char *lexeme)
+void	add_token(t_token_list **list, enum e_token_type type, char *lexeme)
 {
 	t_token_list	*new_node;
 	t_token_list	*current;
@@ -94,8 +93,7 @@ void	add_token(t_token_list **list, enum token_type type, char *lexeme)
 	}
 }
 
-//TO BE DELETED
-void	print_parse_tree(t_parse_tree *tree, int depth)
+void	print_p_tree(t_p_tree *tree, int depth)
 {
 	int	i;
 
@@ -108,6 +106,6 @@ void	print_parse_tree(t_parse_tree *tree, int depth)
 		printf("%s (%d)\n", tree->data->lexeme, tree->data->type);
 	else
 		printf("NULL\n");
-	print_parse_tree(tree->child, depth + 1);
-	print_parse_tree(tree->sibling, depth);
+	print_p_tree(tree->child, depth + 1);
+	print_p_tree(tree->sibling, depth);
 }
