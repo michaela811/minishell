@@ -38,7 +38,7 @@ void	handle_quotes_glob_1(t_p_tree **node, t_exec_vars *vars,
 	}
 	if (!vars->error)
 		return (handle_quotes_final_assign(&vars->args[vars->i],
-				l_vars.result, vars));
+				l_vars.result, vars)); //might need before free(vars->args[vars->i]);
 	free_handle_vars(&l_vars);
 }
 
@@ -61,11 +61,16 @@ void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
 				return (free(*l_vars->result));
 		}
 		else
-			vars->args[vars->i] = ft_strdup(*l_vars->result);
+		{
+        	free(vars->args[vars->i]); // Free the memory
+        	vars->args[vars->i] = ft_strdup(*l_vars->result);
+    	}
 	}
 	else
 	{
+		free(vars->args[vars->i]);
 		vars->args[vars->i] = ft_strjoin(*l_vars->result, l_vars->token);
+		//free();
 		if (!check_null(vars->args[vars->i], &vars->error))
 			return ;
 	}
@@ -123,13 +128,15 @@ void	handle_with_current(t_handle_vars *l_vars,
 void	handle_no_quotes(t_handle_vars *l_vars, t_exec_vars *vars,
 				t_env **env, t_p_tree **node)
 {
+	char *temp;
+
 	l_vars->token = *l_vars->current;
-	*l_vars->current = ft_strpbrk(*l_vars->current,
-			l_vars->delimiters);
-	if (*l_vars->current == NULL)
+	temp = ft_strpbrk(*l_vars->current, l_vars->delimiters);
+	if (temp == NULL)
 	{
 		handle_no_current(l_vars, vars, env, node);
 		return ;
 	}
+	*l_vars->current = temp;//NEEDED??
 	handle_with_current(l_vars, vars, env, node);
 }

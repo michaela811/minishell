@@ -36,9 +36,11 @@ t_free_data	*init_command_data(char **envp)
 
 void	init_handle_vars(t_handle_vars *l_vars, t_exec_vars *vars)
 {
-	l_vars->result = malloc(sizeof(char *));
-	*l_vars->result = ft_strdup("");
-	l_vars->current = &vars->args[vars->i];
+	l_vars->result = malloc(sizeof(char *));//ADD MEMORY CHECK
+	*l_vars->result = ft_strdup("");//ADD MEMORY CHECK
+	//l_vars->current = &vars->args[vars->i];
+	l_vars->current = malloc(sizeof(char *));//ADD MEMORY CHECK
+	*l_vars->current = ft_strdup(vars->args[vars->i]); //ADD MEMORY CHECK
 	l_vars->delimiters = "'\"";
 }
 

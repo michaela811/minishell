@@ -87,6 +87,7 @@ int	split_variable(char *arg, int i, t_exec_vars *vars)
 		vars->error = 1;
 		return (i);
 	}
+	free(vars->args[vars->i]);//check later if needed!!!
 	while (split_args[j])
 	{
 		vars->args[i + j] = split_args[j];
