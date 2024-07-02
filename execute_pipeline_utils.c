@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:27 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:36:29 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/02 15:01:50 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static int	pid2_check(pid_t pid2)
 		return (0);
 }
 
-pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data)
+pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data, t_here_doc_data *here_docs)
 {
 	pid_t	pid2;
 	int		return_value;
@@ -54,7 +54,8 @@ pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data)
 			exit(EXIT_FAILURE);
 		}
 		close_fd(pipefd);
-		return_value = execute_pipeline(exec_data);
+		return_value = execute_pipeline(exec_data, here_docs);
+		//return_value = handle_child_process(pipefd, exec_data, here_docs);
 		if (check_return_value(return_value))
 			exit (EXIT_FAILURE);
 		exit(EXIT_SUCCESS);

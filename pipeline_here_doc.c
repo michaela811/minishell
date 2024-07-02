@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 16:26:36 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/02 15:09:42 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ char	*pipe_handle_node_data(t_p_tree **node, t_exec_vars *vars)
 	return (NULL);
 }
 
-void	is_there_here_doc(t_free_data *exec_data, t_p_tree *tree)
+void	is_there_here_doc(t_p_tree *tree, t_here_doc_data **here_docs)
 {
 	t_p_tree	*current = tree;
 	t_exec_vars	*vars;
@@ -125,19 +125,16 @@ void	is_there_here_doc(t_free_data *exec_data, t_p_tree *tree)
 	{
 		if (current->data != NULL && current->data->type == HERE_DOC)
 		{
-			printf("HERE_DOC\n");
 			contents = pipe_handle_node_data(&current, vars);
-			t_p_tree *new_node = malloc(sizeof(t_p_tree));
-            new_node->data = malloc(sizeof(t_token));
-            new_node->data->lexeme = contents;
-            new_node->data->type = WORD;
-            new_node->child = NULL;
-            new_node->sibling = current->sibling;
-            current->sibling = new_node;
+			if (contents != NULL)
+			{
+				t_here_doc_data *new_here_doc = malloc(sizeof(t_here_doc_data));
+                new_here_doc->contents = contents;
+                new_here_doc->next = *here_docs;
+                *here_docs = new_here_doc;
+			}
 		}
-		if (current->child != NULL)
-			is_there_here_doc(exec_data, current->child);
 		current = current->sibling;
 	}
-	//free(vars);
+	free(vars);
 }

@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 15:45:44 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/02 14:53:00 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,7 @@ int	execute_parse_tree(t_free_data *exec_data)
 	if (exec_data->tree == NULL)
 		return (0);
 	if (exec_data->tree->sibling)
-	{
-		is_there_here_doc(exec_data, exec_data->tree);
-		execute_pipeline(exec_data);
-	}
+		execute_pipeline(exec_data, NULL);
 	else
 		execute_node(exec_data);
 	return (g_last_exit_status);
