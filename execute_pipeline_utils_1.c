@@ -6,14 +6,13 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/02 14:59:22 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/02 17:51:11 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int	handle_child_process(int *pipefd, t_free_data *exec_data,
-	t_here_doc_data *here_docs)
+int	handle_child_process(int *pipefd, t_free_data *exec_data, t_here_doc_data *here_docs)
 {
 	t_here_doc_data	*current_doc;
 	int				heredoc_pipefd[2];
@@ -95,13 +94,14 @@ static int	ft_waitpid(int num_commands, pid_t *pids)
 		if (WIFEXITED(status))
 		{
 			g_last_exit_status = WEXITSTATUS(status);
-			return (g_last_exit_status);
+			//return (g_last_exit_status);
 		}
 	}
 	return (g_last_exit_status);
 }
 
-int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data, t_here_doc_data *here_docs)
+int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data,
+						t_here_doc_data *here_docs)
 {
 	pid_t		pids [10];
 	pid_t		sibling_pid;
@@ -130,15 +130,12 @@ int	execute_pipeline(t_free_data *exec_data, t_here_doc_data *here_docs)
 {
 	int				pipefd[2];
 	pid_t			pid;
-	//t_here_doc_data	*here_docs;
+	t_here_doc_data	*here_docs;
 
 	if (exec_data->tree == NULL)
 		return (0);
-	if (here_docs == NULL)
-	{
 	//here_docs = NULL;
-		is_there_here_doc(exec_data->tree, &here_docs);
-	}
+	//is_there_here_doc(exec_data->tree, &here_docs);
 	if (exec_data->tree->sibling != NULL)
 	{
 		if (pipe(pipefd) == -1)
