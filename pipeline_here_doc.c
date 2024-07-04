@@ -19,7 +19,7 @@ char	*pipe_handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars)
 
 	filename = "/tmp/heredoc.txt";
 	contents = pipe_handle_here_doc(node, vars, filename);
-	printf("Contents = %s\n", contents);
+	//printf("Contents = %s\n", contents);
 	if (vars->error)
 		return (NULL);
 	vars->fd_in = open(filename, O_RDONLY);
@@ -110,6 +110,7 @@ char	*pipe_handle_node_data(t_p_tree **node, t_exec_vars *vars)
 
 void	is_there_here_doc(t_p_tree *tree, t_here_doc_data **here_docs)
 {
+	//t_p_tree	*node = tree;
 	t_p_tree	*current = tree;
 	t_exec_vars	*vars;
 	char		*contents = NULL;
@@ -123,9 +124,12 @@ void	is_there_here_doc(t_p_tree *tree, t_here_doc_data **here_docs)
 	init_exec_vars(vars);
 	while (current != NULL)
 	{
-		if (current->data != NULL && current->data->type == HERE_DOC)
+		while (current->child != NULL && current->child->child != NULL && current->child->child->data != NULL)
 		{
-			contents = pipe_handle_node_data(&current, vars);
+			if (current->child->child->data->type == HERE_DOC) {
+			printf("Lexeme is %s\n",current->child->child->data->lexeme);
+			contents = pipe_handle_node_data(&current->child->child, vars);
+			printf("Contents = %s\n", contents);
 			if (contents != NULL)
 			{
 				t_here_doc_data *new_here_doc = malloc(sizeof(t_here_doc_data));
@@ -133,6 +137,13 @@ void	is_there_here_doc(t_p_tree *tree, t_here_doc_data **here_docs)
                 new_here_doc->next = *here_docs;
                 *here_docs = new_here_doc;
 			}
+			}
+			current->child = current->child->child;
+		}
+		if (current->sibling != NULL && current->sibling->data != NULL)
+		{
+			printf("Sibling is %s\n",current->sibling->data->lexeme);
+            is_there_here_doc(current->child, here_docs);
 		}
 		current = current->sibling;
 	}

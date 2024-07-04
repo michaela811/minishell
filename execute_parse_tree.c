@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	execute_parse_tree(t_free_data *exec_data)
+/*int	execute_parse_tree(t_free_data *exec_data)
 {
 	if (exec_data->tree == NULL)
 		return (0);
@@ -21,7 +21,37 @@ int	execute_parse_tree(t_free_data *exec_data)
 	else
 		execute_node(exec_data);
 	return (g_last_exit_status);
+}*/
+
+void free_here_docs(t_here_doc_data *here_docs)
+{
+    while (here_docs != NULL)
+    {
+        t_here_doc_data *tmp = here_docs;
+        here_docs = here_docs->next;
+        free(tmp->contents);
+        free(tmp);
+    }
 }
+
+int execute_parse_tree(t_free_data *exec_data)
+{
+    if (exec_data->tree == NULL)
+        return 0;
+    if (exec_data->tree->sibling)
+    {
+        t_here_doc_data *here_docs = NULL;
+        is_there_here_doc(exec_data->tree, &here_docs);
+        execute_pipeline(exec_data, here_docs);
+        free_here_docs(here_docs); // Free here_doc data after execution
+    }
+    else
+    {
+        execute_node(exec_data);
+    }
+    return g_last_exit_status;
+}
+
 
 void	print_args(char **args)
 {
