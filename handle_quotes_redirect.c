@@ -48,6 +48,11 @@ void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 	{
 		handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
 			sizeof(l_vars->buffer));
+		if (g_last_exit_status)
+		{
+			vars->error = 1;
+			return ;
+		}
 		*l_vars->result = ft_strjoin(*l_vars->result, l_vars->buffer);
 		if (!check_null(*l_vars->result, &vars->error))
 			return ;
@@ -74,8 +79,11 @@ void	handle_with_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 	{
 		handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
 			sizeof(l_vars->buffer));
-		if (vars->error)
+		if (g_last_exit_status)
+		{
+			vars->error = 1;
 			return ;
+		}
 	}
 	else
 	{

@@ -32,8 +32,8 @@ void	handle_single_quotes(char **current, char **result, t_exec_vars *vars)
 	if (!check_null(*current, &vars->error))
 		return ;
 	**current = '\0';
-	*result = ft_strjoin(*result, token);
-	if (!check_null(*result, &vars->error))
+	update_result(result, token, vars);
+	if (vars->error)
 		return ;
 	vars->inside_single_quotes = 0;
 	(*current)++;
@@ -62,14 +62,19 @@ void	handle_double_quotes(char **current, char **result,
 	if (ft_strchr(token, '$') != NULL)
 	{
 		handle_dollar_sign(&token, buffer, env, sizeof(buffer));
-		*result = ft_strjoin(*result, buffer);
-		if (!check_null(*result, &vars->error))
+		if (g_last_exit_status)
+		{
+			vars->error = 1;
+			return ;
+		}
+		update_result(result, buffer, vars);
+		if (vars->error)
 			return ;
 	}
 	else
 	{
-		*result = ft_strjoin(*result, token);
-		if (!check_null(*result, &vars->error))
+		update_result(result, token, vars);
+		if (vars->error)
 			return ;
 	}
 	handle_double_quotes_split(current, vars);
@@ -81,5 +86,5 @@ void	handle_quotes_final_assign(char **str1, char **str2, t_exec_vars *vars)
 {
 	*str1 = ft_strdup(*str2);
 	check_null(*str1, &vars->error);
-	free_and_null(str2);
+	//free_and_null(str2);
 }

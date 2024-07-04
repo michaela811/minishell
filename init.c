@@ -40,8 +40,13 @@ void	init_handle_vars(t_handle_vars *l_vars, t_exec_vars *vars)
 	*l_vars->result = ft_strdup("");//ADD MEMORY CHECK
 	//l_vars->current = &vars->args[vars->i];
 	l_vars->current = malloc(sizeof(char *));//ADD MEMORY CHECK
-	*l_vars->current = ft_strdup(vars->args[vars->i]); //ADD MEMORY CHECK
+	*l_vars->current = ft_strdup(vars->args[vars->i]);
+
+	//ADD MEMORY CHECK
 	l_vars->delimiters = "'\"";
+	l_vars->current_start = *l_vars->current;
+	//l_vars->current_start = malloc(sizeof(char *)); // Allocate memory for current_start
+    //*l_vars->current_start = *l_vars->current; //
 }
 
 void	init_handle_quote_redirect(t_handle_vars *l_vars, t_p_tree **node)

@@ -30,9 +30,11 @@ void	free_handle_vars(t_handle_vars *l_vars)
 	{
 		if (*l_vars->current != NULL)
 		{
+			//printf("freeing current: %s\n", *l_vars->current);
 			free(*l_vars->current);
 			*l_vars->current = NULL;
 		}
+		// printf("freeing curr %s\n", l_vars->current);
 		free(l_vars->current);
 		l_vars->current = NULL;
 	}

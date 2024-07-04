@@ -30,10 +30,17 @@ int	ft_lennbr(int nbr)
 	return (++count);
 }
 
-void	handle_question_mark(char **start, char *buffer, char *dollar)
+int	handle_question_mark(char **start, char *buffer, char *dollar)
 {
-	ft_strcat(buffer, ft_itoa(g_last_exit_status));
+	char	*exit_status;
+
+	exit_status = ft_itoa(g_last_exit_status);
+	if (!check_null(exit_status, &g_last_exit_status))
+		return (1);
+	ft_strcat(buffer, exit_status);
+	//ft_strcat(buffer, ft_itoa(g_last_exit_status));
 	*start = dollar + 2;
+	return (0);
 }
 
 void	handle_special_chars(char **start, char *buffer, char *dollar)
@@ -77,7 +84,10 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env,
 	{
 		ft_strncat(buffer, *start, dollar - *start);
 		if (*(dollar + 1) == '?')
-			handle_question_mark(start, buffer, dollar);
+		{
+			if(handle_question_mark(start, buffer, dollar))
+				return ;
+		}
 		else if (*(dollar + 1) == '\0' || ft_strchr("$ \"'/", *(dollar + 1)))
 			handle_special_chars(start, buffer, dollar);
 		else

@@ -45,3 +45,4 @@ void	handle_with_current_redirect(t_handle_vars *local_vars,
 void	handle_no_quotes_redirect(t_handle_vars *local_vars, t_exec_vars *vars,
 			t_env **env, t_p_tree **node);
 int		split_variable(char *arg, int i, t_exec_vars *vars);
+void	update_result(char **result, char *updated_result, t_exec_vars *vars);

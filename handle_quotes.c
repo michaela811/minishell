@@ -3,14 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   handle_quotes.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:06 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:37:11 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/04 22:02:41 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void update_result(char **result, char *updated_result, t_exec_vars *vars)
+{
+    char *new_result;
+
+	new_result = ft_strjoin(*result, updated_result);
+    if (!check_null(new_result, &vars->error))
+        return;
+    free(*result); // Free the old string
+    *result = new_result; // Assign the new string
+}
+
+void handle_error_and_free(t_exec_vars *vars, t_handle_vars *l_vars)
+{
+    if (!vars->error)
+	{
+        free(vars->args[vars->i]);
+        vars->args[vars->i] = NULL;
+        handle_quotes_final_assign(&vars->args[vars->i], l_vars->result, vars);
+        free_handle_vars(l_vars);
+    }
+	free_handle_vars(l_vars);
+}
 
 void	handle_quotes_glob_1(t_p_tree **node, t_exec_vars *vars,
 		t_env **env)
@@ -36,10 +59,16 @@ void	handle_quotes_glob_1(t_p_tree **node, t_exec_vars *vars,
 		if (vars->error)
 			break ;
 	}
-	if (!vars->error)
-		return (handle_quotes_final_assign(&vars->args[vars->i],
-				l_vars.result, vars)); //might need before free(vars->args[vars->i]);
-	free_handle_vars(&l_vars);
+	*l_vars.current = l_vars.current_start;
+	handle_error_and_free(vars, &l_vars);
+}
+
+void update_args(t_exec_vars *vars, t_handle_vars *l_vars)
+{
+    free(vars->args[vars->i]);
+    vars->args[vars->i] = ft_strjoin(*l_vars->result, l_vars->token);
+    if (!check_null(vars->args[vars->i], &vars->error))
+        return;
 }
 
 void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
@@ -49,31 +78,31 @@ void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
 	{
 		handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
 			sizeof(l_vars->buffer));
-		*l_vars->result = ft_strjoin(*l_vars->result,
-				l_vars->buffer);
-		if (!check_null(*l_vars->result, &vars->error))
+		if (g_last_exit_status)
+		{
+			vars->error = 1;
 			return ;
+		}
+		update_result(l_vars->result, l_vars->buffer, vars);
+		if (vars->error)
+			return (free(*l_vars->result));
 		if (strchr((*node)->data->lexeme, '$') != NULL
 			&& strchr(l_vars->buffer, ' '))
-		{
 			vars->i = split_variable(*l_vars->result, vars->i, vars);
-			if (vars->error)
-				return (free(*l_vars->result));
-		}
+		if (vars->error)
+			return (free(*l_vars->result));
 		else
 		{
-        	free(vars->args[vars->i]); // Free the memory
+        	free(vars->args[vars->i]);
         	vars->args[vars->i] = ft_strdup(*l_vars->result);
+			if (!check_null(vars->args[vars->i], &vars->error))
+				return (free(*l_vars->result));
     	}
 	}
 	else
-	{
-		free(vars->args[vars->i]);
-		vars->args[vars->i] = ft_strjoin(*l_vars->result, l_vars->token);
-		//free();
-		if (!check_null(vars->args[vars->i], &vars->error))
-			return ;
-	}
+		update_args(vars, l_vars);
+	if (vars->error)
+		return (free(*l_vars->result));
 	vars->end = 1;
 }
 
@@ -82,10 +111,14 @@ void	handle_with_current_dollar(t_handle_vars *l_vars,
 {
 	handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
 		sizeof(l_vars->buffer));
-	*l_vars->result = ft_strjoin(*l_vars->result,
-			l_vars->buffer);
-	if (!check_null(*l_vars->result, &vars->error))
+	if (g_last_exit_status)
+	{
+		vars->error = 1;
 		return ;
+	}
+	update_result(l_vars->result, l_vars->buffer, vars);
+	if (vars->error)
+		return (free(*l_vars->result));
 	if (ft_strchr((*node)->data->lexeme, '$') != NULL
 		&& ft_strchr(l_vars->buffer, ' '))
 	{
@@ -101,6 +134,7 @@ void	handle_with_current(t_handle_vars *l_vars,
 		t_exec_vars *vars, t_env **env, t_p_tree **node)
 {
 	char	delimiter;
+	char	*new_result;
 
 	delimiter = **l_vars->current;
 	**l_vars->current = '\0';
@@ -112,10 +146,14 @@ void	handle_with_current(t_handle_vars *l_vars,
 	}
 	else
 	{
-		*l_vars->result = ft_strjoin(*l_vars->result,
-				l_vars->token);
-		if (!check_null(*l_vars->result, &vars->error))
+		update_result(l_vars->result, l_vars->token, vars);
+		if (vars->error)
 			return ;
+		/* new_result = ft_strjoin(*l_vars->result, l_vars->token);
+    	if (!check_null(new_result, &vars->error))
+        	return ;
+    	free(*l_vars->result); // Free the old string
+    	*l_vars->result = new_result; // Assign the new string */
 	}
 	**l_vars->current = delimiter;
 	if (**l_vars->current == '\'')
