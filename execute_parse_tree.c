@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/02 14:53:00 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/02 16:36:11 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 	if (exec_data->tree == NULL)
 		return (0);
 	if (exec_data->tree->sibling)
-		execute_pipeline(exec_data, NULL);
+		execute_pipeline(exec_data);
 	else
 		execute_node(exec_data);
 	return (g_last_exit_status);

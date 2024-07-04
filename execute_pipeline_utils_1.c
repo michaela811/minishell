@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/02 14:59:22 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/02 17:51:11 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,8 @@ static int	ft_waitpid(int num_commands, pid_t *pids)
 	return (g_last_exit_status);
 }
 
-int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data, t_here_doc_data *here_docs)
+int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data,
+						t_here_doc_data *here_docs)
 {
 	pid_t		pids [10];
 	pid_t		sibling_pid;

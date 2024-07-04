@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:40 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/02 11:18:00 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/02 16:41:12 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,3 +99,4 @@ char	*pipe_handle_node_data(t_p_tree **node, t_exec_vars *vars);
 char	*pipe_handle_redirection(t_p_tree **node, t_exec_vars *vars);
 char	*pipe_handle_here_doc(t_p_tree **node, t_exec_vars *vars, char *filename);
 char	*pipe_handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars);
+int		trigger_pipe_loop(t_free_data *exec_data, t_here_doc_data *here_docs);
