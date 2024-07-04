@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/04 16:33:27 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/04 17:41:15 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ char    *pipe_handle_here_doc(t_p_tree **node, t_exec_vars *vars, char *filename
 			break ;
 		buffer = ft_strtrim(line, "\n");
 		free(line); // to this line
-		if (ft_strcmp(buffer, (*node)->child->data->lexeme) == 0)
+		if (ft_exact_strcmp(buffer, (*node)->child->data->lexeme) == 0)
 		{
 			free(buffer);
 			break ;
@@ -153,6 +153,7 @@ void    is_there_here_doc(t_p_tree **tree, t_here_doc_data **here_docs)
 					new_here_doc->next = *here_docs;
 					*here_docs = new_here_doc;
 					current->child->child->data = NULL;
+					continue ;
 				}
 			}
 <<<<<<< HEAD

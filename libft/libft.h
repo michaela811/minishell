@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/14 10:29:25 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/05/23 15:00:51 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/07/04 17:32:32 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,5 +91,6 @@ char	*extract_til_nl_or_end(char **buff);
 char	*read_buff_size(int fd, char **buffer);
 int		check_nl(char *str);
 char	*get_next_line(int fd);
+int		ft_exact_strcmp(const char *s1, const char *s2);
 
 #endif
