@@ -6,18 +6,47 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/02 16:36:11 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/04 14:02:50 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void free_here_docs(t_here_doc_data *here_docs)
+{
+    while (here_docs != NULL)
+    {
+        t_here_doc_data *tmp = here_docs;
+        here_docs = here_docs->next;
+        free(tmp->contents);
+        free(tmp);
+    }
+}
+
+void free_here_docs(t_here_doc_data *here_docs)
+{
+    while (here_docs != NULL)
+    {
+        t_here_doc_data *tmp = here_docs;
+        here_docs = here_docs->next;
+        free(tmp->contents);
+        free(tmp);
+    }
+}
+
 /*int	execute_parse_tree(t_free_data *exec_data)
 {
+	t_here_doc_data	*here_docs;
+
+	here_docs = NULL;
 	if (exec_data->tree == NULL)
 		return (0);
 	if (exec_data->tree->sibling)
-		execute_pipeline(exec_data);
+	{
+		is_there_here_doc(&exec_data->tree, &here_docs);
+		execute_pipeline(exec_data, here_docs);
+		free_here_docs(here_docs);
+	}
 	else
 		execute_node(exec_data);
 	return (g_last_exit_status);
