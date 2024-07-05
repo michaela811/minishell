@@ -26,6 +26,16 @@ void	free_handle_vars(t_handle_vars *l_vars)
 		free(l_vars->result);
 		l_vars->result = NULL;
 	}
+	if (l_vars->current != NULL)
+	{
+		if (*l_vars->current != NULL)
+		{
+			free(*l_vars->current);
+			*l_vars->current = NULL;
+		}
+		free(l_vars->current);
+		l_vars->current = NULL;
+	}
 }
 
 void	free_env_array(char **env_array)

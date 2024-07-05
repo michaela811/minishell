@@ -26,6 +26,7 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	}
 	else if (pid == 0)
 	{
+		//signal(SIGQUIT, SIG_DFL);
 		handle_child_cmd(vars, env, environment);
 		exit (g_last_exit_status);
 	}
@@ -54,6 +55,7 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	char	*path;
 
 	path = NULL;
+	//signal(SIGQUIT, SIG_DFL);
 	if (vars->fd_in != 0)
 	{
 		dup2(vars->fd_in, 0);
