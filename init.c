@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:16 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:37:18 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/05 21:02:04 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,9 @@ void	init_handle_quote_redirect(t_handle_vars *l_vars, t_p_tree **node)
 {
 	l_vars->result = malloc(sizeof(char *));
 	*l_vars->result = ft_strdup("");
-	l_vars->current = &(*node)->child->data->lexeme;
+	//l_vars->current = &(*node)->child->data->lexeme;
+	l_vars->current = malloc(sizeof(char *));//ADD MEMORY CHECK
+	*l_vars->current = ft_strdup((*node)->child->data->lexeme);
 	l_vars->delimiters = "'\"";
+	l_vars->current_start = *l_vars->current;
 }

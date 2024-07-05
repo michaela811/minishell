@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:06 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/05 13:15:32 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/07/05 20:04:49 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,19 @@ int update_result(char **result, char *updated_result, t_exec_vars *vars)
     *result = new_result; // Assign the new string
 	return (0);
 }
+
+/* void update_result(char **result, char *updated_result, t_exec_vars *vars)
+{
+    char *new_result;
+
+	new_result = ft_strjoin(*result, updated_result);
+	//new_result = NULL;
+    if (!check_null(new_result, &vars->error))
+        return ;
+	//new_result = ft_strjoin(*result, updated_result);
+    free(*result); // Free the old string
+    *result = new_result; // Assign the new string
+} */
 
 void handle_error_and_free(t_exec_vars *vars, t_handle_vars *l_vars)
 {
@@ -59,6 +72,7 @@ void	handle_quotes_glob_1(t_p_tree **node, t_exec_vars *vars,
 		if (vars->end)
 		{
 			vars->end = 0;
+			*l_vars.current = l_vars.current_start;
 			return (free_handle_vars(&l_vars));
 		}
 		if (vars->error)
@@ -104,6 +118,9 @@ void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
 		} */
 		if (update_result(l_vars->result, l_vars->buffer, vars))
 			return ;
+		/* update_result(l_vars->result, l_vars->buffer, vars);
+		if (vars->error)
+			return ; */
 		if (strchr((*node)->data->lexeme, '$') != NULL
 			&& strchr(l_vars->buffer, ' '))
 			vars->i = split_variable(*l_vars->result, vars->i, vars);
@@ -114,13 +131,13 @@ void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
         	free(vars->args[vars->i]);
         	vars->args[vars->i] = ft_strdup(*l_vars->result);
 			if (!check_null(vars->args[vars->i], &vars->error))
-				return (free(*l_vars->result));
+				return ;//(free(*l_vars->result));
     	}
 	}
 	else
 		update_args(vars, l_vars);
 	if (vars->error)
-		return (free(*l_vars->result));
+		return ;//(free(*l_vars->result));
 	vars->end = 1;
 }
 
@@ -138,6 +155,9 @@ void	handle_with_current_dollar(t_handle_vars *l_vars,
 	} */
 	if (update_result(l_vars->result, l_vars->buffer, vars))
 		return ;
+	/* update_result(l_vars->result, l_vars->buffer, vars);
+		if (vars->error)
+			return ; */
 	if (ft_strchr((*node)->data->lexeme, '$') != NULL
 		&& ft_strchr(l_vars->buffer, ' '))
 	{
@@ -193,6 +213,6 @@ void	handle_no_quotes(t_handle_vars *l_vars, t_exec_vars *vars,
 		handle_no_current(l_vars, vars, env, node);
 		return ;
 	}
-	*l_vars->current = temp;//NEEDED??
+	*l_vars->current = temp;
 	handle_with_current(l_vars, vars, env, node);
 }
