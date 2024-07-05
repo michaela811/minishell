@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_quotes_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:00 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:37:01 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/05 20:03:05 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ void	handle_single_quotes(char **current, char **result, t_exec_vars *vars)
 	**current = '\0';
 	if (update_result(result, token, vars))
 		return ;
+	/* update_result(result, token, vars);
+		if (vars->error)
+			return ; */
 	vars->inside_single_quotes = 0;
 	(*current)++;
 	if (!check_null(*current, &vars->end))
@@ -70,9 +73,18 @@ void	handle_double_quotes(char **current, char **result,
 		} */
 		if(update_result(result, buffer, vars))
 			return ;
+		/* update_result(result, buffer, vars);
+		if (vars->error)
+			return ; */
 	}
 	else if (update_result(result, token, vars))
 			return ;
+	/* else
+	{
+		update_result(result, token, vars);
+		if (vars->error)
+			return ;
+	} */
 	handle_double_quotes_split(current, vars);
 	if (!check_null(*current, &vars->end))
 		return ;
