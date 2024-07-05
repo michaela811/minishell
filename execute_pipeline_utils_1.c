@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/04 16:29:02 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/05 11:31:08 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,11 @@ int handle_heredocs(t_here_doc_data *here_docs)
 		return (print_err(1, 2, "my(s)hell: fork in sibling process\n"), 1);
 	pid = fork();
 	if (pid == -1)
+	{
+		close(heredoc_pipefd[0]);
+    	close(heredoc_pipefd[1]);
 		return (print_err(1, 2, "my(s)hell: fork in sibling process\n"), 1);
+	}
 	if (pid == 0)
 	{
 		close(heredoc_pipefd[0]);
@@ -56,7 +60,7 @@ int handle_heredocs(t_here_doc_data *here_docs)
 	}
 	else
 		if (handle_heredocs_parent(heredoc_pipefd, pid))
-			return (1);
+			return (close(heredoc_pipefd[0]), 1);
 	return (0);
 }
 
@@ -73,7 +77,7 @@ int handle_child_process(int *pipefd, t_free_data *exec_data,
 		close(pipefd[0]);
 		close(pipefd[1]);
 	}
-	if (handle_heredocs(here_docs) == -1)
+	if (handle_heredocs(here_docs) != 0)
 		exit(EXIT_FAILURE);
 	g_last_exit_status = execute_node(exec_data);
 	exit(g_last_exit_status ? EXIT_FAILURE : EXIT_SUCCESS);
@@ -113,7 +117,7 @@ int handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data,
 		sibling_free_data.tree = exec_data->tree->sibling->sibling;
 		sibling_pid = handle_sibling_process(pipefd, &sibling_free_data, here_docs);
 		if (sibling_pid == -1)
-			return (1);
+			return (close(pipefd[0]), 1);
 		pids[num_commands] = sibling_pid;
 		num_commands++;
 	}
@@ -135,9 +139,15 @@ int execute_pipeline(t_free_data *exec_data, t_here_doc_data *here_docs)
 	}
 	pid = fork();
 	if (pid == -1)
+	{
+		close(pipefd[0]);
+		close(pipefd[1]);
 		return (print_err(1, 2, "my(s)hell: fork\n"), 1);
+	}
 	else if (pid == 0)
 		return handle_child_process(pipefd, exec_data, here_docs);
 	else
 		return handle_parent_process(pipefd, pid, exec_data, here_docs);
+	close(pipefd[0]);
+	close(pipefd[1]);
 }
