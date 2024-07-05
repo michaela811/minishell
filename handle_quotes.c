@@ -32,6 +32,8 @@ void handle_error_and_free(t_exec_vars *vars, t_handle_vars *l_vars)
         handle_quotes_final_assign(&vars->args[vars->i], l_vars->result, vars);
         free_handle_vars(l_vars);
     }
+	free_env_array(vars->args);
+	free(vars);
 	free_handle_vars(l_vars);
 }
 
@@ -71,26 +73,39 @@ void update_args(t_exec_vars *vars, t_handle_vars *l_vars)
         return;
 }
 
+int handle_dollar_error(char **token, char *buffer, t_exec_vars *vars,
+		 t_env **env)
+{
+    handle_dollar_sign(token, buffer, env, sizeof(buffer));
+    if (g_last_exit_status)
+	{
+        vars->error = 1;
+        return 1;
+    }
+    return 0;
+}
+
 void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
 		t_env **env, t_p_tree **node)
 {
 	if (ft_strchr(l_vars->token, '$') != NULL)
 	{
-		handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
+		if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, env))
+			return ;
+		/* handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
 			sizeof(l_vars->buffer));
 		if (g_last_exit_status)
 		{
 			vars->error = 1;
 			return ;
-		}
-		update_result(l_vars->result, l_vars->buffer, vars);
-		if (vars->error)
-			return (free(*l_vars->result));
+		} */
+		if (update_result(l_vars->result, l_vars->buffer, vars))
+			return ;
 		if (strchr((*node)->data->lexeme, '$') != NULL
 			&& strchr(l_vars->buffer, ' '))
 			vars->i = split_variable(*l_vars->result, vars->i, vars);
 		if (vars->error)
-			return (free(*l_vars->result));
+			return ;
 		else
 		{
         	free(vars->args[vars->i]);
@@ -109,16 +124,17 @@ void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
 void	handle_with_current_dollar(t_handle_vars *l_vars,
 			t_exec_vars *vars, t_env **env, t_p_tree **node)
 {
-	handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
+	if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, env))
+			return ;
+	/* handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
 		sizeof(l_vars->buffer));
 	if (g_last_exit_status)
 	{
 		vars->error = 1;
 		return ;
-	}
-	update_result(l_vars->result, l_vars->buffer, vars);
-	if (vars->error)
-		return (free(*l_vars->result));
+	} */
+	if (update_result(l_vars->result, l_vars->buffer, vars))
+		return ;
 	if (ft_strchr((*node)->data->lexeme, '$') != NULL
 		&& ft_strchr(l_vars->buffer, ' '))
 	{
@@ -134,7 +150,7 @@ void	handle_with_current(t_handle_vars *l_vars,
 		t_exec_vars *vars, t_env **env, t_p_tree **node)
 {
 	char	delimiter;
-	char	*new_result;
+	//char	*new_result;
 
 	delimiter = **l_vars->current;
 	**l_vars->current = '\0';
@@ -146,8 +162,7 @@ void	handle_with_current(t_handle_vars *l_vars,
 	}
 	else
 	{
-		update_result(l_vars->result, l_vars->token, vars);
-		if (vars->error)
+		if (update_result(l_vars->result, l_vars->token, vars))
 			return ;
 		/* new_result = ft_strjoin(*l_vars->result, l_vars->token);
     	if (!check_null(new_result, &vars->error))
