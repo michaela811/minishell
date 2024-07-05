@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/05 11:31:08 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/05 13:37:42 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,17 +83,16 @@ int handle_child_process(int *pipefd, t_free_data *exec_data,
 	exit(g_last_exit_status ? EXIT_FAILURE : EXIT_SUCCESS);
 }
 
-static int  ft_waitpid(int num_commands, pid_t *pids)
+static int  ft_waitpid(int num_commands, pid_t *pids, int *status)
 {
 	int	i;
-	int	status;
 
 	i = 0;
 	while (i < num_commands)
 	{
-		waitpid(pids[i], &status, 0);
-		if (WIFEXITED(status))
-			g_last_exit_status = WEXITSTATUS(status);
+		waitpid(pids[i], status, 0);
+		if (WIFEXITED(*status))
+			g_last_exit_status = WEXITSTATUS(*status);
 		i++;
 	}
 	return (g_last_exit_status);
@@ -103,6 +102,7 @@ int handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data,
 						t_here_doc_data *here_docs)
 {
 	pid_t       pids [10];
+	int			status;
 	pid_t       sibling_pid;
 	int         num_commands;
 	t_free_data sibling_free_data;
@@ -121,7 +121,7 @@ int handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data,
 		pids[num_commands] = sibling_pid;
 		num_commands++;
 	}
-	ft_waitpid(num_commands, pids);
+	ft_waitpid(num_commands, pids, &status);
 	return (g_last_exit_status);
 }
 
