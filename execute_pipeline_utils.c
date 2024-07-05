@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:27 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/04 13:39:49 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/05 11:33:06 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,12 @@ pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data,
     else if (pid2 > 0)
     {
         close(pipefd[0]);
-		close(pipefd[1]);//New trial
+		close(pipefd[1]);
         wait(NULL);
     }
     else
     {
-        perror("fork");
+        perror("my(s)hell: fork\n");
         return -1;
     }
     return pid2;

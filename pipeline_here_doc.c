@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/04 16:33:27 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/05 12:37:35 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,12 @@ char    *pipe_handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars)
 	vars->fd_in = open(filename, O_RDONLY);
 	if (vars->fd_in == -1)
 	{
-		perror("open");
-		vars->error = 1;
+		(vars->error = 1);
+		return (print_err(1, 2, "my(s)hell: open failure\n"), NULL);
 	}
 	*node = (*node)->child;
 	vars->i++;
+	close(vars->fd_in);
 	return (contents);
 }
 
@@ -45,7 +46,7 @@ char    *pipe_handle_here_doc(t_p_tree **node, t_exec_vars *vars, char *filename
 	if (file == -1)
 	{
 		vars->error = 1;
-		return ((vars->error = 1), perror("open"), NULL);
+		return (print_err(1, 2, "my(s)hell: open failure\n"), NULL);
 	}
 	while (1)
 	{
@@ -57,7 +58,7 @@ char    *pipe_handle_here_doc(t_p_tree **node, t_exec_vars *vars, char *filename
 			break ;
 		buffer = ft_strtrim(line, "\n");
 		free(line); // to this line
-		if (ft_strcmp(buffer, (*node)->child->data->lexeme) == 0)
+		if (ft_exact_strcmp(buffer, (*node)->child->data->lexeme) == 0)
 		{
 			free(buffer);
 			break ;
@@ -68,6 +69,7 @@ char    *pipe_handle_here_doc(t_p_tree **node, t_exec_vars *vars, char *filename
 			 if (contents == NULL)
 			{
 				free(buffer);
+				close(file);
 				return NULL;
 			}
 			strcpy(contents, buffer);
@@ -80,6 +82,7 @@ char    *pipe_handle_here_doc(t_p_tree **node, t_exec_vars *vars, char *filename
 
 				free(contents);
 				free(buffer);
+				close(file);
 				return NULL;
 			}
 			contents = temp;
@@ -122,7 +125,8 @@ void    is_there_here_doc(t_p_tree **tree, t_here_doc_data **here_docs)
 	init_exec_vars(vars);
 	while (current != NULL)
 	{
-		while (current->child != NULL && current->child->child != NULL && current->child->child->data != NULL)
+		while (current->child != NULL && current->child->child != NULL
+				&& current->child->child->data != NULL)
 		{
 			if (current->child->child->data->type == HERE_DOC)
 			{
@@ -134,6 +138,7 @@ void    is_there_here_doc(t_p_tree **tree, t_here_doc_data **here_docs)
 					new_here_doc->next = *here_docs;
 					*here_docs = new_here_doc;
 					current->child->child->data = NULL;
+					continue ;
 				}
 			}
 			current->child = current->child->child;
