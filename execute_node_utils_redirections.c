@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:03 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 11:36:41 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/04 17:33:46 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars)
 			break ;
 		buffer = ft_strtrim(line, "\n");
 		free(line); // to this line
-		if (ft_strcmp(buffer, (*node)->child->data->lexeme) == 0)
+		if (ft_exact_strcmp(buffer, (*node)->child->data->lexeme) == 0)
 		{
 			free(buffer);
 			break ;

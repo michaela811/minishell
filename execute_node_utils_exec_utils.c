@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:35:53 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/05 10:39:21 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	pid = fork();
 	if (pid == -1)
 	{
-		print_err(128, 2, "fork\n");
+		print_err(128, 2, "my(s)hell: fork\n");
 		exit(g_last_exit_status);
 	}
 	else if (pid == 0)
@@ -40,6 +40,14 @@ static int	print_and_exit(t_exec_vars *vars)
 {
 	print_err(127, 2, "my(s)hell: execve\n", vars->args[0]);
 	exit(127);
+}
+
+void cleanup(t_exec_vars *vars)
+{
+    if (vars->fd_in != 0)
+        close(vars->fd_in);
+    if (vars->fd_out != 1)
+        close(vars->fd_out);
 }
 
 int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
@@ -63,9 +71,15 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	else
 		get_path(vars->args[0], *env, &path);
 	if ((err_check_fork(vars, env, path)) != 0)
+	{
+		cleanup(vars);
 		exit (g_last_exit_status);
+	}
 	if (execve(path, vars->args, environment) < 0)
+	{
+		cleanup(vars);
 		print_and_exit(vars);
+	}
 	g_last_exit_status = 0;
 	exit (EXIT_SUCCESS);
 }
