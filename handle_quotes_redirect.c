@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:54 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:36:56 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:15:18 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars, t_env **env)
 		{
 			vars->end = 0;
 			g_last_exit_status = 0;
-			return (free_handle_vars(&l_vars));
+			return ;//(free_handle_vars(&l_vars));
 		}
 		if (vars->error)
 			break ;

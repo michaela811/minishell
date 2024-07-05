@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:03 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/04 17:33:46 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:22:34 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars)
 	char	*buffer;
 	char	*filename;
 	int		file;
-	char	*line;
+	//char	*line;
 
 	filename = "/tmp/heredoc.txt";
 	(*node)->child->data->lexeme = handle_quotes_echo
@@ -109,14 +109,14 @@ char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars)
 	}
 	while (1)
 	{
-		/*buffer = readline("heredoc> ");
+		buffer = readline("heredoc> ");
 		if (buffer == NULL)
-			break ;*/
-		line = get_next_line(fileno(stdin)); // for tester from this line
+			break ;
+		/*line = get_next_line(fileno(stdin)); // for tester from this line
 		if (line == NULL)
 			break ;
 		buffer = ft_strtrim(line, "\n");
-		free(line); // to this line
+		free(line); // to this line*/
 		if (ft_exact_strcmp(buffer, (*node)->child->data->lexeme) == 0)
 		{
 			free(buffer);

@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:18 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:35:19 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/05 15:56:21 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 	quotes_glob_redirect(node, vars, env);
 	if (g_last_exit_status)
 		return ;
+	//printf("node->child->data->lexeme: %s\n", (*node)->child->data->lexeme);
 	vars->fd_out = open((*node)->child->data->lexeme,
 			O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (vars->fd_out == -1)

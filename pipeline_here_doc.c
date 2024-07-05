@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/05 12:37:35 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:41:25 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char    *pipe_handle_here_doc(t_p_tree **node, t_exec_vars *vars, char *filename
 {
 	char    *buffer;
 	int     file;
-	char    *line;
+	//char    *line;
 	char    *contents = NULL;
 
 	(*node)->child->data->lexeme = handle_quotes_echo
@@ -50,14 +50,14 @@ char    *pipe_handle_here_doc(t_p_tree **node, t_exec_vars *vars, char *filename
 	}
 	while (1)
 	{
-		/*buffer = readline("heredoc> ");
+		buffer = readline("heredoc> ");
 		if (buffer == NULL)
-			break ;*/
-		line = get_next_line(fileno(stdin)); // for tester from this line
+			break ;
+		/*line = get_next_line(fileno(stdin)); // for tester from this line
 		if (line == NULL)
 			break ;
 		buffer = ft_strtrim(line, "\n");
-		free(line); // to this line
+		free(line); // to this line*/
 		if (ft_exact_strcmp(buffer, (*node)->child->data->lexeme) == 0)
 		{
 			free(buffer);
@@ -133,11 +133,14 @@ void    is_there_here_doc(t_p_tree **tree, t_here_doc_data **here_docs)
 				contents = pipe_handle_node_data(&current->child->child, vars);
 				if (contents != NULL)
 				{
+					//printf("Before current->child->child->data = %s\n", current->child->child->data->lexeme);
 					t_here_doc_data *new_here_doc = malloc(sizeof(t_here_doc_data));
 			   		new_here_doc->contents = contents;
 					new_here_doc->next = *here_docs;
 					*here_docs = new_here_doc;
-					current->child->child->data = NULL;
+					//free_parse_tree(current->child);
+					printf("current->child->child->data = %s\n", current->child->child->data->lexeme);
+					current->child->child = NULL;
 					continue ;
 				}
 			}
@@ -145,7 +148,8 @@ void    is_there_here_doc(t_p_tree **tree, t_here_doc_data **here_docs)
 		}
 		if (current->sibling != NULL && current->sibling->data != NULL)
 			is_there_here_doc(&current->child, here_docs);
-		current = current->sibling;
+		//current = current->sibling;
+		current = current->child;
 	}
 	free(vars);
 }
