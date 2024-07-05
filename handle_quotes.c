@@ -114,13 +114,13 @@ void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
         	free(vars->args[vars->i]);
         	vars->args[vars->i] = ft_strdup(*l_vars->result);
 			if (!check_null(vars->args[vars->i], &vars->error))
-				return (free(*l_vars->result));
+				return ;//(free(*l_vars->result));
     	}
 	}
 	else
 		update_args(vars, l_vars);
 	if (vars->error)
-		return (free(*l_vars->result));
+		return ;//(free(*l_vars->result));
 	vars->end = 1;
 }
 
@@ -193,6 +193,6 @@ void	handle_no_quotes(t_handle_vars *l_vars, t_exec_vars *vars,
 		handle_no_current(l_vars, vars, env, node);
 		return ;
 	}
-	*l_vars->current = temp;//NEEDED??
+	*l_vars->current = temp;
 	handle_with_current(l_vars, vars, env, node);
 }
