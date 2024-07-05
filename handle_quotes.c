@@ -6,21 +6,24 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:06 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/04 22:02:41 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/07/05 12:52:13 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void update_result(char **result, char *updated_result, t_exec_vars *vars)
+int update_result(char **result, char *updated_result, t_exec_vars *vars)
 {
     char *new_result;
 
 	new_result = ft_strjoin(*result, updated_result);
+	//new_result = NULL;
     if (!check_null(new_result, &vars->error))
-        return;
+        {return (1);}
+	//new_result = ft_strjoin(*result, updated_result);
     free(*result); // Free the old string
     *result = new_result; // Assign the new string
+	return (0);
 }
 
 void handle_error_and_free(t_exec_vars *vars, t_handle_vars *l_vars)
