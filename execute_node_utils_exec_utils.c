@@ -97,6 +97,9 @@ int	err_check_fork(t_exec_vars *vars, t_env **env, char *path)
 		path_status = get_path(vars->args[0], *env, &path);
 	if (path_status == 1)
 		return (g_last_exit_status);
+	if (path_status == -2)
+		return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
+					vars->args[0]), 126);
 	if (path_status == -1 || vars->args[0][0] == '\0'
 		|| vars->args[0][0] == '.')
 	{
@@ -104,6 +107,7 @@ int	err_check_fork(t_exec_vars *vars, t_env **env, char *path)
 			&& vars->args[0][1] == '/')
 			return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
 					vars->args[0]), 126);
+		//if (access(vars->args[0], F_OK) == -1 && )
 		return (print_err(127, 2, "my(s)hell: %s: command not found\n",
 				vars->args[0]), 127);
 	}

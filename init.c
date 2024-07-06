@@ -20,12 +20,12 @@ t_free_data	*init_command_data(char **envp)
 	if (!exec_data)
 		return (NULL);
 	exec_data->env = init_environment(envp);
-	if (exec_data->env == NULL)
+	/* if (exec_data->env == NULL)
 	{
 		print_err(1, 2, "init_environment failed\n");
-		free(exec_data);
-		return (NULL);
-	}
+		//free(exec_data);
+		//return (NULL);
+	} */
 	exec_data->token_list = NULL;
 	exec_data->environment = NULL;
 	exec_data->tree = NULL;
