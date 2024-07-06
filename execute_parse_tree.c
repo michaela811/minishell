@@ -97,6 +97,7 @@ int	execute_node(t_free_data *exec_data)
 	if (complex_handle_node_data(exec_data, vars))
 		return (g_last_exit_status);
 	vars->args[vars->i] = NULL;
+	//print_args(vars->args);
 	execute_command(vars, exec_data);
 	free_env_array(vars->args);
 	free(vars);

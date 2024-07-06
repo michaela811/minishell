@@ -89,9 +89,9 @@ void	handle_with_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 	**l_vars->current = '\0';
 	if (ft_strchr((*node)->data->lexeme, '$') != NULL)
 	{
-		handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
-			sizeof(l_vars->buffer));
-		if (g_last_exit_status)
+		if (handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
+			sizeof(l_vars->buffer)))
+		//if (g_last_exit_status)
 		{
 			vars->error = 1;
 			return ;

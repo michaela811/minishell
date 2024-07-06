@@ -69,14 +69,14 @@ void	handle_var_name(char **start, char *buffer, char *dollar, t_env **env)
 	*start = var_end;
 }
 
-void	handle_dollar_sign(char **start, char *buffer, t_env **env,
+int	handle_dollar_sign(char **start, char *buffer, t_env **env,
 			int buffer_size)
 {
 	char	*dollar;
 	char	*start_store;
 
 	if (start == NULL || *start == NULL)
-		return ;
+		return (0);
 	ft_memset(buffer, '\0', buffer_size);
 	start_store = *start;
 	dollar = ft_strchr(*start, '$');
@@ -86,7 +86,7 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env,
 		if (*(dollar + 1) == '?')
 		{
 			if(handle_question_mark(start, buffer, dollar))
-				return ;
+				return (1);
 		}
 		else if (*(dollar + 1) == '\0' || ft_strchr("$ \"'/", *(dollar + 1)))
 			handle_special_chars(start, buffer, dollar);
@@ -99,4 +99,5 @@ void	handle_dollar_sign(char **start, char *buffer, t_env **env,
 		ft_strcpy(buffer, start_store);
 	else if (*start)
 		ft_strcat(buffer, *start);
+	return (0);
 }
