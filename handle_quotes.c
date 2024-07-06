@@ -94,8 +94,8 @@ void update_args(t_exec_vars *vars, t_handle_vars *l_vars)
 int handle_dollar_error(char **token, char *buffer, t_exec_vars *vars,
 		 t_env **env)
 {
-    handle_dollar_sign(token, buffer, env, sizeof(buffer));
-    if (g_last_exit_status)
+    if(handle_dollar_sign(token, buffer, env, sizeof(buffer)))
+    //if (g_last_exit_status)
 	{
         vars->error = 1;
         return 1;

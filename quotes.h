@@ -15,7 +15,7 @@ void	handle_quotes_global(t_p_tree **node, char **args, int i,
 void	handle_quotes_glob_1(t_p_tree **node, t_exec_vars *vars,
 			t_env **env);
 void	handle_quotes_glob(char **arg, t_env **env, int *error);
-void	handle_dollar_sign(char **start, char *buffer, t_env **env,
+int		handle_dollar_sign(char **start, char *buffer, t_env **env,
 			int buffer_size);
 void	handle_single_quotes(char **current, char **result, t_exec_vars *vars);
 void	handle_double_quotes_split(char **current, t_exec_vars *vars);
