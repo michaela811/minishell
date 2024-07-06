@@ -47,6 +47,7 @@ void handle_error_and_free(t_exec_vars *vars, t_handle_vars *l_vars)
         vars->args[vars->i] = NULL;
         handle_quotes_final_assign(&vars->args[vars->i], l_vars->result, vars);
         free_handle_vars(l_vars);
+		return ;
     }
 	//free_env_array(vars->args);
 	//free(vars);
@@ -123,9 +124,12 @@ void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
 			return ; */
 		if (strchr((*node)->data->lexeme, '$') != NULL
 			&& strchr(l_vars->buffer, ' '))
+		{
 			vars->i = split_variable(*l_vars->result, vars->i, vars);
-		if (vars->error)
+			//print_args(vars->args);
+			if (vars->error)
 			return ;
+		}
 		else
 		{
         	free(vars->args[vars->i]);
