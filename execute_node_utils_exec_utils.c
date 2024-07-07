@@ -68,9 +68,9 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	}
 	if (access(vars->args[0], F_OK | X_OK) == 0 && vars->args[0][0] == '/')
 		path = vars->args[0];
-	else
-		get_path(vars->args[0], *env, &path);
-	if ((err_check_fork(vars, env, path)) != 0)
+	/* else
+		get_path(vars->args[0], *env, &path); */
+	if ((err_check_fork(vars, env, &path)) != 0)
 	{
 		cleanup(vars);
 		exit (g_last_exit_status);
@@ -84,7 +84,7 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	exit (EXIT_SUCCESS);
 }
 
-int	err_check_fork(t_exec_vars *vars, t_env **env, char *path)
+int	err_check_fork(t_exec_vars *vars, t_env **env, char **path)
 {
 	int		path_status;
 
@@ -94,12 +94,12 @@ int	err_check_fork(t_exec_vars *vars, t_env **env, char *path)
 	if (access(vars->args[0], F_OK | X_OK) == 0 && vars->args[0][0] == '/')
 		path_status = 0;
 	else
-		path_status = get_path(vars->args[0], *env, &path);
+		path_status = get_path(vars->args[0], *env, path);
 	if (path_status == 1)
 		return (g_last_exit_status);
-	if (path_status == -2)
+	/* if (path_status == -2)
 		return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
-					vars->args[0]), 126);
+					vars->args[0]), 126); */
 	if (path_status == -1 || vars->args[0][0] == '\0'
 		|| vars->args[0][0] == '.')
 	{

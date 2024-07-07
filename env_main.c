@@ -103,12 +103,12 @@ int	get_path(char *cmd, t_env *env, char **exec)
 	if (path == NULL)
 		return (print_err(1, 2,
 				"malloc error in split function\n"), 1);
-	if (path[0] == NULL)
+	/* if (path[0] == NULL)
 	{
 		free_array(path);
 		*exec = cmd;//do we need to set it?
 		return (-2);
-	}
+	} */
 	while (path[++i])
 	{
 		if (get_exec(path, i, cmd, exec))

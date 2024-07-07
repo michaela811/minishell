@@ -25,7 +25,7 @@ void		handle_node_data(t_p_tree **node, t_exec_vars *vars,
 				t_env **env);
 int			execute_node(t_free_data *exec_data);
 int			err_check_fork(t_exec_vars *vars, t_env **env,
-				char *path);
+				char **path);
 void		is_there_here_doc(t_p_tree **tree, t_here_doc_data **here_docs);
 int			pipe_execute_node(t_free_data *exec_data);
 char		*pipe_handle_node_data(t_p_tree **node, t_exec_vars *vars);
