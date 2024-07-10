@@ -222,7 +222,7 @@ int	get_path(char *cmd, t_env *env, char **exec)
 		if (!path[i + 1] && strcmp(path[i], getenv("HOME")) == 0)
 			return (-2);
 		//if (path[i + 1])
-			free(*exec);
+		free(*exec);
 	}
 	free_array(path);
 	*exec = cmd;
