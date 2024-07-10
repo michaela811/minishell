@@ -84,7 +84,7 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	exit (EXIT_SUCCESS);
 }
 
-int	err_check_fork(t_exec_vars *vars, t_env **env, char **path)
+int	err_check_fork(t_exec_vars *vars, t_env **env, char **path)//(vars, env, &path)
 {
 	int		path_status;
 
@@ -97,14 +97,29 @@ int	err_check_fork(t_exec_vars *vars, t_env **env, char **path)
 		path_status = get_path(vars->args[0], *env, path);
 	if (path_status == 1)
 		return (g_last_exit_status);
-	/* if (path_status == -2)
-		return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
-					vars->args[0]), 126); */
+	if (path_status == -2)
+	{
+		if (access(vars->args[0], X_OK) == -1 && vars->args[0][0] == '.'
+			&& vars->args[0][1] == '/')
+			return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
+					vars->args[0]), 126);
+		//if (access(vars->args[0], F_OK) == -1 && )
+		return (print_err(127, 2, "my(s)hell: %s: command not found\n",
+				*path), 127);
+	}
 	if (path_status == -1 || vars->args[0][0] == '\0'
 		|| vars->args[0][0] == '.')
 	{
 		if (access(vars->args[0], X_OK) == -1 && vars->args[0][0] == '.'
 			&& vars->args[0][1] == '/')
+			return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
+					vars->args[0]), 126);
+		/* // Print the result of the access check
+printf("access check for %s: %s\n", vars->args[0], access(vars->args[0], F_OK) == 0 ? "exists" : "does not exist");
+
+// Print whether the PATH environment variable is set
+printf("PATH environment variable is %s\n", getenv("PATH") ? "set" : "unset"); */
+		if (access(vars->args[0], F_OK) == 0 && !find_env_var(*env, "PATH"))
 			return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
 					vars->args[0]), 126);
 		//if (access(vars->args[0], F_OK) == -1 && )
