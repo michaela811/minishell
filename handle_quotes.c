@@ -54,6 +54,21 @@ void handle_error_and_free(t_exec_vars *vars, t_handle_vars *l_vars)
 	free_handle_vars(l_vars);
 }
 
+void handle_error_and_free_redirect(t_exec_vars *vars, t_handle_vars *l_vars, t_p_tree **node)
+{
+	if (!vars->error)
+	{
+		free((*node)->child->data->lexeme);
+		(*node)->child->data->lexeme = NULL;
+		handle_quotes_final_assign(&(*node)->child->data->lexeme, l_vars->result, vars);
+		free_handle_vars(l_vars);
+		return ;
+	}
+	//free_env_array(vars->args);
+	//free(vars);
+	free_handle_vars(l_vars);
+}
+
 void	handle_quotes_glob_1(t_p_tree **node, t_exec_vars *vars,
 		t_env **env)
 {

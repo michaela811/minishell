@@ -50,3 +50,5 @@ int		handle_dollar_error(char **token, char *buffer, t_exec_vars *vars,
 		 t_env **env);
 //void	update_result(char **result, char *updated_result, t_exec_vars *vars);
 void	handle_error_and_free(t_exec_vars *vars, t_handle_vars *l_vars);
+void	handle_error_and_free_redirect(t_exec_vars *vars, t_handle_vars *l_vars,
+			t_p_tree **node);
