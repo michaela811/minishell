@@ -101,7 +101,7 @@ char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars)
 	char	*buffer;
 	char	*filename;
 	int		file;
-	//char	*line;
+	char	*line;
 
 	filename = "/tmp/heredoc.txt";
 	(*node)->child->data->lexeme = handle_quotes_echo
@@ -114,14 +114,14 @@ char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars)
 	}
 	while (1)
 	{
-		buffer = readline("heredoc> ");
+		/*buffer = readline("heredoc> ");
 		if (buffer == NULL)
-			break ;
-		/*line = get_next_line(fileno(stdin)); // for tester from this line
+			break ;*/
+		line = get_next_line(fileno(stdin)); // for tester from this line
 		if (line == NULL)
 			break ;
 		buffer = ft_strtrim(line, "\n");
-		free(line); // to this line*/
+		free(line); // to this line
 		if (ft_exact_strcmp(buffer, (*node)->child->data->lexeme) == 0)
 		{
 			free(buffer);

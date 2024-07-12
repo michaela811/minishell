@@ -41,7 +41,7 @@ int	pipe_handle_here_doc(t_p_tree **node, t_exec_vars *vars, int fd)
 {
 	char    *buffer;
 	//int     file;
-	//char    *line;
+	char    *line;
 	char    *contents = NULL;
 
 	(*node)->data->lexeme = handle_quotes_echo
@@ -72,14 +72,14 @@ int	pipe_handle_here_doc(t_p_tree **node, t_exec_vars *vars, int fd)
 	}
 	while (1)
 	{
-		buffer = readline("heredoc> ");
-		if (buffer == NULL)
-			break ;
-		/*line = get_next_line(fileno(stdin)); // for tester from this line
+		//buffer = readline("heredoc> ");
+		//if (buffer == NULL)
+		//	break ;
+		line = get_next_line(fileno(stdin)); // for tester from this line
 		if (line == NULL)
 			break ;
 		buffer = ft_strtrim(line, "\n");
-		free(line); // to this line*/
+		free(line); // to this line
 		if (ft_exact_strcmp(buffer, (*node)->data->lexeme) == 0)
 		{
 			free(buffer);
