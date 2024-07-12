@@ -29,9 +29,8 @@ void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars, t_env **env)
 		if (vars->end)
 		{
 			vars->end = 0;
-			//g_last_exit_status = 0;
-			*l_vars.current = l_vars.current_start;
-			return (free_handle_vars(&l_vars));
+			g_last_exit_status = 0;
+			return ;//(free_handle_vars(&l_vars));
 		}
 		if (vars->error)
 			break ;
