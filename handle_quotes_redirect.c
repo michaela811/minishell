@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_quotes_redirect.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:54 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:36:56 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/05 20:52:50 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,19 @@ void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars, t_env **env)
 		if (vars->end)
 		{
 			vars->end = 0;
-			g_last_exit_status = 0;
+			//g_last_exit_status = 0;
+			*l_vars.current = l_vars.current_start;
 			return (free_handle_vars(&l_vars));
 		}
 		if (vars->error)
 			break ;
 	}
-	if (!vars->error)
+	/* if (!vars->error)
 		return (handle_quotes_final_assign(&(*node)->child->data->lexeme,
 				l_vars.result, vars));
-	return (free_handle_vars(&l_vars));
+	return (free_handle_vars(&l_vars)); */
+	*l_vars.current = l_vars.current_start;
+	handle_error_and_free(vars, &l_vars);
 }
 
 void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
@@ -46,15 +49,29 @@ void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 {
 	if (ft_strchr(l_vars->token, '$') != NULL)
 	{
-		handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
-			sizeof(l_vars->buffer));
-		*l_vars->result = ft_strjoin(*l_vars->result, l_vars->buffer);
-		if (!check_null(*l_vars->result, &vars->error))
+		if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, env))
 			return ;
-		(*node)->child->data->lexeme = ft_strdup(*l_vars->result);
+		/* handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
+			sizeof(l_vars->buffer));
+		if (g_last_exit_status)
+		{
+			vars->error = 1;
+			return ;
+		} */
+		/* *l_vars->result = ft_strjoin(*l_vars->result, l_vars->buffer);
+		if (!check_null(*l_vars->result, &vars->error))
+			return ; */
+		if (update_result(l_vars->result, l_vars->buffer, vars))
+			return ;
+		//(*node)->child->data->lexeme = ft_strdup(*l_vars->result);
+		free((*node)->child->data->lexeme);
+        	(*node)->child->data->lexeme = ft_strdup(*l_vars->result);
+			if (!check_null((*node)->child->data->lexeme, &vars->error))
+				return ;//(free(*l_vars->result));
 	}
 	else
 	{
+		free((*node)->child->data->lexeme);
 		(*node)->child->data->lexeme = ft_strjoin(*l_vars->result,
 				l_vars->token);
 		if (!check_null((*node)->child->data->lexeme, &vars->error))
@@ -72,16 +89,21 @@ void	handle_with_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 	**l_vars->current = '\0';
 	if (ft_strchr((*node)->data->lexeme, '$') != NULL)
 	{
-		handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
-			sizeof(l_vars->buffer));
-		if (vars->error)
+		if (handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
+			sizeof(l_vars->buffer)))
+		//if (g_last_exit_status)
+		{
+			vars->error = 1;
 			return ;
+		}
 	}
 	else
 	{
-		*l_vars->result = ft_strjoin(*l_vars->result, l_vars->token);
-		if (!check_null(*l_vars->result, &vars->error))
+		if (update_result(l_vars->result, l_vars->token, vars))
 			return ;
+		/* *l_vars->result = ft_strjoin(*l_vars->result, l_vars->token);
+		if (!check_null(*l_vars->result, &vars->error))
+			return ; */
 	}
 	**l_vars->current = delimiter;
 	if (**l_vars->current == '\'')
@@ -94,12 +116,15 @@ void	handle_with_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 void	handle_no_quotes_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 		t_env **env, t_p_tree **node)
 {
+	char *temp;
+
 	l_vars->token = *l_vars->current;
-	*l_vars->current = ft_strpbrk(*l_vars->current, l_vars->delimiters);
-	if (*l_vars->current == NULL)
+	temp = ft_strpbrk(*l_vars->current, l_vars->delimiters);
+	if (temp == NULL)
 	{
 		handle_no_current_redirect(l_vars, vars, env, node);
 		return ;
 	}
+	*l_vars->current = temp;
 	handle_with_current_redirect(l_vars, vars, env, node);
 }

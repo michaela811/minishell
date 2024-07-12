@@ -61,7 +61,9 @@ void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 	}
 	ft_memset(expanded_lexeme, '\0', sizeof(expanded_lexeme));
 	start = (*node)->child->data->lexeme;
-	handle_dollar_sign(&start, expanded_lexeme, env, sizeof(expanded_lexeme));
+	if (handle_dollar_sign(&start, expanded_lexeme, env, sizeof(expanded_lexeme)))
+	//if (g_last_exit_status)
+		return (free(expanded_lexeme));
 	if (helper_is_dir(expanded_lexeme, vars))
 		return ;
 	free(expanded_lexeme);
@@ -72,18 +74,23 @@ void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 	vars->i++;
 }
 
-void	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars)
+void	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars, t_here_doc_data *here_docs)
 {
 	char	*filename;
 
-	filename = handle_here_doc(node, vars);
-	if (vars->error)
-		return ;
-	vars->fd_in = open(filename, O_RDONLY);
-	if (vars->fd_in == -1)
+	if (here_docs && here_docs->fd != -1)
+		vars->fd_in = here_docs->fd;
+	else
 	{
-		perror("open");
-		vars->error = 1;
+		filename = handle_here_doc(node, vars);
+		if (vars->error)
+			return ;
+		vars->fd_in = open(filename, O_RDONLY);
+		if (vars->fd_in == -1)
+		{
+			perror("open");
+			vars->error = 1;
+		}
 	}
 	*node = (*node)->child;
 	vars->i++;
@@ -94,7 +101,7 @@ char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars)
 	char	*buffer;
 	char	*filename;
 	int		file;
-	char	*line;
+	//char	*line;
 
 	filename = "/tmp/heredoc.txt";
 	(*node)->child->data->lexeme = handle_quotes_echo
@@ -107,14 +114,14 @@ char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars)
 	}
 	while (1)
 	{
-		/*buffer = readline("heredoc> ");
+		buffer = readline("heredoc> ");
 		if (buffer == NULL)
-			break ;*/
-		line = get_next_line(fileno(stdin)); // for tester from this line
+			break ;
+		/*line = get_next_line(fileno(stdin)); // for tester from this line
 		if (line == NULL)
 			break ;
 		buffer = ft_strtrim(line, "\n");
-		free(line); // to this line
+		free(line); // to this line*/
 		if (ft_exact_strcmp(buffer, (*node)->child->data->lexeme) == 0)
 		{
 			free(buffer);

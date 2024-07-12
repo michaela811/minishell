@@ -85,10 +85,11 @@ typedef struct s_handle_vars
 	char	*delimiters;
 	char	**current;
 	char	**result;
+	char	*current_start;
 }	t_handle_vars;
 
 typedef struct	s_here_doc_data
 {
-    char					*contents;
-    struct s_here_doc_data	*next;
+	int						fd;
+    //struct s_here_doc_data	*next;
 }	t_here_doc_data;
