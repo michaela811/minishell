@@ -48,6 +48,7 @@ int		split_variable(char *arg, int i, t_exec_vars *vars);
 int		update_result(char **result, char *updated_result, t_exec_vars *vars);
 int		handle_dollar_error(char **token, char *buffer, t_exec_vars *vars,
 		 t_env **env);
+int		remove_spaces(char **result, char *buffer, t_exec_vars *vars);
 //void	update_result(char **result, char *updated_result, t_exec_vars *vars);
 void	handle_error_and_free(t_exec_vars *vars, t_handle_vars *l_vars);
 void	handle_error_and_free_redirect(t_exec_vars *vars, t_handle_vars *l_vars,

@@ -106,5 +106,5 @@ void	handle_redirection(t_p_tree **node, t_exec_vars *vars, t_env **env)
 	else if ((*node)->data->type == APPEND)
 		return (handle_redirection_append(node, vars, env));
 	else if ((*node)->data->type == HERE_DOC)
-		return (handle_redirection_here_doc(node, vars));
+		return (handle_redirection_here_doc(node, vars, env));
 }
