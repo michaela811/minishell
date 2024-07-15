@@ -24,8 +24,9 @@ int handle_child_process(int *pipefd, t_free_data *exec_data, t_here_doc_data *h
 		close(pipefd[0]);
 		close(pipefd[1]);
 	}
-	g_last_exit_status = execute_node(exec_data, here_docs);
-	exit(g_last_exit_status ? EXIT_FAILURE : EXIT_SUCCESS);
+	if ((g_last_exit_status = execute_node(exec_data, here_docs)))
+		exit(EXIT_FAILURE);
+	exit(EXIT_SUCCESS);
 }
 
 static int  ft_waitpid(int num_commands, pid_t *pids, int *status)
@@ -38,6 +39,8 @@ static int  ft_waitpid(int num_commands, pid_t *pids, int *status)
 		waitpid(pids[i], status, 0);
 		if (WIFEXITED(*status))
 			g_last_exit_status = WEXITSTATUS(*status);
+		else if (WIFSIGNALED(*status))
+            g_last_exit_status = 128 + WTERMSIG(*status);
 		i++;
 	}
 	return (g_last_exit_status);
@@ -65,7 +68,7 @@ int handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 		pids[num_commands] = sibling_pid;
 		num_commands++;
 	}
-	ft_waitpid(num_commands, pids, &status);
+	g_last_exit_status = ft_waitpid(num_commands, pids, &status);
 	return (g_last_exit_status);
 }
 

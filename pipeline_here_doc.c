@@ -145,7 +145,6 @@ int	is_there_here_doc(t_p_tree **tree, t_here_doc_data **here_docs)
 		{ 
 			if (current->child->data != NULL && current->child->data->type == HERE_DOC)
 			{
-				printf("HERE_DOC\n");
 				init_heredocs(here_docs);
 				if (pipe_handle_redirection_here_doc(&current->child->child, vars, *here_docs) == 0)
 					return (free(vars), 0);
