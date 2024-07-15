@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:08 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:36:10 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/15 18:40:03 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,5 +106,5 @@ void	handle_redirection(t_p_tree **node, t_exec_vars *vars, t_env **env, t_here_
 	else if ((*node)->data->type == APPEND)
 		return (handle_redirection_append(node, vars, env));
 	else if ((*node)->data->type == HERE_DOC)
-		return (handle_redirection_here_doc(node, vars, here_docs));
+		return (handle_redirection_here_doc(node, vars, here_docs, env));
 }

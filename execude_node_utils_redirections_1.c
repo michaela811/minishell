@@ -32,6 +32,8 @@ void	handle_redirection_from(t_p_tree **node,
 void	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 			t_env **env)
 {
+	//(*node)->child->data->lexeme = handle_quotes_echo
+		//((*node)->child->data->lexeme, &vars->error);
 	quotes_glob_redirect(node, vars, env);
 	if (g_last_exit_status)
 		return ;
@@ -51,5 +53,4 @@ void	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 		return ;
 	}
 	*node = (*node)->child;
-	vars->i++;
 }

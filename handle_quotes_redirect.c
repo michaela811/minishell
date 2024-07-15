@@ -40,7 +40,7 @@ void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars, t_env **env)
 				l_vars.result, vars));
 	return (free_handle_vars(&l_vars)); */
 	*l_vars.current = l_vars.current_start;
-	handle_error_and_free(vars, &l_vars);
+	handle_error_and_free_redirect(vars, &l_vars, node);
 }
 
 void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
