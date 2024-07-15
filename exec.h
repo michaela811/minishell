@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:11 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/15 17:45:06 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/07/15 18:55:57 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void		handle_node_data(t_p_tree **node, t_exec_vars *vars,
 				t_env **env, t_here_doc_data *here_docs);
 int			execute_node(t_free_data *exec_data, t_here_doc_data *here_docs);
 int			err_check_fork(t_exec_vars *vars, t_env **env,
-				char *path);
+				char **path);
 int			is_there_here_doc(t_p_tree **tree, t_here_doc_data **here_docs);
 int			pipe_handle_node_data(t_p_tree **node, t_exec_vars *vars, t_here_doc_data **here_docs);
 int			pipe_handle_redirection(t_p_tree **node, t_exec_vars *vars, t_here_doc_data **here_docs);
