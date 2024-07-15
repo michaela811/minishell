@@ -57,8 +57,9 @@ int	change_directory_and_update(char *path, t_env **env, char *cwd, char **args)
 {
 	if (chdir(path) != 0)
 	{
+		//printf("Debug - args[0]: %s, path: %s\n", args[0], path);
 		print_err(1, 2,
-			"my(s)hell: %s: %s: No such file or directory\n", args[0], path);
+			"my(s)hell: %s: %s: Not a directory\n", args[0], path);
 		free(cwd);
 		return (1);
 	}
