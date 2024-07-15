@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_utils_redirections.c                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:03 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/04 17:33:46 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/15 18:37:50 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,19 +74,23 @@ void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 	//vars->i++;
 }
 
-void	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars,
-			t_env **env)
+void	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars , t_here_doc_data *here_docs, t_env **env)
 {
 	char	*filename;
 
-	filename = handle_here_doc(node, vars, env);
-	if (vars->error)
-		return ;
-	vars->fd_in = open(filename, O_RDONLY);
-	if (vars->fd_in == -1)
+	if (here_docs && here_docs->fd != -1)
+		vars->fd_in = here_docs->fd;
+	else
 	{
-		perror("open");
-		vars->error = 1;
+		filename = handle_here_doc(node, vars, env);
+		if (vars->error)
+			return ;
+		vars->fd_in = open(filename, O_RDONLY);
+		if (vars->fd_in == -1)
+		{
+			perror("open");
+			vars->error = 1;
+		}
 	}
 	*node = (*node)->child;
 	//vars->i++;? we shouldn't increment i here?

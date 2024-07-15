@@ -12,33 +12,15 @@
 
 #include "minishell.h"
 
-void free_here_docs(t_here_doc_data *here_docs)
+int execute_parse_tree(t_free_data *exec_data)
 {
-    while (here_docs != NULL)
-    {
-        t_here_doc_data *tmp = here_docs;
-        here_docs = here_docs->next;
-        free(tmp->contents);
-        free(tmp);
-    }
-}
-
-int	execute_parse_tree(t_free_data *exec_data)
-{
-	t_here_doc_data	*here_docs;
-
-	here_docs = NULL;
-	if (exec_data->tree == NULL)
-		return (0);
-	if (exec_data->tree->sibling)
-	{
-		is_there_here_doc(&exec_data->tree, &here_docs);
-		execute_pipeline(exec_data, here_docs);
-		free_here_docs(here_docs);
-	}
-	else
-		execute_node(exec_data);
-	return (g_last_exit_status);
+    if (exec_data->tree == NULL)
+        return 0;
+    if (exec_data->tree->sibling)
+        execute_pipeline(exec_data);
+    else
+        execute_node(exec_data, NULL);
+    return g_last_exit_status;
 }
 
 void	print_args(char **args)
@@ -63,13 +45,13 @@ void	check_capacity(t_exec_vars *vars)
 	}
 }
 
-static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
+static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars, t_here_doc_data *here_docs)
 {
 	while (exec_data->tree != NULL)
 	{
 		if (exec_data->tree->data != NULL)
 		{
-			handle_node_data(&exec_data->tree, vars, &exec_data->env);
+			handle_node_data(&exec_data->tree, vars, &exec_data->env, here_docs);
 			if (vars->args[0] == NULL)
 				vars->i = 0;
 			if (vars->error != 0)
@@ -81,7 +63,7 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 	return (0);
 }
 
-int	execute_node(t_free_data *exec_data)
+int	execute_node(t_free_data *exec_data, t_here_doc_data *here_docs)
 {
 	t_exec_vars	*vars;
 
@@ -94,10 +76,9 @@ int	execute_node(t_free_data *exec_data)
 	init_exec_vars(vars);
 	if (exec_data->tree == NULL)
 		return (0);
-	if (complex_handle_node_data(exec_data, vars))
+	if (complex_handle_node_data(exec_data, vars, here_docs))
 		return (g_last_exit_status);
 	vars->args[vars->i] = NULL;
-	//print_args(vars->args);
 	execute_command(vars, exec_data);
 	free_env_array(vars->args);
 	free(vars);

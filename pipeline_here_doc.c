@@ -6,59 +6,81 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/05 12:37:35 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:41:25 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char    *pipe_handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars)
+int	pipe_handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars, t_here_doc_data *here_docs)
 {
-	char    *contents;
-	char    *filename;
-
-	filename = "/tmp/heredoc.txt";
-	contents = pipe_handle_here_doc(node, vars, filename);
+	char filename[] = "/tmp/heredocXXXXXX";
+	int fd;
+	
+	fd = mkstemp(filename);
+	if (fd == -1)
+    {
+        vars->error = 1;
+        return (print_err(1, 2, "my(s)hell: mkstemp failure\n"), 1);
+    }
+	pipe_handle_here_doc(node, vars, fd);
 	if (vars->error)
-		return (NULL);
-	vars->fd_in = open(filename, O_RDONLY);
-	if (vars->fd_in == -1)
 	{
-		(vars->error = 1);
-		return (print_err(1, 2, "my(s)hell: open failure\n"), NULL);
+		close(fd);
+		unlink(filename);
+		return (1);
 	}
-	*node = (*node)->child;
+	lseek(fd, 0, SEEK_SET);
+	here_docs->fd = fd;
 	vars->i++;
-	close(vars->fd_in);
-	return (contents);
+	unlink(filename);
+	return (0);
 }
 
-char    *pipe_handle_here_doc(t_p_tree **node, t_exec_vars *vars, char *filename)
+int	pipe_handle_here_doc(t_p_tree **node, t_exec_vars *vars, int fd)
 {
 	char    *buffer;
-	int     file;
+	//int     file;
 	char    *line;
 	char    *contents = NULL;
 
-	(*node)->child->data->lexeme = handle_quotes_echo
-		((*node)->child->data->lexeme, &vars->error);
-	file = open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-	if (file == -1)
+	(*node)->data->lexeme = handle_quotes_echo
+		((*node)->data->lexeme, &vars->error);
+	int original_stdin = dup(STDIN_FILENO);
+    if (original_stdin == -1)
+    {
+       	perror("dup");
+      	return 1;
+	}
+	if (!isatty(STDIN_FILENO))
 	{
-		vars->error = 1;
-		return (print_err(1, 2, "my(s)hell: open failure\n"), NULL);
+    	int tty_fd = open("/dev/tty", O_RDONLY);
+    	if (tty_fd == -1)
+    	{
+        	perror("open /dev/tty");
+			close(original_stdin);
+        	return 1;
+    	}
+    	if (dup2(tty_fd, STDIN_FILENO) == -1)
+    	{
+        	perror("dup2 tty_fd to STDIN_FILENO");
+			close(tty_fd);
+			close(original_stdin);
+        	return 1;
+    	}
+    	close(tty_fd);
 	}
 	while (1)
 	{
-		/*buffer = readline("heredoc> ");
-		if (buffer == NULL)
-			break ;*/
+		//buffer = readline("heredoc> ");
+		//if (buffer == NULL)
+		//	break ;
 		line = get_next_line(fileno(stdin)); // for tester from this line
 		if (line == NULL)
 			break ;
 		buffer = ft_strtrim(line, "\n");
 		free(line); // to this line
-		if (ft_exact_strcmp(buffer, (*node)->child->data->lexeme) == 0)
+		if (ft_exact_strcmp(buffer, (*node)->data->lexeme) == 0)
 		{
 			free(buffer);
 			break ;
@@ -66,86 +88,72 @@ char    *pipe_handle_here_doc(t_p_tree **node, t_exec_vars *vars, char *filename
 		if (contents == NULL)
 		{
 			contents = malloc(ft_strlen(buffer) + 2);
-			 if (contents == NULL)
-			{
-				free(buffer);
-				close(file);
-				return NULL;
-			}
-			strcpy(contents, buffer);
+			if (contents == NULL)
+				return (free(buffer), 1);
+			ft_strcpy(contents, buffer);
 		}
 		else
 		{
 			char *temp = realloc(contents, ft_strlen(contents) + ft_strlen(buffer) + 2);
 			if (temp == NULL)
-			{
-
-				free(contents);
-				free(buffer);
-				close(file);
-				return NULL;
-			}
+				return (free(contents), free(buffer), 1);
 			contents = temp;
-			strcat(contents, buffer);
+			ft_strcat(contents, buffer);
 		}
 		ft_strcat(contents, "\n");
 		free(buffer);
 	}
-	close(file);
-	return (contents);
+	if (contents != NULL)
+    {
+        write(fd, contents, strlen(contents));
+		free(contents);
+    }
+	return (0);
 }
 
-char    *pipe_handle_redirection(t_p_tree **node, t_exec_vars *vars)
+void init_heredocs(t_here_doc_data **here_docs)
 {
-	if ((*node)->data->type == HERE_DOC)
-		return (pipe_handle_redirection_here_doc(node, vars));
-	return (NULL);
+    if (*here_docs == NULL)
+	{
+        *here_docs = malloc(sizeof(t_here_doc_data));
+        if (*here_docs == NULL)
+		{
+            perror("malloc failed");
+            exit(1);
+        }
+    }
+	else if ((*here_docs)->fd != -1)
+        close((*here_docs)->fd);
+    (*here_docs)->fd = -1;
 }
 
-char    *pipe_handle_node_data(t_p_tree **node, t_exec_vars *vars)
-{
-	if ((*node)->data->type == RED_FROM || (*node)->data->type == RED_TO
-		|| (*node)->data->type == APPEND || (*node)->data->type == HERE_DOC)
-		return (pipe_handle_redirection(node, vars));
-	return (NULL);
-}
-
-void    is_there_here_doc(t_p_tree **tree, t_here_doc_data **here_docs)
+int	is_there_here_doc(t_p_tree **tree, t_here_doc_data **here_docs)
 {
 	t_p_tree    *current = *tree;
 	t_exec_vars *vars;
-	char        *contents = NULL;
 
 	vars = malloc(sizeof(t_exec_vars));
 	if (!vars)
 	{
 		return (print_err(1, 2,
-				"my(s)hell: execute_node malloc error\n"));
+				"my(s)hell: execute_node malloc error\n"), 1);
 	}
 	init_exec_vars(vars);
-	while (current != NULL)
+	if (current != NULL)
 	{
-		while (current->child != NULL && current->child->child != NULL
-				&& current->child->child->data != NULL)
-		{
-			if (current->child->child->data->type == HERE_DOC)
+		while (current->child != NULL)
+		{ 
+			if (current->child->data != NULL && current->child->data->type == HERE_DOC)
 			{
-				contents = pipe_handle_node_data(&current->child->child, vars);
-				if (contents != NULL)
-				{
-					t_here_doc_data *new_here_doc = malloc(sizeof(t_here_doc_data));
-			   		new_here_doc->contents = contents;
-					new_here_doc->next = *here_docs;
-					*here_docs = new_here_doc;
-					current->child->child->data = NULL;
-					continue ;
-				}
+				printf("HERE_DOC\n");
+				init_heredocs(here_docs);
+				if (pipe_handle_redirection_here_doc(&current->child->child, vars, *here_docs) == 0)
+					return (free(vars), 0);
 			}
-			current->child = current->child->child;
+			else
+				current = current->child;
 		}
-		if (current->sibling != NULL && current->sibling->data != NULL)
-			is_there_here_doc(&current->child, here_docs);
-		current = current->sibling;
 	}
 	free(vars);
+	return (1);
 }

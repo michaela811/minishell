@@ -12,16 +12,18 @@
 
 #include "minishell.h"
 
-pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data,
-		t_here_doc_data *here_docs)
+pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)//, t_here_doc_data *here_docs)
 {
-    pid_t	pid2;
-    int		return_value;
+    pid_t pid2;
+    int return_value;
 
     pid2 = fork();
-	if (pid2 == -1)
-		return (print_err(1, 2, "my(s)hell: fork in sibling process\n"), 1);
-    if (pid2 == 0)
+    if (pid2 == -1)
+    {
+        perror("fork");
+        return -1;
+    }
+    if (pid2 == 0)  // Child process
     {
         if (dup2(pipefd[0], STDIN_FILENO) == -1)
         {
@@ -29,8 +31,8 @@ pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data,
             exit(EXIT_FAILURE);
         }
         close(pipefd[0]);
-		close(pipefd[1]);
-        return_value = execute_pipeline(exec_data, here_docs);
+        close(pipefd[1]);
+        return_value = execute_pipeline(exec_data);//, here_docs);
         if (return_value != 0)
         {
             g_last_exit_status = return_value;
@@ -41,14 +43,20 @@ pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data,
     }
     else if (pid2 > 0)
     {
-        close(pipefd[0]);
-		close(pipefd[1]);
-        wait(NULL);
-    }
-    else
-    {
-        perror("my(s)hell: fork\n");
-        return -1;
+        int status;
+        if (close(pipefd[0]) == -1)
+            perror("my(s)hell: close read end of pipe");
+        /*if (close(pipefd[1]) == -1)
+            perror("my(s)hell: close write end of pipe");*/
+        if (waitpid(pid2, &status, 0) == -1)
+        {
+            perror("my(s)hell: waitpid");
+            return -1;
+        }
+        if (WIFEXITED(status))
+            g_last_exit_status = WEXITSTATUS(status);
+        else
+            g_last_exit_status = -1;
     }
     return pid2;
 }
