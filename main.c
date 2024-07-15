@@ -39,6 +39,7 @@ void	set_raw_mode(void)
 
 void	handle_signal(int signal)
 {
+	int		saved_errno;
 	if (signal == SIGINT)
 	{
 		write(STDOUT_FILENO, "\n", 1);
@@ -49,6 +50,30 @@ void	handle_signal(int signal)
 	else if (signal == SIGQUIT)
 	{
 	}
+	else if (signal == SIGCHLD)
+	{
+		saved_errno = errno;
+		while (waitpid((pid_t)(-1), 0, WNOHANG) > 0)
+			continue ;
+		errno = saved_errno;
+	}
+}
+
+void	setup_signal_handlers()
+{
+	struct sigaction sa;
+
+	sa.sa_handler = handle_signal;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART | SA_NOCLDSTOP;
+	if (sigaction(SIGCHLD, &sa, NULL) == -1)
+	{
+        perror("sigaction");
+        exit(EXIT_FAILURE);
+    }
+	signal(SIGINT, handle_signal);
+    signal(SIGQUIT, SIG_IGN);
+	
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -59,8 +84,9 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	exec_data = init_command_data(envp);
-	signal(SIGINT, handle_signal);
-	signal(SIGQUIT, SIG_IGN);
+	//signal(SIGINT, handle_signal);
+	//signal(SIGQUIT, SIG_IGN);
+	setup_signal_handlers();
 	/*while (1)
 	{
 		set_raw_mode();

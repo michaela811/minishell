@@ -24,6 +24,7 @@ void	handle_redirection_from(t_p_tree **node,
 		vars->error = 1;
 		print_err(1, 2, "my(s)hell: %s: No such file or directory\n",
 			(*node)->child->data->lexeme);
+		return ;
 	}
 	*node = (*node)->child;
 }
@@ -49,6 +50,7 @@ void	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 			print_err(1, 2,
 				"my(s)hell: %s: No such file or directory\n",
 				(*node)->child->data->lexeme);
+		return ;
 	}
 	*node = (*node)->child;
 }

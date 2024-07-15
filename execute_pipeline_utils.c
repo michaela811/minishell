@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)//, t_here_doc_data *here_docs)
+pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)
 {
     pid_t pid2;
     int return_value;
@@ -32,14 +32,15 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)//, t_here_doc_
         }
         close(pipefd[0]);
         close(pipefd[1]);
-        return_value = execute_pipeline(exec_data);//, here_docs);
-        if (return_value != 0)
+        return_value = execute_pipeline(exec_data);
+        g_last_exit_status = return_value;
+        /*if (return_value != 0)
         {
             g_last_exit_status = return_value;
             exit(EXIT_FAILURE);
         }
-        g_last_exit_status = 0;
-        exit(EXIT_SUCCESS);
+        g_last_exit_status = 0;*/
+        exit(g_last_exit_status);
     }
     else if (pid2 > 0)
     {
@@ -55,6 +56,8 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)//, t_here_doc_
         }
         if (WIFEXITED(status))
             g_last_exit_status = WEXITSTATUS(status);
+        else if (WIFSIGNALED(status))
+            g_last_exit_status = 128 + WTERMSIG(status);
         else
             g_last_exit_status = -1;
     }
