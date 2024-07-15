@@ -139,7 +139,8 @@ void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
 			return ; */
 			if (remove_spaces(l_vars->result, l_vars->buffer, vars))
 				return ; //(free(*l_vars->result))
-			return ;
+			//vars->end = 1;
+			//return ;
 		}
 		else if (update_result(l_vars->result, l_vars->buffer, vars))
 			return ; //(free(*l_vars->result))
