@@ -13,20 +13,20 @@
 #include "minishell.h"
 
 int				g_last_exit_status = 0;
-struct termios	orig_termios;
 
-void	reset_terminal_mode(void)
+void	reset_terminal_mode(void *settings)
 {
-	tcsetattr(STDIN_FILENO, TCSANOW, &orig_termios);
+	termios_settings *ts = (termios_settings *)settings;
+    tcsetattr(STDIN_FILENO, TCSANOW, &ts->orig_termios);
 }
 
-void	set_raw_mode(void)
+void	set_raw_mode(termios_settings *ts)
 {
 	struct termios	raw;
 
-	tcgetattr(STDIN_FILENO, &orig_termios);
+	tcgetattr(STDIN_FILENO, &ts->orig_termios);
 	atexit(reset_terminal_mode);
-	raw = orig_termios;
+	raw = ts->orig_termios;
 	raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 	raw.c_iflag &= ~(IXON | ICRNL | BRKINT | INPCK | ISTRIP);
 	raw.c_cflag |= (CS8);
@@ -78,8 +78,9 @@ void	setup_signal_handlers()
 
 int	main(int argc, char **argv, char **envp)
 {
-	char		*input;
-	t_free_data	*exec_data;
+	char				*input;
+	t_free_data			*exec_data;
+	termios_settings	ts;
 
 	(void)argc;
 	(void)argv;
@@ -87,6 +88,7 @@ int	main(int argc, char **argv, char **envp)
 	//signal(SIGINT, handle_signal);
 	//signal(SIGQUIT, SIG_IGN);
 	setup_signal_handlers();
+	atexit((void (*)(void))reset_terminal_mode);
 	/*while (1)
 	{
 		set_raw_mode();
@@ -104,9 +106,9 @@ int	main(int argc, char **argv, char **envp)
 	{
 		if (isatty(fileno(stdin)))
 		{
-			set_raw_mode();
+			set_raw_mode(&ts);;
 			input = readline("my(s)hell> ");
-			reset_terminal_mode();
+			reset_terminal_mode(&ts);
 		}
 		else
 		{

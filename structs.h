@@ -93,3 +93,8 @@ typedef struct	s_here_doc_data
 	int						fd;
     //struct s_here_doc_data	*next;
 }	t_here_doc_data;
+
+typedef struct
+{
+	struct	termios orig_termios;
+}	termios_settings;
