@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/16 14:25:07 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/16 16:45:04 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,12 @@ void	set_raw_mode(struct termios *orig_termios)
 {
 	struct termios	raw;
 
-	if (tcgetattr(STDIN_FILENO, orig_termios) == -1)
+	/*if (tcgetattr(STDIN_FILENO, orig_termios) == -1)
 	{
 		perror("tcgetattr");
 		exit(EXIT_FAILURE);
-	}
+	}*/
+	tcgetattr(STDIN_FILENO, orig_termios);
 	raw = *orig_termios;
 	raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 	raw.c_iflag &= ~(IXON | ICRNL | BRKINT | INPCK | ISTRIP);
@@ -40,11 +41,12 @@ void	set_raw_mode(struct termios *orig_termios)
 	raw.c_cc[VMIN] = 1;
 	raw.c_cc[VTIME] = 0;
 	raw.c_lflag |= ECHO;
-	if (tcsetattr(STDIN_FILENO, TCSANOW, &raw) == -1)
+	tcsetattr(STDIN_FILENO, TCSANOW, &raw);
+	/*if (tcsetattr(STDIN_FILENO, TCSANOW, &raw) == -1)
 	{
 		perror("tcsetattr");
 		exit(EXIT_FAILURE);
-	}
+	}*/
 }
 
 void	handle_signal(int signal)
