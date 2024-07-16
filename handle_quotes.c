@@ -125,31 +125,31 @@ void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
 	{
 		if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, env))
 			return ;
-		/* if (update_result(l_vars->result, l_vars->buffer, vars))
-			return ; */
+		if (update_result(l_vars->result, l_vars->buffer, vars))
+			return ;
 		/* update_result(l_vars->result, l_vars->buffer, vars);
 		if (vars->error)
 			return ; */
 		if (strchr((*node)->data->lexeme, '$') != NULL
 			&& strchr(l_vars->buffer, ' '))
 		{
-			/* vars->i = split_variable(*l_vars->result, vars->i, vars);
+			vars->i = split_variable(*l_vars->result, vars->i, vars);
 			//print_args(vars->args);
 			if (vars->error)
-			return ; */
-			if (remove_spaces(l_vars->result, l_vars->buffer, vars))
-				return ; //(free(*l_vars->result))
+			return ;
+			//if (remove_spaces(l_vars->result, l_vars->buffer, vars))
+				//return ; //(free(*l_vars->result))
 			//vars->end = 1;
 			//return ;
 		}
-		else if (update_result(l_vars->result, l_vars->buffer, vars))
-			return ; //(free(*l_vars->result))
-		// {
+		else //if (update_result(l_vars->result, l_vars->buffer, vars))
+			//return ; //(free(*l_vars->result))
+		{
         	free(vars->args[vars->i]);
         	vars->args[vars->i] = ft_strdup(*l_vars->result);
 			if (!check_null(vars->args[vars->i], &vars->error))
 				return ;//(free(*l_vars->result));
-    	//} */
+    	}
 	}
 	else
 		update_args(vars, l_vars);
@@ -188,6 +188,16 @@ int	remove_spaces(char **result, char *buffer, t_exec_vars *vars)
 	return (free(buffer_no_spaces), 0);
 }
 
+int	buffer_end_space(char *buffer)
+{
+	int	i;
+
+	i = ft_strlen(buffer) - 1;
+	if (buffer[i] == ' ')
+		return (1);
+	return (0);
+}
+
 void	handle_with_current_dollar(t_handle_vars *l_vars,
 			t_exec_vars *vars, t_env **env, t_p_tree **node)
 {
@@ -200,18 +210,30 @@ void	handle_with_current_dollar(t_handle_vars *l_vars,
 		vars->error = 1;
 		return ;
 	} */
-	/* update_result(l_vars->result, l_vars->buffer, vars);
+	update_result(l_vars->result, l_vars->buffer, vars);
 		if (vars->error)
-			return ; */
+			return ;
 	if (ft_strchr((*node)->data->lexeme, '$') != NULL
 		&& ft_strchr(l_vars->buffer, ' '))
 	{
-		//vars->i = split_variable(*l_vars->result, vars->i, vars);
-		if (remove_spaces(l_vars->result, l_vars->buffer, vars))
-			return ; //(free(*l_vars->result))
-		//if (vars->error)
-			//return (free(*l_vars->result));//still need it?
-		//free(*l_vars->result);
+		vars->i = split_variable(*l_vars->result, vars->i, vars);
+		//if (remove_spaces(l_vars->result, l_vars->buffer, vars))
+			//return ; //(free(*l_vars->result))
+		if (vars->error)
+			return (free(*l_vars->result));//still need it?
+		free(*l_vars->result);
+		if (buffer_end_space(l_vars->buffer))
+		{
+			*l_vars->result = ft_strjoin(vars->args[vars->i], " ");
+			if (!check_null(*l_vars->result, &vars->error))
+				return ;
+		}
+		else
+		{
+			*l_vars->result = ft_strdup(vars->args[vars->i]);
+			if (!check_null(*l_vars->result, &vars->error))
+				return ;
+		}
 		//*l_vars->result = ft_strdup(vars->args[vars->i]);
 		return ;
 	}
