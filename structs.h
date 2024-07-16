@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:40 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/04 16:32:37 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/16 14:27:55 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,10 +91,4 @@ typedef struct s_handle_vars
 typedef struct	s_here_doc_data
 {
 	int						fd;
-    //struct s_here_doc_data	*next;
-}	t_here_doc_data;
-
-typedef struct
-{
-	struct	termios orig_termios;
-}	termios_settings;
+}	t_hd_data;

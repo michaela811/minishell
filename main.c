@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:37:45 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/16 14:25:07 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,25 @@
 
 int				g_last_exit_status = 0;
 
-void	reset_terminal_mode(void *settings)
+void	reset_terminal_mode(struct termios *orig_termios)
 {
-	termios_settings *ts = (termios_settings *)settings;
-    tcsetattr(STDIN_FILENO, TCSANOW, &ts->orig_termios);
+	if (tcsetattr(STDIN_FILENO, TCSANOW, orig_termios) == -1)
+	{
+		perror("tcsetattr");
+		exit(EXIT_FAILURE);
+	}
 }
 
-void	set_raw_mode(termios_settings *ts)
+void	set_raw_mode(struct termios *orig_termios)
 {
 	struct termios	raw;
 
-	tcgetattr(STDIN_FILENO, &ts->orig_termios);
-	atexit(reset_terminal_mode);
-	raw = ts->orig_termios;
+	if (tcgetattr(STDIN_FILENO, orig_termios) == -1)
+	{
+		perror("tcgetattr");
+		exit(EXIT_FAILURE);
+	}
+	raw = *orig_termios;
 	raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 	raw.c_iflag &= ~(IXON | ICRNL | BRKINT | INPCK | ISTRIP);
 	raw.c_cflag |= (CS8);
@@ -34,12 +40,17 @@ void	set_raw_mode(termios_settings *ts)
 	raw.c_cc[VMIN] = 1;
 	raw.c_cc[VTIME] = 0;
 	raw.c_lflag |= ECHO;
-	tcsetattr(STDIN_FILENO, TCSANOW, &raw);
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &raw) == -1)
+	{
+		perror("tcsetattr");
+		exit(EXIT_FAILURE);
+	}
 }
 
 void	handle_signal(int signal)
 {
-	int		saved_errno;
+	int	saved_errno;
+
 	if (signal == SIGINT)
 	{
 		write(STDOUT_FILENO, "\n", 1);
@@ -59,41 +70,45 @@ void	handle_signal(int signal)
 	}
 }
 
-void	setup_signal_handlers()
+void	setup_signal_handlers(void)
 {
-	struct sigaction sa;
+	struct sigaction	sa;
 
 	sa.sa_handler = handle_signal;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART | SA_NOCLDSTOP;
 	if (sigaction(SIGCHLD, &sa, NULL) == -1)
 	{
-        perror("sigaction");
-        exit(EXIT_FAILURE);
-    }
+		perror("sigaction");
+		exit(EXIT_FAILURE);
+	}
 	signal(SIGINT, handle_signal);
-    signal(SIGQUIT, SIG_IGN);
-	
+	signal(SIGQUIT, SIG_IGN);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
 	char				*input;
 	t_free_data			*exec_data;
-	termios_settings	ts;
+	struct termios		orig_termios;
 
 	(void)argc;
 	(void)argv;
 	exec_data = init_command_data(envp);
-	//signal(SIGINT, handle_signal);
-	//signal(SIGQUIT, SIG_IGN);
 	setup_signal_handlers();
-	atexit((void (*)(void))reset_terminal_mode);
+	if (isatty(STDIN_FILENO))
+	{
+		if (tcgetattr(STDIN_FILENO, &orig_termios) == -1)
+		{
+			perror("tcgetattr");
+			exit(EXIT_FAILURE);
+		}
+	}
 	/*while (1)
 	{
-		set_raw_mode();
+		set_raw_mode(&orig_termios);
 		input = readline("my(s)hell> ");
-		reset_terminal_mode();
+		reset_terminal_mode(&orig_termios);
 		if (!input)
 		{
 			printf("exit\n");
@@ -106,9 +121,9 @@ int	main(int argc, char **argv, char **envp)
 	{
 		if (isatty(fileno(stdin)))
 		{
-			set_raw_mode(&ts);;
+			set_raw_mode(&orig_termios);
 			input = readline("my(s)hell> ");
-			reset_terminal_mode(&ts);
+			reset_terminal_mode(&orig_termios);
 		}
 		else
 		{
@@ -119,6 +134,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		if (!input)
 		{
+			reset_terminal_mode(&orig_termios);
 			free_exit_data(exec_data);
 			clear_history();
 			break ;

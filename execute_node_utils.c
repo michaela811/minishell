@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:08 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/15 18:40:03 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/07/16 14:27:55 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	expand_exec_vars(t_exec_vars *vars)
 	vars->capacity = new_capacity;
 }
 
-void	handle_node_data(t_p_tree **node, t_exec_vars *vars, t_env **env, t_here_doc_data *here_docs)
+void	handle_node_data(t_p_tree **node, t_exec_vars *vars, t_env **env, t_hd_data *here_docs)
 {
 	if ((*node)->data->type == RED_FROM || (*node)->data->type == RED_TO
 		|| (*node)->data->type == APPEND || (*node)->data->type == HERE_DOC)
@@ -97,7 +97,7 @@ int	split_variable(char *arg, int i, t_exec_vars *vars)
 	return (i + (j - 1));
 }
 
-void	handle_redirection(t_p_tree **node, t_exec_vars *vars, t_env **env, t_here_doc_data *here_docs)
+void	handle_redirection(t_p_tree **node, t_exec_vars *vars, t_env **env, t_hd_data *here_docs)
 {
 	if ((*node)->data->type == RED_FROM)
 		return (handle_redirection_from(node, vars, env));
