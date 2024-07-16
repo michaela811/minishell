@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/16 16:45:04 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/16 16:51:45 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,12 @@ int				g_last_exit_status = 0;
 
 void	reset_terminal_mode(struct termios *orig_termios)
 {
-	if (tcsetattr(STDIN_FILENO, TCSANOW, orig_termios) == -1)
+	/*if (tcsetattr(STDIN_FILENO, TCSANOW, orig_termios) == -1)
 	{
 		perror("tcsetattr");
 		exit(EXIT_FAILURE);
-	}
+	}*/
+	tcsetattr(STDIN_FILENO, TCSANOW, orig_termios);
 }
 
 void	set_raw_mode(struct termios *orig_termios)
