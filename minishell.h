@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:54 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:37:55 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/16 11:57:00 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@
 #include <exec.h>
 #include <builtins.h>
 #include <signal.h>
+#include <bits/sigaction.h>
 
 /*#define MY_MALLOC(size) custom_malloc(size, __FILE__, __LINE__)
 #define MY_FREE(ptr) custom_free(ptr, __FILE__, __LINE__)*/

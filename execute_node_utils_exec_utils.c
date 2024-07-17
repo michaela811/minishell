@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/05 10:39:21 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/16 17:52:45 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	}
 	else if (pid == 0)
 	{
-		//signal(SIGQUIT, SIG_DFL);
 		handle_child_cmd(vars, env, environment);
 		exit (g_last_exit_status);
 	}
@@ -55,7 +54,6 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	char	*path;
 
 	path = NULL;
-	//signal(SIGQUIT, SIG_DFL);
 	if (vars->fd_in != 0)
 	{
 		dup2(vars->fd_in, 0);
@@ -84,7 +82,7 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	exit (EXIT_SUCCESS);
 }
 
-int	err_check_fork(t_exec_vars *vars, t_env **env, char **path)//(vars, env, &path)
+int	err_check_fork(t_exec_vars *vars, t_env **env, char **path)
 {
 	int		path_status;
 

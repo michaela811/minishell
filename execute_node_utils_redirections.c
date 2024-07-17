@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_utils_redirections.c                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:03 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/15 18:37:50 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/07/16 16:22:02 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,8 @@ void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 	//vars->i++;
 }
 
-void	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars , t_here_doc_data *here_docs, t_env **env)
+void	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars ,
+		t_hd_data *here_docs, t_env **env)
 {
 	char	*filename;
 
@@ -157,7 +158,8 @@ void process_heredoc_dollar_closed(int file, char *lexeme_no_quotes)
     }
 }
 
-void process_heredoc_dollar_open(int file, t_exec_vars *vars, t_env **env, char *lexeme_no_quotes)
+void process_heredoc_dollar_open(int file, t_exec_vars *vars, t_env **env,
+		char *lexeme_no_quotes)
 {
     char *line;
     char *buffer;
@@ -185,7 +187,8 @@ void process_heredoc_dollar_open(int file, t_exec_vars *vars, t_env **env, char 
     }
 }
 
-void process_heredoc_content(int file, t_exec_vars *vars, t_env **env, char *lexeme_no_quotes)
+void process_heredoc_content(int file, t_exec_vars *vars, t_env **env,
+		char *lexeme_no_quotes)
 {
     char *line;
     char *buffer;
@@ -218,13 +221,17 @@ void process_heredoc_content(int file, t_exec_vars *vars, t_env **env, char *lex
     }
 }
 
-int open_heredoc_file(char *filename, t_exec_vars *vars) {
-    int file = open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-    if (file == -1) {
+int open_heredoc_file(char *filename, t_exec_vars *vars)
+{
+    int file;
+
+	file = open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+    if (file == -1)
+	{
         vars->error = 1;
         print_err(1, 2, "my(s)hell: open error\n");
     }
-    return file;
+    return (file);
 }
 
 char *handle_here_doc(t_p_tree **node, t_exec_vars *vars, t_env **env)

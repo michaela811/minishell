@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/04 14:02:50 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/16 14:27:55 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	check_capacity(t_exec_vars *vars)
 	}
 }
 
-static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars, t_here_doc_data *here_docs)
+static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars, t_hd_data *here_docs)
 {
 	while (exec_data->tree != NULL)
 	{
@@ -63,7 +63,7 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars, t
 	return (0);
 }
 
-int	execute_node(t_free_data *exec_data, t_here_doc_data *here_docs)
+int	execute_node(t_free_data *exec_data, t_hd_data *here_docs)
 {
 	t_exec_vars	*vars;
 

@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:27 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/05 11:33:06 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/16 16:42:45 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,14 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)
     pid2 = fork();
     if (pid2 == -1)
     {
-        perror("fork");
+        perror("my(s)hell: fork");
         return -1;
     }
     if (pid2 == 0)  // Child process
     {
         if (dup2(pipefd[0], STDIN_FILENO) == -1)
         {
-            perror("dup2");
+            perror("my(s)hell: dup2");
             exit(EXIT_FAILURE);
         }
         close(pipefd[0]);

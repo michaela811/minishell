@@ -6,13 +6,13 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/05 13:37:42 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/16 14:27:55 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int handle_child_process(int *pipefd, t_free_data *exec_data, t_here_doc_data *here_docs)
+int handle_child_process(int *pipefd, t_free_data *exec_data, t_hd_data *here_docs)
 {
 	if (exec_data->tree->sibling != NULL)
 	{
@@ -76,7 +76,7 @@ int execute_pipeline(t_free_data *exec_data)
 {
 	int		pipefd[2];
 	pid_t	pid;
-	t_here_doc_data *here_docs;
+	t_hd_data *here_docs;
 
 	here_docs = NULL;
 	if (exec_data->tree == NULL)

@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:34:19 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:34:21 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/16 17:15:42 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	change_directory_and_update(char *path, t_env **env, char *cwd, char **args)
 	{
 		//printf("Debug - args[0]: %s, path: %s\n", args[0], path);
 		print_err(1, 2,
-			"my(s)hell: %s: %s: Not a directory\n", args[0], path);
+			"my(s)hell: %s: %s: No such file or directory\n", args[0], path);
 		free(cwd);
 		return (1);
 	}
