@@ -78,8 +78,8 @@ int	echo_n_control2(char *arg)
 	i = 0;
 	while (arg && arg[i])
 	{
-		while (arg[i] == ' ')
-			i++;
+		//while (arg[i] == ' ')
+			//i++;
 		if (arg[i] == '-' && arg[i + 1] == 'n')
 		{
 			i += 2;
@@ -111,17 +111,17 @@ int echo_no_n(char **args, int j)
 int	exec_echo(t_exec_vars *vars)
 {
 	int	i;
-	int j;
+	//int j;
 
 	i = 1;
 	if (vars->args[1] == NULL)
 		return (print_err(g_last_exit_status, vars->fd_out, "\n"), 1);
-	//while (vars->args[i] && echo_n_control(vars->args[i]))
-		//i++;
-	j = echo_n_control2(vars->args[1]);
-	if (echo_no_n(&vars->args[1], j))
-		return (print_err(1, 2,
-				"malloc error in echo\n"), 1);
+	while (vars->args[i] && echo_n_control(vars->args[i]))
+		i++;
+	//j = echo_n_control2(vars->args[1]);
+	//if (echo_no_n(&vars->args[1], j))
+		//return (print_err(1, 2,
+				//"malloc error in echo\n"), 1);
 	while (vars->args[i])
 	{
 		print_err(g_last_exit_status, vars->fd_out, "%s",
@@ -130,8 +130,8 @@ int	exec_echo(t_exec_vars *vars)
 			print_err(g_last_exit_status, vars->fd_out, " ");
 		i++;
 	}
-	//if (echo_n_control(vars->args[1]) == 0)
-	if (j == 0)
+	if (echo_n_control(vars->args[1]) == 0)
+	//if (j == 0)
 		print_err(g_last_exit_status, vars->fd_out, "\n");
 	g_last_exit_status = 0;
 	return (g_last_exit_status);

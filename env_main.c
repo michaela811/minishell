@@ -167,7 +167,10 @@ int handle_colon (char **pre_path, t_env *env)
 	int len;
 	char *tmp_path;
 
-	*pre_path = ft_strdup(get_env_var(env, "PATH"));
+	tmp_path = get_env_var(env, "PATH");
+	if (!tmp_path)
+		return (0);
+	*pre_path = ft_strdup(tmp_path);
 	if (!*pre_path)
 		return (1);
 	if ((*pre_path)[0] == ':')
@@ -198,10 +201,13 @@ int	get_path(char *cmd, t_env *env, char **exec)
 	char	**path;
 	char	*pre_path;
 
+	pre_path = NULL;
 	i = -1;
 	if (handle_colon(&pre_path, env))
 		return (print_err(1, 2,
 				"malloc error in handle_colon function\n"), 1);
+	if (pre_path == NULL)
+		return (-1);
 	path = ft_split(get_env_var(env, "PATH"), ':');
 	if (path == NULL)
 		return (free(pre_path), print_err(1, 2,
