@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_main.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:30:37 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:30:39 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/17 17:35:30 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,6 +195,28 @@ int handle_colon (char **pre_path, t_env *env)
 	return(0);
 }
 
+int exec_cwd(char *cmd, char **exec)
+{
+	char cwd[1024];
+	char *tmp;
+
+	if (getcwd(cwd, sizeof(cwd)) != NULL)
+	{
+		tmp = ft_strjoin(cwd, "/");
+		if (tmp == NULL)
+			return (print_err(1, 2,
+				"malloc error in strjoin function\n"), 1);
+		*exec = ft_strjoin(tmp, cmd);
+		if (*exec == NULL)
+			return (free(tmp),print_err(1, 2,
+				"malloc error in strjoin function\n"), 1);
+	}
+	else
+		return (print_err(1, 2,
+				"getcwd() error\n"), 1);
+	return (0);
+}
+
 int	get_path(char *cmd, t_env *env, char **exec)
 {
 	int		i;
@@ -207,7 +229,7 @@ int	get_path(char *cmd, t_env *env, char **exec)
 		return (print_err(1, 2,
 				"malloc error in handle_colon function\n"), 1);
 	if (pre_path == NULL)
-		return (-1);
+		return (exec_cwd(cmd, exec));
 	path = ft_split(get_env_var(env, "PATH"), ':');
 	if (path == NULL)
 		return (free(pre_path), print_err(1, 2,
