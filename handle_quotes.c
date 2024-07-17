@@ -211,8 +211,8 @@ void	handle_with_current_dollar(t_handle_vars *l_vars,
 		return ;
 	} */
 	update_result(l_vars->result, l_vars->buffer, vars);
-		if (vars->error)
-			return ;
+	if (vars->error)
+		return ;
 	if (ft_strchr((*node)->data->lexeme, '$') != NULL
 		&& ft_strchr(l_vars->buffer, ' '))
 	{
@@ -237,8 +237,8 @@ void	handle_with_current_dollar(t_handle_vars *l_vars,
 		//*l_vars->result = ft_strdup(vars->args[vars->i]);
 		return ;
 	}
-	if (update_result(l_vars->result, l_vars->buffer, vars))
-		return ;
+	//if (update_result(l_vars->result, l_vars->buffer, vars))
+		//return ;
 }
 
 void	handle_with_current(t_handle_vars *l_vars,
