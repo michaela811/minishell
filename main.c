@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/16 16:51:45 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/17 13:39:36 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	handle_signal(int signal)
 		rl_replace_line("", 0);
 		rl_on_new_line();
 		rl_redisplay();
+		g_last_exit_status = 130;
 	}
 	else if (signal == SIGQUIT)
 	{
