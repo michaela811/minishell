@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_utils_exec_utils.c                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/17 13:43:44 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/17 18:57:03 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,38 @@ void cleanup(t_exec_vars *vars)
         close(vars->fd_out);
 }
 
+int remove_empty_args(t_exec_vars *vars)
+{
+    int i;
+
+    while (vars->args[0])
+    {
+        if (ft_strcmp(vars->args[0], "") == 0)
+        {
+            free(vars->args[0]);
+            if (vars->args[1] != NULL)
+            {
+				i = 0;
+                while (vars->args[i + 1] != NULL)
+                {
+                    vars->args[i] = vars->args[i + 1];
+                    i++;
+                }
+                vars->args[i] = NULL;
+				vars->i = i;
+            }
+            else
+            {
+                g_last_exit_status = 0;
+                return (1);
+            }
+        }
+        else
+            break;
+    }
+	return (0);
+}
+
 int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 {
 	char	*path;
@@ -64,6 +96,8 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 		dup2(vars->fd_out, 1);
 		close(vars->fd_out);
 	}
+	//if (remove_empty_args(vars))
+		//exit (g_last_exit_status);
 	if (access(vars->args[0], F_OK | X_OK) == 0 && vars->args[0][0] == '/')
 		path = vars->args[0];
 	/* else
@@ -73,12 +107,16 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 		cleanup(vars);
 		exit (g_last_exit_status);
 	}
-	if (execve(path, vars->args, environment) < 0)
+	//if (execve(path, vars->args, environment) < 0)
+	g_last_exit_status = execve(path, vars->args, environment);
+	if (g_last_exit_status < 0)
 	{
 		cleanup(vars);
 		print_and_exit(vars);
 	}
-	g_last_exit_status = 0;
+	printf ("exit status: %d\n", g_last_exit_status);
+	fflush(stdout);
+	//g_last_exit_status = 0;
 	exit (EXIT_SUCCESS);
 }
 
@@ -89,8 +127,10 @@ int	err_check_fork(t_exec_vars *vars, t_env **env, char **path)
 	if (ft_strchr(vars->args[0], '/'))
 		if (directory_check(vars->args[0]))
 			return (g_last_exit_status);
-	if (access(vars->args[0], F_OK | X_OK) == 0 && vars->args[0][0] == '/')
-		path_status = 0;
+	if (access(vars->args[0], F_OK | X_OK) == 0 &&
+    (vars->args[0][0] == '/' || vars->args[0][0] == '.' || vars->args[0][0] == ':'))
+		//path_status = 0;
+		return(*path = vars->args[0], 0);
 	else
 		path_status = get_path(vars->args[0], *env, path);
 	if (path_status == 1)
@@ -105,8 +145,8 @@ int	err_check_fork(t_exec_vars *vars, t_env **env, char **path)
 		return (print_err(127, 2, "my(s)hell: %s: command not found\n",
 				*path), 127);
 	}
-	if (path_status == -1 || vars->args[0][0] == '\0'
-		|| vars->args[0][0] == '.')
+	if (path_status == -1 || vars->args[0][0] == '\0')
+		//|| vars->args[0][0] == '.')
 	{
 		if (access(vars->args[0], X_OK) == -1 && vars->args[0][0] == '.'
 			&& vars->args[0][1] == '/')

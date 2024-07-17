@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:48 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/17 15:15:56 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/17 18:58:40 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
