@@ -42,6 +42,7 @@ SOURCES = env_main.c \
 			free_functions_1.c \
 			free_functions_2.c \
 			pipeline_here_doc.c \
+			pipeline_here_doc_1.c \
 
 
 OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))
