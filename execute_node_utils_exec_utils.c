@@ -49,6 +49,38 @@ void cleanup(t_exec_vars *vars)
         close(vars->fd_out);
 }
 
+int remove_empty_args(t_exec_vars *vars)
+{
+    int i;
+
+    while (vars->args[0])
+    {
+        if (ft_strcmp(vars->args[0], "") == 0)
+        {
+            free(vars->args[0]);
+            if (vars->args[1] != NULL)
+            {
+				i = 0;
+                while (vars->args[i + 1] != NULL)
+                {
+                    vars->args[i] = vars->args[i + 1];
+                    i++;
+                }
+                vars->args[i] = NULL;
+				vars->i = i;
+            }
+            else
+            {
+                g_last_exit_status = 0;
+                return (1);
+            }
+        }
+        else
+            break;
+    }
+	return (0);
+}
+
 int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 {
 	char	*path;
