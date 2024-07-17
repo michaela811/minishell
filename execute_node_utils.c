@@ -72,7 +72,10 @@ void	handle_node_data(t_p_tree **node, t_exec_vars *vars, t_env **env, t_hd_data
 		g_last_exit_status = 1;
 		return ;
 	}
-	if (*vars->args[vars->i])
+	if (!*vars->args[vars->i] && ft_strchr((*node)->data->lexeme, '$') != NULL && ft_strchr((*node)->data->lexeme, '"') == NULL && ft_strchr((*node)->data->lexeme, '\'') == NULL)
+	{
+	}
+	else
 		vars->i++;
 }
 

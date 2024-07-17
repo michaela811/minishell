@@ -64,6 +64,8 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 		dup2(vars->fd_out, 1);
 		close(vars->fd_out);
 	}
+	//if (remove_empty_args(vars))
+		//exit (g_last_exit_status);
 	if (access(vars->args[0], F_OK | X_OK) == 0 && vars->args[0][0] == '/')
 		path = vars->args[0];
 	/* else
