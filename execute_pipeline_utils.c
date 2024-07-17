@@ -15,7 +15,7 @@
 pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)
 {
     pid_t pid2;
-    int return_value;
+    //int return_value;
 
     pid2 = fork();
     if (pid2 == -1)
@@ -32,15 +32,16 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)
         }
         close(pipefd[0]);
         close(pipefd[1]);
-        return_value = execute_pipeline(exec_data);
-        g_last_exit_status = return_value;
+        exit(execute_pipeline(exec_data));
+        //return_value = execute_pipeline(exec_data);
+        //g_last_exit_status = return_value;
         /*if (return_value != 0)
         {
             g_last_exit_status = return_value;
             exit(EXIT_FAILURE);
         }
         g_last_exit_status = 0;*/
-        exit(g_last_exit_status);
+        //exit(g_last_exit_status);
     }
     else if (pid2 > 0)
     {
@@ -52,7 +53,7 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)
         if (waitpid(pid2, &status, 0) == -1)
         {
             perror("my(s)hell: waitpid");
-            return -1;
+            return (-1);
         }
         if (WIFEXITED(status))
             g_last_exit_status = WEXITSTATUS(status);
