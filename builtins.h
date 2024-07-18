@@ -14,13 +14,14 @@ int			exec_exit(t_exec_vars *vars, t_free_data *exec_data);
 int			get_path(char *cmd, t_env *env, char **exec);
 int			exec_builtins(t_exec_vars *vars, t_free_data *exec_data);
 int			exec_cd(char **args, t_env **env);
-int			update_pwd(t_env **env, char *cwd);
+int			update_pwd(t_env **env);//, char *cwd);
 int			change_directory_and_update(char *path, t_env **env,
-				char *cwd, char **args);
+				char **args);
+				//char *cwd, char **args);
 int			exec_echo(t_exec_vars *vars);
 char		*handle_quotes_echo(char *input, int *error);
 void		process_args(char **args, int *error);
-int			exec_pwd(void);
+int			exec_pwd(t_env **env);
 int			exec_dollar_pwd(void);
 int			exec_env(char **args, char **environment);
 int			exec_unset(char **args, t_env **env);

@@ -19,7 +19,7 @@ int	exec_builtins(t_exec_vars *vars, t_free_data *exec_data)
 	else if (ft_strcmp(vars->args[0], "cd") == 0)
 		return (exec_cd(vars->args, &exec_data->env));
 	else if (ft_strcmp(vars->args[0], "pwd") == 0)
-		return (exec_pwd());
+		return (exec_pwd(&exec_data->env));
 	else if (ft_strcmp(vars->args[0], "echo") == 0)
 		return (exec_echo(vars));
 	else if (ft_strcmp(vars->args[0], "export") == 0)

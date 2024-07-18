@@ -41,35 +41,40 @@ int	export_quotes(char *input, char **output)
 	return (0);
 }
 
-int	update_pwd(t_env **env, char *cwd)
+int	update_pwd(t_env **env)
 {
-	if (update_add_env_var(env, "OLDPWD", cwd))
+	char	*pwd;
+	char	*cwd;
+
+	pwd = get_env_var(*env, "PWD");//maybe add if PWD doesn't exist?
+	if (!pwd)
+		pwd = getcwd(NULL, 0);
+	if (pwd == NULL)
+		return (print_err(1, 2, "my(s)hell: cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory"), 1);
+	if (update_add_env_var(env, "OLDPWD", pwd))
 		return (1);
 	cwd = getcwd(NULL, 0);
 	if (cwd == NULL)
-		return (perror("getcwd"), 1);
+		return (print_err(1, 2, "my(s)hell: cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory"), 1);
+		//return (perror("getcwd"), 1);
 	if (update_add_env_var(env, "PWD", cwd))
 		return (free(cwd), 1);
 	return (free(cwd), 0);
 }
 
-int	change_directory_and_update(char *path, t_env **env, char *cwd, char **args)
+int	change_directory_and_update(char *path, t_env **env, char **args)
 {
 	if (chdir(path) != 0)
 	{
-		//printf("Debug - args[0]: %s, path: %s\n", args[0], path);
 		print_err(1, 2,
 			"my(s)hell: %s: %s: No such file or directory\n", args[0], path);
-		free(cwd);
 		return (1);
 	}
-	if (update_pwd(env, cwd))
+	if (update_pwd(env))
 	{
 		g_last_exit_status = 1;
-		free(cwd);
 		return (1);
 	}
-	free(cwd);
 	g_last_exit_status = 0;
 	return (g_last_exit_status);
 }

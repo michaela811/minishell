@@ -52,13 +52,15 @@ int	update_add_env_var(t_env **head, const char *name, const char *value)
 		free(var->value);
 		var->value = ft_strdup(value);
 		if (var->value == NULL)
-			return (perror("Memory allocation error"), 1);
+			return (print_err(1, 2, "malloc error in strdup function\n"), 1);
+			//return (perror("Memory allocation error"), 1);
 	}
 	else
 	{
 		new_var = create_env_var(name, value);
 		if (new_var == NULL)
-			return (perror("Memory allocation error"), 1);
+			return (print_err(1, 2, "malloc error in strdup function\n"), 1);
+			//return (perror("Memory allocation error"), 1);
 		new_var->next = *head;
 		*head = new_var;
 	}

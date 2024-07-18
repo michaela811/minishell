@@ -24,6 +24,10 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 		print_err(128, 2, "my(s)hell: fork\n");
 		exit(g_last_exit_status);
 	}
+	if (update_add_env_var(env, "_", vars->args[0]))//maybe different error handling
+	{
+		exit (g_last_exit_status);
+	}
 	else if (pid == 0)
 	{
 		handle_child_cmd(vars, env, environment);
@@ -114,8 +118,13 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 		cleanup(vars);
 		print_and_exit(vars);
 	}
-	printf ("exit status: %d\n", g_last_exit_status);
-	fflush(stdout);
+	/* if (update_add_env_var(env, "_", vars->args[0]))//maybe different error handling
+	{
+		cleanup(vars);
+		exit (g_last_exit_status);
+	} */
+	//printf ("exit status: %d\n", g_last_exit_status);
+	//fflush(stdout);
 	//g_last_exit_status = 0;
 	exit (EXIT_SUCCESS);
 }
@@ -127,8 +136,19 @@ int	err_check_fork(t_exec_vars *vars, t_env **env, char **path)
 	if (ft_strchr(vars->args[0], '/'))
 		if (directory_check(vars->args[0]))
 			return (g_last_exit_status);
+	//printf("%s\n",vars->args[0]);
+	if (access(vars->args[0], F_OK | X_OK) == 0 && ft_strcmp(vars->args[0], ".") == 0)
+	{
+		if (!vars->args[1])
+			return (print_err(2, 2, "my(s)hell: %s: filename argument required\n",
+					vars->args[0]), 2);
+		else
+			return (print_err(127, 2, "my(s)hell: %s: command not found\n",
+				vars->args[0]), 127);
+	}
 	if (access(vars->args[0], F_OK | X_OK) == 0 &&
-    (vars->args[0][0] == '/' || vars->args[0][0] == '.' || vars->args[0][0] == ':'))
+   	//(vars->args[0][0] == '/' || vars->args[0][0] == ':'))
+	(vars->args[0][0] == '/' || vars->args[0][0] == '.' || vars->args[0][0] == ':'))
 		//path_status = 0;
 		return(*path = vars->args[0], 0);
 	else
