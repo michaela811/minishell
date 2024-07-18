@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/17 16:16:44 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/18 13:32:05 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static int	is_it_delimiter(t_p_tree **node, char *buffer)
 	return (0);
 }
 
-int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
+/*int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
 {
 	char			*buffer;
 	char			*line;
@@ -101,9 +101,9 @@ int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
 		free(contents);
 	}
 	return (0);
-} //for tester
+} //for tester*/
 
-/* FOR EVALUATION
+ //FOR EVALUATION
 int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
 {
 	char			*buffer;
@@ -131,4 +131,4 @@ int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
 		free(contents);
 	}
 	return (0);
-}*/
+}

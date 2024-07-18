@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:03 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/16 16:22:02 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/18 13:23:22 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,10 @@ void	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars ,
 	char	*filename;
 
 	if (here_docs && here_docs->fd != -1)
+	{
 		vars->fd_in = here_docs->fd;
+		free(here_docs);
+	}
 	else
 	{
 		filename = handle_here_doc(node, vars, env);
