@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/16 14:27:55 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/18 17:22:12 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,15 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars, t
 		exec_data->tree = exec_data->tree->child;
 	}
 	return (0);
+}
+
+void free_heredocs(t_hd_data **here_docs)
+{
+    if (*here_docs != NULL)
+    {
+        free(*here_docs);
+        *here_docs = NULL;
+    }
 }
 
 int	execute_node(t_free_data *exec_data, t_hd_data *here_docs)

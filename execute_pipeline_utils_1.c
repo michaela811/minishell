@@ -6,13 +6,13 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/16 14:27:55 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/18 17:44:56 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-/*int handle_child_process(int *pipefd, t_free_data *exec_data, t_hd_data *here_docs)
+int handle_child_process(int *pipefd, t_free_data *exec_data, t_hd_data *here_docs)
 {
 	if (exec_data->tree->sibling != NULL)
 	{
@@ -27,65 +27,28 @@
 	if ((g_last_exit_status = execute_node(exec_data, here_docs)))
 		exit(EXIT_FAILURE);
 	exit(EXIT_SUCCESS);
-}*/
-
-int handle_child_process(int *pipefd, t_free_data *exec_data, t_hd_data *here_docs)
-{
-    pid_t child_pid;
-    int status;
-
-    if (exec_data->tree->sibling != NULL)
-    {
-        if (dup2(pipefd[1], STDOUT_FILENO) == -1)
-        {
-            print_err(1, 2, "my(s)hell: dup2\n");
-            exit(EXIT_FAILURE);
-        }
-        close(pipefd[0]);
-        close(pipefd[1]);
-    }
-
-    // Assuming execute_node now returns the PID of a child process it spawns
-    child_pid = execute_node(exec_data, here_docs);
-
-    if (child_pid > 0) {
-        // Wait for the child process to change state
-        waitpid(child_pid, &status, 0);
-
-        // Check if the child process exited normally
-        if (WIFEXITED(status)) {
-            // Get the exit status of the child process
-            g_last_exit_status = WEXITSTATUS(status);
-        } else {
-            // Handle other termination scenarios (e.g., signal termination)
-            g_last_exit_status = -1; // Example error code
-        }
-    } else {
-        // execute_node failed to create a child process
-        exit(EXIT_FAILURE);
-    }
-
-    exit(g_last_exit_status); // Use the captured exit status
 }
 
-/*static int  ft_waitpid(int num_commands, pid_t *pids, int *status)
+static int  ft_waitpid(int num_commands, pid_t *pids)
 {
 	int	i;
+	int	status;
 
 	i = 0;
+	status = 0;
 	while (i < num_commands)
 	{
-		waitpid(pids[i], status, 0);
-		if (WIFEXITED(*status))
-			g_last_exit_status = WEXITSTATUS(*status);
-		else if (WIFSIGNALED(*status))
-            g_last_exit_status = 128 + WTERMSIG(*status);
+		waitpid(pids[i], &status, 0);
+		if (WIFEXITED(status))
+			g_last_exit_status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+            g_last_exit_status = 128 + WTERMSIG(status);
 		i++;
 	}
 	return (g_last_exit_status);
-}*/
+}
 
-static int ft_waitpid(int num_commands, pid_t *pids)
+/*static int ft_waitpid(int num_commands, pid_t *pids)
 {
     int i;
     int command_status;
@@ -119,7 +82,7 @@ static int ft_waitpid(int num_commands, pid_t *pids)
         g_last_exit_status = 0;
     }
     return (g_last_exit_status);
-}
+}*/
 
 int handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 {
@@ -152,6 +115,7 @@ int execute_pipeline(t_free_data *exec_data)
 	int		pipefd[2];
 	pid_t	pid;
 	t_hd_data *here_docs;
+	int		return_value;
 
 	here_docs = NULL;
 	if (exec_data->tree == NULL)
@@ -170,10 +134,13 @@ int execute_pipeline(t_free_data *exec_data)
 		return (print_err(1, 2, "my(s)hell: fork\n"), 1);
 	}
 	else if (pid == 0)
-		return handle_child_process(pipefd, exec_data, here_docs);
+		return_value = handle_child_process(pipefd, exec_data, here_docs);
 	else
-		return handle_parent_process(pipefd, pid, exec_data);
+		return_value = handle_parent_process(pipefd, pid, exec_data);
+	if (here_docs != NULL)
+		free(here_docs);
 	close(pipefd[0]);
 	close(pipefd[1]);
+	return (return_value);
 }
 
