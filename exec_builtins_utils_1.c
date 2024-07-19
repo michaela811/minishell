@@ -64,6 +64,9 @@ int	update_pwd(t_env **env)
 
 int	change_directory_and_update(char *path, t_env **env, char **args)
 {
+	if (access(path, X_OK) == -1 && access(path, F_OK) == 0)
+			return (print_err(1, 2, "my(s)hell: %s: %s: Permission denied\n", args[0],
+					path), 1);
 	if (chdir(path) != 0)
 	{
 		print_err(1, 2,
