@@ -37,7 +37,7 @@ static void	handle_unset(t_env *current, t_env *prev, t_env **env,
 		prev = NULL;
 		while (current != NULL)
 		{
-			if (ft_strcmp(current->name, args[i++]) == 0)
+			if (ft_strcmp(current->name, args[i]) == 0)
 			{
 				if (prev == NULL)
 					*env = current->next;
@@ -51,7 +51,7 @@ static void	handle_unset(t_env *current, t_env *prev, t_env **env,
 			prev = current;
 			current = current->next;
 		}
-		//i++;
+		i++;
 	}
 }
 
