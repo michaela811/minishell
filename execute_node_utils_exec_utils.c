@@ -18,15 +18,13 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
 	int		status;
 
 	pid = 0;
+	if (update_add_env_var(env, "_", vars->args[0]))//maybe different error handling
+		return (g_last_exit_status);
 	pid = fork();
 	if (pid == -1)
 	{
 		print_err(128, 2, "my(s)hell: fork\n");
 		exit(g_last_exit_status);
-	}
-	if (update_add_env_var(env, "_", vars->args[0]))//maybe different error handling
-	{
-		exit (g_last_exit_status);
 	}
 	else if (pid == 0)
 	{

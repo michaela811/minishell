@@ -72,14 +72,6 @@ char	*handle_quotes_echo(char *input, int *error)
 
 int	exec_cd(char **args, t_env **env)
 {
-	if (update_add_env_var(env, "_", args[0]))//maybe different error handling
-	{
-		exit (g_last_exit_status);
-	}
-	t_env	*var;
-
-	var = find_env_var(*env, "_");
-	printf("var->value: %s\n", var->value);
 	if (args[1] != NULL && args[2])
 		return (print_err(1, 2, "my(s)hell: %s: too many arguments\n",
 				args[0]), g_last_exit_status);
