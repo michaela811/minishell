@@ -28,25 +28,6 @@ int handle_child_process(int *pipefd, t_free_data *exec_data, t_hd_data *here_do
 	exit(g_last_exit_status);
 }
 
-/*static int  ft_waitpid(int num_commands, pid_t *pids)
-{
-	int	i;
-	int	status;
-
-	i = 0;
-	status = 0;
-	while (i < num_commands)
-	{
-		waitpid(pids[i], &status, 0);
-		if (WIFEXITED(status))
-			g_last_exit_status = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-            g_last_exit_status = 128 + WTERMSIG(status);
-		i++;
-	}
-	return (g_last_exit_status);
-}*/
-
 static void	ft_waitpid(int num_commands, pid_t *pids, int *statuses)
 {
 	int	i;
