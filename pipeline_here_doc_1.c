@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 16:15:59 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/17 16:16:50 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/18 17:40:26 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,6 @@ int	is_there_here_doc(t_p_tree **tree, t_hd_data **here_docs)
 	t_exec_vars	*vars;
 
 	current = *tree;
-	vars = malloc(sizeof(t_exec_vars));
-	if (!vars)
-		return (print_err(1, 2, "my(s)hell: execute_node malloc error\n"), 1);
-	init_exec_vars(vars);
 	if (current != NULL)
 	{
 		while (current->child != NULL)
@@ -67,14 +63,17 @@ int	is_there_here_doc(t_p_tree **tree, t_hd_data **here_docs)
 			if (current->child->data != NULL
 				&& current->child->data->type == HERE_DOC)
 			{
+				vars = malloc(sizeof(t_exec_vars));
+				if (!vars)
+					return (print_err(1, 2, "my(s)hell: execute_node malloc error\n"), 1);
+				init_exec_vars(vars);
 				init_heredocs(here_docs);
 				if (pipe_heredoc(&current->child->child, vars, *here_docs) == 0)
-					return (free(vars), 0);
+					return (free_array(vars->args), free(vars), 0);
 			}
 			else
 				current = current->child;
 		}
 	}
-	free(vars);
 	return (1);
 }

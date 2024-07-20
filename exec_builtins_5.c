@@ -115,7 +115,10 @@ int	exec_echo(t_exec_vars *vars)
 
 	i = 1;
 	if (vars->args[1] == NULL)
+	{
+		g_last_exit_status = 0;
 		return (print_err(g_last_exit_status, vars->fd_out, "\n"), 1);
+	}
 	while (vars->args[i] && echo_n_control(vars->args[i]))
 		i++;
 	//j = echo_n_control2(vars->args[1]);

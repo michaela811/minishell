@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/16 14:27:55 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/18 17:44:56 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,32 +24,31 @@ int handle_child_process(int *pipefd, t_free_data *exec_data, t_hd_data *here_do
 		close(pipefd[0]);
 		close(pipefd[1]);
 	}
-	if ((g_last_exit_status = execute_node(exec_data, here_docs)))
-		exit(EXIT_FAILURE);
-	exit(EXIT_SUCCESS);
+	g_last_exit_status = execute_node(exec_data, here_docs);
+	exit(g_last_exit_status);
 }
 
-static int  ft_waitpid(int num_commands, pid_t *pids, int *status)
+static void	ft_waitpid(int num_commands, pid_t *pids, int *statuses)
 {
 	int	i;
-
 	i = 0;
+	int	status;
+
 	while (i < num_commands)
 	{
-		waitpid(pids[i], status, 0);
-		if (WIFEXITED(*status))
-			g_last_exit_status = WEXITSTATUS(*status);
-		else if (WIFSIGNALED(*status))
-            g_last_exit_status = 128 + WTERMSIG(*status);
+		waitpid(pids[i], &status, 0);
+		if (WIFEXITED(status))
+			statuses[i] = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+            statuses[i] = 128 + WTERMSIG(status);
 		i++;
 	}
-	return (g_last_exit_status);
 }
 
 int handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 {
 	pid_t       pids [10];
-	int			status;
+	int			statuses[10];
 	pid_t       sibling_pid;
 	int         num_commands;
 	t_free_data sibling_free_data;
@@ -68,19 +67,22 @@ int handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 		pids[num_commands] = sibling_pid;
 		num_commands++;
 	}
-	g_last_exit_status = ft_waitpid(num_commands, pids, &status);
+	//g_last_exit_status = ft_waitpid(num_commands, pids, statuses);
+	ft_waitpid(num_commands, pids, statuses);
+	g_last_exit_status = statuses[num_commands - 1];
 	return (g_last_exit_status);
 }
 
 int execute_pipeline(t_free_data *exec_data)
 {
-	int		pipefd[2];
-	pid_t	pid;
-	t_hd_data *here_docs;
+	int			pipefd[2];
+	pid_t		pid;
+	t_hd_data	*here_docs;
+	int			return_value;
 
 	here_docs = NULL;
 	if (exec_data->tree == NULL)
-		return 0;
+		return (0);
 	if (exec_data->tree->sibling != NULL)
 	{
 		if (pipe(pipefd) == -1)
@@ -95,10 +97,13 @@ int execute_pipeline(t_free_data *exec_data)
 		return (print_err(1, 2, "my(s)hell: fork\n"), 1);
 	}
 	else if (pid == 0)
-		return handle_child_process(pipefd, exec_data, here_docs);
+		return_value = handle_child_process(pipefd, exec_data, here_docs);
 	else
-		return handle_parent_process(pipefd, pid, exec_data);
-	close(pipefd[0]);
-	close(pipefd[1]);
+		return_value = handle_parent_process(pipefd, pid, exec_data);
+	if (here_docs != NULL)
+		free(here_docs);
+	//close(pipefd[0]);
+	//close(pipefd[1]);
+	return (return_value);
 }
 
