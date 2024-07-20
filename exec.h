@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:11 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/16 16:31:34 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/18 17:16:11 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,3 +32,4 @@ int			pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fdc);
 int			pipe_heredoc(t_p_tree **node, t_exec_vars *vars, t_hd_data *here_docs);
 int			handle_heredocs(t_hd_data *here_docs);
 int			open_heredoc_file(char *filename, t_exec_vars *vars);
+void		free_heredocs(t_hd_data **here_docs);

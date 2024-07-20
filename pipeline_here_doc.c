@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/17 16:16:44 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/18 16:42:09 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,9 @@ char	*get_heredoc_content(char *contents, char *buffer)
 	return (contents);
 }
 
-static int	is_it_delimiter(t_p_tree **node, char *buffer)
+static int	is_it_delimiter(char *node, char *buffer)
 {
-	if (ft_exact_strcmp(buffer, (*node)->data->lexeme) == 0)
+	if (ft_exact_strcmp(buffer, node) == 0)
 	{
 		free(buffer);
 		return (1);
@@ -71,7 +71,7 @@ static int	is_it_delimiter(t_p_tree **node, char *buffer)
 	return (0);
 }
 
-int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
+/*int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
 {
 	char			*buffer;
 	char			*line;
@@ -101,17 +101,18 @@ int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
 		free(contents);
 	}
 	return (0);
-} //for tester
+} //for tester*/
 
-/* FOR EVALUATION
+//FOR EVALUATION
 int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
 {
 	char			*buffer;
 	char			*contents;
+	char			*dup_lexeme;
 
 	contents = NULL;
-	(*node)->data->lexeme = handle_quotes_echo
-		((*node)->data->lexeme, &vars->error);
+	dup_lexeme = NULL;
+	dup_lexeme = handle_quotes_echo((*node)->data->lexeme, &vars->error);
 	if (get_stdin())
 		return (1);
 	while (1)
@@ -119,7 +120,7 @@ int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
 		buffer = readline("heredoc> ");
 		if (buffer == NULL)
 			break ;
-		if (is_it_delimiter(node, buffer))
+		if (is_it_delimiter(dup_lexeme, buffer))
 			break ;
 		contents = get_heredoc_content(contents, buffer);
 		ft_strcat(contents, "\n");
@@ -130,5 +131,6 @@ int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
 		write(fd, contents, strlen(contents));
 		free(contents);
 	}
+	free(dup_lexeme);
 	return (0);
-}*/
+}

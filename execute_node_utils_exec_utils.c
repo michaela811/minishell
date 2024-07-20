@@ -116,6 +116,7 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 		cleanup(vars);
 		print_and_exit(vars);
 	}
+	//g_last_exit_status = 0;
 	exit (EXIT_SUCCESS);
 }
 
