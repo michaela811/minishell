@@ -23,7 +23,7 @@ int update_result(char **result, char *updated_result, t_exec_vars *vars)
 	//new_result = ft_strjoin(*result, updated_result);
     free(*result); // Free the old string
     *result = new_result; // Assign the new string
-	ft_memset(updated_result, '\0', ft_strlen(updated_result));
+	//ft_memset(updated_result, '\0', ft_strlen(updated_result));
 	return (0);
 }
 
@@ -124,7 +124,7 @@ void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
 {
 	if (ft_strchr(l_vars->token, '$') != NULL)
 	{
-		//ft_memset(l_vars->buffer, '\0', sizeof(l_vars->buffer));
+		ft_memset(l_vars->buffer, '\0', sizeof(l_vars->buffer));
 		if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, env))
 			return ;
 		if (update_result(l_vars->result, l_vars->buffer, vars))
