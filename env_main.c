@@ -216,7 +216,7 @@ int exec_cwd(char *cmd, char **exec)
 	else
 		return (print_err(1, 2,
 				"getcwd() error\n"), 1);
-	return (0);
+	return (free(tmp), 0);
 }
 
 int	get_path(char *cmd, t_env *env, char **exec)
@@ -231,7 +231,12 @@ int	get_path(char *cmd, t_env *env, char **exec)
 		return (print_err(1, 2,
 				"malloc error in handle_colon function\n"), 1);
 	if (pre_path == NULL)
-		return (exec_cwd(cmd, exec));
+	{
+		exec_cwd(cmd, exec);
+		if (access(*exec, F_OK | X_OK) == 0)
+			return (0);
+		return (-1);
+	}
 	path = ft_split(get_env_var(env, "PATH"), ':');
 	if (path == NULL)
 		return (free(pre_path), print_err(1, 2,
