@@ -12,14 +12,19 @@
 
 #include <minishell.h>
 
-int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)
+int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)//, t_p_tree *tree)
 {
 	pid_t	pid;
 	int		status;
 
 	pid = 0;
-	if (update_add_env_var(env, "_", vars->args[0]))//maybe different error handling
-		return (g_last_exit_status);
+	/* if (tree->data->sibling)
+	{
+		if (update_add_env_var(env, "_", tree->data->lexeme))
+			return (g_last_exit_status);
+	}
+	else */ if (update_add_env_var(env, "_", vars->args[0]))//maybe different error handling
+			return (g_last_exit_status);
 	pid = fork();
 	if (pid == -1)
 	{

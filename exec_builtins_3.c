@@ -12,10 +12,10 @@
 
 #include <minishell.h>
 
-int	exec_pwd(t_env **env)
+int	exec_pwd(void)//(t_env **env)
 {
 	char	*cwd;
-	char	*pwd_env;
+	/*char	*pwd_env;
 
 	pwd_env = get_env_var(*env, "PWD");
 	if (pwd_env)
@@ -24,7 +24,7 @@ int	exec_pwd(t_env **env)
 		g_last_exit_status = 0;
 		return (g_last_exit_status);
 	}
-	else
+	else */
 		cwd = getcwd(NULL, 0);
 	if (cwd == NULL)
 		return (print_err(1, 2, "current working directory not set\n"), g_last_exit_status);

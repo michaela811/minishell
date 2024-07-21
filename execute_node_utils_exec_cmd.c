@@ -26,7 +26,7 @@ int	execute_command(t_exec_vars *vars, t_free_data *exec_data)
 	}
 	return_builtins = exec_builtins(vars, exec_data);
 	if (return_builtins == 3)
-		handle_fork(vars, &exec_data->env, exec_data->environment);
+		handle_fork(vars, &exec_data->env, exec_data->environment);//, exec_data->t_p_tree);
 	return (g_last_exit_status);
 }
 
