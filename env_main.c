@@ -237,7 +237,8 @@ int	get_path(char *cmd, t_env *env, char **exec)
 			return (0);
 		return (-1);
 	}
-	path = ft_split(get_env_var(env, "PATH"), ':');
+	//path = ft_split(get_env_var(env, "PATH"), ':');
+	path = ft_split(pre_path, ':');
 	if (path == NULL)
 		return (free(pre_path), print_err(1, 2,
 				"malloc error in split function\n"), 1);
