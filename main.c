@@ -83,7 +83,7 @@ void	setup_signal_handlers(void)
 	sa.sa_flags = SA_RESTART | SA_NOCLDSTOP;
 	if (sigaction(SIGCHLD, &sa, NULL) == -1)
 	{
-		perror("sigaction");
+		print_err(errno, 2, "sigaction");
 		exit(EXIT_FAILURE);
 	}
 	signal(SIGINT, handle_signal);
@@ -104,7 +104,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		if (tcgetattr(STDIN_FILENO, &orig_termios) == -1)
 		{
-			perror("tcgetattr");
+			print_err(errno, 2, "tcgetattr");
 			exit(EXIT_FAILURE);
 		}
 	}

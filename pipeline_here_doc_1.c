@@ -41,7 +41,7 @@ void	init_heredocs(t_hd_data **here_docs)
 		*here_docs = malloc(sizeof(t_hd_data));
 		if (*here_docs == NULL)
 		{
-			perror("my(s)hell: malloc failed");
+			print_err(1, 2, "my(s)hell: malloc heredoc\n");
 			exit(1);
 		}
 	}

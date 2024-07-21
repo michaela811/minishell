@@ -54,7 +54,7 @@ t_token_list	*create_token(enum e_token_type type, char *lexeme)
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 	{
-		perror("Failed to allocate memory for token");
+		print_err(1, 2, "malloc error in token creation\n");
 		exit(MEMORY_ERROR);
 	}
 	new_token->lexeme = ft_strdup(lexeme);
@@ -63,7 +63,7 @@ t_token_list	*create_token(enum e_token_type type, char *lexeme)
 	if (!new_list_node)
 	{
 		free_token(new_token);
-		perror("Failed to allocate memory for token list node");
+		print_err(1, 2, "malloc error in token list creation\n");
 		exit(MEMORY_ERROR);
 	}
 	new_list_node->token = new_token;
@@ -71,7 +71,7 @@ t_token_list	*create_token(enum e_token_type type, char *lexeme)
 	return (new_list_node);
 }
 
-void	add_token(t_token_list **list, enum e_token_type type, char *lexeme)
+/* void	add_token(t_token_list **list, enum e_token_type type, char *lexeme)
 {
 	t_token_list	*new_node;
 	t_token_list	*current;
@@ -79,7 +79,7 @@ void	add_token(t_token_list **list, enum e_token_type type, char *lexeme)
 	new_node = create_token(type, lexeme);
 	if (!new_node)
 	{
-		perror("Failed to create token");
+		print_err(1, 2, "Failed to create token\n");
 		exit(MEMORY_ERROR);
 	}
 	if (!*list)
@@ -91,7 +91,7 @@ void	add_token(t_token_list **list, enum e_token_type type, char *lexeme)
 			current = current->next;
 		current->next = new_node;
 	}
-}
+} */
 
 void	print_p_tree(t_p_tree *tree, int depth)
 {

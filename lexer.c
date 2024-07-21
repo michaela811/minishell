@@ -107,6 +107,6 @@ void	handle_memory_error(t_token **token_list, int num_tokens)
 		i++;
 	}
 	free(*token_list);
-	perror("Memory allocation error");
+	print_err(1, 2, "Memory allocation error\n");
 	exit(EXIT_FAILURE);
 }

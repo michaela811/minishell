@@ -55,7 +55,7 @@ void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 	expanded_lexeme = malloc(4096);
 	if (!expanded_lexeme)
 	{
-		perror("malloc");
+		print_err(1, 2, "my(s)hell: malloc\n");
 		vars->error = 1;
 		return ;
 	}
@@ -89,7 +89,7 @@ void	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars ,
 		vars->fd_in = open(filename, O_RDONLY);
 		if (vars->fd_in == -1)
 		{
-			perror("open");
+			print_err(1, 2, "open");
 			vars->error = 1;
 		}
 	}

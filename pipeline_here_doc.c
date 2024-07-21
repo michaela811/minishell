@@ -21,17 +21,17 @@ static int	get_stdin(void)
 	original_stdin = dup(STDIN_FILENO);
 	if (original_stdin == -1)
 	{
-		perror("my(s)hell: dup");
+		print_err(errno, 2, "my(s)hell: dup");
 		return (1);
 	}
 	if (tcgetattr(STDIN_FILENO, &term) == -1)
 	{
 		tty_fd = open("/dev/tty", O_RDONLY);
 		if (tty_fd == -1)
-			return (perror("my(s)hell: open /dev/tty"), close(original_stdin),
-				1);
+			return (print_err(errno, 2, "my(s)hell: open /dev/tty"),
+			close(original_stdin), 1);
 		if (dup2(tty_fd, STDIN_FILENO) == -1)
-			return (perror("my(s)hell: dup2 tty_fd to STDIN_FILENO"),
+			return (print_err(errno, 2, "my(s)hell: dup2 tty_fd to STDIN_FILENO"),
 				close(tty_fd), close(original_stdin), 1);
 		close(tty_fd);
 	}

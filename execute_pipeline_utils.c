@@ -20,14 +20,14 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)
     pid2 = fork();
     if (pid2 == -1)
     {
-        perror("my(s)hell: fork");
+        print_err(errno, 2, "my(s)hell: fork");
         return -1;
     }
     if (pid2 == 0)  // Child process
     {
         if (dup2(pipefd[0], STDIN_FILENO) == -1)
         {
-            perror("my(s)hell: dup2");
+            print_err(errno, 2, "my(s)hell: dup2");
             exit(EXIT_FAILURE);
         }
         close(pipefd[0]);
@@ -47,7 +47,7 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)
     {
         int status;
         if (close(pipefd[0]) == -1)
-            perror("my(s)hell: close read end of pipe");
+            print_err(errno, 2, "my(s)hell: close read end of pipe");
         /*if (close(pipefd[1]) == -1)
             perror("my(s)hell: close write end of pipe");*/
         waitpid(pid2, &status, 0);
