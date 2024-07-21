@@ -30,7 +30,7 @@ static void	handle_unset(t_env *current, t_env *prev, t_env **env,
 {
 	int	i;
 
-	i = 0;
+	i = 1;
 	while (args[i])
 	{
 		current = *env;
@@ -64,6 +64,7 @@ int	exec_unset(char **args, t_env **env)
 		return (0);
 	current = *env;
 	prev = NULL;
+
 	handle_unset(current, prev, env, args);
 	g_last_exit_status = 0;
 	return (0);

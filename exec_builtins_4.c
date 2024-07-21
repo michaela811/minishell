@@ -72,31 +72,26 @@ char	*handle_quotes_echo(char *input, int *error)
 
 int	exec_cd(char **args, t_env **env)
 {
-	char	*cwd;
-
-	cwd = getcwd(NULL, 0);
-	if (cwd == NULL)
-		return (print_err(1, 2, "getcwd\n"), g_last_exit_status);
 	if (args[1] != NULL && args[2])
 		return (print_err(1, 2, "my(s)hell: %s: too many arguments\n",
-				args[0]), free(cwd), g_last_exit_status);
+				args[0]), g_last_exit_status);
 	else if (args[1] == NULL || ft_strcmp(args[1], "~") == 0)
 		return (change_directory_and_update(get_env_var(*env, "HOME"),
-				env, cwd, args));
+				env, args));
 	else if (ft_strcmp(args[1], "..") == 0)
-		return (change_directory_and_update("..", env, cwd, args));
+		return (change_directory_and_update("..", env, args));
 	else if (ft_strcmp(args[1], "-") == 0)
 	{
 		if (get_env_var(*env, "OLDPWD") == NULL)
 			return (print_err(1, 2, "my(s)hell: %s: OLDPWD not set\n",
 					args[0]), g_last_exit_status);
 		change_directory_and_update(get_env_var(*env, "OLDPWD"),
-			env, cwd, args);
+			env, args);
 		printf("%s\n", get_env_var(*env, "PWD"));
 		return (g_last_exit_status);
 	}
 	else
-		return (change_directory_and_update(args[1], env, cwd, args));
+		return (change_directory_and_update(args[1], env, args));
 }
 
 int	exec_dollar_pwd(void)
