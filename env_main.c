@@ -134,20 +134,10 @@ int count_double_colon(char *pre_path)
 	return (count);
 }
 
-int detect_double_colons(char **pre_path)
+int process_path_segment(const char *original, char *new_path, int i)
 {
-	char *original;
-	char *new_path;
-	int i;
-	int j;
-
-    i = 0;
-	j = 0;
-	original = *pre_path;
-    new_path = malloc(ft_strlen(original) + count_double_colon(original) + 1);
-	if (!new_path)
-		return (1);
-	while (original[i])
+    int j = 0;
+    while (original[i])
 	{
         if (original[i] == ':' && original[i + 1] == ':')
 		{
@@ -158,9 +148,52 @@ int detect_double_colons(char **pre_path)
 		else
             new_path[j++] = original[i++];
     }
+    return (j);
+}
+
+int detect_double_colons(char **pre_path)
+{
+	char *original;
+	char *new_path;
+	int i;
+	int j;
+
+    i = 0;
+	//j = 0;
+	original = *pre_path;
+    new_path = malloc(ft_strlen(original) + count_double_colon(original) + 1);
+	if (!new_path)
+		return (1);
+	j = process_path_segment(original, new_path, i);
+	/* while (original[i])
+	{
+        if (original[i] == ':' && original[i + 1] == ':')
+		{
+            new_path[j++] = ':';
+            new_path[j++] = '.';
+            i++;
+        }
+		else
+            new_path[j++] = original[i++];
+    } */
     new_path[j] = '\0';
     free(*pre_path);
     *pre_path = new_path;
+    return (0);
+}
+
+int join_and_free(char **pre_path, const char *str, int is_prefix)
+{
+    char *tmp_path;
+
+    if (is_prefix)
+        tmp_path = ft_strjoin(str, *pre_path);
+    else
+        tmp_path = ft_strjoin(*pre_path, str);
+    if (!tmp_path)
+		return (free(*pre_path), 1);
+    free(*pre_path);
+    *pre_path = tmp_path;
     return (0);
 }
 
@@ -177,6 +210,17 @@ int handle_colon (char **pre_path, t_env *env)
 		return (1);
 	if ((*pre_path)[0] == ':')
 	{
+    	if (join_and_free(pre_path, ".", 1)) // 1 for prefix
+        	return (1);
+	}
+	len = ft_strlen(*pre_path);
+	if ((*pre_path)[len - 1] == ':')
+	{
+    	if (join_and_free(pre_path, ".", 0)) // 0 for suffix
+        	return (1);
+	}
+	/* if ((*pre_path)[0] == ':')
+	{
 		tmp_path = ft_strjoin (".", *pre_path);
 		if (!tmp_path)
 			return (free(*pre_path), 1);
@@ -191,7 +235,7 @@ int handle_colon (char **pre_path, t_env *env)
 			return (free(*pre_path), 1);
 		free (*pre_path);
 		*pre_path = tmp_path;
-	}
+	} */
 	if (detect_double_colons(pre_path))
 		return (free(*pre_path), 1);
 	return(0);
@@ -207,19 +251,90 @@ int exec_cwd(char *cmd, char **exec)
 		tmp = ft_strjoin(cwd, "/");
 		if (tmp == NULL)
 			return (print_err(1, 2,
-				"malloc error in strjoin function\n"), 1);
+				"my(s)hell: malloc error in strjoin function\n"), 1);
 		*exec = ft_strjoin(tmp, cmd);
 		if (*exec == NULL)
 			return (free(tmp),print_err(1, 2,
-				"malloc error in strjoin function\n"), 1);
+				"my(s)hell: malloc error in strjoin function\n"), 1);
 	}
 	else
 		return (print_err(1, 2,
-				"getcwd() error\n"), 1);
+				"my(s)hell: getcwd() error\n"), 1);
 	return (free(tmp), 0);
 }
 
-int	get_path(char *cmd, t_env *env, char **exec)
+int handle_initial_path(char **pre_path, t_env *env)
+{
+    if (handle_colon(pre_path, env))
+        return (print_err(1, 2, "my(s)hell: malloc error in handle_colon function\n"), 1);
+    return (0);
+}
+
+int is_a_directory(char *path)
+{
+    struct stat path_stat;
+    stat(path, &path_stat);
+    return (S_ISDIR(path_stat.st_mode));
+}
+
+int exec_from_cwd(char *cmd, char **exec)
+{
+    if (exec_cwd(cmd, exec))
+        return (1);
+    if (access(*exec, F_OK | X_OK) == 0)
+	{
+        if (is_a_directory(*exec))
+            return (print_err(126, 2, "my(s)hell: %s: Is a directory\n", cmd), 126);
+        return (0);
+    }
+    return (-1);
+}
+
+int exec_from_path(char **path, char *cmd, char **exec)
+{
+    int i;
+
+	i = -1;
+    while (path[++i])
+	{
+        if (get_exec(path, i, cmd, exec))
+            return (free_array(path), g_last_exit_status);
+        if (access(*exec, F_OK | X_OK) == 0)
+            return (free_array(path), 0);
+        if (!path[i + 1] && strcmp(path[i], getenv("HOME")) == 0)
+            return (-2);
+        free(*exec);
+    }
+	free_array(path);
+	*exec = cmd;
+    return (-1);
+}
+
+int get_path(char *cmd, t_env *env, char **exec)
+{
+    char **path;
+    char *pre_path;
+	//int exec_result;
+
+	pre_path = NULL;
+    if (handle_initial_path(&pre_path, env))
+        return (1);
+    if (pre_path == NULL)
+        return (exec_from_cwd(cmd, exec));
+    path = ft_split(pre_path, ':');
+    if (path == NULL)
+        return (free(pre_path), print_err(1, 2, "my(s)hell: malloc error in split function\n"), 1);
+    free(pre_path);
+    if (path[0] == NULL)
+	{
+        if (get_cwd(cmd, exec, path))
+			return(free_array(path), -1);//return (free_array(path), -1); To be tested what to return
+		return (free_array(path), 0);
+    }
+    return (exec_from_path(path, cmd, exec));
+}
+
+/* int	get_path(char *cmd, t_env *env, char **exec)
 {
 	int		i;
 	char	**path;
@@ -232,12 +347,12 @@ int	get_path(char *cmd, t_env *env, char **exec)
 				"malloc error in handle_colon function\n"), 1);
 	if (pre_path == NULL)
 	{
-		exec_cwd(cmd, exec);
+		if (exec_cwd(cmd, exec))
+			return (1);
 		if (access(*exec, F_OK | X_OK) == 0)
 			return (0);
 		return (-1);
 	}
-	//path = ft_split(get_env_var(env, "PATH"), ':');
 	path = ft_split(pre_path, ':');
 	if (path == NULL)
 		return (free(pre_path), print_err(1, 2,
@@ -246,7 +361,7 @@ int	get_path(char *cmd, t_env *env, char **exec)
 	if (path[0] == NULL)
 	{
 		if(get_cwd(cmd, exec, path))
-			return(free(path), -1);
+			return(free_array(path), -1);//return (free_array(path), -1); To be tested what to return
 		return (free_array(path), 0);
 	}
 	while (path[++i])
@@ -257,13 +372,12 @@ int	get_path(char *cmd, t_env *env, char **exec)
 			return (free_array(path), 0);
 		if (!path[i + 1] && strcmp(path[i], getenv("HOME")) == 0)
 			return (-2);
-		//if (path[i + 1])
 		free(*exec);
 	}
 	free_array(path);
 	*exec = cmd;
 	return (-1);
-}
+} */
 
 int	get_exec(char **path, int i, char *cmd, char **exec)
 {

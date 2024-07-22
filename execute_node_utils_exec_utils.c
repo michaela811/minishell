@@ -56,7 +56,7 @@ void cleanup(t_exec_vars *vars)
         close(vars->fd_out);
 }
 
-int remove_empty_args(t_exec_vars *vars)
+/* int remove_empty_args(t_exec_vars *vars)
 {
     int i;
 
@@ -86,6 +86,20 @@ int remove_empty_args(t_exec_vars *vars)
             break;
     }
 	return (0);
+} */
+
+void set_fds(int fd_in, int fd_out)
+{
+    if (fd_in != 0)
+	{
+        dup2(fd_in, 0);
+        close(fd_in);
+    }
+    if (fd_out != 1)
+	{
+        dup2(fd_out, 1);
+        close(fd_out);
+    }
 }
 
 int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
@@ -93,7 +107,8 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	char	*path;
 
 	path = NULL;
-	if (vars->fd_in != 0)
+	set_fds(vars->fd_in, vars->fd_out);
+	/* if (vars->fd_in != 0)
 	{
 		dup2(vars->fd_in, 0);
 		close(vars->fd_in);
@@ -102,19 +117,14 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	{
 		dup2(vars->fd_out, 1);
 		close(vars->fd_out);
-	}
-	//if (remove_empty_args(vars))
-		//exit (g_last_exit_status);
+	} */
 	if (access(vars->args[0], F_OK | X_OK) == 0 && vars->args[0][0] == '/')
 		path = vars->args[0];
-	/* else
-		get_path(vars->args[0], *env, &path); */
 	if ((err_check_fork(vars, env, &path)) != 0)
 	{
 		cleanup(vars);
 		exit (g_last_exit_status);
 	}
-	//if (execve(path, vars->args, environment) < 0)
 	g_last_exit_status = execve(path, vars->args, environment);
 	if (g_last_exit_status < 0)
 	{
@@ -168,15 +178,15 @@ int	err_check_fork(t_exec_vars *vars, t_env **env, char **path)
 		if (directory_check(vars->args[0]))
 			return (g_last_exit_status);
 	if (access(vars->args[0], F_OK | X_OK) == 0 && ft_strcmp(vars->args[0], ".") == 0)
-		//return (control_dot(vars));
-	{
+		return (control_dot(vars));
+	/* {
 		if (!vars->args[1])
 			return (print_err(2, 2, "my(s)hell: %s: filename argument required\n",
 					vars->args[0]), 2);
 		else
 			return (print_err(127, 2, "my(s)hell: %s: command not found\n",
 				vars->args[0]), 127);
-	}
+	} */
 	if (access(vars->args[0], F_OK | X_OK) == 0 && ft_strcmp(vars->args[0], "..") == 0)
 			return (print_err(127, 2, "my(s)hell: %s: command not found\n",
 				vars->args[0]), 127);
@@ -188,8 +198,8 @@ int	err_check_fork(t_exec_vars *vars, t_env **env, char **path)
 	if (path_status == 1)
 		return (g_last_exit_status);
 	if (path_status == -2)
-		//return(path_status_2(vars, path));
-	{
+		return(path_status_2(vars, path));
+	/* {
 		if (access(vars->args[0], X_OK) == -1 && vars->args[0][0] == '.'
 			&& vars->args[0][1] == '/')
 			return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
@@ -197,11 +207,11 @@ int	err_check_fork(t_exec_vars *vars, t_env **env, char **path)
 		//if (access(vars->args[0], F_OK) == -1 && )
 		return (print_err(127, 2, "my(s)hell: %s: command not found\n",
 				*path), 127);
-	}
+	} */
 	if (path_status == -1 || vars->args[0][0] == '\0')
 		//|| vars->args[0][0] == '.')
-		//return (path_status_1(vars, env));
-	{
+		return (path_status_1(vars, env));
+	/* {
 		if (access(vars->args[0], X_OK) == -1 && vars->args[0][0] == '.'
 			&& vars->args[0][1] == '/')
 			return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
@@ -212,7 +222,9 @@ int	err_check_fork(t_exec_vars *vars, t_env **env, char **path)
 		//if (access(vars->args[0], F_OK) == -1 && )
 		return (print_err(127, 2, "my(s)hell: %s: command not found\n",
 				vars->args[0]), 127);
-	}
+	} */
+	if (path_status == 126)
+		return (g_last_exit_status);
 	return ((g_last_exit_status = 0), EXIT_SUCCESS);
 }
 
