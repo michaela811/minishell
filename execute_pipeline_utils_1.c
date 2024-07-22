@@ -24,23 +24,22 @@ int handle_child_process(int *pipefd, t_free_data *exec_data, t_hd_data *here_do
 		close(pipefd[0]);
 		close(pipefd[1]);
 	}
-	g_last_exit_status = execute_node(exec_data, here_docs);
+	//g_last_exit_status = execute_node(exec_data, here_docs);
+	execute_node(exec_data, here_docs);
 	exit(g_last_exit_status);
 }
 
 static void	ft_waitpid(int num_commands, pid_t *pids, int *statuses)
 {
 	int	i;
-	i = 0;
 	int	status;
 
+	i = 0;
 	while (i < num_commands)
 	{
 		waitpid(pids[i], &status, 0);
 		if (WIFEXITED(status))
 			statuses[i] = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-            statuses[i] = 128 + WTERMSIG(status);
 		i++;
 	}
 }
@@ -67,7 +66,7 @@ int handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 		pids[num_commands] = sibling_pid;
 		num_commands++;
 	}
-	//g_last_exit_status = ft_waitpid(num_commands, pids, statuses);
+	ft_memset(statuses, 0, sizeof(statuses[0] * num_commands));
 	ft_waitpid(num_commands, pids, statuses);
 	g_last_exit_status = statuses[num_commands - 1];
 	return (g_last_exit_status);
@@ -104,6 +103,7 @@ int execute_pipeline(t_free_data *exec_data)
 		free(here_docs);
 	//close(pipefd[0]);
 	//close(pipefd[1]);
+	printf("return_value: %d\n", return_value);
 	return (return_value);
 }
 

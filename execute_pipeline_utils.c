@@ -48,8 +48,8 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)
         int status;
         if (close(pipefd[0]) == -1)
             print_err(errno, 2, "my(s)hell: close read end of pipe");
-        /*if (close(pipefd[1]) == -1)
-            perror("my(s)hell: close write end of pipe");*/
+        //if (close(pipefd[1]) == -1)
+        //    perror("my(s)hell: close write end of pipe");
         waitpid(pid2, &status, 0);
         if (WIFEXITED(status))
             g_last_exit_status = WEXITSTATUS(status);
@@ -58,5 +58,7 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)
         else
             g_last_exit_status = -1;
     }
+    printf("g_last_exit_status: %d\n", g_last_exit_status);
+    printf("pid2: %d\n", pid2);
     return pid2;
 }
