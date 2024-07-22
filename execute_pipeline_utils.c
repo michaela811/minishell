@@ -58,7 +58,5 @@ pid_t handle_sibling_process(int *pipefd, t_free_data *exec_data)
         else
             g_last_exit_status = -1;
     }
-    printf("g_last_exit_status: %d\n", g_last_exit_status);
-    printf("pid2: %d\n", pid2);
     return pid2;
 }
