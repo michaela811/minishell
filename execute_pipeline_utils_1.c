@@ -103,7 +103,6 @@ int execute_pipeline(t_free_data *exec_data)
 		free(here_docs);
 	//close(pipefd[0]);
 	//close(pipefd[1]);
-	printf("return_value: %d\n", return_value);
 	return (return_value);
 }
 
