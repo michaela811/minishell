@@ -177,6 +177,9 @@ int	err_check_fork(t_exec_vars *vars, t_env **env, char **path)
 			return (print_err(127, 2, "my(s)hell: %s: command not found\n",
 				vars->args[0]), 127);
 	}
+	if (access(vars->args[0], F_OK | X_OK) == 0 && ft_strcmp(vars->args[0], "..") == 0)
+			return (print_err(127, 2, "my(s)hell: %s: command not found\n",
+				vars->args[0]), 127);
 	if (access(vars->args[0], F_OK | X_OK) == 0 &&
 	(vars->args[0][0] == '/' || vars->args[0][0] == '.' || vars->args[0][0] == ':'))
 		return(*path = vars->args[0], 0);

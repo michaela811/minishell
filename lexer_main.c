@@ -37,11 +37,11 @@ t_token_list **current)
 	new_token = create_token_lexer(*token_value);
 	if (new_token == NULL)
 		return (free_token_list(*token_list),
-			perror("Memory allocation error"), 1);
+			print_err(1, 2, "malloc error in strdup function\n"), 1);
 	new_node = create_node_lexer(new_token);
 	if (new_node == NULL)
 		return (free_token(new_token), free_token_list(*token_list),
-			perror("Memory allocation error"), 1);
+			print_err(1, 2, "malloc error in strdup function\n"), 1);
 	if (*token_list == NULL)
 	{
 		*token_list = new_node;
