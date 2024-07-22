@@ -52,14 +52,14 @@ int	update_add_env_var(t_env **head, const char *name, const char *value)
 		free(var->value);
 		var->value = ft_strdup(value);
 		if (var->value == NULL)
-			return (print_err(1, 2, "malloc error in strdup function\n"), 1);
+			return (print_err(1, 2, "my(s)hell: malloc error in strdup function\n"), 1);
 			//return (perror("Memory allocation error"), 1);
 	}
 	else
 	{
 		new_var = create_env_var(name, value);
 		if (new_var == NULL)
-			return (print_err(1, 2, "malloc error in strdup function\n"), 1);
+			return (print_err(1, 2, "my(s)hell: malloc error in strdup function\n"), 1);
 			//return (perror("Memory allocation error"), 1);
 		new_var->next = *head;
 		*head = new_var;
@@ -101,7 +101,7 @@ int get_cwd(char *cmd, char **exec, char **path)
 
 	cwd = getcwd(NULL, 0); // Dynamically allocate buffer for current directory
     if (!cwd)
-		return (print_err(1, 2, "malloc error in getcwd function\n"), 1);
+		return (print_err(1, 2, "my(s)hell: malloc error in getcwd function\n"), 1);
 	path[0] = cwd;
 	if (get_exec(path, 0, cmd, exec))
 			return (free(cwd),free_array(path), g_last_exit_status);
@@ -272,13 +272,13 @@ int	get_exec(char **path, int i, char *cmd, char **exec)
 	path_part = ft_strjoin(path[i], "/");
 	if (path_part == NULL)
 		return (print_err(1, 2,
-				"malloc error in strjoin function\n"), 1);
+				"my(s)hell: malloc error in strjoin function\n"), 1);
 	*exec = ft_strjoin(path_part, cmd);
 	if (*exec == NULL)
 	{
 		free(path_part);
 		return (print_err(1, 2,
-				"malloc error in strjoin function\n"), 1);
+				"my(s)hell: malloc error in strjoin function\n"), 1);
 	}
 	free(path_part);
 	return (0);
