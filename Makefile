@@ -9,13 +9,23 @@ LIBFT = $(LIBDIR)/libft.a
 
 SOURCES = env_main.c \
 			env_utils.c \
+			env_handling.c \
 			error_handling.c \
-			exec_builtins_1.c \
-			exec_builtins_2.c \
-			exec_builtins_utils.c \
-			execute_node_utils_exec_cmd.c \
-			execute_node_utils_global.c \
-			execute_node_utils_redirections.c \
+			exec_builtins_exit.c \
+			exec_builtins_cd.c \
+			exec_builtins_echo.c \
+			exec_builtins_env.c \
+			exec_builtins_export.c \
+			exec_builtins_export_utils.c \
+			exec_builtins_pwd.c \
+			exec_builtins_unset.c \
+			exec_builtins.c \
+			execute_node.c \
+			execute_node_handle_redirect.c \
+			execute_node_handle_redirect_utils.c \
+			execute_node_handle_heredoc.c \
+			execute_node_exec_cmd.c \
+			handle_dollar_sign.c \
 			execute_node_utils.c \
 			execute_parse_tree.c \
 			execute_pipeline_utils.c \
@@ -29,20 +39,21 @@ SOURCES = env_main.c \
 			parser_utils.c \
 			init.c \
 			custom_malloc.c \
-			handle_quotes.c \
+			handle_quotes_1.c \
+			handle_quotes_2.c \
 			handle_quotes_utils.c \
 			handle_quotes_redirect.c \
+			handle_quotes_heredoc.c \
 			execute_pipeline_utils_1.c \
-			exec_builtins_utils_1.c \
-			exec_builtins_3.c \
-			exec_builtins_4.c \
-			exec_builtins_5.c \
-			execude_node_utils_redirections_1.c \
-			execute_node_utils_exec_utils.c \
+			execute_node_handle_child_cmd.c \
+			execute_node_error_messages.c \
 			free_functions_1.c \
 			free_functions_2.c \
 			pipeline_here_doc.c \
 			pipeline_here_doc_1.c \
+			get_path_for_exec.c \
+			get_path_for_exec_utils.c \
+			get_path_for_exec_colon.c \
 
 
 OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))
