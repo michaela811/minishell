@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/24 14:43:23 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/24 15:03:53 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	ft_waitpid(int num_commands, pid_t *pids, int *statuses)
 
 	status = 0;
 	num_commands--;
-	while (num_commands > 0)
+	while (num_commands >= 0)
 	{
 		waitpid(pids[num_commands], &status, 0);
 		if (WIFEXITED(status))
