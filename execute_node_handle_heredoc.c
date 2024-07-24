@@ -1,28 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execute_parse_tree.c                               :+:      :+:    :+:   */
+/*   execute_node_handle_heredoc.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/18 17:22:12 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/24 15:22:47 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int open_heredoc_file(char *filename, t_exec_vars *vars)
+int	open_heredoc_file(char *filename, t_exec_vars *vars)
 {
-    int file;
+	int	file;
 
 	file = open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-    if (file == -1)
+	if (file == -1)
 	{
-        vars->error = 1;
-        print_err(1, 2, "my(s)hell: open error\n");
-    }
-    return (file);
+		vars->error = 1;
+		print_err(1, 2, "my(s)hell: open error\n");
+	}
+	return (file);
 }
 
 void	remove_quotes(char **lexeme_ptr, int *error)
@@ -51,7 +51,7 @@ void	remove_quotes(char **lexeme_ptr, int *error)
 			if (lexeme[i] != quote)
 			{
 				*error = 1;
-				return(free(result), print_err(1, 2, "my(s)hell: syntax error\n"));
+				return (free(result), print_err(1, 2, "my(s)hell: syntax error\n"));
 			}
 			i++;
 		}
@@ -63,146 +63,19 @@ void	remove_quotes(char **lexeme_ptr, int *error)
 	*lexeme_ptr = result;
 }
 
-void process_heredoc_dollar_closed(int file, char *lexeme_no_quotes)
+void	process_heredoc_dollar_closed(int file, char *lexeme_no_quotes)
 {
-    char *line;
-    char *buffer;
-
-    while (1)
-	{
-        line = get_next_line(fileno(stdin));
-        if (line == NULL)
-			break;
-        buffer = ft_strtrim(line, "\n");
-        free(line);
-        if (ft_exact_strcmp(buffer, lexeme_no_quotes) == 0)
-		{
-            free(buffer);
-            break;
-        }
-        write(file, buffer, ft_strlen(buffer));
-        write(file, "\n", 1);
-        free(buffer);
-    }
-}
-
-void process_heredoc_dollar_open(int file, t_exec_vars *vars, t_env **env,
-		char *lexeme_no_quotes)
-{
-    char *line;
-    char *buffer;
-    char buffer_no_dollar[1024];
-	char *buffer_start;
-
-    while (1)
-	{
-        line = get_next_line(fileno(stdin));
-        if (line == NULL)
-			break;
-        buffer = ft_strtrim(line, "\n");
-        free(line);
-        if (ft_exact_strcmp(buffer, lexeme_no_quotes) == 0)
-		{
-            free(buffer);
-            break;
-        }
-        buffer_start = buffer;
-        if (handle_dollar_error(&buffer, buffer_no_dollar, vars, env))
-            return (free(buffer_start));
-        write(file, buffer_no_dollar, ft_strlen(buffer_no_dollar));
-        write(file, "\n", 1);
-        free(buffer_start);
-    }
-}
-
-char *handle_here_doc(t_p_tree **node, t_exec_vars *vars, t_env **env)
-{
-    char *filename = "/tmp/heredoc.txt";
-    char *lexeme_no_quotes = ft_strdup((*node)->child->data->lexeme);
-    if (lexeme_no_quotes == NULL)
-		return (NULL);
-    int file = open_heredoc_file(filename, vars);
-    if (file == -1) {
-        free(lexeme_no_quotes);
-        return NULL;
-    }
-    if (ft_strpbrk((*node)->child->data->lexeme, "'\"") != NULL)
-	{
-        remove_quotes(&lexeme_no_quotes, &vars->error);
-        if (vars->error)
-			return (free(lexeme_no_quotes), close(file), NULL);
-		process_heredoc_dollar_closed(file, lexeme_no_quotes);
-	}
-	else
-    	process_heredoc_dollar_open(file, vars, env, lexeme_no_quotes);
-    close(file);
-    free(lexeme_no_quotes);
-    return filename;
-}
-
-/* char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars, t_env **env)
-{
-	char	*buffer;
-	char	*filename;
-	int		file;
 	char	*line;
-	char *lexeme_no_quotes;
+	char	*buffer;
 
-	filename = "/tmp/heredoc.txt";
-	lexeme_no_quotes = ft_strdup((*node)->child->data->lexeme);
-	if (lexeme_no_quotes == NULL)
-		return (NULL);
-
-	file = open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-	if (file == -1)
+	while (1)
 	{
-		vars->error = 1;
-		return (print_err(1, 2, "my(s)hell: open error\n"), free(lexeme_no_quotes), NULL);//don't know whether it's better over perror
-		//return ((vars->error = 1), perror("open"), NULL);
-	}
-	if (ft_strpbrk((*node)->child->data->lexeme, "'\"") == NULL)
-	{
-		char	buffer_no_dollar[1024];
-		while (1)
-		{
-		//buffer = readline("heredoc> ");
-		//if (buffer == NULL)
-		//	break ;
-		line = get_next_line(fileno(stdin)); // for tester from this line
+		line = get_next_line(fileno(stdin));
 		if (line == NULL)
 			break ;
 		buffer = ft_strtrim(line, "\n");
-		free(line); // to this line
-		if (ft_exact_strcmp(buffer, (*node)->child->data->lexeme) == 0)
-		{
-			free(buffer);
-			break ;
-		}
-		char *buffer_start = buffer;
-		if (handle_dollar_error(&buffer, buffer_no_dollar, vars, env))
-			return (free(buffer), close(file), NULL);
-		write(file, buffer_no_dollar, ft_strlen(buffer_no_dollar));
-		write(file, "\n", 1);
-		free(buffer_start);
-		//free(buffer);
-		}
-	}
-	else
-	{
-		remove_quotes(&lexeme_no_quotes, &vars->error);
-		if (vars->error)
-			return (free(lexeme_no_quotes), close(file), NULL);
-		while (1)
-		{
-		//buffer = readline("heredoc> ");
-		//if (buffer == NULL)
-		//	break ;
-		line = get_next_line(fileno(stdin)); // for tester from this line
-		if (line == NULL)
-			break ;
-		buffer = ft_strtrim(line, "\n");
-		free(line); // to this line
-		if (ft_exact_strcmp(buffer, (*node)->child->data->lexeme) == 0)
+		free(line);
+		if (ft_exact_strcmp(buffer, lexeme_no_quotes) == 0)
 		{
 			free(buffer);
 			break ;
@@ -210,42 +83,61 @@ char *handle_here_doc(t_p_tree **node, t_exec_vars *vars, t_env **env)
 		write(file, buffer, ft_strlen(buffer));
 		write(file, "\n", 1);
 		free(buffer);
-		}
 	}
-	close(file);
-	return (filename);
-} */
+}
 
-/* void process_heredoc_content(int file, t_exec_vars *vars, t_env **env,
+void	process_heredoc_dollar_open(int file, t_exec_vars *vars, t_env **env,
 		char *lexeme_no_quotes)
 {
-    char *line;
-    char *buffer;
-    char buffer_no_dollar[1024];
-	char *buffer_start;
+	char	*line;
+	char	*buffer;
+	char	buffer_no_dollar[1024];
+	char	*buffer_start;
 
-    while (1)
+	while (1)
 	{
-        line = get_next_line(fileno(stdin));
-        if (line == NULL)
-			break;
-        buffer = ft_strtrim(line, "\n");
-        free(line);
-        if (ft_exact_strcmp(buffer, lexeme_no_quotes) == 0)
+		line = get_next_line(fileno(stdin));
+		if (line == NULL)
+			break ;
+		buffer = ft_strtrim(line, "\n");
+		free(line);
+		if (ft_exact_strcmp(buffer, lexeme_no_quotes) == 0)
 		{
-            free(buffer);
-            break;
-        }
-        buffer_start = buffer;
-        if (ft_strpbrk(lexeme_no_quotes, "'\"") == NULL)
-		{
-            if (handle_dollar_error(&buffer, buffer_no_dollar, vars, env))
-                return (free(buffer_start));
-            write(file, buffer_no_dollar, ft_strlen(buffer_no_dollar));
-        }
-		else
-            write(file, buffer, ft_strlen(buffer));
-        write(file, "\n", 1);
-        free(buffer_start);
-    }
-} */
+			free(buffer);
+			break ;
+		}
+		buffer_start = buffer;
+		if (handle_dollar_error(&buffer, buffer_no_dollar, vars, env))
+			return (free(buffer_start));
+		write(file, buffer_no_dollar, ft_strlen(buffer_no_dollar));
+		write(file, "\n", 1);
+		free(buffer_start);
+	}
+}
+
+char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars, t_env **env)
+{
+	char	*filename;
+	char	*lexeme_no_quotes;
+	int		file;
+
+	filename = "/tmp/heredoc.txt";
+	lexeme_no_quotes = ft_strdup((*node)->child->data->lexeme);
+	if (lexeme_no_quotes == NULL)
+		return (NULL);
+	file = open_heredoc_file(filename, vars);
+	if (file == -1)
+		return (free(lexeme_no_quotes), NULL);
+	if (ft_strpbrk((*node)->child->data->lexeme, "'\"") != NULL)
+	{
+		remove_quotes(&lexeme_no_quotes, &vars->error);
+		if (vars->error)
+			return (free(lexeme_no_quotes), close(file), NULL);
+		process_heredoc_dollar_closed(file, lexeme_no_quotes);
+	}
+	else
+		process_heredoc_dollar_open(file, vars, env, lexeme_no_quotes);
+	close(file);
+	free(lexeme_no_quotes);
+	return (filename);
+}

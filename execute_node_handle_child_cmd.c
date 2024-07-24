@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execute_node_utils_exec_utils.c                    :+:      :+:    :+:   */
+/*   execute_node_handle_child_cmd.c                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/17 18:57:03 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/07/24 15:35:48 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,26 +18,26 @@ static int	print_and_exit(t_exec_vars *vars)
 	exit(127);
 }
 
-void cleanup(t_exec_vars *vars)
+void	cleanup(t_exec_vars *vars)
 {
-    if (vars->fd_in != 0)
-        close(vars->fd_in);
-    if (vars->fd_out != 1)
-        close(vars->fd_out);
+	if (vars->fd_in != 0)
+		close(vars->fd_in);
+	if (vars->fd_out != 1)
+		close(vars->fd_out);
 }
 
-void set_fds(int fd_in, int fd_out)
+void	set_fds(int fd_in, int fd_out)
 {
-    if (fd_in != 0)
+	if (fd_in != 0)
 	{
-        dup2(fd_in, 0);
-        close(fd_in);
-    }
-    if (fd_out != 1)
+		dup2(fd_in, 0);
+		close(fd_in);
+	}
+	if (fd_out != 1)
 	{
-        dup2(fd_out, 1);
-        close(fd_out);
-    }
+		dup2(fd_out, 1);
+		close(fd_out);
+	}
 }
 
 int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
@@ -65,32 +65,32 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 
 /* int remove_empty_args(t_exec_vars *vars)
 {
-    int i;
+	int i;
 
-    while (vars->args[0])
-    {
-        if (ft_strcmp(vars->args[0], "") == 0)
-        {
-            free(vars->args[0]);
-            if (vars->args[1] != NULL)
-            {
+	while (vars->args[0])
+	{
+		if (ft_strcmp(vars->args[0], "") == 0)
+		{
+			free(vars->args[0]);
+			if (vars->args[1] != NULL)
+			{
 				i = 0;
-                while (vars->args[i + 1] != NULL)
-                {
-                    vars->args[i] = vars->args[i + 1];
-                    i++;
-                }
-                vars->args[i] = NULL;
+				while (vars->args[i + 1] != NULL)
+				{
+					vars->args[i] = vars->args[i + 1];
+					i++;
+				}
+				vars->args[i] = NULL;
 				vars->i = i;
-            }
-            else
-            {
-                g_last_exit_status = 0;
-                return (1);
-            }
-        }
-        else
-            break;
-    }
+			}
+			else
+			{
+				g_last_exit_status = 0;
+				return (1);
+			}
+		}
+		else
+			break;
+	}
 	return (0);
 } */
