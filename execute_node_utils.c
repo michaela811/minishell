@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:08 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/18 13:19:19 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/24 16:29:47 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	init_exec_vars(t_exec_vars *vars)
 	int	i;
 
 	vars->fd_in = 0;
+	vars->open_fd_in = 0;
 	vars->fd_out = 1;
 	vars->capacity = 10;
 	vars->args = malloc(vars->capacity * sizeof(char *));
@@ -55,32 +56,6 @@ void	expand_exec_vars(t_exec_vars *vars)
 	vars->capacity = new_capacity;
 }
 
-void	handle_node_data(t_p_tree **node, t_exec_vars *vars, t_env **env, t_hd_data *here_docs)
-{
-	if ((*node)->data->type == RED_FROM || (*node)->data->type == RED_TO
-		|| (*node)->data->type == APPEND || (*node)->data->type == HERE_DOC)
-		return (handle_redirection(node, vars, env, here_docs));
-	vars->args[vars->i] = ft_strdup((*node)->data->lexeme);
-	if (!vars->args[vars->i])
-	{
-		vars->error = 1;
-		return (print_err(1, 2, "my(s)hell: ft_strdup error\n"));
-	}
-	handle_quotes_glob_1(node, vars, env);
-	if (vars->error)
-	{
-		g_last_exit_status = 1;
-		return ;
-	}
-	if (!*vars->args[vars->i] && ft_strchr((*node)->data->lexeme, '$') != NULL
-		&& ft_strchr((*node)->data->lexeme, '"') == NULL
-		&& ft_strchr((*node)->data->lexeme, '\'') == NULL)
-	{
-	}
-	else
-		vars->i++;
-}
-
 int	split_variable(char *arg, int i, t_exec_vars *vars)
 {
 	char	**split_args;
@@ -101,16 +76,4 @@ int	split_variable(char *arg, int i, t_exec_vars *vars)
 	}
 	free(split_args);
 	return (i + (j - 1));
-}
-
-void	handle_redirection(t_p_tree **node, t_exec_vars *vars, t_env **env, t_hd_data *here_docs)
-{
-	if ((*node)->data->type == RED_FROM)
-		return (handle_redirection_from(node, vars, env));
-	else if ((*node)->data->type == RED_TO)
-		return (handle_redirection_to(node, vars, env));
-	else if ((*node)->data->type == APPEND)
-		return (handle_redirection_append(node, vars, env));
-	else if ((*node)->data->type == HERE_DOC)
-		return (handle_redirection_here_doc(node, vars, here_docs, env));
 }

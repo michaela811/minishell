@@ -10,11 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-void	handle_quotes_global(t_p_tree **node, char **args, int i,
+//void	handle_quotes_global(t_p_tree **node, char **args, int i,
+			//t_env **env);
+void	handle_quotes_glob(t_p_tree **node, t_exec_vars *vars,
 			t_env **env);
-void	handle_quotes_glob_1(t_p_tree **node, t_exec_vars *vars,
-			t_env **env);
-void	handle_quotes_glob(char **arg, t_env **env, int *error);
+//void	handle_quotes_glob(char **arg, t_env **env, int *error);
 int		handle_dollar_sign(char **start, char *buffer, t_env **env,
 			int buffer_size);
 void	handle_single_quotes(char **current, char **result, t_exec_vars *vars);
@@ -24,7 +24,7 @@ void	handle_double_quotes(char **current, char **result, t_exec_vars *vars,
 void	handle_quotes_final_assign(char **str1, char **str2, t_exec_vars *vars);
 int		check_null(void *pointer, int *error_flag);
 void	init_handle_vars(t_handle_vars *local_vars, t_exec_vars *vars);
-void	handle_quotes_glob_1(t_p_tree **node, t_exec_vars *vars,
+void	handle_quotes_glob(t_p_tree **node, t_exec_vars *vars,
 			t_env **env);
 void	handle_no_current(t_handle_vars *local_vars, t_exec_vars *vars,
 			t_env **env, t_p_tree **node);
@@ -48,8 +48,10 @@ int		split_variable(char *arg, int i, t_exec_vars *vars);
 int		update_result(char **result, char *updated_result, t_exec_vars *vars);
 int		handle_dollar_error(char **token, char *buffer, t_exec_vars *vars,
 		 t_env **env);
-int		remove_spaces(char **result, char *buffer, t_exec_vars *vars);
+//int		remove_spaces(char **result, char *buffer, t_exec_vars *vars);
 //void	update_result(char **result, char *updated_result, t_exec_vars *vars);
 void	handle_error_and_free(t_exec_vars *vars, t_handle_vars *l_vars);
 void	handle_error_and_free_redirect(t_exec_vars *vars, t_handle_vars *l_vars,
 			t_p_tree **node);
+int		buffer_end_space(char *buffer);
+void	update_args(t_exec_vars *vars, t_handle_vars *l_vars);

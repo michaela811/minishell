@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_quotes_redirect.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:54 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/05 20:52:50 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/07/24 15:30:22 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars, t_env **env)
 		{
 			vars->end = 0;
 			g_last_exit_status = 0;
-			return ;//(free_handle_vars(&l_vars));
+			return ; //(free_handle_vars(&l_vars));
 		}
 		if (vars->error)
 			break ;
@@ -64,9 +64,9 @@ void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 			return ;
 		//(*node)->child->data->lexeme = ft_strdup(*l_vars->result);
 		free((*node)->child->data->lexeme);
-        	(*node)->child->data->lexeme = ft_strdup(*l_vars->result);
-			if (!check_null((*node)->child->data->lexeme, &vars->error))
-				return ;//(free(*l_vars->result));
+		(*node)->child->data->lexeme = ft_strdup(*l_vars->result);
+		if (!check_null((*node)->child->data->lexeme, &vars->error))
+			return ; //(free(*l_vars->result));
 	}
 	else
 	{
@@ -89,7 +89,7 @@ void	handle_with_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 	if (ft_strchr((*node)->data->lexeme, '$') != NULL)
 	{
 		if (handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
-			sizeof(l_vars->buffer)))
+				sizeof(l_vars->buffer)))
 		//if (g_last_exit_status)
 		{
 			vars->error = 1;
@@ -115,7 +115,7 @@ void	handle_with_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 void	handle_no_quotes_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 		t_env **env, t_p_tree **node)
 {
-	char *temp;
+	char	*temp;
 
 	l_vars->token = *l_vars->current;
 	temp = ft_strpbrk(*l_vars->current, l_vars->delimiters);
@@ -126,4 +126,20 @@ void	handle_no_quotes_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 	}
 	*l_vars->current = temp;
 	handle_with_current_redirect(l_vars, vars, env, node);
+}
+
+void	handle_error_and_free_redirect(t_exec_vars *vars, t_handle_vars *l_vars,
+		t_p_tree **node)
+{
+	if (!vars->error)
+	{
+		free((*node)->child->data->lexeme);
+		(*node)->child->data->lexeme = NULL;
+		handle_quotes_final_assign(&(*node)->child->data->lexeme, l_vars->result, vars);
+		free_handle_vars(l_vars);
+		return ;
+	}
+	//free_env_array(vars->args);
+	//free(vars);
+	free_handle_vars(l_vars);
 }
