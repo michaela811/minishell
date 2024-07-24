@@ -23,76 +23,47 @@ int	check_null(void *pointer, int *error_flag)
 	return (1);
 }
 
-void	handle_single_quotes(char **current, char **result, t_exec_vars *vars)
+int update_result(char **result, char *updated_result, t_exec_vars *vars)
 {
-	char	*token;
+    char *new_result;
 
-	token = *current;
-	*current = ft_strchr(*current, '\'');
-	if (!check_null(*current, &vars->error))
-		return ;
-	**current = '\0';
-	if (update_result(result, token, vars))
-		return ;
-	/* update_result(result, token, vars);
-		if (vars->error)
-			return ; */
-	vars->inside_single_quotes = 0;
-	(*current)++;
-	if (!check_null(*current, &vars->end))
-		return ;
+	new_result = ft_strjoin(*result, updated_result);
+	//new_result = NULL;
+    if (!check_null(new_result, &vars->error))
+        {return (1);}
+	//new_result = ft_strjoin(*result, updated_result);
+    free(*result); // Free the old string
+    *result = new_result; // Assign the new string
+	//ft_memset(updated_result, '\0', ft_strlen(updated_result));
+	return (0);
 }
 
-void	handle_double_quotes_split(char **current, t_exec_vars *vars)
+int	buffer_end_space(char *buffer)
 {
-	vars->inside_double_quotes = 0;
-	(*current)++;
+	int	i;
+
+	i = ft_strlen(buffer) - 1;
+	if (buffer[i] == ' ')
+		return (1);
+	return (0);
 }
 
-void	handle_double_quotes(char **current, char **result,
-			t_exec_vars *vars, t_env **env)
+void update_args(t_exec_vars *vars, t_handle_vars *l_vars)
 {
-	char	buffer[1024];
-	char	*token;
+    free(vars->args[vars->i]);
+    vars->args[vars->i] = ft_strjoin(*l_vars->result, l_vars->token);
+    if (!check_null(vars->args[vars->i], &vars->error))
+        return;
+}
 
-	ft_memset(buffer, '\0', sizeof(buffer));
-	token = *current;
-	*current = ft_strchr(*current, '\"');
-	if (!check_null(*current, &vars->error))
-		return ;
-	**current = '\0';
-	if (ft_strchr(token, '$') != NULL)
+int handle_dollar_error(char **token, char *buffer, t_exec_vars *vars,
+		 t_env **env)
+{
+    if(handle_dollar_sign(token, buffer, env, sizeof(buffer)))
+    //if (g_last_exit_status)
 	{
-		if (handle_dollar_error(&token, buffer, vars, env))
-			return ;
-		/* handle_dollar_sign(&token, buffer, env, sizeof(buffer));
-		if (g_last_exit_status)
-		{
-			vars->error = 1;
-			return ;
-		} */
-		if(update_result(result, buffer, vars))
-			return ;
-		/* update_result(result, buffer, vars);
-		if (vars->error)
-			return ; */
-	}
-	else if (update_result(result, token, vars))
-			return ;
-	/* else
-	{
-		update_result(result, token, vars);
-		if (vars->error)
-			return ;
-	} */
-	handle_double_quotes_split(current, vars);
-	if (!check_null(*current, &vars->end))
-		return ;
-}
-
-void	handle_quotes_final_assign(char **str1, char **str2, t_exec_vars *vars)
-{
-	*str1 = ft_strdup(*str2);
-	check_null(*str1, &vars->error);
-	//free_and_null(str2);
+        vars->error = 1;
+        return 1;
+    }
+    return 0;
 }

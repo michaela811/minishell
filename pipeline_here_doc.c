@@ -112,7 +112,7 @@ int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
 
 	contents = NULL;
 	dup_lexeme = NULL;
-	dup_lexeme = handle_quotes_echo((*node)->data->lexeme, &vars->error);
+	dup_lexeme = handle_quotes_heredoc((*node)->data->lexeme, &vars->error);
 	if (get_stdin())
 		return (1);
 	while (1)

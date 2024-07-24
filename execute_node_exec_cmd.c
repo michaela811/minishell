@@ -30,16 +30,32 @@ int	execute_command(t_exec_vars *vars, t_free_data *exec_data)
 	return (g_last_exit_status);
 }
 
-int	is_directory(const char *path)
+int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)//, t_p_tree *tree)
 {
-	struct stat	path_stat;
+	pid_t	pid;
+	int		status;
 
-	if (stat(path, &path_stat) == -1)
-		return (-1);
-	return (S_ISDIR(path_stat.st_mode));
+	pid = 0;
+	if (update_add_env_var(env, "_", vars->args[0]))//maybe different error handling
+			return (g_last_exit_status);
+	pid = fork();
+	if (pid == -1)
+	{
+		print_err(128, 2, "my(s)hell: fork\n");
+		exit(g_last_exit_status);
+	}
+	else if (pid == 0)
+	{
+		handle_child_cmd(vars, env, environment);
+		exit (g_last_exit_status);
+	}
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		g_last_exit_status = WEXITSTATUS(status);
+	return (g_last_exit_status);
 }
 
-int	get_args_count(char **args)
+/* int	get_args_count(char **args)
 {
 	int	count;
 
@@ -47,4 +63,4 @@ int	get_args_count(char **args)
 	while (args[count] != NULL)
 		count++;
 	return (count);
-}
+} */

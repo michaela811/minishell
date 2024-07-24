@@ -42,7 +42,7 @@ int	malloc_result(char **result, char *input, int *error)
 	return (0);
 }
 
-char	*handle_quotes_echo(char *input, int *error)
+char	*handle_quotes_heredoc(char *input, int *error)
 {
 	char	*result;
 	int		i;
@@ -70,43 +70,20 @@ char	*handle_quotes_echo(char *input, int *error)
 	return (result);
 }
 
-int	exec_cd(char **args, t_env **env)
+void	return_exit_status(char *result, int *i, int *j, int *error)
 {
-	if (args[1] != NULL && args[2])
-		return (print_err(1, 2, "my(s)hell: %s: too many arguments\n",
-				args[0]), g_last_exit_status);
-	else if (args[1] == NULL || ft_strcmp(args[1], "~") == 0)
-		return (change_directory_and_update(get_env_var(*env, "HOME"),
-				env, args));
-	else if (ft_strcmp(args[1], "..") == 0)
-		return (change_directory_and_update("..", env, args));
-	else if (ft_strcmp(args[1], "-") == 0)
-	{
-		if (get_env_var(*env, "OLDPWD") == NULL)
-			return (print_err(1, 2, "my(s)hell: %s: OLDPWD not set\n",
-					args[0]), g_last_exit_status);
-		change_directory_and_update(get_env_var(*env, "OLDPWD"),
-			env, args);
-		printf("%s\n", get_env_var(*env, "PWD"));
-		return (g_last_exit_status);
-	}
-	else
-		return (change_directory_and_update(args[1], env, args));
-}
+	char	*temp;
 
-int	exec_dollar_pwd(void)
-{
-	char	*cwd;
-
-	cwd = getcwd(NULL, 0);
-	if (cwd == NULL)
-		return (print_err(1, 2, "getcwd\n"), g_last_exit_status);
-	else
+	temp = ft_itoa(g_last_exit_status);
+	if (temp == NULL)
 	{
-		ft_putstr_fd(cwd, 1);
-		ft_putstr_fd(": Is a directory\n", 1);
-		g_last_exit_status = 1;
-		free(cwd);
-		return (g_last_exit_status);
+		*error = 1;
+		print_err(1, 2, "echo: memory allocation\n");
+		return ;
 	}
+	result[*j] = temp[0];
+	*j = *j + ft_strlen(temp);
+	*i += 2;
+	free(temp);
+	return ;
 }

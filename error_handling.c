@@ -12,20 +12,20 @@
 
 #include "minishell.h"
 
-int	error_message(char *str)
+/* int	error_message(char *str)
 {
 	perror(str);
 	return (1);
-}
+} */
 
-void	execve_error(char **s_cmd)
+/* void	execve_error(char **s_cmd)
 {
 	print_err(138, 2, "Execve failed\n");
 	ft_putendl_fd("This command was not found: ", 2);
 	ft_putendl_fd(s_cmd[0], 2);
 	free_array(s_cmd);
 	exit(0);
-}
+} */
 
 void	print_err(int status, unsigned int fd, char *format, ...)
 {

@@ -15,6 +15,3 @@ int	ft_isspace(char c);
 int	directory_check(char *arg_0);
 int	is_string_numeric(const char *str);
 int	overflow_check(char *result);
-
-//to delete later(used only for debugging)
-void	print_args(char **args);

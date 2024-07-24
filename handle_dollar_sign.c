@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	ft_lennbr(int nbr)
+/* int	ft_lennbr(int nbr)
 {
 	int	count;
 
@@ -28,7 +28,7 @@ int	ft_lennbr(int nbr)
 		nbr = nbr / 10;
 	}
 	return (++count);
-}
+} */
 
 int	handle_question_mark(char **start, char *buffer, char *dollar)
 {
