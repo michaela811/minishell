@@ -6,6 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:21 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/07/18 10:27:29 by mmasarov         ###   ########.fr       */
 /*   Updated: 2024/07/18 17:44:56 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -28,107 +29,23 @@ int handle_child_process(int *pipefd, t_free_data *exec_data, t_hd_data *here_do
 	exit(g_last_exit_status);
 }
 
-/*static void ft_waitpid(int num_commands, pid_t *pids, int *final_status)
-{
-    int status;
-    int exited_processes = 0;
-    int i;
-
-    *final_status = -1; // Initialize final status
-	//printf("num_commands = %d\n", num_commands);
-	printf("exited_processes = %d\n", exited_processes);
-	printf("pids[0] = %d\n", pids[0]);
-	printf("pids[1] = %d\n", pids[1]);
-	printf("num_commands = %d\n", num_commands);
-    while (exited_processes < num_commands)
-    {
-		i = 0;
-        while (i < num_commands)
-        {
-            if (pids[i] > 0) // Ensure PID is valid
-            {
-                int wait_result = waitpid(pids[i], &status, WNOHANG);
-                if (wait_result > 0)
-                {
-                    exited_processes++;
-                    pids[i] = -1; // Mark this PID as handled
-                    if (WIFEXITED(status))
-                        *final_status = WEXITSTATUS(status);
-                    else if (WIFSIGNALED(status))
-                        *final_status = WTERMSIG(status) + 128;
-                }
-                else if (wait_result == -1 && errno != ECHILD)
-                {
-                    perror("waitpid error");
-                    return; // Exit the function on error
-                }
-				//else if (wait_result == 0)
-				//{
-				//	printf("Child process %d is still running\n", pids[i]);
-				//	continue ;
-				//}
-            }
-			i++;
-        }
-    }
-}
-// The handle_parent_process function remains mostly unchanged.
-
-int handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
-{
-	pid_t       pids [10];
-	int			final_status = 0;
-	pid_t       sibling_pid;
-	int         num_commands;
-	t_free_data sibling_free_data;
-
-	num_commands = 0;
-	pids[num_commands] = pid;
-	printf("pids[0] = %d\n", pids[0]);
-	num_commands++;
-	printf("im here again\n");
-	if (exec_data->tree->sibling != NULL)
-	{
-		printf("going to sibling process AGAIN\n");
-		close(pipefd[1]);
-		sibling_free_data = *exec_data;
-		sibling_free_data.tree = exec_data->tree->sibling->sibling;
-		sibling_pid = handle_sibling_process(pipefd, &sibling_free_data);
-		if (sibling_pid == -1)
-			return (close(pipefd[0]), 1);
-		pids[num_commands] = sibling_pid;
-		num_commands++;
-	}
-	//printf("pids[0] = %d\n", pids[0]);
-	//printf("pids[1] = %d\n", pids[1]);
-	for (int i = 0; i < num_commands; i++) {
-    printf("Final pids[%d] = %d\n", i, pids[i]);}
-	ft_waitpid(num_commands, pids, &final_status);
-	//printf("g_last_exit_status = %d\n", g_last_exit_status);
-	g_last_exit_status = final_status;
-	printf("g_last_exit_status 1 = %d\n", g_last_exit_status);
-	return (g_last_exit_status);
-}*/
-
 static void ft_waitpid(int num_commands, pid_t *pids, int *statuses)
 {
-    int i;
     int status;
 
-    i = 0;
-    while (i < num_commands)
+	num_commands--;
+    while (num_commands <= 0)
     {
-        waitpid(pids[i], &status, 0);
+        waitpid(pids[num_commands], &status, 0);
         if (WIFEXITED(status))
-            statuses[i] = WEXITSTATUS(status);
+            statuses[num_commands] = WEXITSTATUS(status);
         else if (WIFSIGNALED(status))
-            statuses[i] = 128 + WTERMSIG(status);
+            statuses[num_commands] = 128 + WTERMSIG(status);
         else
-            statuses[i] = -1;  // Unhandled status case
-        i++;
+            statuses[num_commands] = -1;
+        num_commands--;
     }
 }
-
 
 int handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 {

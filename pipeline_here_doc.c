@@ -6,7 +6,11 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/07/18 16:42:09 by mmasarov         ###   ########.fr       */
+=======
+/*   Updated: 2024/07/18 13:32:05 by mmasarov         ###   ########.fr       */
+>>>>>>> 7fd18d388fb531020d78adf5210ab449b691fee3
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +107,11 @@ static int	is_it_delimiter(char *node, char *buffer)
 	return (0);
 } //for tester*/
 
+<<<<<<< HEAD
 //FOR EVALUATION
+=======
+ //FOR EVALUATION
+>>>>>>> 7fd18d388fb531020d78adf5210ab449b691fee3
 int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
 {
 	char			*buffer;

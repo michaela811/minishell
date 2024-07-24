@@ -80,7 +80,10 @@ void	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars ,
 	char	*filename;
 
 	if (here_docs && here_docs->fd != -1)
+	{
 		vars->fd_in = here_docs->fd;
+		free(here_docs);
+	}
 	else
 	{
 		filename = handle_here_doc(node, vars, env);

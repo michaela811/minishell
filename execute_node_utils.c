@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:08 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/16 14:27:55 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/18 13:19:19 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,9 @@ void	handle_node_data(t_p_tree **node, t_exec_vars *vars, t_env **env, t_hd_data
 		g_last_exit_status = 1;
 		return ;
 	}
-	if (!*vars->args[vars->i] && ft_strchr((*node)->data->lexeme, '$') != NULL && ft_strchr((*node)->data->lexeme, '"') == NULL && ft_strchr((*node)->data->lexeme, '\'') == NULL)
+	if (!*vars->args[vars->i] && ft_strchr((*node)->data->lexeme, '$') != NULL
+		&& ft_strchr((*node)->data->lexeme, '"') == NULL
+		&& ft_strchr((*node)->data->lexeme, '\'') == NULL)
 	{
 	}
 	else
