@@ -127,3 +127,18 @@ void	handle_no_quotes_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 	*l_vars->current = temp;
 	handle_with_current_redirect(l_vars, vars, env, node);
 }
+
+void handle_error_and_free_redirect(t_exec_vars *vars, t_handle_vars *l_vars, t_p_tree **node)
+{
+	if (!vars->error)
+	{
+		free((*node)->child->data->lexeme);
+		(*node)->child->data->lexeme = NULL;
+		handle_quotes_final_assign(&(*node)->child->data->lexeme, l_vars->result, vars);
+		free_handle_vars(l_vars);
+		return ;
+	}
+	//free_env_array(vars->args);
+	//free(vars);
+	free_handle_vars(l_vars);
+}
