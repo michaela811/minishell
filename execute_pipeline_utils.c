@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:27 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/24 14:43:37 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/24 14:51:30 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data)
 {
 	pid_t	pid2;
-	int		return_status;
 
 	pid2 = fork();
 	if (pid2 == -1)
@@ -29,7 +28,7 @@ pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data)
 		}
 		close(pipefd[0]);
 		close(pipefd[1]);
-		return_status = execute_pipeline(exec_data);
+		execute_pipeline(exec_data);
 		exit(EXIT_SUCCESS);
 	}
 	/*else if (pid2 > 0)
