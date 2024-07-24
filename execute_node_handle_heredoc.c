@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/24 16:23:45 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/24 16:39:22 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,21 +89,21 @@ void	process_heredoc_dollar_closed(int file, char *lexeme_no_quotes)
 void	process_heredoc_dollar_open(int file, t_exec_vars *vars, t_env **env,
 		char *lexeme_no_quotes)
 {
-	//char	*line;
+	char	*line;
 	char	*buffer;
 	char	buffer_no_dollar[1024];
 	char	*buffer_start;
 
 	while (1)
 	{
-		buffer = readline("heredoc> ");
+		/*buffer = readline("heredoc> ");
 		if (buffer == NULL)
-			break ;
-		/*line = get_next_line(fileno(stdin));
+			break ;*/
+		line = get_next_line(fileno(stdin));
 		if (line == NULL)
 			break ;
 		buffer = ft_strtrim(line, "\n");
-		free(line);*/
+		free(line);
 		if (ft_exact_strcmp(buffer, lexeme_no_quotes) == 0)
 		{
 			free(buffer);
