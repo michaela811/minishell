@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execute_parse_tree.c                               :+:      :+:    :+:   */
+/*   execute_node.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/18 17:22:12 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/24 16:30:45 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars, t
 	return (0);
 }
 
-void	handle_node_data(t_p_tree **node, t_exec_vars *vars, t_env **env, t_hd_data *here_docs)
+void	handle_node_data(t_p_tree **node, t_exec_vars *vars, t_env **env,
+		t_hd_data *here_docs)
 {
 	if ((*node)->data->type == RED_FROM || (*node)->data->type == RED_TO
 		|| (*node)->data->type == APPEND || (*node)->data->type == HERE_DOC)
@@ -57,21 +58,14 @@ void	handle_node_data(t_p_tree **node, t_exec_vars *vars, t_env **env, t_hd_data
 		g_last_exit_status = 1;
 		return ;
 	}
-	if (!*vars->args[vars->i] && ft_strchr((*node)->data->lexeme, '$') != NULL && ft_strchr((*node)->data->lexeme, '"') == NULL && ft_strchr((*node)->data->lexeme, '\'') == NULL)
+	if (!*vars->args[vars->i] && ft_strchr((*node)->data->lexeme, '$') != NULL
+		&& ft_strchr((*node)->data->lexeme, '"') == NULL
+		&& ft_strchr((*node)->data->lexeme, '\'') == NULL)
 	{
 	}
 	else
 		vars->i++;
 }
-
-/* void free_heredocs(t_hd_data **here_docs)
-{
-    if (*here_docs != NULL)
-    {
-        free(*here_docs);
-        *here_docs = NULL;
-    }
-} */
 
 int	execute_node(t_free_data *exec_data, t_hd_data *here_docs)
 {
@@ -91,6 +85,8 @@ int	execute_node(t_free_data *exec_data, t_hd_data *here_docs)
 	vars->args[vars->i] = NULL;
 	execute_command(vars, exec_data);
 	free_env_array(vars->args);
+	if (vars->open_fd_in)
+		close(vars->fd_in);
 	free(vars);
 	return (g_last_exit_status);
 }

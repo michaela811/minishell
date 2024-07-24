@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execute_parse_tree.c                               :+:      :+:    :+:   */
+/*   execute_node_handle_redirect.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/18 17:22:12 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/24 16:30:11 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@ void	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars ,
 		if (vars->error)
 			return ;
 		vars->fd_in = open(filename, O_RDONLY);
+		vars->open_fd_in = 1;
 		if (vars->fd_in == -1)
 		{
 			print_err(1, 2, "open");
@@ -118,5 +119,4 @@ void	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars ,
 		}
 	}
 	*node = (*node)->child;
-	//vars->i++;? we shouldn't increment i here?
 }

@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:08 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/16 14:27:55 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/24 16:29:47 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	init_exec_vars(t_exec_vars *vars)
 	int	i;
 
 	vars->fd_in = 0;
+	vars->open_fd_in = 0;
 	vars->fd_out = 1;
 	vars->capacity = 10;
 	vars->args = malloc(vars->capacity * sizeof(char *));
