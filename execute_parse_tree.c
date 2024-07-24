@@ -17,7 +17,10 @@ int execute_parse_tree(t_free_data *exec_data)
     if (exec_data->tree == NULL)
         return 0;
     if (exec_data->tree->sibling)
+	{
+		g_last_exit_status = 0; //necessary?
         execute_pipeline(exec_data);
+	}
     else
         execute_node(exec_data, NULL);
     return (g_last_exit_status);
