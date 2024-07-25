@@ -14,15 +14,24 @@
 
 int	change_directory_and_update(char *path, t_env **env, char **args)
 {
+	struct stat path_stat;
+
+    if (stat(path, &path_stat) == -1)
+	{
+        if (errno == ENOENT)
+            print_err(1, 2, "my(s)hell: %s: %s: No such file or directory\n", args[0], path);
+        else
+            print_err(1, 2, "my(s)hell: %s: %s: Error accessing path\n", args[0], path);
+        return (1);
+    }
+    if (!S_ISDIR(path_stat.st_mode))
+        {return (print_err(1, 2, "my(s)hell: %s: %s: Not a directory\n", args[0], path), 1);}
 	if (access(path, X_OK) == -1 && access(path, F_OK) == 0)
 			return (print_err(1, 2, "my(s)hell: %s: %s: Permission denied\n", args[0],
 					path), 1);
 	if (chdir(path) != 0)
-	{
-		print_err(1, 2,
-			"my(s)hell: %s: %s: Not a directory\n", args[0], path);
-		return (1);
-	}
+		return (print_err(1, 2,
+			"my(s)hell: %s: %s: Unable to change directory\n", args[0], path), 1); // NOT sure about the error message
 	if (update_pwd(env))
 	{
 		g_last_exit_status = 1;
