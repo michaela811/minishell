@@ -18,11 +18,13 @@ int	execute_command(t_exec_vars *vars, t_free_data *exec_data)
 
 	if (!vars->args[0])
 		return (0);
+	if (update_underscore(vars, exec_data))
+		return (g_last_exit_status);
 	exec_data->environment = env_list_to_array(exec_data->env);
 	if (exec_data->environment == NULL)
 	{
 		g_last_exit_status = 1;
-		return (free_command_data(exec_data), g_last_exit_status);
+		return (g_last_exit_status);
 	}
 	return_builtins = exec_builtins(vars, exec_data);
 	if (return_builtins == 3)
@@ -36,8 +38,8 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)//, t_p_tree 
 	int		status;
 
 	pid = 0;
-	if (update_add_env_var(env, "_", vars->args[0]))//maybe different error handling
-			return (g_last_exit_status);
+	//if (update_add_env_var(env, "_", vars->args[0]))//Do we need this?
+			//return (g_last_exit_status);
 	pid = fork();
 	if (pid == -1)
 	{

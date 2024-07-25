@@ -88,7 +88,7 @@ int	err_check_fork(t_exec_vars *vars, t_env **env, char **path)
 		return (path_status_2(vars, path));
 	if (path_status == -1 || vars->args[0][0] == '\0')
 		return (path_status_1(vars, env));
-	if (path_status == 126)
+	if (path_status == 126 || path_status == 127)
 		return (g_last_exit_status);
 	return ((g_last_exit_status = 0), EXIT_SUCCESS);
 }
