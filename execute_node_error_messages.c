@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_main.c                                         :+:      :+:    :+:   */
+/*   execute_node_error_messages.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:30:37 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/17 17:35:30 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/07/24 15:15:36 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,34 +31,34 @@ int	path_status_2(t_exec_vars *vars, char **path)
 {
 	if (access(vars->args[0], X_OK) == -1 && vars->args[0][0] == '.'
 			&& vars->args[0][1] == '/')
-			return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
-					vars->args[0]), 126);
+		return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
+				vars->args[0]), 126);
 		//if (access(vars->args[0], F_OK) == -1 && )
-		return (print_err(127, 2, "my(s)hell: %s: command not found\n",
-				*path), 127);
+	return (print_err(127, 2, "my(s)hell: %s: command not found\n",
+			*path), 127);
 }
 
-int path_status_1(t_exec_vars *vars, t_env **env)
+int	path_status_1(t_exec_vars *vars, t_env **env)
 {
 	if (access(vars->args[0], X_OK) == -1 && vars->args[0][0] == '.'
 			&& vars->args[0][1] == '/')
-			return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
-					vars->args[0]), 126);
-		if (access(vars->args[0], F_OK) == 0 && !find_env_var(*env, "PATH"))
-			return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
-					vars->args[0]), 126);
+		return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
+				vars->args[0]), 126);
+	if (access(vars->args[0], F_OK) == 0 && !find_env_var(*env, "PATH"))
+		return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
+				vars->args[0]), 126);
 		//if (access(vars->args[0], F_OK) == -1 && )
-		return (print_err(127, 2, "my(s)hell: %s: command not found\n",
-				vars->args[0]), 127);
+	return (print_err(127, 2, "my(s)hell: %s: command not found\n",
+			vars->args[0]), 127);
 }
 
-int control_dot(t_exec_vars *vars)
+int	control_dot(t_exec_vars *vars)
 {
 	if (!vars->args[1])
-			return (print_err(2, 2, "my(s)hell: %s: filename argument required\n",
-					vars->args[0]), 2);
-		else
-			return (print_err(127, 2, "my(s)hell: %s: command not found\n",
+		return (print_err(2, 2, "my(s)hell: %s: filename argument required\n",
+				vars->args[0]), 2);
+	else
+		return (print_err(127, 2, "my(s)hell: %s: command not found\n",
 				vars->args[0]), 127);
 }
 
@@ -69,20 +69,23 @@ int	err_check_fork(t_exec_vars *vars, t_env **env, char **path)
 	if (ft_strchr(vars->args[0], '/'))
 		if (directory_check(vars->args[0]))
 			return (g_last_exit_status);
-	if (access(vars->args[0], F_OK | X_OK) == 0 && ft_strcmp(vars->args[0], ".") == 0)
+	if (access(vars->args[0], F_OK | X_OK) == 0
+		&& ft_strcmp(vars->args[0], ".") == 0)
 		return (control_dot(vars));
-	if (access(vars->args[0], F_OK | X_OK) == 0 && ft_strcmp(vars->args[0], "..") == 0)
-			return (print_err(127, 2, "my(s)hell: %s: command not found\n",
+	if (access(vars->args[0], F_OK | X_OK) == 0
+		&& ft_strcmp(vars->args[0], "..") == 0)
+		return (print_err(127, 2, "my(s)hell: %s: command not found\n",
 				vars->args[0]), 127);
-	if (access(vars->args[0], F_OK | X_OK) == 0 &&
-	(vars->args[0][0] == '/' || vars->args[0][0] == '.' || vars->args[0][0] == ':'))
-		return(*path = vars->args[0], 0);
+	if (access(vars->args[0], F_OK | X_OK) == 0
+		&& (vars->args[0][0] == '/' || vars->args[0][0] == '.'
+		|| vars->args[0][0] == ':'))
+		return (*path = vars->args[0], 0);
 	else
 		path_status = get_path(vars->args[0], *env, path);
 	if (path_status == 1)
 		return (g_last_exit_status);
 	if (path_status == -2)
-		return(path_status_2(vars, path));
+		return (path_status_2(vars, path));
 	if (path_status == -1 || vars->args[0][0] == '\0')
 		return (path_status_1(vars, env));
 	if (path_status == 126)

@@ -6,13 +6,16 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:21 by mmasarov          #+#    #+#             */
+/*   Updated: 2024/07/24 15:03:53 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/18 10:27:29 by mmasarov         ###   ########.fr       */
 /*   Updated: 2024/07/18 17:44:56 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int handle_child_process(int *pipefd, t_free_data *exec_data, t_hd_data *here_docs)
+int	handle_child_process(int *pipefd, t_free_data *exec_data,
+	t_hd_data *here_docs)
 {
 	if (exec_data->tree->sibling != NULL)
 	{
@@ -24,34 +27,36 @@ int handle_child_process(int *pipefd, t_free_data *exec_data, t_hd_data *here_do
 		close(pipefd[0]);
 		close(pipefd[1]);
 	}
-	g_last_exit_status = execute_node(exec_data, here_docs);
+	execute_node(exec_data, here_docs);
 	exit(g_last_exit_status);
 }
 
 static void	ft_waitpid(int num_commands, pid_t *pids, int *statuses)
 {
-	int	i;
-	i = 0;
 	int	status;
 
-	while (i < num_commands)
+	status = 0;
+	num_commands--;
+	while (num_commands >= 0)
 	{
-		waitpid(pids[i], &status, 0);
+		waitpid(pids[num_commands], &status, 0);
 		if (WIFEXITED(status))
-			statuses[i] = WEXITSTATUS(status);
+			statuses[num_commands] = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
-            statuses[i] = 128 + WTERMSIG(status);
-		i++;
+			statuses[num_commands] = 128 + WTERMSIG(status);
+		else
+			statuses[num_commands] = -1;
+		num_commands--;
 	}
 }
 
-int handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
+int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 {
-	pid_t       pids [10];
+	pid_t		pids[10];
 	int			statuses[10];
-	pid_t       sibling_pid;
-	int         num_commands;
-	t_free_data sibling_free_data;
+	pid_t		sibling_pid;
+	int			num_commands;
+	t_free_data	sibling_free_data;
 
 	num_commands = 0;
 	pids[num_commands] = pid;
@@ -67,19 +72,32 @@ int handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 		pids[num_commands] = sibling_pid;
 		num_commands++;
 	}
-	//g_last_exit_status = ft_waitpid(num_commands, pids, statuses);
 	ft_waitpid(num_commands, pids, statuses);
 	g_last_exit_status = statuses[num_commands - 1];
 	return (g_last_exit_status);
 }
 
-int execute_pipeline(t_free_data *exec_data)
+static int	fork_check(pid_t pid, int *pipefd)
+{
+	if (pid == -1)
+	{
+		close(pipefd[0]);
+		close(pipefd[1]);
+		print_err(1, 2, "my(s)hell: fork\n");
+		return (1);
+	}
+	else
+		return (0);
+}
+
+int	execute_pipeline(t_free_data *exec_data)
 {
 	int			pipefd[2];
 	pid_t		pid;
 	t_hd_data	*here_docs;
 	int			return_value;
 
+	return_value = 0;
 	here_docs = NULL;
 	if (exec_data->tree == NULL)
 		return (0);
@@ -90,20 +108,13 @@ int execute_pipeline(t_free_data *exec_data)
 	}
 	is_there_here_doc(&exec_data->tree, &here_docs);
 	pid = fork();
-	if (pid == -1)
-	{
-		close(pipefd[0]);
-		close(pipefd[1]);
-		return (print_err(1, 2, "my(s)hell: fork\n"), 1);
-	}
+	if (fork_check(pid, pipefd))
+		return (1);
 	else if (pid == 0)
 		return_value = handle_child_process(pipefd, exec_data, here_docs);
-	else
+	else if (pid > 0)
 		return_value = handle_parent_process(pipefd, pid, exec_data);
 	if (here_docs != NULL)
 		free(here_docs);
-	//close(pipefd[0]);
-	//close(pipefd[1]);
 	return (return_value);
 }
-

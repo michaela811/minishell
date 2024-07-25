@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:40 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/16 14:27:55 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/24 16:28:58 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ typedef struct s_exec_vars
 	int		inside_single_quotes;
 	int		inside_double_quotes;
 	int		end;
+	int		open_fd_in;
 }	t_exec_vars;
 
 // Building struct to free when exiting
