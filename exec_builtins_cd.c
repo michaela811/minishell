@@ -20,7 +20,7 @@ int	change_directory_and_update(char *path, t_env **env, char **args)
 	if (chdir(path) != 0)
 	{
 		print_err(1, 2,
-			"my(s)hell: %s: %s: No such file or directory\n", args[0], path);
+			"my(s)hell: %s: %s: Not a directory\n", args[0], path);
 		return (1);
 	}
 	if (update_pwd(env))
