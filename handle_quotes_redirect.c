@@ -16,8 +16,11 @@ void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars, t_env **env)
 {
 	t_handle_vars	l_vars;
 
-	init_handle_quote_redirect(&l_vars, node);
-	vars->error = 0;
+	if (init_handle_quote_redirect(&l_vars, node))
+		vars->error = 1;
+	if (vars->error)
+		return ;
+	//vars->error = 0;
 	while (*l_vars.current != NULL && **l_vars.current != '\0')
 	{
 		if (vars->inside_single_quotes)

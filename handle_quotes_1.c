@@ -17,9 +17,12 @@ void	handle_quotes_glob(t_p_tree **node, t_exec_vars *vars,
 {
 	t_handle_vars	l_vars;
 
-	init_handle_vars(&l_vars, vars);
-	vars->error = 0;
-	while (**l_vars.current != '\0')
+	if (init_handle_vars(&l_vars, vars))
+		vars->error = 1;
+	//if (vars->error)
+		//return (free_handle_vars(&l_vars));
+	//vars->error = 0;
+	while (**l_vars.current != '\0' && !vars->error)
 	{
 		if (vars->inside_single_quotes)
 			handle_single_quotes(l_vars.current, l_vars.result, vars);

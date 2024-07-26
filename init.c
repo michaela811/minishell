@@ -34,28 +34,61 @@ t_free_data	*init_command_data(char **envp)
 	return (exec_data);
 }
 
-void	init_handle_vars(t_handle_vars *l_vars, t_exec_vars *vars)
+/* char **alloc_and_init_str(int *error)
 {
-	l_vars->result = malloc(sizeof(char *));//ADD MEMORY CHECK
-	*l_vars->result = ft_strdup("");//ADD MEMORY CHECK
-	//l_vars->current = &vars->args[vars->i];
-	l_vars->current = malloc(sizeof(char *));//ADD MEMORY CHECK
-	*l_vars->current = ft_strdup(vars->args[vars->i]);
+	char **result;
 
-	//ADD MEMORY CHECK
-	l_vars->delimiters = "'\"";
-	l_vars->current_start = *l_vars->current;
-	//l_vars->current_start = malloc(sizeof(char *)); // Allocate memory for current_start
-    //*l_vars->current_start = *l_vars->current; //
-}
+	result = malloc(sizeof(char *));
+    if (!result)
+	{
+        *error = 1;
+        return (NULL);
+    }
+    *result = ft_strdup("");
+    if (!*result)
+	{
+        *error = 1;
+        //free(result);
+        return (NULL);
+    }
+    return (result);
+} */
 
-void	init_handle_quote_redirect(t_handle_vars *l_vars, t_p_tree **node)
+int	init_handle_vars(t_handle_vars *l_vars, t_exec_vars *vars)
 {
 	l_vars->result = malloc(sizeof(char *));
+	if (!l_vars->result)
+		return (1);
 	*l_vars->result = ft_strdup("");
-	//l_vars->current = &(*node)->child->data->lexeme;
-	l_vars->current = malloc(sizeof(char *));//ADD MEMORY CHECK
-	*l_vars->current = ft_strdup((*node)->child->data->lexeme);
+	if (!*l_vars->result)
+		return (1);
+	l_vars->current = malloc(sizeof(char *));
+	if (!l_vars->current)
+		return (1);
+	*l_vars->current = ft_strdup(vars->args[vars->i]);
+	if (!*l_vars->current)
+		return (1);
 	l_vars->delimiters = "'\"";
 	l_vars->current_start = *l_vars->current;
+	return (0);
 }
+
+int	init_handle_quote_redirect(t_handle_vars *l_vars, t_p_tree **node)
+{
+	l_vars->result = malloc(sizeof(char *));
+	if (!l_vars->result)
+		return (1);
+	*l_vars->result = ft_strdup("");
+	if (!*l_vars->result)
+		return (free(l_vars->result), 1);
+	l_vars->current = malloc(sizeof(char *));
+	if (!l_vars->current)
+		return (free(*l_vars->result) ,free(l_vars->result), 1);
+	*l_vars->current = ft_strdup((*node)->child->data->lexeme);
+	if (!*l_vars->current)
+		return (free(l_vars->current), free(*l_vars->result), free(l_vars->result), 1);
+	l_vars->delimiters = "'\"";
+	l_vars->current_start = *l_vars->current;
+	return (0);
+}
+
