@@ -31,7 +31,7 @@ int	exec_from_cwd(char *cmd, char **exec)
 {
 	if (exec_cwd(cmd, exec))
 		return (1);
-	if (access(*exec, F_OK | X_OK) == 0)
+	if (cmd && *cmd && access(*exec, F_OK | X_OK) == 0)
 	{
 		if (is_a_directory(*exec))
 			return (print_err(126, 2, "my(s)hell: %s: Is a directory\n", cmd), 126);
