@@ -33,15 +33,11 @@ void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars, t_env **env)
 		{
 			vars->end = 0;
 			g_last_exit_status = 0;
-			return ; //(free_handle_vars(&l_vars));
+			return ;
 		}
 		if (vars->error)
 			break ;
 	}
-	/* if (!vars->error)
-		return (handle_quotes_final_assign(&(*node)->child->data->lexeme,
-				l_vars.result, vars));
-	return (free_handle_vars(&l_vars)); */
 	*l_vars.current = l_vars.current_start;
 	handle_error_and_free_redirect(vars, &l_vars, node);
 }
@@ -53,23 +49,12 @@ void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 	{
 		if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, env))
 			return ;
-		/* handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
-			sizeof(l_vars->buffer));
-		if (g_last_exit_status)
-		{
-			vars->error = 1;
-			return ;
-		} */
-		/* *l_vars->result = ft_strjoin(*l_vars->result, l_vars->buffer);
-		if (!check_null(*l_vars->result, &vars->error))
-			return ; */
 		if (update_result(l_vars->result, l_vars->buffer, vars))
 			return ;
-		//(*node)->child->data->lexeme = ft_strdup(*l_vars->result);
 		free((*node)->child->data->lexeme);
 		(*node)->child->data->lexeme = ft_strdup(*l_vars->result);
 		if (!check_null((*node)->child->data->lexeme, &vars->error))
-			return ; //(free(*l_vars->result));
+			return ;
 	}
 	else
 	{
@@ -93,20 +78,13 @@ void	handle_with_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 	{
 		if (handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
 				sizeof(l_vars->buffer)))
-		//if (g_last_exit_status)
 		{
 			vars->error = 1;
 			return ;
 		}
 	}
-	else
-	{
-		if (update_result(l_vars->result, l_vars->token, vars))
+	else if (update_result(l_vars->result, l_vars->token, vars))
 			return ;
-		/* *l_vars->result = ft_strjoin(*l_vars->result, l_vars->token);
-		if (!check_null(*l_vars->result, &vars->error))
-			return ; */
-	}
 	**l_vars->current = delimiter;
 	if (**l_vars->current == '\'')
 		vars->inside_single_quotes = 1;
@@ -142,7 +120,5 @@ void	handle_error_and_free_redirect(t_exec_vars *vars, t_handle_vars *l_vars,
 		free_handle_vars(l_vars);
 		return ;
 	}
-	//free_env_array(vars->args);
-	//free(vars);
 	free_handle_vars(l_vars);
 }

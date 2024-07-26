@@ -71,28 +71,6 @@ t_token_list	*create_token(enum e_token_type type, char *lexeme)
 	return (new_list_node);
 }
 
-/* void	add_token(t_token_list **list, enum e_token_type type, char *lexeme)
-{
-	t_token_list	*new_node;
-	t_token_list	*current;
-
-	new_node = create_token(type, lexeme);
-	if (!new_node)
-	{
-		print_err(1, 2, "Failed to create token\n");
-		exit(MEMORY_ERROR);
-	}
-	if (!*list)
-		*list = new_node;
-	else
-	{
-		current = *list;
-		while (current->next)
-			current = current->next;
-		current->next = new_node;
-	}
-} */
-
 void	print_p_tree(t_p_tree *tree, int depth)
 {
 	int	i;
