@@ -48,7 +48,6 @@ SOURCES = env_main.c \
 			execute_node_handle_child_cmd.c \
 			execute_node_error_messages.c \
 			free_functions_1.c \
-			free_functions_2.c \
 			pipeline_here_doc.c \
 			pipeline_here_doc_1.c \
 			get_path_for_exec.c \

@@ -56,13 +56,3 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)//, t_p_tree 
 		g_last_exit_status = WEXITSTATUS(status);
 	return (g_last_exit_status);
 }
-
-/* int	get_args_count(char **args)
-{
-	int	count;
-
-	count = 0;
-	while (args[count] != NULL)
-		count++;
-	return (count);
-} */

@@ -12,24 +12,6 @@
 
 #include "minishell.h"
 
-/* int	ft_lennbr(int nbr)
-{
-	int	count;
-
-	count = 0;
-	if (nbr < 0)
-	{
-		count++;
-		nbr *= -1;
-	}
-	while (nbr / 10 != 0)
-	{
-		count++;
-		nbr = nbr / 10;
-	}
-	return (++count);
-} */
-
 int	handle_question_mark(char **start, char *buffer, char *dollar)
 {
 	char	*exit_status;
