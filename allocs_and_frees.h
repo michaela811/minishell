@@ -18,8 +18,8 @@ void			free_command_data(t_free_data *exec_data);
 void			free_exit_data(t_free_data *exec_data);
 //void			free_and_null(char **ptr);
 //void			free_and_null_double_pointer(char ***ptr);
-void			handle_memory_error(t_token **token_list, int num_tokens);
-void			execve_error(char **s_cmd);
+//void			handle_memory_error(t_token **token_list, int num_tokens);
+//void			execve_error(char **s_cmd);
 void			print_err(int status, unsigned int fd,
 					char *format, ...);
 void			free_env(t_env *head);

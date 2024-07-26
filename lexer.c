@@ -96,7 +96,7 @@ void	process_input_str(char *str, const char *delim, char *dest)
 	*dest = '\0';
 }
 
-void	handle_memory_error(t_token **token_list, int num_tokens)
+/* void	handle_memory_error(t_token **token_list, int num_tokens)
 {
 	int	i;
 
@@ -109,4 +109,4 @@ void	handle_memory_error(t_token **token_list, int num_tokens)
 	free(*token_list);
 	print_err(1, 2, "Memory allocation error\n");
 	exit(EXIT_FAILURE);
-}
+} */
