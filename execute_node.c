@@ -22,6 +22,20 @@ void	check_capacity(t_exec_vars *vars)
 	}
 }
 
+int is_only_space_tabs(char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if ((unsigned char)str[i] != 0xFF)// && str[i] != '\t')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars, t_hd_data *here_docs)
 {
 	while (exec_data->tree != NULL)
@@ -43,6 +57,8 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars, t
 void	handle_node_data(t_p_tree **node, t_exec_vars *vars, t_env **env,
 		t_hd_data *here_docs)
 {
+	if (is_only_space_tabs((*node)->data->lexeme))
+		return ;
 	if ((*node)->data->type == RED_FROM || (*node)->data->type == RED_TO
 		|| (*node)->data->type == APPEND || (*node)->data->type == HERE_DOC)
 		return (handle_redirection(node, vars, env, here_docs));
