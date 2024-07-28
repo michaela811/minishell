@@ -22,8 +22,8 @@ void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
 			return ;
 		if (update_result(l_vars->result, l_vars->buffer, vars))
 			return ;
-		if (strchr((*node)->data->lexeme, '$') != NULL
-			&& strchr(l_vars->buffer, ' '))
+		if (ft_strchr((*node)->data->lexeme, '$') != NULL
+			&& ft_strchr(l_vars->buffer, ' '))
 		{
 			vars->i = split_variable(*l_vars->result, vars->i, vars);
 			if (vars->error)

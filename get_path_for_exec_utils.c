@@ -45,7 +45,7 @@ int	exec_from_path(char **path, char *cmd, char **exec)
 			return (free_array(path), g_last_exit_status);
 		if (access(*exec, F_OK | X_OK) == 0)
 			return (free_array(path), 0);
-		if (!path[i + 1] && strcmp(path[i], getenv("HOME")) == 0)
+		if (!path[i + 1] && ft_strcmp(path[i], getenv("HOME")) == 0)
 			return (-2);
 		free(*exec);
 	}

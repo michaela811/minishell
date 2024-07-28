@@ -40,6 +40,8 @@ static int	get_stdin(void)
 char	*get_heredoc_content(char *contents, char *buffer)
 {
 	char	*temp;
+	size_t	old_size;
+	size_t	new_size;
 
 	temp = NULL;
 	if (contents == NULL)
@@ -51,7 +53,10 @@ char	*get_heredoc_content(char *contents, char *buffer)
 	}
 	else
 	{
-		temp = realloc(contents, ft_strlen(contents) + ft_strlen(buffer) + 2);
+		old_size = ft_strlen(contents) + 1;
+		new_size = old_size + ft_strlen(buffer) + 1;
+		temp = ft_realloc(contents, old_size, new_size);
+		//temp = realloc(contents, ft_strlen(contents) + ft_strlen(buffer) + 2);
 		if (temp == NULL)
 			return (free(contents), free(buffer), NULL);
 		contents = temp;
@@ -127,7 +132,7 @@ int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
 	}
 	if (contents != NULL)
 	{
-		write(fd, contents, strlen(contents));
+		write(fd, contents, ft_strlen(contents));
 		free(contents);
 	}
 	return (free(dup_lexeme), 0);
