@@ -12,68 +12,67 @@
 
 #include "minishell.h"
 
-/* int	error_message(char *str)
+#include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <errno.h>
+#include <string.h>
+
+int ft_flock(const char *lockfile)
 {
-	perror(str);
-	return (1);
-} */
+	int				fd;
+	struct flock	fl;
 
-/* void	execve_error(char **s_cmd)
-{
-	print_err(138, 2, "Execve failed\n");
-	ft_putendl_fd("This command was not found: ", 2);
-	ft_putendl_fd(s_cmd[0], 2);
-	free_array(s_cmd);
-	exit(0);
-} */
-
-void	ft_delay(unsigned int microseconds)
-{
-	volatile unsigned int	counter;
-	unsigned int			delay_count;
-
-	counter = 0;
-	delay_count = microseconds * 10;
-	while (counter < delay_count)
-		counter++;
-}
-
-int	ft_flock(const char *lockfile)
-{
-	int	fd;
-
-	while ((fd = open(lockfile, O_CREAT | O_EXCL, 0644)) == -1)
+	fd = open(lockfile, O_RDWR | O_CREAT, 0644);
+	if (fd == -1)
+		return (perror("my(s)hell: open"), -1);
+	ft_memset(&fl, 0, sizeof(fl));
+	fl.l_type = F_WRLCK;
+	fl.l_whence = SEEK_SET;
+	fl.l_start = 0;
+	fl.l_len = 0;
+	if (fcntl(fd, F_SETLK, &fl) == -1)
 	{
-		if (errno != EEXIST)
-		{
-			perror("open");
-			return -1;
-		}
-		ft_delay(10000);
+		if (errno == EACCES || errno == EAGAIN)
+			printf("my(s)hell: resource is locked by another process.\n");
+		else
+			perror("fcntl");
+		close(fd);
+		return (-1);
 	}
-	close(fd);
-	return (0);
+	return (fd);
 }
 
-int	ft_funlock(const char *lockfile)
+void ft_funlock(int fd)
 {
-	return (unlink(lockfile));
+	struct flock fl;
+
+	ft_memset(&fl, 0, sizeof(fl));
+	fl.l_type = F_UNLCK;
+	fl.l_whence = SEEK_SET;
+	fl.l_start = 0;
+	fl.l_len = 0;
+	if (fcntl(fd, F_SETLK, &fl) == -1)
+		perror("my(s)hell: fcntl");
+	close(fd);
 }
 
-void	print_err(int status, unsigned int fd, char *format, ...)
+void print_err(int status, unsigned int fd, char *format, ...)
 {
 	va_list		args;
 	va_list		args_copy;
 	const char	*lockfile;
-	
+	int			lock_fd;
+
 	lockfile = "/tmp/my_lockfile.lock";
 	va_start(args, format);
 	va_copy(args_copy, args);
 	g_last_exit_status = status;
-	if (ft_flock(lockfile) == 0)
+	lock_fd = ft_flock(lockfile);
+	if (lock_fd >= 0)
 	{
 		ft_vprintf_fd(fd, format, args_copy);
-		ft_funlock(lockfile);
+		ft_funlock(lock_fd);
 	}
 	va_end(args_copy);
 	va_end(args);
