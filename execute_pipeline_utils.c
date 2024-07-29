@@ -30,21 +30,28 @@ pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data)
 		close(pipefd[0]);
 		close(pipefd[1]);
 		return_value = execute_pipeline(exec_data);
+				if (exec_data->token_list_start)
+		{
+			free_token_list(exec_data->token_list_start);
+			exec_data->token_list_start = NULL;
+		}
+		if (exec_data->tree_start)
+		{
+			free_parse_tree(exec_data->tree_start);
+			exec_data->tree_start = NULL;
+		}
+		if (exec_data->env)
+		{
+			free_env(exec_data->env);
+			exec_data->env = NULL;
+		}
+		if (exec_data->environment)
+		{
+			free_env_array(exec_data->environment);
+			exec_data->environment = NULL;
+		}
 		exit(return_value);
 	}
-	/*else if (pid2 > 0)
-	{
-		int status;
-		close(pipefd[0]);
-		close(pipefd[1]);
-		//if (close(pipefd[1]) == -1)
-		//    perror("my(s)hell: close write end of pipe");
-		waitpid(pid2, &status, WNOHANG);
-		if (WIFEXITED(status))
-			g_last_exit_status = WEXITSTATUS(status);
-		else
-			g_last_exit_status = -1;
-	}*/
 	close(pipefd[0]);
 	close(pipefd[1]);
 	return (pid2);

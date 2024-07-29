@@ -40,7 +40,7 @@ void	set_fds(int fd_in, int fd_out)
 	}
 }
 
-int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
+int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment, t_free_data *exec_data)
 {
 	char	*path;
 
@@ -51,6 +51,32 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 	if ((err_check_fork(vars, env, &path)) != 0)
 	{
 		cleanup(vars);
+		free_env_array(vars->args);
+		if (vars->open_fd_in)
+			close(vars->fd_in);
+		free(vars);
+		if (exec_data->token_list_start)
+		{
+			free_token_list(exec_data->token_list_start);
+			exec_data->token_list_start = NULL;
+		}
+		if (exec_data->tree_start)
+		{
+			free_parse_tree(exec_data->tree_start);
+			exec_data->tree_start = NULL;
+		}
+		if (exec_data->env)
+		{
+			free_env(exec_data->env);
+			exec_data->env = NULL;
+		}
+		if (exec_data->environment)
+		{
+			free_env_array(exec_data->environment);
+			exec_data->environment = NULL;
+		}
+		//if (exec_data)
+		//	free(exec_data);
 		exit (g_last_exit_status);
 	}
 	g_last_exit_status = execve(path, vars->args, environment);
@@ -59,7 +85,6 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment)
 		cleanup(vars);
 		print_and_exit(vars);
 	}
-	//g_last_exit_status = 0;
 	exit (EXIT_SUCCESS);
 }
 
