@@ -28,3 +28,4 @@ t_free_data		*init_command_data(char **envp);
 void			free_array(char **array);
 void			free_handle_vars(t_handle_vars *l_vars);
 void			check_capacity(t_exec_vars *vars);
+void			print_echo(int status, unsigned int fd, char *format, ...);
