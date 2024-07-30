@@ -71,7 +71,7 @@ static void	ft_waitpid(int num_commands, pid_t *pids, int *statuses)
 	}
 }
 
-int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
+int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data, t_hd_data *here_docs)
 {
 	pid_t		pids[10];
 	int			statuses[10];
@@ -87,7 +87,7 @@ int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 		close(pipefd[1]);
 		sibling_free_data = *exec_data;
 		sibling_free_data.tree = exec_data->tree->sibling->sibling;
-		sibling_pid = handle_sibling_process(pipefd, &sibling_free_data);
+		sibling_pid = handle_sibling_process(pipefd, &sibling_free_data, here_docs);
 		if (sibling_pid == -1)
 			return (close(pipefd[0]), 1);
 		pids[num_commands] = sibling_pid;
@@ -134,11 +134,6 @@ int	execute_pipeline(t_free_data *exec_data)
 	else if (pid == 0)
 		return_value = handle_child_process(pipefd, exec_data, here_docs);
 	else if (pid > 0)
-		return_value = handle_parent_process(pipefd, pid, exec_data);
-	if (here_docs != NULL)
-	{
-		close(here_docs->fd);
-		free(here_docs);
-	}
+		return_value = handle_parent_process(pipefd, pid, exec_data, here_docs);
 	return (return_value);
 }

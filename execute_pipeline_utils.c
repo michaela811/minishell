@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data)
+pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data, t_hd_data *here_docs)
 {
 	pid_t	pid2;
 	int		return_value;
@@ -30,7 +30,7 @@ pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data)
 		close(pipefd[0]);
 		close(pipefd[1]);
 		return_value = execute_pipeline(exec_data);
-				if (exec_data->token_list_start)
+		if (exec_data->token_list_start)
 		{
 			free_token_list(exec_data->token_list_start);
 			exec_data->token_list_start = NULL;
@@ -49,6 +49,11 @@ pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data)
 		{
 			free_env_array(exec_data->environment);
 			exec_data->environment = NULL;
+		}
+		if (here_docs != NULL)
+		{
+			close(here_docs->fd);
+			free(here_docs);
 		}
 		exit(return_value);
 	}

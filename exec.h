@@ -13,8 +13,8 @@
 int			execute_parse_tree(t_free_data *exec_data);
 int			get_exec(char **path, int i, char *cmd, char **exec);
 int			handle_child_process(int *pipefd, t_free_data *exec_data, t_hd_data *here_docs);
-pid_t		handle_sibling_process(int *pipefd, t_free_data *exec_data);
-int			handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data);
+pid_t		handle_sibling_process(int *pipefd, t_free_data *exec_data, t_hd_data *here_docs);
+int			handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data, t_hd_data *here_docs);
 int			execute_pipeline(t_free_data *exec_data);
 int			handle_child_cmd(t_exec_vars *vars, t_env **env,
 				char **environment, t_free_data *exec_data);
