@@ -36,8 +36,7 @@ void	free_exit_data(t_free_data *exec_data)
 			free_env_array(exec_data->environment);
 			exec_data->environment = NULL;
 		}
-		free(exec_data);
-		exec_data = NULL;
+		//exec_data = NULL;
 	}
 }
 

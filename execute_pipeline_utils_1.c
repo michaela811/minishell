@@ -7,8 +7,6 @@
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:21 by mmasarov          #+#    #+#             */
 /*   Updated: 2024/07/24 15:03:53 by mmasarov         ###   ########.fr       */
-/*   Updated: 2024/07/18 10:27:29 by mmasarov         ###   ########.fr       */
-/*   Updated: 2024/07/18 17:44:56 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +26,29 @@ int	handle_child_process(int *pipefd, t_free_data *exec_data,
 		close(pipefd[1]);
 	}
 	execute_node(exec_data, here_docs);
+	if (exec_data)
+	{
+		if (exec_data->token_list_start)
+		{
+			free_token_list(exec_data->token_list_start);
+			exec_data->token_list_start = NULL;
+		}
+		if (exec_data->tree_start)
+		{
+			free_parse_tree(exec_data->tree_start);
+			exec_data->tree_start = NULL;
+		}
+		if (exec_data->env)
+		{
+			free_env(exec_data->env);
+			exec_data->env = NULL;
+		}
+		if (exec_data->environment)
+		{
+			free_env_array(exec_data->environment);
+			exec_data->environment = NULL;
+		}
+	}
 	exit(g_last_exit_status);
 }
 
@@ -50,7 +71,7 @@ static void	ft_waitpid(int num_commands, pid_t *pids, int *statuses)
 	}
 }
 
-int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
+int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data, t_hd_data *here_docs)
 {
 	pid_t		pids[10];
 	int			statuses[10];
@@ -66,7 +87,7 @@ int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 		close(pipefd[1]);
 		sibling_free_data = *exec_data;
 		sibling_free_data.tree = exec_data->tree->sibling->sibling;
-		sibling_pid = handle_sibling_process(pipefd, &sibling_free_data);
+		sibling_pid = handle_sibling_process(pipefd, &sibling_free_data, here_docs);
 		if (sibling_pid == -1)
 			return (close(pipefd[0]), 1);
 		pids[num_commands] = sibling_pid;
@@ -113,8 +134,6 @@ int	execute_pipeline(t_free_data *exec_data)
 	else if (pid == 0)
 		return_value = handle_child_process(pipefd, exec_data, here_docs);
 	else if (pid > 0)
-		return_value = handle_parent_process(pipefd, pid, exec_data);
-	if (here_docs != NULL)
-		free(here_docs);
+		return_value = handle_parent_process(pipefd, pid, exec_data, here_docs);
 	return (return_value);
 }

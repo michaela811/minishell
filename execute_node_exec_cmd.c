@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	execute_command(t_exec_vars *vars, t_free_data *exec_data)
+int	execute_command(t_exec_vars *vars, t_free_data *exec_data, t_hd_data *here_docs)
 {
 	int	return_builtins;
 
@@ -22,15 +22,15 @@ int	execute_command(t_exec_vars *vars, t_free_data *exec_data)
 	if (exec_data->environment == NULL)
 	{
 		g_last_exit_status = 1;
-		return (free_command_data(exec_data), g_last_exit_status);
+		return (free_command_data(exec_data), g_last_exit_status); //added
 	}
 	return_builtins = exec_builtins(vars, exec_data);
 	if (return_builtins == 3)
-		handle_fork(vars, &exec_data->env, exec_data->environment);//, exec_data->t_p_tree);
-	return (g_last_exit_status);
+		handle_fork(vars, &exec_data->env, exec_data, here_docs);
+	return(g_last_exit_status);
 }
 
-int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)//, t_p_tree *tree)
+int	handle_fork(t_exec_vars *vars, t_env **env, t_free_data *exec_data, t_hd_data *here_docs)
 {
 	pid_t	pid;
 	int		status;
@@ -46,7 +46,12 @@ int	handle_fork(t_exec_vars *vars, t_env **env, char **environment)//, t_p_tree 
 	}
 	else if (pid == 0)
 	{
-		handle_child_cmd(vars, env, environment);
+		handle_child_cmd(vars, env, exec_data->environment, exec_data);
+		if (here_docs != NULL) //not necessary, isnt execute anyway
+		{
+			close(here_docs->fd);
+			free(here_docs);
+		}
 		exit (g_last_exit_status);
 	}
 	waitpid(pid, &status, 0);

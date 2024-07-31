@@ -37,7 +37,7 @@ int	exec_echo(t_exec_vars *vars)
 	if (vars->args[1] == NULL)
 	{
 		g_last_exit_status = 0;
-		return (print_err(g_last_exit_status, vars->fd_out, "\n"), 1);
+		return (print_echo(g_last_exit_status, vars->fd_out, "\n"), 1);
 	}
 	while (vars->args[i] && echo_n_control(vars->args[i]))
 		i++;
@@ -47,15 +47,15 @@ int	exec_echo(t_exec_vars *vars)
 				//"malloc error in echo\n"), 1);
 	while (vars->args[i])
 	{
-		print_err(g_last_exit_status, vars->fd_out, "%s",
+		print_echo(g_last_exit_status, vars->fd_out, "%s",
 			vars->args[i]);
 		if (vars->args[i + 1])
-			print_err(g_last_exit_status, vars->fd_out, " ");
+			print_echo(g_last_exit_status, vars->fd_out, " ");
 		i++;
 	}
 	if (echo_n_control(vars->args[1]) == 0)
 	//if (j == 0)
-		print_err(g_last_exit_status, vars->fd_out, "\n");
+		print_echo(g_last_exit_status, vars->fd_out, "\n");
 	g_last_exit_status = 0;
 	return (g_last_exit_status);
 }

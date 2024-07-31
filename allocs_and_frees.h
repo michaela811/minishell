@@ -24,7 +24,8 @@ void			print_err(int status, unsigned int fd,
 					char *format, ...);
 void			free_env(t_env *head);
 void			init_exec_vars(t_exec_vars *vars);
-t_free_data		*init_command_data(char **envp);
+t_free_data	*init_command_data(char **envp, t_free_data *exec_data);
 void			free_array(char **array);
 void			free_handle_vars(t_handle_vars *l_vars);
 void			check_capacity(t_exec_vars *vars);
+void			print_echo(int status, unsigned int fd, char *format, ...);
