@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/31 14:03:01 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/31 21:13:42 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,8 @@ int	main(int argc, char **argv, char **envp)
 		}
 		if (!input)
 		{
-			reset_terminal_mode(&orig_termios);
+			if (isatty(fileno(stdin)))
+				reset_terminal_mode(&orig_termios);
 			free_exit_data(&exec_data);
 			clear_history();
 			break ;
