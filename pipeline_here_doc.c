@@ -15,24 +15,16 @@
 
 static int	get_stdin(void)
 {
-	int				original_stdin;
 	int				tty_fd;
 	struct termios	term;
 
-	original_stdin = dup(STDIN_FILENO);
-	if (original_stdin == -1)
-	{
-		print_err(errno, 2, "my(s)hell: dup");
-		return (1);
-	}
 	if (tcgetattr(STDIN_FILENO, &term) == -1)
 	{
 		tty_fd = open("/dev/tty", O_RDONLY);
 		if (dup2(tty_fd, STDIN_FILENO) == -1)
 			return (print_err(errno, 2,
 					"my(s)hell: dup2 tty_fd to STDIN_FILENO"),
-				close(tty_fd), close(original_stdin), 1);
-		close(original_stdin);
+				close(tty_fd), 1);
 		close(tty_fd);
 	}
 	return (0);

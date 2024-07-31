@@ -101,8 +101,16 @@ void	free_env_array(char **env_array)
 	free(env_array);
 	env_array = NULL;
 }
+void	free_hd(t_hd_data *here_docs)
+{
+	if (here_docs != NULL)
+	{
+		close(here_docs->fd);
+		free(here_docs);
+	}
+}
 
-void free_vars(t_exec_vars *vars)
+void	free_vars(t_exec_vars *vars)
 {
     free_env_array(vars->args);
     if (vars->open_fd_in)
