@@ -135,6 +135,7 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		}
 		handle_input(input, &exec_data);
+		free(input);
 	}
 	return (g_last_exit_status);
 }
