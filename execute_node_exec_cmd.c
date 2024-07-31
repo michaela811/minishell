@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_exec_cmd.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:25 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/31 13:11:12 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/07/31 13:49:56 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,6 @@ int	handle_fork(t_exec_vars *vars, t_env **env, t_free_data *exec_data, t_hd_dat
 	int		status;
 
 	pid = 0;
-	//if (update_add_env_var(env, "_", vars->args[0]))//Do we need this?
-			//return (g_last_exit_status);
 	pid = fork();
 	if (pid == -1)
 	{

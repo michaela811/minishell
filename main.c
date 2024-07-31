@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/31 13:05:12 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/31 14:03:01 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,6 @@ int				g_last_exit_status = 0;
 
 void	reset_terminal_mode(struct termios *orig_termios)
 {
-	/*if (tcsetattr(STDIN_FILENO, TCSANOW, orig_termios) == -1)
-	{
-		perror("tcsetattr");
-		exit(EXIT_FAILURE);
-	}*/
 	tcsetattr(STDIN_FILENO, TCSANOW, orig_termios);
 }
 
@@ -28,11 +23,6 @@ void	set_raw_mode(struct termios *orig_termios)
 {
 	struct termios	raw;
 
-	/*if (tcgetattr(STDIN_FILENO, orig_termios) == -1)
-	{
-		perror("tcgetattr");
-		exit(EXIT_FAILURE);
-	}*/
 	tcgetattr(STDIN_FILENO, orig_termios);
 	raw = *orig_termios;
 	raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
@@ -43,11 +33,6 @@ void	set_raw_mode(struct termios *orig_termios)
 	raw.c_cc[VTIME] = 0;
 	raw.c_lflag |= ECHO;
 	tcsetattr(STDIN_FILENO, TCSANOW, &raw);
-	/*if (tcsetattr(STDIN_FILENO, TCSANOW, &raw) == -1)
-	{
-		perror("tcsetattr");
-		exit(EXIT_FAILURE);
-	}*/
 }
 
 void	handle_signal(int signal)
@@ -62,10 +47,10 @@ void	handle_signal(int signal)
 		rl_redisplay();
 		g_last_exit_status = 130;
 	}
-	else if (signal == SIGQUIT || signal == SIGPIPE)
+	else if (signal == SIGQUIT)
 	{
 	}
-	else if (signal == SIGCHLD)
+	else if (signal == SIGCHLD || signal == SIGPIPE)
 	{
 		saved_errno = errno;
 		while (waitpid((pid_t)(-1), 0, WNOHANG) > 0)
@@ -86,8 +71,12 @@ void	setup_signal_handlers(void)
 		print_err(errno, 2, "sigaction");
 		exit(EXIT_FAILURE);
 	}
+	if (sigaction(SIGPIPE, &sa, NULL) == -1)
+    {
+        print_err(errno, 2, "sigaction");
+        exit(EXIT_FAILURE);
+    }
 	signal(SIGINT, handle_signal);
-	signal(SIGPIPE, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 }
 
@@ -159,7 +148,6 @@ void	handle_input(char *input, t_free_data *exec_data)
 			return ;
 		exec_data->token_list_start = exec_data->token_list;
 		handle_parse_tree(exec_data);
-		//check_for_memory_leaks();
 	}
 }
 
@@ -191,7 +179,6 @@ void	handle_parse_tree(t_free_data *exec_data)
 	if (is_pipe_sequence(exec_data) == 0)
 	{
 		execute_parse_tree(exec_data);
-		//if (!exec_data->pipe)
 		free_command_data(exec_data);
 	}
 	return ;

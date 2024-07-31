@@ -6,33 +6,33 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/24 14:13:02 by mmasarov         ###   ########.fr       */
-/*   Updated: 2024/07/18 13:32:05 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/31 13:45:24 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "minishell.h"
 
 static int	get_stdin(void)
 {
-	//int				original_stdin;
+	int				original_stdin;
 	int				tty_fd;
 	struct termios	term;
 
-	/*original_stdin = dup(STDIN_FILENO);
+	original_stdin = dup(STDIN_FILENO);
 	if (original_stdin == -1)
 	{
 		print_err(errno, 2, "my(s)hell: dup");
 		return (1);
-	}*/
+	}
 	if (tcgetattr(STDIN_FILENO, &term) == -1)
 	{
 		tty_fd = open("/dev/tty", O_RDONLY);
 		if (dup2(tty_fd, STDIN_FILENO) == -1)
 			return (print_err(errno, 2,
 					"my(s)hell: dup2 tty_fd to STDIN_FILENO"),
-				//close(tty_fd), close(original_stdin), 1);
-				close(tty_fd), 1);
+				close(tty_fd), close(original_stdin), 1);
+		close(original_stdin);
 		close(tty_fd);
 	}
 	return (0);
@@ -57,7 +57,6 @@ char	*get_heredoc_content(char *contents, char *buffer)
 		old_size = ft_strlen(contents) + 1;
 		new_size = old_size + ft_strlen(buffer) + 1;
 		temp = ft_realloc(contents, old_size, new_size);
-		//temp = realloc(contents, ft_strlen(contents) + ft_strlen(buffer) + 2);
 		if (temp == NULL)
 			return (free(contents), free(buffer), NULL);
 		contents = temp;
