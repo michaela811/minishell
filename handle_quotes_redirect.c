@@ -33,7 +33,7 @@ void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars, t_env **env)
 		{
 			vars->end = 0;
 			g_last_exit_status = 0;
-			return ;
+			return (free_handle_vars(&l_vars));
 		}
 		if (vars->error)
 			break ;
