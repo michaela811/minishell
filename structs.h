@@ -20,14 +20,6 @@ enum e_token_type
 	HERE_DOC,
 };
 
-/*typedef struct MemoryBlock {
-	void *address;
-	size_t size;
-	const char *file;
-	int line;
-	struct MemoryBlock *next;
-} MemoryBlock;*/
-
 typedef struct s_token
 {
 	char				*lexeme;

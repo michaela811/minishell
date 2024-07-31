@@ -68,6 +68,7 @@ int		ft_strcmp(const char *s1, const char *s2);
 char	*ft_strcpy(char *dest, const char *src);
 char	*ft_strndup(const char *s, size_t n);
 char	*ft_strncpy(char *dest, const char *src, size_t n);
+void	*ft_realloc(void *ptr, size_t old_size, size_t new_size);
 
 /* Printf added*/
 //int	ft_printf(const char *print, ...);

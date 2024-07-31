@@ -12,7 +12,7 @@
 
 #include <minishell.h>
 
-int	handle_quotes_in_echo(char *input, char *result, int *i, int *j)
+int	handle_quotes_in_heredoc(char *input, char *result, int *i, int *j)
 {
 	char	quote;
 
@@ -54,7 +54,7 @@ char	*handle_quotes_heredoc(char *input, int *error)
 	j = 0;
 	while (input[i] != '\0')
 	{
-		if (handle_quotes_in_echo(input, result, &i, &j))
+		if (handle_quotes_in_heredoc(input, result, &i, &j))
 		{
 			*error = 1;
 			return (free(result), NULL);

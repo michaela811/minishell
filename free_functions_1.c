@@ -62,7 +62,47 @@ void	free_command_data(t_free_data *exec_data)
 	}
 }
 
-void	free_and_null(char **ptr)
+void	free_handle_vars(t_handle_vars *l_vars)
+{
+	if (l_vars->result == NULL)
+		return ;
+	if (l_vars->result != NULL)
+	{
+		if (*l_vars->result != NULL)
+		{
+			free(*l_vars->result);
+			*l_vars->result = NULL;
+		}
+		free(l_vars->result);
+		l_vars->result = NULL;
+	}
+	if (l_vars->current != NULL)
+	{
+		if (*l_vars->current != NULL)
+		{
+			free(*l_vars->current);
+			*l_vars->current = NULL;
+		}
+		free(l_vars->current);
+		l_vars->current = NULL;
+	}
+}
+
+void	free_env_array(char **env_array)
+{
+	int	i;
+
+	i = 0;
+	while (env_array[i] != NULL)
+	{
+		free(env_array[i]);
+		i++;
+	}
+	free(env_array);
+	env_array = NULL;
+}
+
+/* void	free_and_null(char **ptr)
 {
 	if (ptr == NULL)
 		return ;
@@ -88,4 +128,4 @@ void	free_and_null_double_pointer(char ***ptr)
 		free(*ptr);
 		*ptr = NULL;
 	}
-}
+} */

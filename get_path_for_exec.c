@@ -31,13 +31,15 @@ int	exec_from_cwd(char *cmd, char **exec)
 {
 	if (exec_cwd(cmd, exec))
 		return (1);
-	if (access(*exec, F_OK | X_OK) == 0)
+	if (cmd && *cmd && access(*exec, F_OK | X_OK) == 0)
 	{
 		if (is_a_directory(*exec))
 			return (print_err(126, 2, "my(s)hell: %s: Is a directory\n", cmd), 126);
 		return (0);
 	}
-	return (-1);
+	return (print_err(127, 2,
+				"my(s)hell: %s: No such file or directory\n",
+				cmd), 127);
 }
 
 int	get_cwd(char *cmd, char **exec, char **path)
@@ -73,6 +75,8 @@ int	get_path(char *cmd, t_env *env, char **exec)
 		return (1);
 	if (pre_path == NULL)
 		return (exec_from_cwd(cmd, exec));
+	if (pre_path && pre_path[0] == '\0')
+		return (free(pre_path), exec_from_cwd(cmd, exec));
 	path = ft_split(pre_path, ':');
 	if (path == NULL)
 		return (free(pre_path), print_err(1, 2, "my(s)hell: malloc error in split function\n"), 1);

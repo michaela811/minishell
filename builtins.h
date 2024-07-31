@@ -35,6 +35,6 @@ int			is_equals(char **name, char **value, char *equals);
 int			control_name(char *var, char **name, int *i);
 int			exec_export(char **args, t_env **env);
 //int			export_quotes(char *input, char **output);
-int			exec_global_env(t_exec_vars *vars, t_env **env);
+//int			exec_global_env(t_exec_vars *vars, t_env **env);
 void		expand_exec_vars(t_exec_vars *vars);
 void		return_exit_status(char *result, int *i, int *j, int *error);
