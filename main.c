@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/24 16:19:18 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/31 13:05:12 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	handle_signal(int signal)
 		rl_redisplay();
 		g_last_exit_status = 130;
 	}
-	else if (signal == SIGQUIT)
+	else if (signal == SIGQUIT || signal == SIGPIPE)
 	{
 	}
 	else if (signal == SIGCHLD)
@@ -87,6 +87,7 @@ void	setup_signal_handlers(void)
 		exit(EXIT_FAILURE);
 	}
 	signal(SIGINT, handle_signal);
+	signal(SIGPIPE, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 }
 
