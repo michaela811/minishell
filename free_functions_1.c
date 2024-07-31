@@ -59,6 +59,8 @@ void	free_command_data(t_free_data *exec_data)
 			free_env_array(exec_data->environment);
 			exec_data->environment = NULL;
 		}
+		if (exec_data->hd_fd != -1)
+			close(exec_data->hd_fd);
 	}
 }
 
@@ -100,14 +102,6 @@ void	free_env_array(char **env_array)
 	}
 	free(env_array);
 	env_array = NULL;
-}
-void	free_hd(t_hd_data *here_docs)
-{
-	if (here_docs != NULL)
-	{
-		close(here_docs->fd);
-		free(here_docs);
-	}
 }
 
 void	free_vars(t_exec_vars *vars)

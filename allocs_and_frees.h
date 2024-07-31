@@ -30,4 +30,3 @@ void			free_handle_vars(t_handle_vars *l_vars);
 void			check_capacity(t_exec_vars *vars);
 void			print_echo(int status, unsigned int fd, char *format, ...);
 void			free_vars(t_exec_vars *vars);
-void			free_hd(t_hd_data *here_docs);

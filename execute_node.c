@@ -99,6 +99,8 @@ int	execute_node(t_free_data *exec_data)
 		return (free_vars(vars), g_last_exit_status);
 	vars->args[vars->i] = NULL;
 	execute_command(vars, exec_data);
+	if (exec_data->hd_fd != -1)
+		close(exec_data->hd_fd);
 	free_vars(vars);
 	return (g_last_exit_status);
 }
