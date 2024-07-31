@@ -85,7 +85,7 @@ void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 	}
 	ft_memset(expanded_lexeme, '\0', sizeof(expanded_lexeme));
 	start = (*node)->child->data->lexeme;
-	if (handle_dollar_sign(&start, expanded_lexeme, env, sizeof(expanded_lexeme)))
+	if (handle_dollar_sign(&start, expanded_lexeme, env, sizeof(expanded_lexeme)))// do we need it???
 	//if (g_last_exit_status)
 		return (free(expanded_lexeme));
 	if (helper_is_dir(expanded_lexeme, vars))
