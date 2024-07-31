@@ -75,7 +75,6 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment, t_free_
 			free_env_array(exec_data->environment);
 			exec_data->environment = NULL;
 		}
-		free(exec_data);
 		exit (g_last_exit_status);
 	}
 	g_last_exit_status = execve(path, vars->args, environment);

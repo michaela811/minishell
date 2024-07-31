@@ -93,12 +93,12 @@ void	setup_signal_handlers(void)
 int	main(int argc, char **argv, char **envp)
 {
 	char				*input;
-	t_free_data			*exec_data;
+	t_free_data			exec_data;
 	struct termios		orig_termios;
 
 	(void)argc;
 	(void)argv;
-	exec_data = init_command_data(envp);
+	init_command_data(envp, &exec_data);
 	setup_signal_handlers();
 	if (isatty(STDIN_FILENO))
 	{
@@ -139,11 +139,11 @@ int	main(int argc, char **argv, char **envp)
 		if (!input)
 		{
 			reset_terminal_mode(&orig_termios);
-			free_exit_data(exec_data);
+			free_exit_data(&exec_data);
 			clear_history();
 			break ;
 		}
-		handle_input(input, exec_data);
+		handle_input(input, &exec_data);
 	}
 	return (g_last_exit_status);
 }
@@ -190,6 +190,7 @@ void	handle_parse_tree(t_free_data *exec_data)
 	if (is_pipe_sequence(exec_data) == 0)
 	{
 		execute_parse_tree(exec_data);
+		//if (!exec_data->pipe)
 		free_command_data(exec_data);
 	}
 	return ;

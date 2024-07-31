@@ -18,7 +18,7 @@
 #include <errno.h>
 #include <string.h>
 
-int ft_flock(const char *lockfile)
+/* int ft_flock(const char *lockfile)
 {
 	int				fd;
 	struct flock	fl;
@@ -55,9 +55,41 @@ void ft_funlock(int fd)
 	if (fcntl(fd, F_SETLK, &fl) == -1)
 		perror("my(s)hell: fcntl");
 	close(fd);
+} */
+
+int ft_flock(const char *lockfile)
+{
+    int fd;
+
+    // Attempt to create the lock file exclusively
+    fd = open(lockfile, O_RDWR | O_CREAT | O_EXCL, 0644);
+    if (fd == -1)
+    {
+        if (errno == EEXIST)
+        {
+            printf("my(s)hell: resource is locked by another process.\n");
+        }
+        else
+        {
+            perror("my(s)hell: open");
+        }
+        return -1;
+    }
+
+    return fd;
 }
 
-void print_err(int status, unsigned int fd, char *format, ...)
+void ft_funlock(int fd, const char *lockfile)
+{
+    // Close the lock file descriptor and remove the lock file
+    close(fd);
+    if (unlink(lockfile) == -1)
+    {
+        perror("my(s)hell: unlink");
+    }
+}
+
+/* void print_err(int status, unsigned int fd, char *format, ...)
 {
 	va_list		args;
 	va_list		args_copy;
@@ -72,8 +104,21 @@ void print_err(int status, unsigned int fd, char *format, ...)
 	if (lock_fd >= 0)
 	{
 		ft_vprintf_fd(fd, format, args_copy);
-		ft_funlock(lock_fd);
+		ft_funlock(lock_fd, lockfile);
 	}
+	va_end(args_copy);
+	va_end(args);
+} */
+
+void	print_err(int status, unsigned int fd, char *format, ...)
+{
+	va_list	args;
+	va_list	args_copy;
+
+	va_start(args, format);
+	va_copy(args_copy, args);
+	g_last_exit_status = status;
+	ft_vprintf_fd(fd, format, args_copy);
 	va_end(args_copy);
 	va_end(args);
 }
