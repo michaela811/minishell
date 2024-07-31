@@ -99,10 +99,11 @@ int	execute_node(t_free_data *exec_data, t_hd_data *here_docs)
 	if (complex_handle_node_data(exec_data, vars, here_docs))
 		return (g_last_exit_status);
 	vars->args[vars->i] = NULL;
-	execute_command(vars, exec_data);
+	execute_command(vars, exec_data, here_docs);
 	free_env_array(vars->args);
 	if (vars->open_fd_in)
 		close(vars->fd_in);
 	free(vars);
+	vars = NULL;
 	return (g_last_exit_status);
 }

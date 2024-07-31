@@ -69,6 +69,7 @@ typedef struct s_free_data
 	t_token_list	*token_list;
 	t_token_list	*token_list_start;
 	char			**environment;
+	int				pipe;
 }	t_free_data;
 
 typedef struct s_handle_vars

@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/24 16:19:18 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/31 13:05:12 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	handle_signal(int signal)
 		rl_redisplay();
 		g_last_exit_status = 130;
 	}
-	else if (signal == SIGQUIT)
+	else if (signal == SIGQUIT || signal == SIGPIPE)
 	{
 	}
 	else if (signal == SIGCHLD)
@@ -87,18 +87,19 @@ void	setup_signal_handlers(void)
 		exit(EXIT_FAILURE);
 	}
 	signal(SIGINT, handle_signal);
+	signal(SIGPIPE, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
 	char				*input;
-	t_free_data			*exec_data;
+	t_free_data			exec_data;
 	struct termios		orig_termios;
 
 	(void)argc;
 	(void)argv;
-	exec_data = init_command_data(envp);
+	init_command_data(envp, &exec_data);
 	setup_signal_handlers();
 	if (isatty(STDIN_FILENO))
 	{
@@ -139,11 +140,11 @@ int	main(int argc, char **argv, char **envp)
 		if (!input)
 		{
 			reset_terminal_mode(&orig_termios);
-			free_exit_data(exec_data);
+			free_exit_data(&exec_data);
 			clear_history();
 			break ;
 		}
-		handle_input(input, exec_data);
+		handle_input(input, &exec_data);
 	}
 	return (g_last_exit_status);
 }
@@ -190,6 +191,7 @@ void	handle_parse_tree(t_free_data *exec_data)
 	if (is_pipe_sequence(exec_data) == 0)
 	{
 		execute_parse_tree(exec_data);
+		//if (!exec_data->pipe)
 		free_command_data(exec_data);
 	}
 	return ;

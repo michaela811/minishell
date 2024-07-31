@@ -6,26 +6,15 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:16 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/05 21:02:04 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/07/30 19:18:35 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_free_data	*init_command_data(char **envp)
+t_free_data	*init_command_data(char **envp, t_free_data *exec_data)
 {
-	t_free_data	*exec_data;
-
-	exec_data = malloc(sizeof(t_free_data));
-	if (!exec_data)
-		return (NULL);
 	exec_data->env = init_environment(envp);
-	/* if (exec_data->env == NULL)
-	{
-		print_err(1, 2, "init_environment failed\n");
-		//free(exec_data);
-		//return (NULL);
-	} */
 	exec_data->token_list = NULL;
 	exec_data->environment = NULL;
 	exec_data->tree = NULL;
