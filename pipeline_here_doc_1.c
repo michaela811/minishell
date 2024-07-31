@@ -13,7 +13,7 @@
 
 #include "minishell.h"
 
-int	pipe_heredoc(t_p_tree **node, t_exec_vars *vars, t_hd_data *here_docs)
+int	pipe_heredoc(t_p_tree **node, t_exec_vars *vars, int *here_docs)
 {
 	char	*filename;
 	int		fd;
@@ -29,13 +29,13 @@ int	pipe_heredoc(t_p_tree **node, t_exec_vars *vars, t_hd_data *here_docs)
 	}
 	close(fd);
 	fd = open(filename, O_RDONLY);
-	here_docs->fd = fd;
+	*here_docs = fd;
 	vars->i++;
 	unlink(filename);
 	return (0);
 }
 
-void	init_heredocs(t_hd_data **here_docs)
+/*void	init_heredocs(t_hd_data **here_docs)
 {
 	if (*here_docs == NULL)
 	{
@@ -49,9 +49,9 @@ void	init_heredocs(t_hd_data **here_docs)
 	else if ((*here_docs)->fd != -1)
 		close((*here_docs)->fd);
 	(*here_docs)->fd = -1;
-}
+}*/
 
-int	is_there_here_doc(t_p_tree **tree, t_hd_data **here_docs)
+int	is_there_here_doc(t_p_tree **tree, int *here_docs)
 {
 	t_p_tree	*current;
 	t_exec_vars	*vars;
@@ -68,8 +68,7 @@ int	is_there_here_doc(t_p_tree **tree, t_hd_data **here_docs)
 				if (!vars)
 					return (print_err(1, 2, "my(s)hell: execute_node malloc error\n"), 1);
 				init_exec_vars(vars);
-				init_heredocs(here_docs);
-				if (pipe_heredoc(&current->child->child, vars, *here_docs) == 0)
+				if (pipe_heredoc(&current->child->child, vars, here_docs) == 0)
 					return (free_array(vars->args), free(vars), 0);
 			}
 			else
