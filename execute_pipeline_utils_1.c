@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/24 15:03:53 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/31 14:25:38 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,11 @@ int	handle_child_process(int *pipefd, t_free_data *exec_data,
 		{
 			free_env_array(exec_data->environment);
 			exec_data->environment = NULL;
+		}
+		if (here_docs != NULL)
+		{
+			close(here_docs->fd);
+			free(here_docs);
 		}
 	}
 	exit(g_last_exit_status);
@@ -135,5 +140,10 @@ int	execute_pipeline(t_free_data *exec_data)
 		return_value = handle_child_process(pipefd, exec_data, here_docs);
 	else if (pid > 0)
 		return_value = handle_parent_process(pipefd, pid, exec_data, here_docs);
+	if (here_docs != NULL)
+	{
+		close(here_docs->fd);
+		free(here_docs);
+	}
 	return (return_value);
 }
