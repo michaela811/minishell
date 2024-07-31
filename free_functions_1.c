@@ -102,6 +102,19 @@ void	free_env_array(char **env_array)
 	env_array = NULL;
 }
 
+void free_vars(t_exec_vars *vars)
+{
+    free_env_array(vars->args);
+    if (vars->open_fd_in)
+        {close(vars->fd_in);}
+	if (vars->fd_in != 0)
+		{close(vars->fd_in);}
+	if (vars->fd_out != 1)
+		{close(vars->fd_out);}
+    free(vars);
+    vars = NULL;
+}
+
 /* void	free_and_null(char **ptr)
 {
 	if (ptr == NULL)
