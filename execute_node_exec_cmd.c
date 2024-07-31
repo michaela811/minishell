@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:25 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/31 13:49:56 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/31 16:43:36 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,7 @@ int	handle_fork(t_exec_vars *vars, t_env **env, t_free_data *exec_data, t_hd_dat
 	}
 	else if (pid == 0)
 	{
-		handle_child_cmd(vars, env, exec_data->environment, exec_data);
-		if (here_docs != NULL) //not necessary, isnt execute anyway
-		{
-			close(here_docs->fd);
-			free(here_docs);
-		}
+		handle_child_cmd(vars, env, exec_data->environment, exec_data, here_docs);
 		exit (g_last_exit_status);
 	}
 	waitpid(pid, &status, 0);

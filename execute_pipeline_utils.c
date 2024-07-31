@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:27 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/24 15:02:21 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/31 17:13:22 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data, t_hd_data *her
 		}
 		close(pipefd[0]);
 		close(pipefd[1]);
+		printf("before execute_pipeline in sibling\n");
 		return_value = execute_pipeline(exec_data);
 		if (exec_data->token_list_start)
 		{
@@ -52,6 +53,7 @@ pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data, t_hd_data *her
 		}
 		if (here_docs != NULL)
 		{
+			printf("close here_docs->fd in sibling\n");
 			close(here_docs->fd);
 			free(here_docs);
 		}

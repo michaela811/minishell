@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/31 14:23:47 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/31 17:07:07 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,17 @@ int	execute_node(t_free_data *exec_data, t_hd_data *here_docs)
 		return (g_last_exit_status);
 	vars->args[vars->i] = NULL;
 	execute_command(vars, exec_data, here_docs);
+	if (here_docs != NULL)
+	{
+		printf("close here_docs->fd in execude node\n");
+		close(here_docs->fd);
+	}
+	/*if (here_docs != NULL)
+	{
+		printf("close here_docs->fd in execude node\n");
+		close(here_docs->fd);
+		free(here_docs);
+	}*/
 	free_env_array(vars->args);
 	if (vars->open_fd_in)
 		close(vars->fd_in);

@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/31 14:22:23 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/31 16:42:52 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	set_fds(int fd_in, int fd_out)
 	}
 }
 
-int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment, t_free_data *exec_data)
+int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment, t_free_data *exec_data, t_hd_data *here_docs)
 {
 	char	*path;
 
@@ -74,6 +74,11 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment, t_free_
 		{
 			free_env_array(exec_data->environment);
 			exec_data->environment = NULL;
+		}
+		if (here_docs != NULL)
+		{
+			close(here_docs->fd);
+			free(here_docs);
 		}
 		exit (g_last_exit_status);
 	}

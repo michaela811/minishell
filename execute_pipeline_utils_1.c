@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/31 14:25:38 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/31 17:13:03 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	handle_child_process(int *pipefd, t_free_data *exec_data,
 		close(pipefd[0]);
 		close(pipefd[1]);
 	}
+	printf("before execute_node in child process\n");
 	execute_node(exec_data, here_docs);
 	if (exec_data)
 	{
@@ -48,8 +49,10 @@ int	handle_child_process(int *pipefd, t_free_data *exec_data,
 			free_env_array(exec_data->environment);
 			exec_data->environment = NULL;
 		}
+		printf("before if (here_docs != NULL)\n");
 		if (here_docs != NULL)
 		{
+			printf("close here_docs->fd in child process\n");
 			close(here_docs->fd);
 			free(here_docs);
 		}
@@ -92,6 +95,7 @@ int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data, t_hd_d
 		close(pipefd[1]);
 		sibling_free_data = *exec_data;
 		sibling_free_data.tree = exec_data->tree->sibling->sibling;
+		printf("before handle_sibling_process\n");
 		sibling_pid = handle_sibling_process(pipefd, &sibling_free_data, here_docs);
 		if (sibling_pid == -1)
 			return (close(pipefd[0]), 1);
@@ -139,11 +143,20 @@ int	execute_pipeline(t_free_data *exec_data)
 	else if (pid == 0)
 		return_value = handle_child_process(pipefd, exec_data, here_docs);
 	else if (pid > 0)
-		return_value = handle_parent_process(pipefd, pid, exec_data, here_docs);
-	if (here_docs != NULL)
 	{
+		return_value = handle_parent_process(pipefd, pid, exec_data, here_docs);
+		if (here_docs != NULL)
+		{
+			printf("close here_docs->fd in execute pipeline in parent process inside\n");
+			close(here_docs->fd);
+			free(here_docs);
+		}
+	}
+	/*if (here_docs != NULL)
+	{
+		printf("close here_docs->fd in execute pipeline in parent process outside\n");
 		close(here_docs->fd);
 		free(here_docs);
-	}
+	}*/
 	return (return_value);
 }

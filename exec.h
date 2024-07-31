@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:11 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/18 17:16:11 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/07/31 16:43:53 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,8 @@ pid_t		handle_sibling_process(int *pipefd, t_free_data *exec_data, t_hd_data *he
 int			handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data, t_hd_data *here_docs);
 int			execute_pipeline(t_free_data *exec_data);
 int			handle_child_cmd(t_exec_vars *vars, t_env **env,
-				char **environment, t_free_data *exec_data);
-int			handle_fork(t_exec_vars *vars, t_env **env, t_free_data *exec_data,
-				t_hd_data *here_docs);
+				char **environment, t_free_data *exec_data, t_hd_data *here_docs);
+int			handle_fork(t_exec_vars *vars, t_env **env, t_free_data *exec_data, t_hd_data *here_docs);
 int			execute_command(t_exec_vars *vars, t_free_data *exec_data, t_hd_data *here_docs);
 void		handle_node_data(t_p_tree **node, t_exec_vars *vars,
 				t_env **env, t_hd_data *here_docs);
