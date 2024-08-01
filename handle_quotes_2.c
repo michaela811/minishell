@@ -6,14 +6,14 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:06 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 19:42:06 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/01 19:53:12 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 int dollar_to_result(t_handle_vars *l_vars, t_exec_vars *vars,
-		t_env **env, t_p_tree **node)
+		t_env **env)
 {
 	ft_memset(l_vars->buffer, '\0', sizeof(l_vars->buffer));
 	if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, env))
@@ -28,7 +28,7 @@ void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
 {
 	if (ft_strchr(l_vars->token, '$') != NULL)
 	{
-		if (dollar_to_result(l_vars, vars, env, node))
+		if (dollar_to_result(l_vars, vars, env))
 			return ;
 		if (ft_strchr((*node)->data->lexeme, '$') != NULL
 			&& ft_strchr(l_vars->buffer, ' '))
