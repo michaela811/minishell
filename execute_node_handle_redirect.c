@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	handle_redirection(t_p_tree **node, t_exec_vars *vars, t_env **env, t_hd_data *here_docs)
+void	handle_redirection(t_p_tree **node, t_exec_vars *vars, t_env **env, int *here_docs)
 {
 	if ((*node)->data->type == RED_FROM)
 		return (handle_redirection_from(node, vars, env));
@@ -85,7 +85,7 @@ void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 	}
 	ft_memset(expanded_lexeme, '\0', sizeof(expanded_lexeme));
 	start = (*node)->child->data->lexeme;
-	if (handle_dollar_sign(&start, expanded_lexeme, env, sizeof(expanded_lexeme)))
+	if (handle_dollar_sign(&start, expanded_lexeme, env, sizeof(expanded_lexeme)))// do we need it???
 	//if (g_last_exit_status)
 		return (free(expanded_lexeme));
 	if (helper_is_dir(expanded_lexeme, vars))
@@ -99,12 +99,12 @@ void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 }
 
 void	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars ,
-		t_hd_data *here_docs, t_env **env)
+		int *here_docs, t_env **env)
 {
 	char	*filename;
 
-	if (here_docs && here_docs->fd != -1)
-		vars->fd_in = here_docs->fd;
+	if (*here_docs != -1)
+		vars->fd_in = *here_docs;
 	else
 	{
 		filename = handle_here_doc(node, vars, env);

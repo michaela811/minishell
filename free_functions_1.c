@@ -36,7 +36,6 @@ void	free_exit_data(t_free_data *exec_data)
 			free_env_array(exec_data->environment);
 			exec_data->environment = NULL;
 		}
-		//exec_data = NULL;
 	}
 }
 
@@ -59,6 +58,8 @@ void	free_command_data(t_free_data *exec_data)
 			free_env_array(exec_data->environment);
 			exec_data->environment = NULL;
 		}
+		if (exec_data->hd_fd != -1)
+			close(exec_data->hd_fd);
 	}
 }
 
@@ -100,6 +101,19 @@ void	free_env_array(char **env_array)
 	}
 	free(env_array);
 	env_array = NULL;
+}
+
+void	free_vars(t_exec_vars *vars)
+{
+    free_env_array(vars->args);
+    if (vars->open_fd_in)
+        {close(vars->fd_in);}
+	if (vars->fd_in != 0)
+		{close(vars->fd_in);}
+	if (vars->fd_out != 1)
+		{close(vars->fd_out);}
+    free(vars);
+    vars = NULL;
 }
 
 /* void	free_and_null(char **ptr)

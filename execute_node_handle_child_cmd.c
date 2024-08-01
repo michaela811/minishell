@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/31 16:42:52 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 10:00:43 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,8 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment, t_free_
 			free_env_array(exec_data->environment);
 			exec_data->environment = NULL;
 		}
-		if (here_docs != NULL)
-		{
-			close(here_docs->fd);
-			free(here_docs);
-		}
+		if (exec_data->hd_fd != -1)
+			close(exec_data->hd_fd);
 		exit (g_last_exit_status);
 	}
 	g_last_exit_status = execve(path, vars->args, environment);

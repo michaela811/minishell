@@ -20,6 +20,7 @@ t_free_data	*init_command_data(char **envp, t_free_data *exec_data)
 	exec_data->tree = NULL;
 	exec_data->token_list_start = NULL;
 	exec_data->tree_start = NULL;
+	exec_data->hd_fd = -1;
 	return (exec_data);
 }
 

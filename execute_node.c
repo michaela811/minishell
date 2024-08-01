@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/31 17:07:07 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 09:58:51 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,13 @@ int is_only_space_tabs(char *str)
 	return (1);
 }
 
-static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars, t_hd_data *here_docs)
+static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 {
 	while (exec_data->tree != NULL)
 	{
 		if (exec_data->tree->data != NULL)
 		{
-			handle_node_data(&exec_data->tree, vars, &exec_data->env, here_docs);
+			handle_node_data(&exec_data->tree, vars, &exec_data->env, &exec_data->hd_fd);
 			if (vars->args[0] == NULL)
 				vars->i = 0;
 			if (vars->error != 0)
@@ -54,8 +54,7 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars, t
 	return (0);
 }
 
-void	handle_node_data(t_p_tree **node, t_exec_vars *vars, t_env **env,
-		t_hd_data *here_docs)
+void	handle_node_data(t_p_tree **node, t_exec_vars *vars, t_env **env, int *here_docs)
 {
 	if (is_only_space_tabs((*node)->data->lexeme))
 		return ;
@@ -83,7 +82,7 @@ void	handle_node_data(t_p_tree **node, t_exec_vars *vars, t_env **env,
 		vars->i++;
 }
 
-int	execute_node(t_free_data *exec_data, t_hd_data *here_docs)
+int	execute_node(t_free_data *exec_data)
 {
 	t_exec_vars	*vars;
 
@@ -96,25 +95,12 @@ int	execute_node(t_free_data *exec_data, t_hd_data *here_docs)
 	init_exec_vars(vars);
 	if (exec_data->tree == NULL)
 		return (0);
-	if (complex_handle_node_data(exec_data, vars, here_docs))
-		return (g_last_exit_status);
+	if (complex_handle_node_data(exec_data, vars))
+		return (free_vars(vars), g_last_exit_status);
 	vars->args[vars->i] = NULL;
-	execute_command(vars, exec_data, here_docs);
-	if (here_docs != NULL)
-	{
-		printf("close here_docs->fd in execude node\n");
-		close(here_docs->fd);
-	}
-	/*if (here_docs != NULL)
-	{
-		printf("close here_docs->fd in execude node\n");
-		close(here_docs->fd);
-		free(here_docs);
-	}*/
-	free_env_array(vars->args);
-	if (vars->open_fd_in)
-		close(vars->fd_in);
-	free(vars);
-	vars = NULL;
+	execute_command(vars, exec_data);
+	if (exec_data->hd_fd != -1)
+		close(exec_data->hd_fd);
+	free_vars(vars);
 	return (g_last_exit_status);
 }
