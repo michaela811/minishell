@@ -26,12 +26,12 @@ int	helper_is_dir(char	*exp_lexeme, t_exec_vars *vars)
 	int	is_dir;
 
 	is_dir = is_directory(exp_lexeme);
-	if (is_dir == 1)
+	if (is_dir == -1)
 	{
 		vars->error = 1;
-		print_err(1, 2, "my(s)hell: %s: Is a directory\n",
+		print_err(1, 2, "my(s)hell: %s: Not a directory\n",
 			exp_lexeme);
-		free(exp_lexeme);
+		//free(exp_lexeme);
 		return (1);
 	}
 	return (0);

@@ -68,13 +68,13 @@ void	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 			t_env **env)
 {
-	char	*start;
-	char	*exp_lexeme;
+	//char	*start;
+	//char	*exp_lexeme;
 
 	quotes_glob_redirect(node, vars, env);
 	if (g_last_exit_status)
 		return ;
-	exp_lexeme = malloc(4096);
+	/* exp_lexeme = malloc(4096);
 	if (!exp_lexeme)
 	{
 		print_err(1, 2, "my(s)hell: malloc\n");
@@ -84,10 +84,11 @@ void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 	ft_memset(exp_lexeme, '\0', sizeof(exp_lexeme));
 	start = (*node)->child->data->lexeme;
 	if (handle_dollar_sign(&start, exp_lexeme, env, sizeof(exp_lexeme)))// do we need it???
-		return (free(exp_lexeme));
-	if (helper_is_dir(exp_lexeme, vars))
+		return (free(exp_lexeme)); */
+	//if (helper_is_dir(exp_lexeme, vars))
+	if (helper_is_dir((*node)->child->data->lexeme, vars))
 		return ;
-	free(exp_lexeme);
+	//free(exp_lexeme);
 	vars->fd_out = open((*node)->child->data->lexeme, O_WRONLY | O_CREAT
 			| O_APPEND, 0644);
 	helper_fd_out_checker(node, vars);
