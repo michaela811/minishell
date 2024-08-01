@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/31 15:25:36 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 11:32:52 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,8 @@ int	main(int argc, char **argv, char **envp)
 		}
 		if (!input)
 		{
-			reset_terminal_mode(&orig_termios);
+			if (isatty(fileno(stdin)))
+				reset_terminal_mode(&orig_termios);
 			free_exit_data(&exec_data);
 			clear_history();
 			break ;
