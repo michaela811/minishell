@@ -6,13 +6,14 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/24 16:30:11 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 11:20:30 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_redirection(t_p_tree **node, t_exec_vars *vars, t_env **env, t_hd_data *here_docs)
+void	handle_redirection(t_p_tree **node, t_exec_vars *vars, t_env **env,
+		int *here_docs)
 {
 	if ((*node)->data->type == RED_FROM)
 		return (handle_redirection_from(node, vars, env));
@@ -44,12 +45,9 @@ void	handle_redirection_from(t_p_tree **node,
 void	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 			t_env **env)
 {
-	//(*node)->child->data->lexeme = handle_quotes_echo
-		//((*node)->child->data->lexeme, &vars->error);
 	quotes_glob_redirect(node, vars, env);
 	if (g_last_exit_status)
 		return ;
-	//printf("node->child->data->lexeme: %s\n", (*node)->child->data->lexeme);
 	vars->fd_out = open((*node)->child->data->lexeme,
 			O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (vars->fd_out == -1)
@@ -71,26 +69,25 @@ void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 			t_env **env)
 {
 	char	*start;
-	char	*expanded_lexeme;
+	char	*exp_lexeme;
 
 	quotes_glob_redirect(node, vars, env);
 	if (g_last_exit_status)
 		return ;
-	expanded_lexeme = malloc(4096);
-	if (!expanded_lexeme)
+	exp_lexeme = malloc(4096);
+	if (!exp_lexeme)
 	{
 		print_err(1, 2, "my(s)hell: malloc\n");
 		vars->error = 1;
 		return ;
 	}
-	ft_memset(expanded_lexeme, '\0', sizeof(expanded_lexeme));
+	ft_memset(exp_lexeme, '\0', sizeof(exp_lexeme));
 	start = (*node)->child->data->lexeme;
-	if (handle_dollar_sign(&start, expanded_lexeme, env, sizeof(expanded_lexeme)))// do we need it???
-	//if (g_last_exit_status)
-		return (free(expanded_lexeme));
-	if (helper_is_dir(expanded_lexeme, vars))
+	if (handle_dollar_sign(&start, exp_lexeme, env, sizeof(exp_lexeme)))// do we need it???
+		return (free(exp_lexeme));
+	if (helper_is_dir(exp_lexeme, vars))
 		return ;
-	free(expanded_lexeme);
+	free(exp_lexeme);
 	vars->fd_out = open((*node)->child->data->lexeme, O_WRONLY | O_CREAT
 			| O_APPEND, 0644);
 	helper_fd_out_checker(node, vars);
@@ -99,12 +96,12 @@ void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 }
 
 void	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars ,
-		t_hd_data *here_docs, t_env **env)
+		int *here_docs, t_env **env)
 {
 	char	*filename;
 
-	if (here_docs && here_docs->fd != -1)
-		vars->fd_in = here_docs->fd;
+	if (*here_docs != -1)
+		vars->fd_in = *here_docs;
 	else
 	{
 		filename = handle_here_doc(node, vars, env);

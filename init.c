@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:16 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/30 19:18:35 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/01 10:50:40 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,28 +20,9 @@ t_free_data	*init_command_data(char **envp, t_free_data *exec_data)
 	exec_data->tree = NULL;
 	exec_data->token_list_start = NULL;
 	exec_data->tree_start = NULL;
+	exec_data->hd_fd = -1;
 	return (exec_data);
 }
-
-/* char **alloc_and_init_str(int *error)
-{
-	char **result;
-
-	result = malloc(sizeof(char *));
-    if (!result)
-	{
-        *error = 1;
-        return (NULL);
-    }
-    *result = ft_strdup("");
-    if (!*result)
-	{
-        *error = 1;
-        //free(result);
-        return (NULL);
-    }
-    return (result);
-} */
 
 int	init_handle_vars(t_handle_vars *l_vars, t_exec_vars *vars)
 {
@@ -72,12 +53,12 @@ int	init_handle_quote_redirect(t_handle_vars *l_vars, t_p_tree **node)
 		return (free(l_vars->result), 1);
 	l_vars->current = malloc(sizeof(char *));
 	if (!l_vars->current)
-		return (free(*l_vars->result) ,free(l_vars->result), 1);
+		return (free(*l_vars->result), free(l_vars->result), 1);
 	*l_vars->current = ft_strdup((*node)->child->data->lexeme);
 	if (!*l_vars->current)
-		return (free(l_vars->current), free(*l_vars->result), free(l_vars->result), 1);
+		return (free(l_vars->current), free(*l_vars->result),
+			free(l_vars->result), 1);
 	l_vars->delimiters = "'\"";
 	l_vars->current_start = *l_vars->current;
 	return (0);
 }
-

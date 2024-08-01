@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/24 15:43:31 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 10:41:00 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 int	handle_initial_path(char **pre_path, t_env *env)
 {
 	if (handle_colon(pre_path, env))
-		return (print_err(1, 2, "my(s)hell: malloc error in handle_colon function\n"), 1);
+		return (print_err(1, 2,
+				"my(s)hell: malloc error in handle_colon function\n"), 1);
 	return (0);
 }
 
@@ -34,12 +35,13 @@ int	exec_from_cwd(char *cmd, char **exec)
 	if (cmd && *cmd && access(*exec, F_OK | X_OK) == 0)
 	{
 		if (is_a_directory(*exec))
-			return (print_err(126, 2, "my(s)hell: %s: Is a directory\n", cmd), 126);
+			return (print_err(126, 2, "my(s)hell: %s: Is a directory\n", cmd),
+				126);
 		return (0);
 	}
 	return (print_err(127, 2,
-				"my(s)hell: %s: No such file or directory\n",
-				cmd), 127);
+			"my(s)hell: %s: No such file or directory\n",
+			cmd), 127);
 }
 
 int	get_cwd(char *cmd, char **exec, char **path)
@@ -48,15 +50,15 @@ int	get_cwd(char *cmd, char **exec, char **path)
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
-		return (print_err(1, 2, "my(s)hell: malloc error in getcwd function\n"), 1);
+		return (print_err(1, 2, "my(s)hell: malloc error in getcwd function\n"),
+			1);
 	path[0] = cwd;
 	if (get_exec(path, 0, cmd, exec))
-		return (free(cwd),free_array(path), g_last_exit_status);
+		return (free(cwd), free_array(path), g_last_exit_status);
 	if (access(*exec, F_OK | X_OK) == 0)
 	{
-	   // *exec = path; // Set exec to the full path
 		free(cwd);
-		return (0); // Success
+		return (0);
 	}
 	free(cwd);
 	cwd = NULL;
