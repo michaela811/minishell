@@ -25,30 +25,9 @@ int	handle_child_process(int *pipefd, t_free_data *exec_data)
 		close(pipefd[1]);
 	}
 	execute_node(exec_data);
-	if (exec_data)
-	{
-		if (exec_data->token_list_start)
-		{
-			free_token_list(exec_data->token_list_start);
-			exec_data->token_list_start = NULL;
-		}
-		if (exec_data->tree_start)
-		{
-			free_parse_tree(exec_data->tree_start);
-			exec_data->tree_start = NULL;
-		}
-		if (exec_data->env)
-		{
-			free_env(exec_data->env);
-			exec_data->env = NULL;
-		}
-		if (exec_data->environment)
-		{
-			free_env_array(exec_data->environment);
-			exec_data->environment = NULL;
-		}
-		close(exec_data->hd_fd);
-	}
+	free_exit_data(exec_data);
+		if (exec_data->hd_fd != -1)
+			close(exec_data->hd_fd);
 	exit(g_last_exit_status);
 }
 

@@ -32,28 +32,7 @@ pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data)
 		if (exec_data->hd_fd != -1)
 			close(exec_data->hd_fd);
 		return_value = execute_pipeline(exec_data);
-		if (exec_data->token_list_start)
-		{
-			free_token_list(exec_data->token_list_start);
-			exec_data->token_list_start = NULL;
-		}
-		if (exec_data->tree_start)
-		{
-			free_parse_tree(exec_data->tree_start);
-			exec_data->tree_start = NULL;
-		}
-		if (exec_data->env)
-		{
-			free_env(exec_data->env);
-			exec_data->env = NULL;
-		}
-		if (exec_data->environment)
-		{
-			free_env_array(exec_data->environment);
-			exec_data->environment = NULL;
-		}
-		if (exec_data->hd_fd != -1)
-			close(exec_data->hd_fd);
+		free_exit_data(exec_data);
 		exit(return_value);
 	}
 	close(pipefd[0]);
