@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:27 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/05 20:56:16 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/01 11:19:17 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,7 @@ void	handle_no_quotes_redirect(t_handle_vars *local_vars, t_exec_vars *vars,
 int		split_variable(char *arg, int i, t_exec_vars *vars);
 int		update_result(char **result, char *updated_result, t_exec_vars *vars);
 int		handle_dollar_error(char **token, char *buffer, t_exec_vars *vars,
-		 t_env **env);
-//int		remove_spaces(char **result, char *buffer, t_exec_vars *vars);
-//void	update_result(char **result, char *updated_result, t_exec_vars *vars);
+		t_env **env);
 void	handle_error_and_free(t_exec_vars *vars, t_handle_vars *l_vars);
 void	handle_error_and_free_redirect(t_exec_vars *vars, t_handle_vars *l_vars,
 			t_p_tree **node);

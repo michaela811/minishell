@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/31 21:13:42 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/07/31 15:25:36 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,12 +68,12 @@ void	setup_signal_handlers(void)
 	sa.sa_flags = SA_RESTART | SA_NOCLDSTOP;
 	if (sigaction(SIGCHLD, &sa, NULL) == -1)
 	{
-		print_err(errno, 2, "sigaction");
+		print_err(errno, 2, "my(s)hell: sigaction sigchild");
 		exit(EXIT_FAILURE);
 	}
 	if (sigaction(SIGPIPE, &sa, NULL) == -1)
     {
-        print_err(errno, 2, "sigaction");
+        print_err(errno, 2, "my(s)hell: sigaction sigpipe");
         exit(EXIT_FAILURE);
     }
 	signal(SIGINT, handle_signal);

@@ -6,33 +6,24 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/31 13:45:24 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 11:09:49 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 
 static int	get_stdin(void)
 {
-	int				original_stdin;
 	int				tty_fd;
 	struct termios	term;
 
-	original_stdin = dup(STDIN_FILENO);
-	if (original_stdin == -1)
-	{
-		print_err(errno, 2, "my(s)hell: dup");
-		return (1);
-	}
 	if (tcgetattr(STDIN_FILENO, &term) == -1)
 	{
 		tty_fd = open("/dev/tty", O_RDONLY);
 		if (dup2(tty_fd, STDIN_FILENO) == -1)
 			return (print_err(errno, 2,
 					"my(s)hell: dup2 tty_fd to STDIN_FILENO"),
-				close(tty_fd), close(original_stdin), 1);
-		close(original_stdin);
+				close(tty_fd), 1);
 		close(tty_fd);
 	}
 	return (0);
@@ -115,7 +106,6 @@ int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
 	char			*dup_lexeme;
 
 	contents = NULL;
-	//dup_lexeme = NULL;
 	dup_lexeme = handle_quotes_heredoc((*node)->data->lexeme, &vars->error);
 	if (get_stdin())
 		return (1);

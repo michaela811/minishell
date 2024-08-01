@@ -6,13 +6,13 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:27 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/24 15:02:21 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 10:02:35 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data, t_hd_data *here_docs)
+pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data)
 {
 	pid_t	pid2;
 	int		return_value;
@@ -29,32 +29,10 @@ pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data, t_hd_data *her
 		}
 		close(pipefd[0]);
 		close(pipefd[1]);
+		if (exec_data->hd_fd != -1)
+			close(exec_data->hd_fd);
 		return_value = execute_pipeline(exec_data);
-		if (exec_data->token_list_start)
-		{
-			free_token_list(exec_data->token_list_start);
-			exec_data->token_list_start = NULL;
-		}
-		if (exec_data->tree_start)
-		{
-			free_parse_tree(exec_data->tree_start);
-			exec_data->tree_start = NULL;
-		}
-		if (exec_data->env)
-		{
-			free_env(exec_data->env);
-			exec_data->env = NULL;
-		}
-		if (exec_data->environment)
-		{
-			free_env_array(exec_data->environment);
-			exec_data->environment = NULL;
-		}
-		if (here_docs != NULL)
-		{
-			close(here_docs->fd);
-			free(here_docs);
-		}
+		free_exit_data(exec_data);
 		exit(return_value);
 	}
 	close(pipefd[0]);
