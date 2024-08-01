@@ -34,22 +34,22 @@ int	exec_cwd(char *cmd, char **exec)
 	return (free(tmp), 0);
 }
 
-int	exec_from_path(char **path, char *cmd, char **exec)
+int	exec_from_path(char **path_array, char *cmd, char **path)//exec_from_path(path_array, cmd, path)
 {
 	int	i;
 
 	i = -1;
-	while (path[++i])
+	while (path_array[++i])
 	{
-		if (get_exec(path, i, cmd, exec))
-			return (free_array(path), g_last_exit_status);
-		if (access(*exec, F_OK | X_OK) == 0)
-			return (free_array(path), free(*exec), 0);
-		if (!path[i + 1] && ft_strcmp(path[i], getenv("HOME")) == 0)
-			return (-2);
-		free(*exec);
+		if (get_exec(path_array, i, cmd, path))
+			return (free_array(path_array), g_last_exit_status);
+		if (access(*path, F_OK | X_OK) == 0)
+			return (free_array(path_array), 0);
+		if (!path_array[i + 1] && ft_strcmp(path_array[i], getenv("HOME")) == 0)
+			return (free_array(path_array), -2);
+		free(*path);
 	}
-	free_array(path);
-	*exec = cmd;
+	free_array(path_array);
+	*path = cmd;
 	return (-1);
 }

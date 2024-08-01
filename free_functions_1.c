@@ -97,6 +97,7 @@ void	free_env_array(char **env_array)
 	while (env_array[i] != NULL)
 	{
 		free(env_array[i]);
+		env_array[i] = NULL;
 		i++;
 	}
 	free(env_array);

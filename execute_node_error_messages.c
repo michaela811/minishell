@@ -38,8 +38,13 @@ int	path_status_2(t_exec_vars *vars, char **path)
 			*path), 127);
 }
 
-int	path_status_1(t_exec_vars *vars, t_env **env)
+int	path_status_1(t_exec_vars *vars, t_env **env, char **path)
 {
+	if (*path != vars->args[0])
+	{
+		free(*path);
+		*path = NULL;
+	}
 	if (access(vars->args[0], X_OK) == -1 && vars->args[0][0] == '.'
 			&& vars->args[0][1] == '/')
 		return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
@@ -87,6 +92,6 @@ int	err_check_fork(t_exec_vars *vars, t_env **env, char **path)
 	if (path_status == -2)
 		return (path_status_2(vars, path));
 	if (path_status == -1 || vars->args[0][0] == '\0')
-		return (path_status_1(vars, env));
+		return (path_status_1(vars, env, path));
 	return ((g_last_exit_status = 0), EXIT_SUCCESS);
 }
