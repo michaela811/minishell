@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:54 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/31 15:57:21 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 11:15:31 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars, t_env **env)
 		vars->error = 1;
 	if (vars->error)
 		return ;
-	//vars->error = 0;
 	while (*l_vars.current != NULL && **l_vars.current != '\0')
 	{
 		if (vars->inside_single_quotes)
@@ -84,7 +83,7 @@ void	handle_with_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 		}
 	}
 	else if (update_result(l_vars->result, l_vars->token, vars))
-			return ;
+		return ;
 	**l_vars->current = delimiter;
 	if (**l_vars->current == '\'')
 		vars->inside_single_quotes = 1;
@@ -116,7 +115,8 @@ void	handle_error_and_free_redirect(t_exec_vars *vars, t_handle_vars *l_vars,
 	{
 		free((*node)->child->data->lexeme);
 		(*node)->child->data->lexeme = NULL;
-		handle_quotes_final_assign(&(*node)->child->data->lexeme, l_vars->result, vars);
+		handle_quotes_final_assign(&(*node)->child->data->lexeme,
+			l_vars->result, vars);
 		free_handle_vars(l_vars);
 		return ;
 	}

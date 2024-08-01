@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 09:57:47 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 11:01:18 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ int	handle_child_process(int *pipefd, t_free_data *exec_data)
 	}
 	execute_node(exec_data);
 	free_exit_data(exec_data);
-		if (exec_data->hd_fd != -1)
-			close(exec_data->hd_fd);
+	if (exec_data->hd_fd != -1)
+		close(exec_data->hd_fd);
 	exit(g_last_exit_status);
 }
 

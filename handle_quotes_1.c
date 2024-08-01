@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_quotes.c                                    :+:      :+:    :+:   */
+/*   handle_quotes_1.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:06 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/05 20:04:49 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/01 10:43:25 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,11 +83,11 @@ void	handle_double_quotes(char **current, char **result,
 	{
 		if (handle_dollar_error(&token, buffer, vars, env))
 			return ;
-		if(update_result(result, buffer, vars))
+		if (update_result(result, buffer, vars))
 			return ;
 	}
 	else if (update_result(result, token, vars))
-			return ;
+		return ;
 	handle_double_quotes_split(current, vars);
 	if (!check_null(*current, &vars->end))
 		return ;
@@ -96,7 +96,7 @@ void	handle_double_quotes(char **current, char **result,
 void	handle_no_quotes(t_handle_vars *l_vars, t_exec_vars *vars,
 				t_env **env, t_p_tree **node)
 {
-	char *temp;
+	char	*temp;
 
 	l_vars->token = *l_vars->current;
 	temp = ft_strpbrk(*l_vars->current, l_vars->delimiters);

@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 10:01:41 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 11:16:01 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ void	set_fds(int fd_in, int fd_out)
 	}
 }
 
-int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment, t_free_data *exec_data)
+int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment,
+	t_free_data *exec_data)
 {
 	char	*path;
 
@@ -55,26 +56,7 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment, t_free_
 		if (vars->open_fd_in)
 			close(vars->fd_in);
 		free(vars);
-		if (exec_data->token_list_start)
-		{
-			free_token_list(exec_data->token_list_start);
-			exec_data->token_list_start = NULL;
-		}
-		if (exec_data->tree_start)
-		{
-			free_parse_tree(exec_data->tree_start);
-			exec_data->tree_start = NULL;
-		}
-		if (exec_data->env)
-		{
-			free_env(exec_data->env);
-			exec_data->env = NULL;
-		}
-		if (exec_data->environment)
-		{
-			free_env_array(exec_data->environment);
-			exec_data->environment = NULL;
-		}
+		free_exit_data(exec_data);
 		if (exec_data->hd_fd != -1)
 			close(exec_data->hd_fd);
 		exit (g_last_exit_status);

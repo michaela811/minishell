@@ -6,10 +6,9 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 10:00:07 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 11:09:49 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 
@@ -107,7 +106,6 @@ int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
 	char			*dup_lexeme;
 
 	contents = NULL;
-	//dup_lexeme = NULL;
 	dup_lexeme = handle_quotes_heredoc((*node)->data->lexeme, &vars->error);
 	if (get_stdin())
 		return (1);
