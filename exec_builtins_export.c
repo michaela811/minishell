@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtins_export.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 13:12:08 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 16:21:19 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,20 @@ int	exec_export(char **args, t_env **env)
 	int		i;
 
 	i = 1;
-	empty = 0;
 	init_free_name_value(&name, &value, i);
 	if (args[1] == NULL)
 		return (exec_export_no_args(*env), 0);
 	while (args[i] != NULL)
 	{
-		control = var_control(args[0], args[1], &empty);
+		empty = 0;
+		control = var_control(args[0], args[i], &empty);
 		if (control == 1)
 			return (g_last_exit_status);
 		if (empty == 1)
-			break;
+		{
+			i++;
+			continue;
+		}
 		else
 		{
 			if (split_to_name_value(args, &name, &value, &i))
