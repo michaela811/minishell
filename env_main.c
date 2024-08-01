@@ -69,16 +69,16 @@ char	**env_list_to_array(t_env *head)
 	return (env_array);
 }
 
-int	get_exec(char **path, int i, char *cmd, char **exec)
+int	get_exec(char **path_array, int i, char *cmd, char **path)//get_exec(path_array, 0, cmd, path))
 {
 	char	*path_part;
 
-	path_part = ft_strjoin(path[i], "/");
+	path_part = ft_strjoin(path_array[i], "/");
 	if (path_part == NULL)
 		return (print_err(1, 2,
 				"my(s)hell: malloc error in strjoin function\n"), 1);
-	*exec = ft_strjoin(path_part, cmd);
-	if (*exec == NULL)
+	*path = ft_strjoin(path_part, cmd);
+	if (*path == NULL)
 	{
 		free(path_part);
 		return (print_err(1, 2,

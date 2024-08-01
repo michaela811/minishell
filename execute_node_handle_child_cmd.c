@@ -40,6 +40,19 @@ void	set_fds(int fd_in, int fd_out)
 	}
 }
 
+void	clean_child_cmd(t_exec_vars *vars, t_free_data *exec_data)
+{
+	cleanup(vars);
+    free_env_array(vars->args);
+    if (vars->open_fd_in)
+        close(vars->fd_in);
+    free(vars);
+	vars = NULL;
+    free_exit_data(exec_data);
+    if (exec_data->hd_fd != -1)
+        close(exec_data->hd_fd);
+}
+
 int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment,
 	t_free_data *exec_data)
 {
@@ -51,7 +64,23 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment,
 		path = vars->args[0];
 	if ((err_check_fork(vars, env, &path)) != 0)
 	{
-		cleanup(vars);
+		clean_child_cmd(vars, exec_data);
+		/* cleanup(vars);
+		free_env_array(vars->args);
+		if (vars->open_fd_in)
+			close(vars->fd_in);
+		free(vars);
+		vars = NULL;
+		free_exit_data(exec_data);
+		if (exec_data->hd_fd != -1)
+			close(exec_data->hd_fd); */
+		exit (g_last_exit_status);
+	}
+	g_last_exit_status = execve(path, vars->args, environment);
+	if (g_last_exit_status < 0)
+	{
+		clean_child_cmd(vars, exec_data);
+		/* cleanup(vars);
 		free_env_array(vars->args);
 		if (vars->open_fd_in)
 			close(vars->fd_in);
@@ -59,12 +88,8 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment,
 		free_exit_data(exec_data);
 		if (exec_data->hd_fd != -1)
 			close(exec_data->hd_fd);
-		exit (g_last_exit_status);
-	}
-	g_last_exit_status = execve(path, vars->args, environment);
-	if (g_last_exit_status < 0)
-	{
-		cleanup(vars);
+		if (path)
+			free(path); */
 		print_and_exit(vars);
 	}
 	exit (EXIT_SUCCESS);
