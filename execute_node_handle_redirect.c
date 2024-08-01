@@ -87,6 +87,7 @@ void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 	//start = (*node)->child->data->lexeme;
 	//if (handle_dollar_sign(&start, exp_lexeme, env, sizeof(exp_lexeme)))// do we need it???
 		//return (free(exp_lexeme));
+	ft_strcpy(exp_lexeme, (*node)->child->data->lexeme);
 	if (helper_is_dir(exp_lexeme, vars))
 		return ;
 	free(exp_lexeme);
