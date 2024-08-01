@@ -29,6 +29,8 @@ pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data)
 		}
 		close(pipefd[0]);
 		close(pipefd[1]);
+		if (exec_data->hd_fd != -1)
+			close(exec_data->hd_fd);
 		return_value = execute_pipeline(exec_data);
 		if (exec_data->token_list_start)
 		{

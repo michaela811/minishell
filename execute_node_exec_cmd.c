@@ -47,8 +47,6 @@ int	handle_fork(t_exec_vars *vars, t_env **env, t_free_data *exec_data)
 	else if (pid == 0)
 	{
 		handle_child_cmd(vars, env, exec_data->environment, exec_data);
-		if (exec_data->hd_fd != -1) //not necessary, isnt execute anyway
-			close(exec_data->hd_fd);
 		exit (g_last_exit_status);
 	}
 	waitpid(pid, &status, 0);
