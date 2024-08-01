@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:30:26 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/17 15:15:58 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/01 13:11:56 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void		exec_export_no_args(t_env *env);
 void		init_free_name_value(char **name, char **value, int i);
 int			split_to_name_value(char **args, char **name, char **value, int *i);
 int			exec_update_add_env_var(t_env **env, char *name, char *value);
-int			var_control(char *command, char *args);
+int			var_control(char *command, char *args, int *empty);
 int			split_var(char *var, char **name, char **value);
 int			is_equals(char **name, char **value, char *equals);
 int			control_name(char *var, char **name, int *i);
