@@ -22,7 +22,7 @@ int process_args(char **args, t_env **env)
 
 	i = 0;
     init_free_name_value(&name, &value, 1);
-    while (args[++i] != NULL)
+    while (args[++i] != NULL && g_last_exit_status != ENOMEM)
     {
         empty = 0;
         control = var_control(args[0], args[i], &empty);

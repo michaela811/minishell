@@ -30,12 +30,10 @@ int	split_var(char *var, char **name, char **value)
 
 	i = 1;
 	equals = ft_strchr(var, '=');
-	if (equals)
-		*name = ft_strndup(var, equals - var);
-	//else
-	//	*name = ft_strdup(var);
+	//if (equals)
+	*name = ft_strndup(var, equals - var);
 	if (*name == NULL)
-		return (print_err(1, 2,
+		return (print_err(ENOMEM, 2,
 				"split_var: strndup error\n"), free(*name), g_last_exit_status);
 	if (control_name(var, name, &i))
 		return (g_last_exit_status);
@@ -44,7 +42,7 @@ int	split_var(char *var, char **name, char **value)
 		return (g_last_exit_status);
 	*value = ft_strdup(equals + 1);
 	if (*value == NULL)
-		return (print_err(1, 2,
+		return (print_err(ENOMEM, 2,
 				"split_var: strndup error\n"), free(*name), g_last_exit_status);
 	return (0);
 }
@@ -68,7 +66,7 @@ int	is_equals(char **name, char **value, char *equals)
 	{
 		*value = ft_strdup("");
 		if (value == NULL)
-			return (print_err(1, 2,
+			return (print_err(ENOMEM, 2,
 					"split_var: strndup error\n"), free(*name),
 				g_last_exit_status);
 		return (1);
