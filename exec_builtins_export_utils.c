@@ -17,7 +17,7 @@ int	split_to_name_value(char **args, char **name, char **value, int *i)
 	if (split_var(args[*i], name, value))
 	{
 		g_last_exit_status = 1;
-		(*i)++;
+		//(*i)++;
 		return (1);
 	}
 	return (0);
