@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_builtins_exit.c                                  :+:      :+:    :+:   */
+/*   exec_builtins_exit.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:33:43 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 10:27:24 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 
 	i = 0;
 	result = NULL;
-	g_last_exit_status = 0;//added to fix the exit status after overflow
+	g_last_exit_status = 0;
 	if (vars->args[1] != NULL)
 	{
 		result = vars->args[1];

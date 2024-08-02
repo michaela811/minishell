@@ -38,7 +38,6 @@ SOURCES = env_main.c \
 			parser_main.c \
 			parser_utils.c \
 			init.c \
-			custom_malloc.c \
 			handle_quotes_1.c \
 			handle_quotes_2.c \
 			handle_quotes_utils.c \

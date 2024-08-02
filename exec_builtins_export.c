@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_builtins_export.c                                  :+:      :+:    :+:   */
+/*   exec_builtins_export.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:33:43 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 16:21:19 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	exec_export(char **args, t_env **env)
 	char	*name;
 	char	*value;
 	int		control;
+	int		empty;
 	int		i;
 
 	i = 1;
@@ -25,9 +26,15 @@ int	exec_export(char **args, t_env **env)
 		return (exec_export_no_args(*env), 0);
 	while (args[i] != NULL)
 	{
-		control = var_control(args[0], args[1]);
+		empty = 0;
+		control = var_control(args[0], args[i], &empty);
 		if (control == 1)
 			return (g_last_exit_status);
+		if (empty == 1)
+		{
+			i++;
+			continue;
+		}
 		else
 		{
 			if (split_to_name_value(args, &name, &value, &i))
@@ -50,8 +57,10 @@ void	init_free_name_value(char **name, char **value, int i)
 	}
 	else
 	{
-		free(*name);
-		free(*value);
+		if (name != NULL)
+			free(*name);
+		if (value != NULL)
+			free(*value);
 	}
 }
 
@@ -67,7 +76,7 @@ void	exec_export_no_args(t_env *env)
 	}
 }
 
-int	var_control(char *command, char *args)
+int	var_control(char *command, char *args, int *empty)
 {
 	int	i;
 
@@ -90,5 +99,7 @@ int	var_control(char *command, char *args)
 		}
 		i++;
 	}
+	if (ft_strchr(args, '=') == NULL)
+		*empty = 1;
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/30 11:46:38 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 16:55:13 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,21 @@ void	set_fds(int fd_in, int fd_out)
 	}
 }
 
-int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment, t_free_data *exec_data)
+void	clean_child_cmd(t_exec_vars *vars, t_free_data *exec_data)
+{
+	cleanup(vars);
+	free_env_array(vars->args);
+	if (vars->open_fd_in)
+		close(vars->fd_in);
+	free(vars);
+	vars = NULL;
+	free_exit_data(exec_data);
+	if (exec_data->hd_fd != -1)
+		close(exec_data->hd_fd);
+}
+
+int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment,
+	t_free_data *exec_data)
 {
 	char	*path;
 
@@ -50,39 +64,32 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment, t_free_
 		path = vars->args[0];
 	if ((err_check_fork(vars, env, &path)) != 0)
 	{
-		cleanup(vars);
+		clean_child_cmd(vars, exec_data);
+		/* cleanup(vars);
 		free_env_array(vars->args);
 		if (vars->open_fd_in)
 			close(vars->fd_in);
 		free(vars);
-		if (exec_data->token_list_start)
-		{
-			free_token_list(exec_data->token_list_start);
-			exec_data->token_list_start = NULL;
-		}
-		if (exec_data->tree_start)
-		{
-			free_parse_tree(exec_data->tree_start);
-			exec_data->tree_start = NULL;
-		}
-		if (exec_data->env)
-		{
-			free_env(exec_data->env);
-			exec_data->env = NULL;
-		}
-		if (exec_data->environment)
-		{
-			free_env_array(exec_data->environment);
-			exec_data->environment = NULL;
-		}
+		vars = NULL;
+		free_exit_data(exec_data);
 		if (exec_data->hd_fd != -1)
-			close(exec_data->hd_fd);
+			close(exec_data->hd_fd); */
 		exit (g_last_exit_status);
 	}
 	g_last_exit_status = execve(path, vars->args, environment);
 	if (g_last_exit_status < 0)
 	{
-		cleanup(vars);
+		clean_child_cmd(vars, exec_data);
+		/* cleanup(vars);
+		free_env_array(vars->args);
+		if (vars->open_fd_in)
+			close(vars->fd_in);
+		free(vars);
+		free_exit_data(exec_data);
+		if (exec_data->hd_fd != -1)
+			close(exec_data->hd_fd);
+		if (path)
+			free(path); */
 		print_and_exit(vars);
 	}
 	exit (EXIT_SUCCESS);

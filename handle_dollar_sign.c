@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execute_node_utils_global.c                        :+:      :+:    :+:   */
+/*   handle_dollar_sign.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:57 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:35:58 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 11:18:11 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ int	handle_question_mark(char **start, char *buffer, char *dollar)
 	if (!check_null(exit_status, &g_last_exit_status))
 		return (1);
 	ft_strcat(buffer, exit_status);
-	//ft_strcat(buffer, ft_itoa(g_last_exit_status));
 	*start = dollar + 2;
 	return (0);
 }
@@ -67,7 +66,7 @@ int	handle_dollar_sign(char **start, char *buffer, t_env **env,
 		ft_strncat(buffer, *start, dollar - *start);
 		if (*(dollar + 1) == '?')
 		{
-			if(handle_question_mark(start, buffer, dollar))
+			if (handle_question_mark(start, buffer, dollar))
 				return (1);
 		}
 		else if (*(dollar + 1) == '\0' || ft_strchr("$ \"'/", *(dollar + 1)))

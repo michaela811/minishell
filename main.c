@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/31 14:03:01 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 11:44:18 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,12 +68,12 @@ void	setup_signal_handlers(void)
 	sa.sa_flags = SA_RESTART | SA_NOCLDSTOP;
 	if (sigaction(SIGCHLD, &sa, NULL) == -1)
 	{
-		print_err(errno, 2, "sigaction");
+		print_err(errno, 2, "my(s)hell: sigaction sigchild");
 		exit(EXIT_FAILURE);
 	}
 	if (sigaction(SIGPIPE, &sa, NULL) == -1)
     {
-        print_err(errno, 2, "sigaction");
+        print_err(errno, 2, "my(s)hell: sigaction sigpipe");
         exit(EXIT_FAILURE);
     }
 	signal(SIGINT, handle_signal);
@@ -128,12 +128,14 @@ int	main(int argc, char **argv, char **envp)
 		}
 		if (!input)
 		{
-			reset_terminal_mode(&orig_termios);
+			if (isatty(fileno(stdin)))
+				reset_terminal_mode(&orig_termios);
 			free_exit_data(&exec_data);
 			clear_history();
 			break ;
 		}
 		handle_input(input, &exec_data);
+		//free(input);
 	}
 	return (g_last_exit_status);
 }
@@ -171,6 +173,7 @@ void	handle_preprocess_input(char *input, t_free_data *exec_data)
 		processed_input = NULL;
 		return ;
 	}
+	free(input);
 	free(processed_input);
 }
 

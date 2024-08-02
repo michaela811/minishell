@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_builtins_pwd.c                                  :+:      :+:    :+:   */
+/*   exec_builtins_pwd.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:33:43 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 11:21:49 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,10 @@ int	exec_pwd(void)//(t_env **env)
 		return (g_last_exit_status);
 	}
 	else */
-		cwd = getcwd(NULL, 0);
+	cwd = getcwd(NULL, 0);
 	if (cwd == NULL)
-		return (print_err(1, 2, "current working directory not set\n"), g_last_exit_status);
+		return (print_err(1, 2, "current working directory not set\n"),
+			g_last_exit_status);
 	else
 	{
 		printf("%s\n", cwd);

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_builtins_export_utils.c                                  :+:      :+:    :+:   */
+/*   exec_builtins_export_utils.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:33:43 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 13:03:57 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ int	split_var(char *var, char **name, char **value)
 	equals = ft_strchr(var, '=');
 	if (equals)
 		*name = ft_strndup(var, equals - var);
-	else
-		*name = ft_strdup(var);
+	//else
+	//	*name = ft_strdup(var);
 	if (*name == NULL)
 		return (print_err(1, 2,
 				"split_var: strndup error\n"), free(*name), g_last_exit_status);
@@ -80,8 +80,10 @@ int	exec_update_add_env_var(t_env **env, char *name, char *value)
 {
 	if (update_add_env_var(env, name, value))
 	{
-		free(name);
-		free(value);
+		if (name != NULL)
+			free(name);
+		if (value != NULL)
+			free(value);
 		g_last_exit_status = 1;
 		return (1);
 	}

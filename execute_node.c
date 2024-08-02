@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/24 16:30:45 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 11:12:52 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,14 @@ void	check_capacity(t_exec_vars *vars)
 	}
 }
 
-int is_only_space_tabs(char *str)
+int	is_only_space_tabs(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i] != '\0')
 	{
-		if ((unsigned char)str[i] != 0xFF)// && str[i] != '\t')
+		if ((unsigned char)str[i] != 0xFF)
 			return (0);
 		i++;
 	}
@@ -42,7 +42,8 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 	{
 		if (exec_data->tree->data != NULL)
 		{
-			handle_node_data(&exec_data->tree, vars, &exec_data->env, &exec_data->hd_fd);
+			handle_node_data(&exec_data->tree, vars, &exec_data->env,
+				&exec_data->hd_fd);
 			if (vars->args[0] == NULL)
 				vars->i = 0;
 			if (vars->error != 0)
@@ -54,7 +55,8 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 	return (0);
 }
 
-void	handle_node_data(t_p_tree **node, t_exec_vars *vars, t_env **env, int *here_docs)
+void	handle_node_data(t_p_tree **node, t_exec_vars *vars, t_env **env,
+		int *here_docs)
 {
 	if (is_only_space_tabs((*node)->data->lexeme))
 		return ;

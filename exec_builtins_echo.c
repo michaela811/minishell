@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_builtins_echo.c                                  :+:      :+:    :+:   */
+/*   exec_builtins_echo.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:56 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/18 16:05:45 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/01 11:23:41 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ int	echo_n_control(char *arg)
 int	exec_echo(t_exec_vars *vars)
 {
 	int	i;
-	//int j;
 
 	i = 1;
 	if (vars->args[1] == NULL)
@@ -41,10 +40,6 @@ int	exec_echo(t_exec_vars *vars)
 	}
 	while (vars->args[i] && echo_n_control(vars->args[i]))
 		i++;
-	//j = echo_n_control2(vars->args[1]);
-	//if (echo_no_n(&vars->args[1], j))
-		//return (print_err(1, 2,
-				//"malloc error in echo\n"), 1);
 	while (vars->args[i])
 	{
 		print_echo(g_last_exit_status, vars->fd_out, "%s",
@@ -54,7 +49,6 @@ int	exec_echo(t_exec_vars *vars)
 		i++;
 	}
 	if (echo_n_control(vars->args[1]) == 0)
-	//if (j == 0)
 		print_echo(g_last_exit_status, vars->fd_out, "\n");
 	g_last_exit_status = 0;
 	return (g_last_exit_status);

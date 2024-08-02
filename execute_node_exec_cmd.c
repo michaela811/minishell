@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:25 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/31 13:49:56 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 17:28:27 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	execute_command(t_exec_vars *vars, t_free_data *exec_data)
 	return_builtins = exec_builtins(vars, exec_data);
 	if (return_builtins == 3)
 		handle_fork(vars, &exec_data->env, exec_data);
-	return(g_last_exit_status);
+	return (g_last_exit_status);
 }
 
 int	handle_fork(t_exec_vars *vars, t_env **env, t_free_data *exec_data)
