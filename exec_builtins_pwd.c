@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtins_pwd.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 11:21:49 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/02 16:15:16 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	exec_pwd(void)//(t_env **env)
 			g_last_exit_status);
 	else
 	{
-		printf("%s\n", cwd);
+		ft_printf_fd(STDOUT_FILENO,"%s\n", cwd);
 		free(cwd);
 		g_last_exit_status = 0;
 		return (g_last_exit_status);
