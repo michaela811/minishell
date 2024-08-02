@@ -6,46 +6,46 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 16:21:19 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/01 19:01:29 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	exec_export(char **args, t_env **env)
+int process_args(char **args, t_env **env)
 {
-	char	*name;
-	char	*value;
-	int		control;
-	int		empty;
-	int		i;
+    char *name;
+    char *value;
+    int control;
+    int empty;
+    int i;
 
-	i = 1;
-	init_free_name_value(&name, &value, i);
-	if (args[1] == NULL)
-		return (exec_export_no_args(*env), 0);
-	while (args[i] != NULL)
-	{
-		empty = 0;
-		control = var_control(args[0], args[i], &empty);
-		if (control == 1)
-			return (g_last_exit_status);
-		if (empty == 1)
-		{
-			i++;
+	i = 0;
+    init_free_name_value(&name, &value, 1);
+    while (args[++i] != NULL && g_last_exit_status != ENOMEM)
+    {
+        empty = 0;
+        control = var_control(args[0], args[i], &empty);
+        if (control == 1 || empty == 1)
 			continue;
-		}
-		else
-		{
-			if (split_to_name_value(args, &name, &value, &i))
-				continue ;
-			if (exec_update_add_env_var(env, name, value))
-				continue ;
-			init_free_name_value(&name, &value, ++i);
-		}
-	}
-	g_last_exit_status = 0;
-	return (g_last_exit_status);
+        else
+        {
+            if (split_to_name_value(args, &name, &value, &i))
+                continue;
+            if (exec_update_add_env_var(env, name, value))
+                continue;
+			init_free_name_value(&name, &value, i);
+        }
+    }
+    return (g_last_exit_status);
+}
+
+int exec_export(char **args, t_env **env)
+{
+    if (args[1] == NULL)
+        return (exec_export_no_args(*env), 0);
+    g_last_exit_status = process_args(args, env);
+    return (g_last_exit_status);
 }
 
 void	init_free_name_value(char **name, char **value, int i)
@@ -57,10 +57,16 @@ void	init_free_name_value(char **name, char **value, int i)
 	}
 	else
 	{
-		if (name != NULL)
+		if (name != NULL && *name)
+		{
 			free(*name);
-		if (value != NULL)
+			*name = NULL;
+		}
+		if (value != NULL && *value)
+		{
 			free(*value);
+			*value = NULL;
+		}
 	}
 }
 

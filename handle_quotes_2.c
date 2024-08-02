@@ -3,24 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   handle_quotes_2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:06 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 16:56:03 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/02 15:08:48 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int dollar_to_result(t_handle_vars *l_vars, t_exec_vars *vars,
+		t_env **env)
+{
+	ft_memset(l_vars->buffer, '\0', sizeof(l_vars->buffer));
+	if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, env))
+		return (1);
+	if (update_result(l_vars->result, l_vars->buffer, vars))
+		return (1);
+	return (0);
+}
 
 void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
 		t_env **env, t_p_tree **node)
 {
 	if (ft_strchr(l_vars->token, '$') != NULL)
 	{
-		ft_memset(l_vars->buffer, '\0', sizeof(l_vars->buffer));
-		if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, env))
-			return ;
-		if (update_result(l_vars->result, l_vars->buffer, vars))
+		if (dollar_to_result(l_vars, vars, env))
 			return ;
 		if (ft_strchr((*node)->data->lexeme, '$') != NULL
 			&& ft_strchr(l_vars->buffer, ' '))

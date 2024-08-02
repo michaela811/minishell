@@ -47,7 +47,7 @@ void	helper_fd_out_checker(t_p_tree **node, t_exec_vars *vars)
 				(*node)->child->data->lexeme);
 		else
 			print_err(1, 2,
-				"my(s)hell: %s: No such file or directory\n",
+				"my(s)hell: %s: Not a directory\n",
 				(*node)->child->data->lexeme);
 	}
 }

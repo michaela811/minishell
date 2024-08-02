@@ -65,10 +65,12 @@ void	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 	*node = (*node)->child;
 }
 
+
+
 void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 			t_env **env)
 {
-	char	*start;
+	//char	*start;
 	char	*exp_lexeme;
 
 	quotes_glob_redirect(node, vars, env);
@@ -82,9 +84,10 @@ void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 		return ;
 	}
 	ft_memset(exp_lexeme, '\0', sizeof(exp_lexeme));
-	start = (*node)->child->data->lexeme;
-	if (handle_dollar_sign(&start, exp_lexeme, env, sizeof(exp_lexeme)))// do we need it???
-		return (free(exp_lexeme));
+	//start = (*node)->child->data->lexeme;
+	//if (handle_dollar_sign(&start, exp_lexeme, env, sizeof(exp_lexeme)))// do we need it???
+		//return (free(exp_lexeme));
+	ft_strcpy(exp_lexeme, (*node)->child->data->lexeme);
 	if (helper_is_dir(exp_lexeme, vars))
 		return ;
 	free(exp_lexeme);

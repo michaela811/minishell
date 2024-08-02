@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_path_for_exec.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 10:41:00 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/02 14:51:19 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,10 @@ int	exec_from_cwd(char *cmd, char **path)
 				126);
 		return (0);
 	}
-	return (print_err(127, 2,
+	return (-1);
+	/* return (print_err(127, 2,
 			"my(s)hell: %s: No such file or directory\n",
-			cmd), 127);
+			cmd), 127); */
 }
 
 int	get_cwd(char *cmd, char **path, char **path_array)//get_cwd(cmd, path, path_array)
