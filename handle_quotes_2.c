@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:06 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 10:44:54 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 16:56:03 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ void	handle_with_current_dollar(t_handle_vars *l_vars,
 			if (!check_null(*l_vars->result, &vars->error))
 				return ;
 		}
-		//return ;
 	}
 }
 
