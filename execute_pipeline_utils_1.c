@@ -26,8 +26,10 @@ int	handle_child_process(int *pipefd, t_free_data *exec_data)
 	}
 	execute_node(exec_data);
 	free_exit_data(exec_data);
-		if (exec_data->hd_fd != -1)
-			close(exec_data->hd_fd);
+	if (exec_data->hd_fd != -1)
+		close(exec_data->hd_fd);
+	close(STDOUT_FILENO);
+	close(STDIN_FILENO);
 	exit(g_last_exit_status);
 }
 
