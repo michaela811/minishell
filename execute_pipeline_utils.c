@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:27 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 10:02:35 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 17:21:49 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,12 @@ pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data)
 		close(pipefd[1]);
 		if (exec_data->hd_fd != -1)
 			close(exec_data->hd_fd);
+		//close(STDIN_FILENO);	
 		return_value = execute_pipeline(exec_data);
 		free_exit_data(exec_data);
+		close(STDIN_FILENO);
 		exit(return_value);
 	}
 	close(pipefd[0]);
-	close(pipefd[1]);
 	return (pid2);
 }

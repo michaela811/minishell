@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 11:16:01 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/01 16:55:13 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,14 @@ void	set_fds(int fd_in, int fd_out)
 void	clean_child_cmd(t_exec_vars *vars, t_free_data *exec_data)
 {
 	cleanup(vars);
-    free_env_array(vars->args);
-    if (vars->open_fd_in)
-        close(vars->fd_in);
-    free(vars);
+	free_env_array(vars->args);
+	if (vars->open_fd_in)
+		close(vars->fd_in);
+	free(vars);
 	vars = NULL;
-    free_exit_data(exec_data);
-    if (exec_data->hd_fd != -1)
-        close(exec_data->hd_fd);
+	free_exit_data(exec_data);
+	if (exec_data->hd_fd != -1)
+		close(exec_data->hd_fd);
 }
 
 int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment,
