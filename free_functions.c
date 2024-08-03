@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:49 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:36:51 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/03 17:39:27 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,12 @@ void	free_array(char **array)
 
 	i = -1;
 	while (array[++i])
+	{
 		free(array[i]);
+		array[i] = NULL;
+	}
 	free(array);
+	array = NULL;
 }
 
 void	free_env(t_env *head)

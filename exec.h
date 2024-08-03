@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:11 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 12:31:01 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/02 22:05:18 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,13 @@ void		handle_node_data(t_p_tree **node, t_exec_vars *vars,
 int			execute_node(t_free_data *exec_data);
 int			err_check_fork(t_exec_vars *vars, t_env **env,
 				char **path);
-int			is_there_here_doc(t_p_tree **tree, int *here_docs);
-int			pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fdc);
-int			pipe_heredoc(t_p_tree **node, t_exec_vars *vars, int *here_docs);
+int			is_there_here_doc(t_p_tree **tree, int *here_docs, t_env **env);
+int			pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd);
+char		*get_heredoc_content(char *contents, char *buffer);
+int			is_it_delimiter(char *node, char *buffer);
+int			get_stdin(void);
+
+int			pipe_heredoc(t_p_tree **node, t_exec_vars *vars, int *here_docs, t_env **env);
 int			open_heredoc_file(char *filename, t_exec_vars *vars);
 int			get_cwd(char *cmd, char **exec, char **path);
 int			handle_colon (char **pre_path, t_env *env);

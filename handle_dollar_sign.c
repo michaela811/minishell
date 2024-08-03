@@ -50,6 +50,14 @@ void	handle_var_name(char **start, char *buffer, char *dollar, t_env **env)
 	*start = var_end;
 }
 
+void if_dollar(char *buffer, char *start_store, char *dollar, char **start)
+{
+    if (dollar == NULL)
+        ft_strcpy(buffer, start_store);
+    else if (*start)
+        ft_strcat(buffer, *start);
+}
+
 int	handle_dollar_sign(char **start, char *buffer, t_env **env,
 			int buffer_size)
 {
@@ -76,9 +84,6 @@ int	handle_dollar_sign(char **start, char *buffer, t_env **env,
 		dollar = ft_strchr((dollar + 1), '$');
 	}
 	dollar = ft_strchr(start_store, '$');
-	if (dollar == NULL)
-		ft_strcpy(buffer, start_store);
-	else if (*start)
-		ft_strcat(buffer, *start);
+	if_dollar(buffer, start_store, dollar, start);
 	return (0);
 }
