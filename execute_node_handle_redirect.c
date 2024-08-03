@@ -134,6 +134,8 @@ void	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars ,
 		vars->fd_in = *here_docs;
 	else
 	{
+		if (vars->fd_in)
+			close(vars->fd_in);
 		filename = handle_here_doc(node, vars, env);
 		if (vars->error)
 			return ;

@@ -31,7 +31,6 @@ pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data)
 		close(pipefd[1]);
 		if (exec_data->hd_fd != -1)
 			close(exec_data->hd_fd);
-		//close(STDIN_FILENO);	
 		return_value = execute_pipeline(exec_data);
 		free_exit_data(exec_data);
 		close(STDIN_FILENO);
