@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_handle_redirect.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 11:20:30 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/03 19:28:10 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,44 @@
 void	handle_redirection(t_p_tree **node, t_exec_vars *vars, t_env **env,
 		int *here_docs)
 {
-	if ((*node)->data->type == RED_FROM)
-		return (handle_redirection_from(node, vars, env));
-	else if ((*node)->data->type == RED_TO)
-		return (handle_redirection_to(node, vars, env));
-	else if ((*node)->data->type == APPEND)
-		return (handle_redirection_append(node, vars, env));
-	else if ((*node)->data->type == HERE_DOC)
+	char *redirect_copy;
+
+	if ((*node)->data->type == HERE_DOC)
 		return (handle_redirection_here_doc(node, vars, here_docs, env));
+	redirect_copy = ft_strdup((*node)->data->lexeme);
+	if (!redirect_copy)
+	{
+		vars->error = 1;
+		return ;
+	}
+	if ((*node)->data->type == RED_FROM)
+		handle_redirection_from(node, vars, env, redirect_copy);
+	else if ((*node)->data->type == RED_TO)
+		handle_redirection_to(node, vars, env, redirect_copy);
+	else if ((*node)->data->type == APPEND)
+		handle_redirection_append(node, vars, env, redirect_copy);
+	free(redirect_copy);
+}
+
+int	is_ambiguous_redirect(t_p_tree **node, t_exec_vars *vars, char *redirect_copy)
+{
+	if (ft_strcmp((*node)->child->data->lexeme, "") == 0)
+	{
+		vars->error = 1;
+		return (print_err(1, 2,
+				"my(s)hell: %s: ambiguous redirect\n",
+				redirect_copy), 1);
+	}
+	return (0);
 }
 
 void	handle_redirection_from(t_p_tree **node,
-			t_exec_vars *vars, t_env **env)
+			t_exec_vars *vars, t_env **env, char *redirect_copy)
 {
 	quotes_glob_redirect(node, vars, env);
 	if (vars->error)
+		return ;
+	if (is_ambiguous_redirect(node, vars, redirect_copy))
 		return ;
 	vars->fd_in = open((*node)->child->data->lexeme, O_RDONLY);
 	if (vars->fd_in == -1)
@@ -43,10 +66,12 @@ void	handle_redirection_from(t_p_tree **node,
 }
 
 void	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
-			t_env **env)
+			t_env **env, char *redirect_copy)
 {
 	quotes_glob_redirect(node, vars, env);
 	if (g_last_exit_status)
+		return ;
+	if (is_ambiguous_redirect(node, vars, redirect_copy))
 		return ;
 	vars->fd_out = open((*node)->child->data->lexeme,
 			O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -68,13 +93,15 @@ void	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 
 
 void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
-			t_env **env)
+			t_env **env, char *redirect_copy)
 {
 	//char	*start;
 	char	*exp_lexeme;
 
 	quotes_glob_redirect(node, vars, env);
 	if (g_last_exit_status)
+		return ;
+	if (is_ambiguous_redirect(node, vars, redirect_copy))
 		return ;
 	exp_lexeme = malloc(4096);
 	if (!exp_lexeme)
