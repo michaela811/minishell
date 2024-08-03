@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/02 16:14:07 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/03 21:25:06 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int process_args(char **args, t_env **env)
     int i;
 
 	i = 0;
-    init_free_name_value(&name, &value, 1);
+    init_free_name_value(&name, &value, i);
     while (args[++i] != NULL && g_last_exit_status != ENOMEM)
     {
         empty = 0;
@@ -37,6 +37,7 @@ int process_args(char **args, t_env **env)
 			init_free_name_value(&name, &value, i);
         }
     }
+	init_free_name_value(&name, &value, i);
     return (g_last_exit_status);
 }
 
@@ -50,7 +51,7 @@ int exec_export(char **args, t_env **env)
 
 void	init_free_name_value(char **name, char **value, int i)
 {
-	if (i == 1)
+	if (i == 0)
 	{
 		*name = NULL;
 		*value = NULL;
