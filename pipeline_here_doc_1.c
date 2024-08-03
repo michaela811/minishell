@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 16:15:59 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/02 22:21:15 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/03 18:20:18 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,13 @@ void handle_heredoc_quotes(int fd, t_p_tree **node, t_exec_vars *vars, t_env **e
 {
      char *lexeme_no_quotes;
 
-    lexeme_no_quotes = ft_strdup((*node)->child->data->lexeme);
+    lexeme_no_quotes = ft_strdup((*node)->data->lexeme);
     if (lexeme_no_quotes == NULL)
     {
         vars->error = 1;
         return;
     }
-    if (ft_strpbrk((*node)->child->data->lexeme, "'\"") != NULL)
+    if (ft_strpbrk((*node)->data->lexeme, "'\"") != NULL)
     {
         remove_quotes(&lexeme_no_quotes, &vars->error);
         if (!vars->error)
@@ -177,7 +177,7 @@ int	pipe_heredoc(t_p_tree **node, t_exec_vars *vars, int *here_docs, t_env **env
 int	is_there_here_doc(t_p_tree **tree, int *here_docs, t_env **env)
 {
 	t_p_tree	*current;
-	t_exec_vars	*vars;
+	t_exec_vars	*vars = NULL;
 
 	current = *tree;
 	if (current != NULL)
@@ -187,20 +187,34 @@ int	is_there_here_doc(t_p_tree **tree, int *here_docs, t_env **env)
 			if (current->child->data != NULL
 				&& current->child->data->type == HERE_DOC)
 			{
+				if (*here_docs != -1)
+				{
+					free_array(vars->args);
+					free(vars);
+					vars = NULL;
+					close(*here_docs);
+					*here_docs = -1;
+				}
 				vars = malloc(sizeof(t_exec_vars));
 				if (!vars)
 					return (print_err(1, 2,
-							"my(s)hell: execute_node malloc error\n"), 1);
+						"my(s)hell: execute_node malloc error\n"), 1);
 				init_exec_vars(vars);
-				//if (pipe_heredoc(&current->child->child, vars, here_docs, env))
-				if (pipe_heredoc(&current->child, vars, here_docs, env))
-					return (free_array(vars->args), free(vars), 1);
+				pipe_heredoc(&current->child->child, vars, here_docs, env);
+				//if (pipe_heredoc(&current->child, vars, here_docs, env) == 0)
+					//return (free_array(vars->args), free(vars), 0);
 			}
 			//else
 				current = current->child;
 		}
+		//return (free_array(vars->args), free(vars), 0);
 		//free_array(vars->args);//maybe not safe to free if not initialized
 		//free(vars);
+	}
+	if (*here_docs != -1)
+	{
+		free_array(vars->args);
+		free(vars);
 	}
 	return (0);
 }
