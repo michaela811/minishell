@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_error_messages.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:30:37 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/24 15:15:36 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/03 22:32:31 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,14 @@ int	path_status_2(t_exec_vars *vars, char **path)
 
 int	path_status_1(t_exec_vars *vars, t_env **env, char **path)
 {
+	/* if (path && ft_strcmp(*path, "") == 0)
+	{
+		free(*path);
+		*path = NULL;
+		return (print_err(127, 2,
+				"my(s)hell: %s: No such file or directory\n",
+				vars->args[0]), 127);
+	} */
 	if (*path != vars->args[0])
 	{
 		free(*path);
@@ -53,7 +61,7 @@ int	path_status_1(t_exec_vars *vars, t_env **env, char **path)
 		return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
 				vars->args[0]), 126);
 		//if (access(vars->args[0], F_OK) == -1 && )
-	return (print_err(127, 2, "my(s)hell: %s: command not found\n",
+	return (print_err(127, 2, "my(s)hell: %s: No such file or directory\n",
 			vars->args[0]), 127);
 }
 
