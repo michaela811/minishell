@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_handle_heredoc.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/24 16:39:22 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/02 20:08:15 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void	process_heredoc_dollar_closed(int file, char *lexeme_no_quotes)
 	}
 }
 
-void	process_heredoc_dollar_open(int file, t_exec_vars *vars, t_env **env,
+int	process_heredoc_dollar_open(int file, t_exec_vars *vars, t_env **env,
 		char *lexeme_no_quotes)
 {
 	char	*line;
@@ -101,17 +101,22 @@ void	process_heredoc_dollar_open(int file, t_exec_vars *vars, t_env **env,
 			break ;*/
 		line = get_next_line(fileno(stdin));
 		if (line == NULL)
-			break ;
+			return (1);
 		buffer = ft_strtrim(line, "\n");
+		if (buffer == NULL)
+		{
+			//vars->error = 1;
+			return (print_err(1, 2, "my(s)hell: malloc\n"), 1);
+		}
 		free(line);
 		if (ft_exact_strcmp(buffer, lexeme_no_quotes) == 0)
 		{
 			free(buffer);
-			break ;
+			return (0);
 		}
 		buffer_start = buffer;
 		if (handle_dollar_error(&buffer, buffer_no_dollar, vars, env))
-			return (free(buffer_start));
+			return (free(buffer_start) , 1);
 		write(file, buffer_no_dollar, ft_strlen(buffer_no_dollar));
 		write(file, "\n", 1);
 		free(buffer_start);
@@ -127,10 +132,16 @@ char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars, t_env **env)
 	filename = "/tmp/heredoc.txt";
 	lexeme_no_quotes = ft_strdup((*node)->child->data->lexeme);
 	if (lexeme_no_quotes == NULL)
-		return (NULL);
+	{
+		vars->error = 1;
+		return (print_err(1, 2, "my(s)hell: malloc\n"), NULL);
+	}
 	file = open_heredoc_file(filename, vars);
 	if (file == -1)
+	{
+		vars->error = 1;
 		return (free(lexeme_no_quotes), NULL);
+	}
 	if (ft_strpbrk((*node)->child->data->lexeme, "'\"") != NULL)
 	{
 		remove_quotes(&lexeme_no_quotes, &vars->error);
@@ -138,8 +149,9 @@ char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars, t_env **env)
 			return (free(lexeme_no_quotes), close(file), NULL);
 		process_heredoc_dollar_closed(file, lexeme_no_quotes);
 	}
-	else
-		process_heredoc_dollar_open(file, vars, env, lexeme_no_quotes);
+	else if (process_heredoc_dollar_open(file, vars, env, lexeme_no_quotes))
+		//process_heredoc_dollar_open(file, vars, env, lexeme_no_quotes);
+		vars->error = 1;// TEST IF FILENAME ACUTALLY PROCESSED
 	close(file); //probably no need to free
 	free(lexeme_no_quotes);
 	return (filename);

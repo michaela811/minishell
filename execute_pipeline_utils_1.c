@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipeline_utils_1.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 17:51:57 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/03 18:22:29 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 		num_commands++;
 	}
 	ft_waitpid(num_commands, pids, statuses);
+	if (exec_data->hd_fd != -1)
+		close(exec_data->hd_fd);
 	g_last_exit_status = statuses[num_commands - 1];
 	return (g_last_exit_status);
 }
@@ -99,6 +101,7 @@ int	execute_pipeline(t_free_data *exec_data)
 	int			return_value;
 
 	return_value = 0;
+	exec_data->hd_fd = -1;
 	if (exec_data->tree == NULL)
 		return (0);
 	if (exec_data->tree->sibling != NULL)
@@ -106,7 +109,9 @@ int	execute_pipeline(t_free_data *exec_data)
 		if (pipe(pipefd) == -1)
 			return (print_err(1, 2, "my(s)hell: pipe\n"), 1);
 	}
-	is_there_here_doc(&exec_data->tree, &exec_data->hd_fd);
+	is_there_here_doc(&exec_data->tree, &exec_data->hd_fd, &exec_data->env);
+	//if (is_there_here_doc(&exec_data->tree, &exec_data->hd_fd, &exec_data->env))
+		//return (1);
 	pid = fork();
 	if (fork_check(pid, pipefd))
 		return (1);

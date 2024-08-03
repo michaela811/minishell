@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 19:01:29 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/02 16:14:07 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	exec_export_no_args(t_env *env)
 	current = env;
 	while (current != NULL)
 	{
-		printf("export %s=\"%s\"\n", current->name, current->value);
+		ft_printf_fd(STDOUT_FILENO, "export %s=\"%s\"\n", current->name, current->value);
 		current = current->next;
 	}
 }

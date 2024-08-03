@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline_here_doc.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 11:09:49 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/02 21:57:25 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	get_stdin(void)
+int	get_stdin(void)
 {
 	int				tty_fd;
 	struct termios	term;
@@ -56,7 +56,7 @@ char	*get_heredoc_content(char *contents, char *buffer)
 	return (contents);
 }
 
-static int	is_it_delimiter(char *node, char *buffer)
+int	is_it_delimiter(char *node, char *buffer)
 {
 	if (ft_exact_strcmp(buffer, node) == 0)
 	{

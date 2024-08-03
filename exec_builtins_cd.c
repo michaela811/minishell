@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtins_cd.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 10:36:45 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/02 16:14:47 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int	exec_cd(char **args, t_env **env)
 					args[0]), g_last_exit_status);
 		change_directory_and_update(get_env_var(*env, "OLDPWD"),
 			env, args);
-		printf("%s\n", get_env_var(*env, "PWD"));
+		ft_printf_fd(STDOUT_FILENO, "%s\n", get_env_var(*env, "PWD"));
 		return (g_last_exit_status);
 	}
 	else
