@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_handle_redirect_utils.c               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:03 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 11:20:30 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/03 19:52:09 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,9 @@ void	helper_fd_out_checker(t_p_tree **node, t_exec_vars *vars)
 		if (errno == EACCES)
 			print_err(1, 2, "my(s)hell: %s: Permission denied\n",
 				(*node)->child->data->lexeme);
+		else if (errno == ENOENT)
+            print_err(1, 2, "my(s)hell: %s: No such file or directory\n",
+                (*node)->child->data->lexeme);
 		else
 			print_err(1, 2,
 				"my(s)hell: %s: Not a directory\n",
