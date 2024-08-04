@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/02 14:51:19 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/04 10:30:11 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	is_a_directory(char *path)
 	return (S_ISDIR(path_stat.st_mode));
 }
 
-int	exec_from_cwd(char *cmd, char **path)
+/* int	exec_from_cwd(char *cmd, char **path)
 {
 	if (exec_cwd(cmd, path))
 		return (1);
@@ -39,10 +39,27 @@ int	exec_from_cwd(char *cmd, char **path)
 				126);
 		return (0);
 	}
-	return (-1);
-	/* return (print_err(127, 2,
+	//return (-1);
+	return (print_err(127, 2,
 			"my(s)hell: %s: No such file or directory\n",
-			cmd), 127); */
+			cmd), 127);
+} */
+
+int	exec_from_cwd(char *cmd, char **path)
+{
+	if (exec_cwd(cmd, path))
+		return (1);
+	if (cmd && *cmd && access(*path, F_OK) == 0)
+	{
+		if (is_a_directory(*path))
+			return (free(*path), print_err(126, 2, "my(s)hell: %s: Is a directory\n", cmd), 126);
+		if (access(*path, X_OK) == 0)
+			return (0);
+		else
+			return (free(*path), print_err(126, 2, "my(s)hell: %s: Permission denied\n", cmd), 126);
+	}
+	else
+		return (free(*path), print_err(127, 2, "my(s)hell: %s: No such file or directory\n", cmd), 127);
 }
 
 int	get_cwd(char *cmd, char **path, char **path_array)//get_cwd(cmd, path, path_array)
@@ -77,9 +94,9 @@ int	get_path(char *cmd, t_env *env, char **path)//get_path(vars->args[0], *env, 
 	if (handle_initial_path(&pre_path, env))
 		return (1);
 	if (pre_path == NULL)
-		return (exec_from_cwd(cmd, path));
+		return (exec_from_cwd(cmd, path));//, exec_no_path(cmd));
 	if (pre_path && pre_path[0] == '\0')
-		return (free(pre_path), exec_from_cwd(cmd, path));
+		return (free(pre_path), exec_from_cwd(cmd, path));//, exec_no_path(cmd));
 	path_array = ft_split(pre_path, ':');
 	if (path_array == NULL)
 		return (free(pre_path), print_err(1, 2, "my(s)hell: malloc error in split function\n"), 1);
