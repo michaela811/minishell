@@ -47,7 +47,7 @@ int	path_status_1(t_exec_vars *vars, t_env **env, char **path)
 		return (print_err(127, 2, "my(s)hell: %s: command not found\n",
 			vars->args[0]), 127);
 	if (*path != vars->args[0] && ft_strcmp(vars->args[0], "") == 0)//entered here
-		return (print_err(127, 2, "my(s)hell: %s: command not found\n",
+		return (free(*path), print_err(127, 2, "my(s)hell: %s: command not found\n",
 			vars->args[0]), 127);
 	if (*path != vars->args[0])
 	{

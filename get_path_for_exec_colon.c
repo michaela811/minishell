@@ -98,7 +98,7 @@ int	handle_colon(char **pre_path, t_env *env)
 			return (1);
 	}
 	len = ft_strlen(*pre_path);
-	if ((*pre_path)[len - 1] == ':')
+	if (len > 0 && (*pre_path)[len - 1] == ':')
 	{
 		if (join_and_free(pre_path, ".", 0))
 			return (1);
