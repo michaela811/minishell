@@ -94,8 +94,6 @@ void	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 	*node = (*node)->child;
 }
 
-
-
 void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 			t_env **env, char *redirect_copy)
 {
