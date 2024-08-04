@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_handle_child_cmd.c                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 16:55:13 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/04 15:08:39 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,23 +20,25 @@ static int	print_and_exit(t_exec_vars *vars)
 
 void	cleanup(t_exec_vars *vars)
 {
-	if (vars->fd_in != 0)
+	//if (vars->fd_in != 0)
 		close(vars->fd_in);
-	if (vars->fd_out != 1)
+	//if (vars->fd_out != 1)
 		close(vars->fd_out);
 }
 
-void	set_fds(int fd_in, int fd_out)
+void	set_fds(int fd_in, int fd_out, t_exec_vars *vars)
 {
 	if (fd_in != 0)
 	{
 		dup2(fd_in, 0);
 		close(fd_in);
+		vars->fd_in = 0;
 	}
 	if (fd_out != 1)
 	{
 		dup2(fd_out, 1);
 		close(fd_out);
+		vars->fd_out = 1;
 	}
 }
 
@@ -59,7 +61,7 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment,
 	char	*path;
 
 	path = NULL;
-	set_fds(vars->fd_in, vars->fd_out);
+	set_fds(vars->fd_in, vars->fd_out, vars);
 	if (access(vars->args[0], F_OK | X_OK) == 0 && vars->args[0][0] == '/')
 		path = vars->args[0];
 	if ((err_check_fork(vars, env, &path)) != 0)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:08 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 10:53:48 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/04 15:12:20 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

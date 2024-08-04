@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_dollar_sign.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:57 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 11:18:11 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/04 14:12:51 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	handle_question_mark(char **start, char *buffer, char *dollar)
 	if (!check_null(exit_status, &g_last_exit_status))
 		return (1);
 	ft_strcat(buffer, exit_status);
+	free(exit_status);
 	*start = dollar + 2;
 	return (0);
 }
