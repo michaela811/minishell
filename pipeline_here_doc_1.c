@@ -201,15 +201,9 @@ int	is_there_here_doc(t_p_tree **tree, int *here_docs, t_env **env)
 						"my(s)hell: execute_node malloc error\n"), 1);
 				init_exec_vars(vars);
 				pipe_heredoc(&current->child->child, vars, here_docs, env);
-				//if (pipe_heredoc(&current->child, vars, here_docs, env) == 0)
-					//return (free_array(vars->args), free(vars), 0);
 			}
-			//else
 				current = current->child;
 		}
-		//return (free_array(vars->args), free(vars), 0);
-		//free_array(vars->args);//maybe not safe to free if not initialized
-		//free(vars);
 	}
 	if (*here_docs != -1)
 	{

@@ -110,8 +110,6 @@ int	execute_pipeline(t_free_data *exec_data)
 			return (print_err(1, 2, "my(s)hell: pipe\n"), 1);
 	}
 	is_there_here_doc(&exec_data->tree, &exec_data->hd_fd, &exec_data->env);
-	//if (is_there_here_doc(&exec_data->tree, &exec_data->hd_fd, &exec_data->env))
-		//return (1);
 	pid = fork();
 	if (fork_check(pid, pipefd))
 		return (1);

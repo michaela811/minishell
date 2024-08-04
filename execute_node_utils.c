@@ -16,9 +16,9 @@ void	init_exec_vars(t_exec_vars *vars)
 {
 	int	i;
 
-	vars->fd_in = -1;//0;
+	vars->fd_in = 0;
 	vars->open_fd_in = 0;
-	vars->fd_out = -1;//1;
+	vars->fd_out = 1;
 	vars->capacity = 10;
 	vars->args = malloc(vars->capacity * sizeof(char *));
 	if (!vars->args)
