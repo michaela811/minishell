@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:30:37 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/04 10:26:31 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/04 10:44:30 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ int	path_status_2(t_exec_vars *vars, char **path)
 
 int	path_status_1(t_exec_vars *vars, t_env **env, char **path)
 {
-	/* if (*path == vars->args[0] && ft_strcmp(vars->args[0], "") != 0)
+	if (*path == vars->args[0] && ft_strcmp(vars->args[0], "") != 0)
 		return (print_err(127, 2, "my(s)hell: %s: command not found\n",
-			vars->args[0]), 127); */
+			vars->args[0]), 127);
 	if (*path != vars->args[0] && ft_strcmp(vars->args[0], "") == 0)//entered here
 		return (print_err(127, 2, "my(s)hell: %s: command not found\n",
 			vars->args[0]), 127);
