@@ -24,7 +24,6 @@ int	get_stdin(void)
 			return (print_err(errno, 2,
 					"my(s)hell: dup2 tty_fd to STDIN_FILENO"),
 					close(tty_fd), 1);
-		dup2(tty_fd, STDIN_FILENO);
 		close(tty_fd);
 	}
 	return (0);
