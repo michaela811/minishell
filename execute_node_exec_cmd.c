@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_exec_cmd.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:25 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 17:28:27 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/04 14:44:03 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,11 @@ int	handle_fork(t_exec_vars *vars, t_env **env, t_free_data *exec_data)
 		exit (g_last_exit_status);
 	}
 	waitpid(pid, &status, 0);
+	//cleanup(vars);
+	/* if (vars->fd_in != 0)
+		close(vars->fd_in);
+	if (vars->fd_out != 1)
+		close(vars->fd_out); */
 	if (WIFEXITED(status))
 		g_last_exit_status = WEXITSTATUS(status);
 	return (g_last_exit_status);

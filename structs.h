@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   structs.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:40 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/24 16:28:58 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/04 14:57:50 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

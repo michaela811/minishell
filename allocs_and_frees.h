@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   allocs_and_frees.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:30:16 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 14:26:52 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/04 14:40:25 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,3 +30,5 @@ void			free_handle_vars(t_handle_vars *l_vars);
 void			check_capacity(t_exec_vars *vars);
 void			print_echo(int status, unsigned int fd, char *format, ...);
 void			free_vars(t_exec_vars *vars);
+void			cleanup(t_exec_vars *vars);
+void			clean_child_cmd(t_exec_vars *vars, t_free_data *exec_data);
