@@ -54,6 +54,8 @@ void	handle_redirection_from(t_p_tree **node,
 		return ;
 	if (is_ambiguous_redirect(node, vars, redirect_copy))
 		return ;
+	if (vars->fd_in)
+		close(vars->fd_in);
 	vars->fd_in = open((*node)->child->data->lexeme, O_RDONLY);
 	if (vars->fd_in == -1)
 	{
@@ -73,6 +75,8 @@ void	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 		return ;
 	if (is_ambiguous_redirect(node, vars, redirect_copy))
 		return ;
+	if (vars->fd_out)
+		close(vars->fd_out);
 	vars->fd_out = open((*node)->child->data->lexeme,
 			O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (vars->fd_out == -1)
@@ -118,6 +122,8 @@ void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 	if (helper_is_dir(exp_lexeme, vars))
 		return ;
 	free(exp_lexeme);
+	if (vars->fd_out)
+		close(vars->fd_out);
 	vars->fd_out = open((*node)->child->data->lexeme, O_WRONLY | O_CREAT
 			| O_APPEND, 0644);
 	helper_fd_out_checker(node, vars);

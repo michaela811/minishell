@@ -30,5 +30,6 @@ void			free_handle_vars(t_handle_vars *l_vars);
 void			check_capacity(t_exec_vars *vars);
 void			print_echo(int status, unsigned int fd, char *format, ...);
 void			free_vars(t_exec_vars *vars);
-void			cleanup(t_exec_vars *vars);
+//void			cleanup(t_exec_vars *vars);
+void	cleanup(void);
 void			clean_child_cmd(t_exec_vars *vars, t_free_data *exec_data);
