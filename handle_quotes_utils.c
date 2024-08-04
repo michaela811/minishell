@@ -27,6 +27,8 @@ int	update_result(char **result, char *updated_result, t_exec_vars *vars)
 {
 	char	*new_result;
 
+	if (updated_result == NULL)
+		return (0);
 	new_result = ft_strjoin(*result, updated_result);
 	if (!check_null(new_result, &vars->error))
 		return (1);
