@@ -18,33 +18,33 @@ static int	print_and_exit(t_exec_vars *vars)
 	exit(127);
 }
 
-void	cleanup(t_exec_vars *vars)
+void	cleanup(void)//(t_exec_vars *vars)
 {
-	//if (vars->fd_in != 0)
+	/* if (vars->fd_in != 0)
 		close(vars->fd_in);
-	//if (vars->fd_out != 1)
-		close(vars->fd_out);
+	if (vars->fd_out != 1)
+		close(vars->fd_out); */
+	close(10);
+	close(11);
 }
 
-void	set_fds(int fd_in, int fd_out, t_exec_vars *vars)
+void	set_fds(int fd_in, int fd_out)
 {
-	if (fd_in != 0)
+	if (fd_in != STDIN_FILENO)
 	{
-		dup2(fd_in, 0);
+		dup2(fd_in, 10);//if assign to 0 won't it be stdin? same for 1
 		close(fd_in);
-		vars->fd_in = 0;
 	}
-	if (fd_out != 1)
+	if (fd_out != STDOUT_FILENO)
 	{
-		dup2(fd_out, 1);
+		dup2(fd_out, 11);
 		close(fd_out);
-		vars->fd_out = 1;
 	}
 }
 
 void	clean_child_cmd(t_exec_vars *vars, t_free_data *exec_data)
 {
-	cleanup(vars);
+	cleanup();
 	free_env_array(vars->args);
 	if (vars->open_fd_in)
 		close(vars->fd_in);
@@ -61,7 +61,7 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment,
 	char	*path;
 
 	path = NULL;
-	set_fds(vars->fd_in, vars->fd_out, vars);
+	set_fds(vars->fd_in, vars->fd_out);
 	if (access(vars->args[0], F_OK | X_OK) == 0 && vars->args[0][0] == '/')
 		path = vars->args[0];
 	if ((err_check_fork(vars, env, &path)) != 0)
@@ -76,6 +76,8 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment,
 		free_exit_data(exec_data);
 		if (exec_data->hd_fd != -1)
 			close(exec_data->hd_fd); */
+		//close(STDOUT_FILENO);//NOT SURE!!!
+		//close(STDIN_FILENO);//NOT SURE!!!
 		exit (g_last_exit_status);
 	}
 	g_last_exit_status = execve(path, vars->args, environment);
