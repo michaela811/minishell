@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_handle_child_cmd.c                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/04 15:08:39 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/05 14:24:43 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,6 @@ void	clean_child_cmd(t_exec_vars *vars, t_free_data *exec_data)
 {
 	cleanup(vars);
 	free_env_array(vars->args);
-	if (vars->open_fd_in)
-		close(vars->fd_in);
 	free(vars);
 	vars = NULL;
 	free_exit_data(exec_data);
