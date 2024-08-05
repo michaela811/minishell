@@ -6,11 +6,18 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 16:15:59 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/05 14:28:38 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/05 18:55:00 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int handle_sigint(int g_last_exit_status)
+{
+	if (g_last_exit_status == 130)
+		return (1);
+	return (0);
+}
 
 int	pipe_heredoc_dollar_open(char *lexeme_no_quotes, t_exec_vars *vars,
 	int fd, t_env **env)
@@ -26,6 +33,13 @@ int	pipe_heredoc_dollar_open(char *lexeme_no_quotes, t_exec_vars *vars,
 	while (1)
 	{
 		buffer = readline("heredoc> ");
+		if (handle_sigint(g_last_exit_status))
+		{
+			free(buffer);
+			//write(STDIN_FILENO, "\n", 1);
+			//ioctl(STDOUT_FILENO, TIOCSTI, "\n");
+			break ;
+		}
 		if (buffer == NULL)
 			break ;
 		if (is_it_delimiter(lexeme_no_quotes, buffer))
@@ -55,7 +69,17 @@ int	pipe_heredoc_dollar_closed(char *lexeme_no_quotes, t_exec_vars *vars, int fd
 		return (1);
 	while (1)
 	{
+		/*if (signal(SIGINT, handle_signal))
+		{
+			//free(buffer);
+			break ;
+		}*/
 		buffer = readline("heredoc> ");
+		if (g_last_exit_status == 130)
+		{
+			free(buffer);
+			break ;
+		}
 		if (buffer == NULL)
 		{
 			vars->error = 1;
