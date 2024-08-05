@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:33 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/03 19:25:12 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/05 10:31:58 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 void	handle_redirection(t_p_tree **node, t_exec_vars *vars, t_env **env,
 			int *here_docs);
 void	handle_redirection_from(t_p_tree **node, t_exec_vars *vars,
-			t_env **env, char *redirect_copy);
+			t_env **env);
 void	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
-			t_env **env, char *redirect_copy);
+			t_env **env);
 void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
-			t_env **env, char *redirect_copy);
+			t_env **env);
 void	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars ,
 			int *here_docs, t_env **env);
 char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars, t_env **env);

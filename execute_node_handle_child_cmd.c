@@ -18,33 +18,31 @@ static int	print_and_exit(t_exec_vars *vars)
 	exit(127);
 }
 
-void	cleanup(void)//(t_exec_vars *vars)
+void	cleanup(t_exec_vars *vars)
 {
-	/* if (vars->fd_in != 0)
+	if (vars->fd_in)
 		close(vars->fd_in);
-	if (vars->fd_out != 1)
-		close(vars->fd_out); */
-	close(10);
-	close(11);
+	if (vars->fd_out)
+		close(vars->fd_out);
 }
 
 void	set_fds(int fd_in, int fd_out)
 {
-	if (fd_in != STDIN_FILENO)
+	if (fd_in != 0)
 	{
-		dup2(fd_in, 10);//if assign to 0 won't it be stdin? same for 1
+		dup2(fd_in, 0);
 		close(fd_in);
 	}
-	if (fd_out != STDOUT_FILENO)
+	if (fd_out != 1)
 	{
-		dup2(fd_out, 11);
+		dup2(fd_out, 1);
 		close(fd_out);
 	}
 }
 
 void	clean_child_cmd(t_exec_vars *vars, t_free_data *exec_data)
 {
-	cleanup();
+	cleanup(vars);
 	free_env_array(vars->args);
 	if (vars->open_fd_in)
 		close(vars->fd_in);
@@ -53,6 +51,7 @@ void	clean_child_cmd(t_exec_vars *vars, t_free_data *exec_data)
 	free_exit_data(exec_data);
 	if (exec_data->hd_fd != -1)
 		close(exec_data->hd_fd);
+	close(STDIN_FILENO);
 }
 
 int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment,
@@ -67,33 +66,12 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment,
 	if ((err_check_fork(vars, env, &path)) != 0)
 	{
 		clean_child_cmd(vars, exec_data);
-		/* cleanup(vars);
-		free_env_array(vars->args);
-		if (vars->open_fd_in)
-			close(vars->fd_in);
-		free(vars);
-		vars = NULL;
-		free_exit_data(exec_data);
-		if (exec_data->hd_fd != -1)
-			close(exec_data->hd_fd); */
-		//close(STDOUT_FILENO);//NOT SURE!!!
-		//close(STDIN_FILENO);//NOT SURE!!!
 		exit (g_last_exit_status);
 	}
 	g_last_exit_status = execve(path, vars->args, environment);
 	if (g_last_exit_status < 0)
 	{
 		clean_child_cmd(vars, exec_data);
-		/* cleanup(vars);
-		free_env_array(vars->args);
-		if (vars->open_fd_in)
-			close(vars->fd_in);
-		free(vars);
-		free_exit_data(exec_data);
-		if (exec_data->hd_fd != -1)
-			close(exec_data->hd_fd);
-		if (path)
-			free(path); */
 		print_and_exit(vars);
 	}
 	exit (EXIT_SUCCESS);

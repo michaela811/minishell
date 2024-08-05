@@ -50,14 +50,7 @@ int	handle_fork(t_exec_vars *vars, t_env **env, t_free_data *exec_data)
 		exit (g_last_exit_status);
 	}
 	waitpid(pid, &status, 0);
-	//cleanup(vars);
-	if (vars->fd_in != 0)
-		close(vars->fd_in);//closing copied files?
-	if (vars->fd_out != 1)
-		close(vars->fd_out);//closing copied files?
 	if (WIFEXITED(status))
 		g_last_exit_status = WEXITSTATUS(status);
-	//close(STDOUT_FILENO);    //Here probably defenitely not needed
-	//close(STDIN_FILENO);
 	return (g_last_exit_status);
 }

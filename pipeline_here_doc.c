@@ -23,7 +23,7 @@ int	get_stdin(void)
 		if (dup2(tty_fd, STDIN_FILENO) == -1)
 			return (print_err(errno, 2,
 					"my(s)hell: dup2 tty_fd to STDIN_FILENO"),
-				close(tty_fd), 1);
+					close(tty_fd), 1);
 		close(tty_fd);
 	}
 	return (0);
