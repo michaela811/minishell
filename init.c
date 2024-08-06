@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:16 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 10:50:40 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 13:49:22 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ t_free_data	*init_command_data(char **envp, t_free_data *exec_data)
 	exec_data->token_list_start = NULL;
 	exec_data->tree_start = NULL;
 	exec_data->hd_fd = -1;
+	exec_data->dollar_status = 0;
 	return (exec_data);
 }
 

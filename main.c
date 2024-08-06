@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 12:15:21 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 13:49:00 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ int	main(int argc, char **argv, char **envp)
 		handle_input(input, &exec_data);
 		//free(input);
 	}
-	return (g_last_exit_status);
+	return (exec_data.dollar_status);
 }
 
 void	handle_input(char *input, t_free_data *exec_data)
