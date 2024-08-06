@@ -51,7 +51,7 @@ int	control_name(char *var, char **name, int *i)
 	{
 		if (!ft_isalnum((*name)[*i]) && (*name)[*i] != '_')
 			return (print_err(1, 2,
-					"mini(s)hell: %s: `%s': not a valid identifier\n",
+					"my(s)hell: %s: `%s': not a valid identifier\n",
 					var[0], *name), free(*name), g_last_exit_status);
 		(*i)++;
 	}
