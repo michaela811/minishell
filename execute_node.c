@@ -51,6 +51,7 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 				if (vars->args[0][0] == '\0')
 					free(vars->args[0]);
 				vars->i = 0;
+			}
 			//if (vars->error != 0)
 				//return (g_last_exit_status);
 		}
