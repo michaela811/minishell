@@ -52,6 +52,7 @@ SOURCES = env_main.c \
 			get_path_for_exec.c \
 			get_path_for_exec_utils.c \
 			get_path_for_exec_colon.c \
+			execute_node_handle_heredoc_1.c \
 
 
 OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))

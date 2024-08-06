@@ -6,13 +6,13 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:30 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 11:24:44 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 14:32:17 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void print_err(int status, unsigned int fd, char *format, ...)
+void	print_err(int status, unsigned int fd, char *format, ...)
 {
 	va_list		args;
 	va_list		args_copy;

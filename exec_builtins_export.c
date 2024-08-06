@@ -3,50 +3,50 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtins_export.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/03 21:25:06 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 14:53:38 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int process_args(char **args, t_env **env)
+int	process_args(char **args, t_env **env)
 {
-    char *name;
-    char *value;
-    int control;
-    int empty;
-    int i;
+	char	*name;
+	char	*value;
+	int		control;
+	int		empty;
+	int		i;
 
 	i = 0;
-    init_free_name_value(&name, &value, i);
-    while (args[++i] != NULL && g_last_exit_status != ENOMEM)
-    {
-        empty = 0;
-        control = var_control(args[0], args[i], &empty);
-        if (control == 1 || empty == 1)
-			continue;
-        else
-        {
-            if (split_to_name_value(args, &name, &value, &i))
-                continue;
-            if (exec_update_add_env_var(env, name, value))
-                continue;
-			init_free_name_value(&name, &value, i);
-        }
-    }
 	init_free_name_value(&name, &value, i);
-    return (g_last_exit_status);
+	while (args[++i] != NULL && g_last_exit_status != ENOMEM)
+	{
+		empty = 0;
+		control = var_control(args[0], args[i], &empty);
+		if (control == 1 || empty == 1)
+			continue ;
+		else
+		{
+			if (split_to_name_value(args, &name, &value, &i))
+				continue ;
+			if (exec_update_add_env_var(env, name, value))
+				continue ;
+			init_free_name_value(&name, &value, i);
+		}
+	}
+	init_free_name_value(&name, &value, i);
+	return (g_last_exit_status);
 }
 
-int exec_export(char **args, t_env **env)
+int	exec_export(char **args, t_env **env)
 {
-    if (args[1] == NULL)
-        return (exec_export_no_args(*env), 0);
-    g_last_exit_status = process_args(args, env);
-    return (g_last_exit_status);
+	if (args[1] == NULL)
+		return (exec_export_no_args(*env), 0);
+	g_last_exit_status = process_args(args, env);
+	return (g_last_exit_status);
 }
 
 void	init_free_name_value(char **name, char **value, int i)
@@ -78,7 +78,8 @@ void	exec_export_no_args(t_env *env)
 	current = env;
 	while (current != NULL)
 	{
-		ft_printf_fd(STDOUT_FILENO, "export %s=\"%s\"\n", current->name, current->value);
+		ft_printf_fd(STDOUT_FILENO, "export %s=\"%s\"\n",
+			current->name, current->value);
 		current = current->next;
 	}
 }

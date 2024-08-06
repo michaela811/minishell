@@ -6,13 +6,13 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 16:15:59 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 14:18:15 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 15:22:55 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	pipe_heredoc_dollar_open(char *lexeme_no_quotes, t_exec_vars *vars,
+int	pipe_heredoc_dollar_open(char *no_quotes_lex, t_exec_vars *vars,
 		int fd, t_free_data *exec_data)
 {
 	char	*buffer;
@@ -42,7 +42,7 @@ int	pipe_heredoc_dollar_open(char *lexeme_no_quotes, t_exec_vars *vars,
 		free(line);
 		if (buffer == NULL)
 			break ;
-		if (is_it_delimiter(lexeme_no_quotes, buffer))
+		if (is_it_delimiter(no_quotes_lex, buffer))
 			break ;
 		buffer_start = buffer;
 		if (handle_dollar_error(&buffer, buffer_no_dollar, vars, exec_data))
@@ -59,7 +59,7 @@ int	pipe_heredoc_dollar_open(char *lexeme_no_quotes, t_exec_vars *vars,
 	return (0);
 }
 
-int	pipe_heredoc_dollar_closed(char *lexeme_no_quotes, t_exec_vars *vars, int fd)
+int	pipe_heredoc_dollar_closed(char *no_quotes_lex, t_exec_vars *vars, int fd)
 {
 	char	*buffer;
 	char	*contents;
@@ -89,7 +89,7 @@ int	pipe_heredoc_dollar_closed(char *lexeme_no_quotes, t_exec_vars *vars, int fd
 			vars->error = 1;
 			break ;
 		}
-		if (is_it_delimiter(lexeme_no_quotes, buffer))
+		if (is_it_delimiter(no_quotes_lex, buffer))
 			break ;
 		contents = get_heredoc_content(contents, buffer);
 		ft_strcat(contents, "\n");
@@ -106,24 +106,24 @@ int	pipe_heredoc_dollar_closed(char *lexeme_no_quotes, t_exec_vars *vars, int fd
 void handle_heredoc_quotes(int fd, t_p_tree **node, t_exec_vars *vars,
 		t_free_data *exec_data)
 {
-    char	*lexeme_no_quotes;
+    char	*no_quotes_lex;
 
-    lexeme_no_quotes = ft_strdup((*node)->data->lexeme);
-    if (lexeme_no_quotes == NULL)
+    no_quotes_lex = ft_strdup((*node)->data->lexeme);
+    if (no_quotes_lex == NULL)
     {
         vars->error = 1;
         return;
     }
     if (ft_strpbrk((*node)->data->lexeme, "'\"") != NULL)
     {
-        remove_quotes(&lexeme_no_quotes, &vars->error);
+        remove_quotes(&no_quotes_lex, &vars->error);
         if (!vars->error)
-            if (pipe_heredoc_dollar_closed(lexeme_no_quotes, vars, fd))
+            if (pipe_heredoc_dollar_closed(no_quotes_lex, vars, fd))
 				vars->error = 1;
     }
-    else if (pipe_heredoc_dollar_open(lexeme_no_quotes, vars, fd, exec_data))
+    else if (pipe_heredoc_dollar_open(no_quotes_lex, vars, fd, exec_data))
         vars->error = 1;
-    free(lexeme_no_quotes);
+    free(no_quotes_lex);
 }
 
 int	pipe_heredoc(t_p_tree **node, t_exec_vars *vars, int *here_docs,

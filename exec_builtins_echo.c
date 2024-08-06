@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtins_echo.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:56 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 12:13:29 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 14:49:23 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,7 @@ int	exec_echo(t_exec_vars *vars)
 
 	i = 1;
 	if (vars->args[1] == NULL)
-	{
-		//g_last_exit_status = 0;
 		return (print_echo(g_last_exit_status, vars->fd_out, "\n"), 1);
-	}
 	while (vars->args[i] && echo_n_control(vars->args[i]))
 		i++;
 	while (vars->args[i])
@@ -50,6 +47,5 @@ int	exec_echo(t_exec_vars *vars)
 	}
 	if (echo_n_control(vars->args[1]) == 0)
 		print_echo(g_last_exit_status, vars->fd_out, "\n");
-	//g_last_exit_status = 0;
 	return (g_last_exit_status);
 }
