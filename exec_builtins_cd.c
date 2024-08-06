@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/02 16:14:47 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 12:13:07 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	change_directory_and_update(char *path, t_env **env, char **args)
 		g_last_exit_status = 1;
 		return (1);
 	}
-	g_last_exit_status = 0;
+	//g_last_exit_status = 0;
 	return (g_last_exit_status);
 }
 

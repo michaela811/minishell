@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtins_unset.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 11:22:26 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 12:13:48 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,6 @@ int	exec_unset(char **args, t_env **env)
 	current = *env;
 	prev = NULL;
 	handle_unset(current, prev, env, args);
-	g_last_exit_status = 0;
+	//g_last_exit_status = 0;
 	return (0);
 }

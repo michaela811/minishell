@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:54 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 11:40:51 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 12:13:52 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars,
 		if (vars->end)
 		{
 			vars->end = 0;
-			g_last_exit_status = 0;
+			//g_last_exit_status = 0;
 			return (free_handle_vars(&l_vars));
 		}
 		if (vars->error)
