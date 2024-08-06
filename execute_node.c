@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 15:23:30 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 20:08:25 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,13 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 	{
 		if (exec_data->tree->data != NULL)
 		{
-			handle_node_data(&exec_data->tree, vars, exec_data,
-				&exec_data->hd_fd);
+			if (handle_node_data(&exec_data->tree, vars, exec_data,
+				&exec_data->hd_fd))
+				return (g_last_exit_status);
 			if (vars->args[0] == NULL)
 				vars->i = 0;
-			if (vars->error != 0)
-				return (g_last_exit_status);
+			//if (vars->error != 0)
+				//return (g_last_exit_status);
 		}
 		check_capacity(vars);
 		exec_data->tree = exec_data->tree->child;
@@ -55,11 +56,11 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 	return (0);
 }
 
-void	handle_node_data(t_p_tree **node, t_exec_vars *vars,
+int	handle_node_data(t_p_tree **node, t_exec_vars *vars,
 		t_free_data *exec_data, int *here_docs)
 {
 	if (is_only_space_tabs((*node)->data->lexeme))
-		return ;
+		return (0);
 	if ((*node)->data->type == RED_FROM || (*node)->data->type == RED_TO
 		|| (*node)->data->type == APPEND || (*node)->data->type == HERE_DOC)
 		return (handle_redirection(node, vars, exec_data, here_docs));
@@ -67,13 +68,13 @@ void	handle_node_data(t_p_tree **node, t_exec_vars *vars,
 	if (!vars->args[vars->i])
 	{
 		vars->error = 1;
-		return (print_err(1, 2, "my(s)hell: ft_strdup error\n"));
+		return (print_err(1, 2, "my(s)hell: ft_strdup error\n"), 1);
 	}
 	handle_quotes_glob(node, vars, exec_data);
 	if (vars->error)
 	{
 		g_last_exit_status = 1;
-		return ;
+		return (1);
 	}
 	if (!*vars->args[vars->i] && ft_strchr((*node)->data->lexeme, '$') != NULL
 		&& ft_strchr((*node)->data->lexeme, '"') == NULL
@@ -82,6 +83,7 @@ void	handle_node_data(t_p_tree **node, t_exec_vars *vars,
 	}
 	else
 		vars->i++;
+	return (0);
 }
 
 int	execute_node(t_free_data *exec_data)

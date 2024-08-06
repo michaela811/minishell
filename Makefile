@@ -53,6 +53,7 @@ SOURCES = env_main.c \
 			free_functions_1.c \
 			pipeline_here_doc.c \
 			pipeline_here_doc_1.c \
+			pipeline_here_doc_dollar.c \
 			get_path_for_exec.c \
 			get_path_for_exec_utils.c \
 			get_path_for_exec_colon.c \

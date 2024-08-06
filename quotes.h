@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:27 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 16:10:46 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 20:11:17 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,4 @@ void	handle_error_and_free_redirect(t_exec_vars *vars, t_handle_vars *l_vars,
 			t_p_tree **node);
 int		buffer_end_space(char *buffer);
 void	update_args(t_exec_vars *vars, t_handle_vars *l_vars);
-void	remove_quotes(char **lexeme_ptr, int *error);
-int		open_heredoc_file(char *filename, t_exec_vars *vars);
+int		remove_quotes(char **lexeme_ptr);
