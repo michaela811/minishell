@@ -65,16 +65,25 @@ void	remove_quotes(char **lexeme_ptr, int *error)
 
 void	process_heredoc_dollar_closed(int file, char *lexeme_no_quotes)
 {
-	char	*line;
+	//char	*line;
 	char	*buffer;
 
 	while (1)
 	{
-		line = get_next_line(fileno(stdin));
-		if (line == NULL)
+		buffer = readline("heredoc> ");
+		if (buffer == NULL)
 			break ;
-		buffer = ft_strtrim(line, "\n");
-		free(line);
+		//line = get_next_line(fileno(stdin));
+		//if (line == NULL)
+		//	break ;
+		if (g_last_exit_status == 130)
+		{
+			free(buffer);
+			//free(line);
+			break ;
+		}
+		//buffer = ft_strtrim(line, "\n");
+		//free(line);
 		if (ft_exact_strcmp(buffer, lexeme_no_quotes) == 0)
 		{
 			free(buffer);
@@ -89,26 +98,35 @@ void	process_heredoc_dollar_closed(int file, char *lexeme_no_quotes)
 int	process_heredoc_dollar_open(int file, t_exec_vars *vars, t_env **env,
 		char *lexeme_no_quotes)
 {
-	char	*line;
+	//char	*line;
 	char	*buffer;
 	char	buffer_no_dollar[1024];
 	char	*buffer_start;
 
 	while (1)
 	{
-		/*buffer = readline("heredoc> ");
+		buffer = readline("heredoc> ");
 		if (buffer == NULL)
-			break ;*/
-		line = get_next_line(fileno(stdin));
-		if (line == NULL)
+			break ;
+		//line = get_next_line(fileno(stdin));
+		//if (line == NULL)
+		//	return (1);
+		if (g_last_exit_status == 130)
+		{
+			free(buffer);
+			//free(line);
+			//rl_replace_line("", 0);
+			//rl_on_new_line();
+			//rl_redisplay();
 			return (1);
-		buffer = ft_strtrim(line, "\n");
+		}
+		//buffer = ft_strtrim(line, "\n");
 		if (buffer == NULL)
 		{
 			//vars->error = 1;
 			return (print_err(1, 2, "my(s)hell: malloc\n"), 1);
 		}
-		free(line);
+		//free(line);
 		if (ft_exact_strcmp(buffer, lexeme_no_quotes) == 0)
 		{
 			free(buffer);
@@ -121,6 +139,7 @@ int	process_heredoc_dollar_open(int file, t_exec_vars *vars, t_env **env,
 		write(file, "\n", 1);
 		free(buffer_start);
 	}
+	return (0);
 }
 
 char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars, t_env **env)

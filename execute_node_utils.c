@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:08 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/04 15:12:20 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/05 14:24:21 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void	init_exec_vars(t_exec_vars *vars)
 	int	i;
 
 	vars->fd_in = 0;
-	vars->open_fd_in = 0;
 	vars->fd_out = 1;
 	vars->capacity = 10;
 	vars->args = malloc(vars->capacity * sizeof(char *));

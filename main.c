@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 11:44:18 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/05 18:30:35 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,16 @@ void	handle_signal(int signal)
 
 	if (signal == SIGINT)
 	{
+		g_last_exit_status = 130;
 		write(STDOUT_FILENO, "\n", 1);
+		//rl_replace_line("", 0);
+		//rl_on_new_line();
+		//rl_redisplay();
+		//ioctl(STDIN_FILENO, TIOCSTI, "\n");
 		rl_replace_line("", 0);
 		rl_on_new_line();
 		rl_redisplay();
-		g_last_exit_status = 130;
+		//g_last_exit_status = 130;
 	}
 	else if (signal == SIGQUIT)
 	{
