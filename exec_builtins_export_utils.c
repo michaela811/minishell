@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 13:03:57 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 14:50:32 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	split_to_name_value(char **args, char **name, char **value, int *i)
 	if (split_var(args[*i], name, value))
 	{
 		g_last_exit_status = 1;
-		//(*i)++;
 		return (1);
 	}
 	return (0);
@@ -30,7 +29,6 @@ int	split_var(char *var, char **name, char **value)
 
 	i = 1;
 	equals = ft_strchr(var, '=');
-	//if (equals)
 	*name = ft_strndup(var, equals - var);
 	if (*name == NULL)
 		return (print_err(ENOMEM, 2,

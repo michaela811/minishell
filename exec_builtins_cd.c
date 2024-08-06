@@ -3,14 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtins_cd.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 12:13:07 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 14:48:16 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static int	ft_update_pwd(t_env **env)
+{
+	if (update_pwd(env))
+	{
+		g_last_exit_status = 1;
+		return (1);
+	}
+	return (0);
+}
 
 int	change_directory_and_update(char *path, t_env **env, char **args)
 {
@@ -35,13 +45,9 @@ int	change_directory_and_update(char *path, t_env **env, char **args)
 	if (chdir(path) != 0)
 		return (print_err(1, 2,
 				"my(s)hell: %s: %s: Unable to change directory\n", args[0],
-				path), 1); // NOT sure about the error message
-	if (update_pwd(env))
-	{
-		g_last_exit_status = 1;
+				path), 1);
+	if (ft_update_pwd(env))
 		return (1);
-	}
-	//g_last_exit_status = 0;
 	return (g_last_exit_status);
 }
 
@@ -50,17 +56,20 @@ int	update_pwd(t_env **env)
 	char	*pwd;
 	char	*cwd;
 
-	pwd = get_env_var(*env, "PWD");//maybe add if PWD doesn't exist?
+	pwd = get_env_var(*env, "PWD");
 	if (!pwd)
 		pwd = getcwd(NULL, 0);
 	if (pwd == NULL)
-		return (print_err(1, 2, "my(s)hell: cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory"), 1);
+		return (print_err(1, 2, "my(s)hell: cd: error retrieving current"
+				" directory: getcwd: cannot access parent directories: "
+				"No such file or directory\n"), 1);
 	if (update_add_env_var(env, "OLDPWD", pwd))
 		return (1);
 	cwd = getcwd(NULL, 0);
 	if (cwd == NULL)
-		return (print_err(1, 2, "my(s)hell: cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory"), 1);
-		//return (perror("getcwd"), 1);
+		return (print_err(1, 2, "my(s)hell: cd: error retrieving current"
+				"directory: getcwd: cannot access parent directories: "
+				"No such file or directory\n"), 1);
 	if (update_add_env_var(env, "PWD", cwd))
 		return (free(cwd), 1);
 	return (free(cwd), 0);

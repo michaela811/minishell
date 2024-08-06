@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_error_messages.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:30:37 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/04 10:44:30 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 14:58:53 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ int	path_status_2(t_exec_vars *vars, char **path)
 			&& vars->args[0][1] == '/')
 		return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
 				vars->args[0]), 126);
-		//if (access(vars->args[0], F_OK) == -1 && )
 	return (print_err(127, 2, "my(s)hell: %s: command not found\n",
 			*path), 127);
 }
@@ -45,10 +44,10 @@ int	path_status_1(t_exec_vars *vars, t_env **env, char **path)
 {
 	if (*path == vars->args[0] && ft_strcmp(vars->args[0], "") != 0)
 		return (print_err(127, 2, "my(s)hell: %s: command not found\n",
-			vars->args[0]), 127);
-	if (*path != vars->args[0] && ft_strcmp(vars->args[0], "") == 0)//entered here
-		return (free(*path), print_err(127, 2, "my(s)hell: %s: command not found\n",
-			vars->args[0]), 127);
+				vars->args[0]), 127);
+	if (*path != vars->args[0] && ft_strcmp(vars->args[0], "") == 0)
+		return (free(*path), print_err(127, 2,
+				"my(s)hell: %s: command not found\n", vars->args[0]), 127);
 	if (*path != vars->args[0])
 	{
 		free(*path);
@@ -61,7 +60,6 @@ int	path_status_1(t_exec_vars *vars, t_env **env, char **path)
 	if (access(vars->args[0], F_OK) == 0 && !find_env_var(*env, "PATH"))
 		return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
 				vars->args[0]), 126);
-		//if (access(vars->args[0], F_OK) == -1 && )
 	return (print_err(127, 2, "my(s)hell: %s: No such file or directory\n",
 			vars->args[0]), 127);
 }

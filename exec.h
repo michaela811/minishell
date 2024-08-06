@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:11 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 14:12:13 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 14:57:26 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,6 @@ int			pipe_heredoc(t_p_tree **node, t_exec_vars *vars, int *here_docs,
 				t_free_data *exec_data);
 int			open_heredoc_file(char *filename, t_exec_vars *vars);
 int			get_cwd(char *cmd, char **exec, char **path);
-int			handle_colon (char **pre_path, t_env *env);
+int			handle_colon(char **pre_path, t_env *env);
 int			exec_cwd(char *cmd, char **exec);
 int			exec_from_path(char **path_array, char *cmd, char **path);

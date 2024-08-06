@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline_here_doc.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 14:14:08 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 14:11:08 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ int	get_stdin(void)
 	int				tty_fd;
 	struct termios	term;
 
+	if (isatty(STDIN_FILENO) == 0)
+		return (0);
 	if (tcgetattr(STDIN_FILENO, &term) == -1)
 	{
 		tty_fd = open("/dev/tty", O_RDONLY);

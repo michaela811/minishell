@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_main.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:30:37 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/17 17:35:30 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 14:30:19 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ char	**env_list_to_array(t_env *head)
 	return (env_array);
 }
 
-int	get_exec(char **path_array, int i, char *cmd, char **path)//get_exec(path_array, 0, cmd, path))
+int	get_exec(char **path_array, int i, char *cmd, char **path)
 {
 	char	*path_part;
 
