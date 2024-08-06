@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   handle_quotes_redirect.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:54 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 11:15:31 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 11:40:51 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars, t_env **env)
+void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars,
+		t_free_data *exec_data)
 {
 	t_handle_vars	l_vars;
 
@@ -25,9 +26,9 @@ void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars, t_env **env)
 		if (vars->inside_single_quotes)
 			handle_single_quotes(l_vars.current, l_vars.result, vars);
 		else if (vars->inside_double_quotes)
-			handle_double_quotes(l_vars.current, l_vars.result, vars, env);
+			handle_double_quotes(l_vars.current, l_vars.result, vars, exec_data);
 		else
-			handle_no_quotes_redirect(&l_vars, vars, env, node);
+			handle_no_quotes_redirect(&l_vars, vars, exec_data, node);
 		if (vars->end)
 		{
 			vars->end = 0;
@@ -42,11 +43,11 @@ void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars, t_env **env)
 }
 
 void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
-		t_env **env, t_p_tree **node)
+		t_free_data *exec_data, t_p_tree **node)
 {
 	if (ft_strchr(l_vars->token, '$') != NULL)
 	{
-		if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, env))
+		if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, exec_data))
 			return ;
 		if (update_result(l_vars->result, l_vars->buffer, vars))
 			return ;
@@ -67,7 +68,7 @@ void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 }
 
 void	handle_with_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
-		t_env **env, t_p_tree **node)
+		t_free_data *exec_data, t_p_tree **node)
 {
 	char	delimiter;
 
@@ -75,7 +76,7 @@ void	handle_with_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 	**l_vars->current = '\0';
 	if (ft_strchr((*node)->data->lexeme, '$') != NULL)
 	{
-		if (handle_dollar_sign(&l_vars->token, l_vars->buffer, env,
+		if (handle_dollar_sign(&l_vars->token, l_vars->buffer, exec_data,
 				sizeof(l_vars->buffer)))
 		{
 			vars->error = 1;
@@ -93,7 +94,7 @@ void	handle_with_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 }
 
 void	handle_no_quotes_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
-		t_env **env, t_p_tree **node)
+		t_free_data *exec_data, t_p_tree **node)
 {
 	char	*temp;
 
@@ -101,11 +102,11 @@ void	handle_no_quotes_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 	temp = ft_strpbrk(*l_vars->current, l_vars->delimiters);
 	if (temp == NULL)
 	{
-		handle_no_current_redirect(l_vars, vars, env, node);
+		handle_no_current_redirect(l_vars, vars, exec_data, node);
 		return ;
 	}
 	*l_vars->current = temp;
-	handle_with_current_redirect(l_vars, vars, env, node);
+	handle_with_current_redirect(l_vars, vars, exec_data, node);
 }
 
 void	handle_error_and_free_redirect(t_exec_vars *vars, t_handle_vars *l_vars,

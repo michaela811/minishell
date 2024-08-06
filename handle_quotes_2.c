@@ -6,17 +6,17 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:06 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/02 15:08:48 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 11:56:08 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 int dollar_to_result(t_handle_vars *l_vars, t_exec_vars *vars,
-		t_env **env)
+		t_free_data *exec_data)
 {
 	ft_memset(l_vars->buffer, '\0', sizeof(l_vars->buffer));
-	if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, env))
+	if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, exec_data))
 		return (1);
 	if (update_result(l_vars->result, l_vars->buffer, vars))
 		return (1);
@@ -24,11 +24,11 @@ int dollar_to_result(t_handle_vars *l_vars, t_exec_vars *vars,
 }
 
 void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
-		t_env **env, t_p_tree **node)
+		t_free_data *exec_data, t_p_tree **node)
 {
 	if (ft_strchr(l_vars->token, '$') != NULL)
 	{
-		if (dollar_to_result(l_vars, vars, env))
+		if (dollar_to_result(l_vars, vars, exec_data))
 			return ;
 		if (ft_strchr((*node)->data->lexeme, '$') != NULL
 			&& ft_strchr(l_vars->buffer, ' '))
@@ -53,9 +53,9 @@ void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
 }
 
 void	handle_with_current_dollar(t_handle_vars *l_vars,
-			t_exec_vars *vars, t_env **env, t_p_tree **node)
+			t_exec_vars *vars, t_free_data *exec_data, t_p_tree **node)
 {
-	if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, env))
+	if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, exec_data))
 		return ;
 	update_result(l_vars->result, l_vars->buffer, vars);
 	if (vars->error)
@@ -83,7 +83,7 @@ void	handle_with_current_dollar(t_handle_vars *l_vars,
 }
 
 void	handle_with_current(t_handle_vars *l_vars,
-		t_exec_vars *vars, t_env **env, t_p_tree **node)
+		t_exec_vars *vars, t_free_data *exec_data, t_p_tree **node)
 {
 	char	delimiter;
 
@@ -91,7 +91,7 @@ void	handle_with_current(t_handle_vars *l_vars,
 	**l_vars->current = '\0';
 	if (ft_strchr(l_vars->token, '$') != NULL)
 	{
-		handle_with_current_dollar(l_vars, vars, env, node);
+		handle_with_current_dollar(l_vars, vars, exec_data, node);
 		if (vars->error)
 			return ;
 	}

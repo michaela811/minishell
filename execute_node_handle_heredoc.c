@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/02 20:08:15 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 11:17:31 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,8 @@ void	process_heredoc_dollar_closed(int file, char *lexeme_no_quotes)
 	}
 }
 
-int	process_heredoc_dollar_open(int file, t_exec_vars *vars, t_env **env,
-		char *lexeme_no_quotes)
+int	process_heredoc_dollar_open(int file, t_exec_vars *vars,
+		t_free_data *exec_data, char *lexeme_no_quotes)
 {
 	//char	*line;
 	char	*buffer;
@@ -133,7 +133,7 @@ int	process_heredoc_dollar_open(int file, t_exec_vars *vars, t_env **env,
 			return (0);
 		}
 		buffer_start = buffer;
-		if (handle_dollar_error(&buffer, buffer_no_dollar, vars, env))
+		if (handle_dollar_error(&buffer, buffer_no_dollar, vars, exec_data))
 			return (free(buffer_start) , 1);
 		write(file, buffer_no_dollar, ft_strlen(buffer_no_dollar));
 		write(file, "\n", 1);
@@ -142,7 +142,8 @@ int	process_heredoc_dollar_open(int file, t_exec_vars *vars, t_env **env,
 	return (0);
 }
 
-char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars, t_env **env)
+char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars,
+		t_free_data *exec_data)
 {
 	char	*filename;
 	char	*lexeme_no_quotes;
@@ -168,7 +169,7 @@ char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars, t_env **env)
 			return (free(lexeme_no_quotes), close(file), NULL);
 		process_heredoc_dollar_closed(file, lexeme_no_quotes);
 	}
-	else if (process_heredoc_dollar_open(file, vars, env, lexeme_no_quotes))
+	else if (process_heredoc_dollar_open(file, vars, exec_data, lexeme_no_quotes))
 		//process_heredoc_dollar_open(file, vars, env, lexeme_no_quotes);
 		vars->error = 1;// TEST IF FILENAME ACUTALLY PROCESSED
 	close(file); //probably no need to free

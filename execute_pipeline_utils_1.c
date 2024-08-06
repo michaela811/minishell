@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/03 18:22:29 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 11:58:49 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ int	execute_pipeline(t_free_data *exec_data)
 		if (pipe(pipefd) == -1)
 			return (print_err(1, 2, "my(s)hell: pipe\n"), 1);
 	}
-	is_there_here_doc(&exec_data->tree, &exec_data->hd_fd, &exec_data->env);
+	is_there_here_doc(&exec_data->tree, &exec_data->hd_fd, exec_data);
 	if (g_last_exit_status == 130)
 		return (close(pipefd[1]), close(pipefd[0]), 1);
 	pid = fork();
