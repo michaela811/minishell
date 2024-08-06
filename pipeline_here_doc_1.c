@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 16:15:59 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 12:01:48 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 12:16:15 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ int	pipe_heredoc_dollar_open(char *lexeme_no_quotes, t_exec_vars *vars,
 		//	return (1);
 		if (g_last_exit_status == 130)
 		{
+			if (contents != NULL)
+				free(contents);
 			free(buffer);
 			//free(line);
 			return (1);
@@ -73,9 +75,11 @@ int	pipe_heredoc_dollar_closed(char *lexeme_no_quotes, t_exec_vars *vars, int fd
 		//	return (1);
 		if (g_last_exit_status == 130)
 		{
+			if (contents != NULL)
+				free(contents);
 			free(buffer);
 			//free(line);
-			break ;
+			return (1);
 		}
 		//buffer = ft_strtrim(line, "\n");
 		if (buffer == NULL)
@@ -112,7 +116,8 @@ void handle_heredoc_quotes(int fd, t_p_tree **node, t_exec_vars *vars,
     {
         remove_quotes(&lexeme_no_quotes, &vars->error);
         if (!vars->error)
-            pipe_heredoc_dollar_closed(lexeme_no_quotes, vars, fd);
+            if (pipe_heredoc_dollar_closed(lexeme_no_quotes, vars, fd))
+				vars->error = 1;
     }
     else if (pipe_heredoc_dollar_open(lexeme_no_quotes, vars, fd, exec_data))
         vars->error = 1;

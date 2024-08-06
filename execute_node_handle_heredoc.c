@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 11:17:31 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 12:20:46 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	remove_quotes(char **lexeme_ptr, int *error)
 	*lexeme_ptr = result;
 }
 
-void	process_heredoc_dollar_closed(int file, char *lexeme_no_quotes)
+int	process_heredoc_dollar_closed(int file, char *lexeme_no_quotes)
 {
 	//char	*line;
 	char	*buffer;
@@ -78,21 +78,23 @@ void	process_heredoc_dollar_closed(int file, char *lexeme_no_quotes)
 		//	break ;
 		if (g_last_exit_status == 130)
 		{
-			free(buffer);
+			if (buffer != NULL)
+				free(buffer);
 			//free(line);
-			break ;
+			return (1);
 		}
 		//buffer = ft_strtrim(line, "\n");
 		//free(line);
 		if (ft_exact_strcmp(buffer, lexeme_no_quotes) == 0)
 		{
 			free(buffer);
-			break ;
+			return (0);
 		}
 		write(file, buffer, ft_strlen(buffer));
 		write(file, "\n", 1);
 		free(buffer);
 	}
+	return (0);
 }
 
 int	process_heredoc_dollar_open(int file, t_exec_vars *vars,
@@ -113,19 +115,16 @@ int	process_heredoc_dollar_open(int file, t_exec_vars *vars,
 		//	return (1);
 		if (g_last_exit_status == 130)
 		{
-			free(buffer);
-			//free(line);
-			//rl_replace_line("", 0);
-			//rl_on_new_line();
-			//rl_redisplay();
+			if (buffer != NULL)
+				free(buffer);
 			return (1);
 		}
 		//buffer = ft_strtrim(line, "\n");
-		if (buffer == NULL)
+		/*if (buffer == NULL)
 		{
 			//vars->error = 1;
 			return (print_err(1, 2, "my(s)hell: malloc\n"), 1);
-		}
+		}*/
 		//free(line);
 		if (ft_exact_strcmp(buffer, lexeme_no_quotes) == 0)
 		{
@@ -167,7 +166,8 @@ char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars,
 		remove_quotes(&lexeme_no_quotes, &vars->error);
 		if (vars->error)
 			return (free(lexeme_no_quotes), close(file), NULL);
-		process_heredoc_dollar_closed(file, lexeme_no_quotes);
+		if (process_heredoc_dollar_closed(file, lexeme_no_quotes))
+			vars->error = 1;
 	}
 	else if (process_heredoc_dollar_open(file, vars, exec_data, lexeme_no_quotes))
 		//process_heredoc_dollar_open(file, vars, env, lexeme_no_quotes);
