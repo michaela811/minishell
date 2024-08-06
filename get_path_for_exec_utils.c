@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_path_for_exec_utils.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/24 15:37:53 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 15:19:25 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	exec_cwd(char *cmd, char **exec)
 	return (free(tmp), 0);
 }
 
-int	exec_from_path(char **path_array, char *cmd, char **path)//exec_from_path(path_array, cmd, path)
+int	exec_from_path(char **path_array, char *cmd, char **path)
 {
 	int	i;
 

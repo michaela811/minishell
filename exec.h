@@ -28,7 +28,6 @@ int			err_check_fork(t_exec_vars *vars, t_env **env,
 				char **path);
 int			is_there_here_doc(t_p_tree **tree, int *here_docs,
 				t_free_data *exec_data);
-int			pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd);
 char		*get_heredoc_content(char *contents, char *buffer);
 int			is_it_delimiter(char *node, char *buffer);
 int			get_stdin(void);

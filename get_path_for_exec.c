@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/04 10:30:11 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 15:18:47 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,23 +28,6 @@ int	is_a_directory(char *path)
 	return (S_ISDIR(path_stat.st_mode));
 }
 
-/* int	exec_from_cwd(char *cmd, char **path)
-{
-	if (exec_cwd(cmd, path))
-		return (1);
-	if (cmd && *cmd && access(*path, F_OK | X_OK) == 0)
-	{
-		if (is_a_directory(*path))
-			return (print_err(126, 2, "my(s)hell: %s: Is a directory\n", cmd),
-				126);
-		return (0);
-	}
-	//return (-1);
-	return (print_err(127, 2,
-			"my(s)hell: %s: No such file or directory\n",
-			cmd), 127);
-} */
-
 int	exec_from_cwd(char *cmd, char **path)
 {
 	if (exec_cwd(cmd, path))
@@ -52,17 +35,20 @@ int	exec_from_cwd(char *cmd, char **path)
 	if (cmd && *cmd && access(*path, F_OK) == 0)
 	{
 		if (is_a_directory(*path))
-			return (free(*path), print_err(126, 2, "my(s)hell: %s: Is a directory\n", cmd), 126);
+			return (free(*path), print_err(126, 2,
+					"my(s)hell: %s: Is a directory\n", cmd), 126);
 		if (access(*path, X_OK) == 0)
 			return (0);
 		else
-			return (free(*path), print_err(126, 2, "my(s)hell: %s: Permission denied\n", cmd), 126);
+			return (free(*path), print_err(126, 2,
+					"my(s)hell: %s: Permission denied\n", cmd), 126);
 	}
 	else
-		return (free(*path), print_err(127, 2, "my(s)hell: %s: No such file or directory\n", cmd), 127);
+		return (free(*path), print_err(127, 2,
+				"my(s)hell: %s: No such file or directory\n", cmd), 127);
 }
 
-int	get_cwd(char *cmd, char **path, char **path_array)//get_cwd(cmd, path, path_array)
+int	get_cwd(char *cmd, char **path, char **path_array)
 {
 	char	*cwd;
 
@@ -84,73 +70,28 @@ int	get_cwd(char *cmd, char **path, char **path_array)//get_cwd(cmd, path, path_
 	return (-1);
 }
 
-int	get_path(char *cmd, t_env *env, char **path)//get_path(vars->args[0], *env, path
+int	get_path(char *cmd, t_env *env, char **path)
 {
 	char	**path_array;
 	char	*pre_path;
-	//int exec_result;
 
 	pre_path = NULL;
 	if (handle_initial_path(&pre_path, env))
 		return (1);
 	if (pre_path == NULL)
-		return (exec_from_cwd(cmd, path));//, exec_no_path(cmd));
+		return (exec_from_cwd(cmd, path));
 	if (pre_path && pre_path[0] == '\0')
-		return (free(pre_path), exec_from_cwd(cmd, path));//, exec_no_path(cmd));
+		return (free(pre_path), exec_from_cwd(cmd, path));
 	path_array = ft_split(pre_path, ':');
 	if (path_array == NULL)
-		return (free(pre_path), print_err(1, 2, "my(s)hell: malloc error in split function\n"), 1);
+		return (free(pre_path), print_err(1, 2,
+				"my(s)hell: malloc error in split function\n"), 1);
 	free(pre_path);
 	if (path_array[0] == NULL)
 	{
 		if (get_cwd(cmd, path, path_array))
-			return (free_array(path_array), -1);//return (free_array(path), -1); To be tested what to return
+			return (free_array(path_array), -1);
 		return (free_array(path_array), 0);
 	}
 	return (exec_from_path(path_array, cmd, path));
 }
-
-/* int	get_path(char *cmd, t_env *env, char **exec)
-{
-	int		i;
-	char	**path;
-	char	*pre_path;
-
-	pre_path = NULL;
-	i = -1;
-	if (handle_colon(&pre_path, env))
-		return (print_err(1, 2,
-				"malloc error in handle_colon function\n"), 1);
-	if (pre_path == NULL)
-	{
-		if (exec_cwd(cmd, exec))
-			return (1);
-		if (access(*exec, F_OK | X_OK) == 0)
-			return (0);
-		return (-1);
-	}
-	path = ft_split(pre_path, ':');
-	if (path == NULL)
-		return (free(pre_path), print_err(1, 2,
-				"malloc error in split function\n"), 1);
-	free (pre_path);
-	if (path[0] == NULL)
-	{
-		if(get_cwd(cmd, exec, path))
-			return(free_array(path), -1);//return (free_array(path), -1); To be tested what to return
-		return (free_array(path), 0);
-	}
-	while (path[++i])
-	{
-		if (get_exec(path, i, cmd, exec))
-			return (free_array(path), g_last_exit_status);
-		if (access(*exec, F_OK | X_OK) == 0)
-			return (free_array(path), 0);
-		if (!path[i + 1] && strcmp(path[i], getenv("HOME")) == 0)
-			return (-2);
-		free(*exec);
-	}
-	free_array(path);
-	*exec = cmd;
-	return (-1);
-} */

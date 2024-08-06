@@ -42,7 +42,7 @@ void	handle_no_quotes_redirect(t_handle_vars *local_vars, t_exec_vars *vars,
 int		split_variable(char *arg, int i, t_exec_vars *vars);
 int		update_result(char **result, char *updated_result, t_exec_vars *vars);
 int		handle_dollar_error(char **token, char *buffer, t_exec_vars *vars,
-		t_free_data *exec_data);
+			t_free_data *exec_data);
 void	handle_error_and_free(t_exec_vars *vars, t_handle_vars *l_vars);
 void	handle_error_and_free_redirect(t_exec_vars *vars, t_handle_vars *l_vars,
 			t_p_tree **node);

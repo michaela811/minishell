@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:54 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 12:13:52 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 15:08:44 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,13 @@ void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars,
 		if (vars->inside_single_quotes)
 			handle_single_quotes(l_vars.current, l_vars.result, vars);
 		else if (vars->inside_double_quotes)
-			handle_double_quotes(l_vars.current, l_vars.result, vars, exec_data);
+			handle_double_quotes(l_vars.current, l_vars.result, vars,
+				exec_data);
 		else
 			handle_no_quotes_redirect(&l_vars, vars, exec_data, node);
 		if (vars->end)
 		{
 			vars->end = 0;
-			//g_last_exit_status = 0;
 			return (free_handle_vars(&l_vars));
 		}
 		if (vars->error)
@@ -47,7 +47,8 @@ void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 {
 	if (ft_strchr(l_vars->token, '$') != NULL)
 	{
-		if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, exec_data))
+		if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars,
+				exec_data))
 			return ;
 		if (update_result(l_vars->result, l_vars->buffer, vars))
 			return ;

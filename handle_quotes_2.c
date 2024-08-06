@@ -6,13 +6,13 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:06 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 11:56:08 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 15:13:14 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int dollar_to_result(t_handle_vars *l_vars, t_exec_vars *vars,
+int	dollar_to_result(t_handle_vars *l_vars, t_exec_vars *vars,
 		t_free_data *exec_data)
 {
 	ft_memset(l_vars->buffer, '\0', sizeof(l_vars->buffer));
@@ -65,7 +65,7 @@ void	handle_with_current_dollar(t_handle_vars *l_vars,
 	{
 		vars->i = split_variable(*l_vars->result, vars->i, vars);
 		if (vars->error)
-			return (free(*l_vars->result));//still need it?
+			return (free(*l_vars->result));
 		free(*l_vars->result);
 		if (buffer_end_space(l_vars->buffer))
 		{
@@ -119,10 +119,4 @@ void	handle_error_and_free(t_exec_vars *vars, t_handle_vars *l_vars)
 		return ;
 	}
 	free_handle_vars(l_vars);
-}
-
-void	handle_quotes_final_assign(char **str1, char **str2, t_exec_vars *vars)
-{
-	*str1 = ft_strdup(*str2);
-	check_null(*str1, &vars->error);
 }
