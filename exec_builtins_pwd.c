@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/02 16:15:16 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 12:13:43 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	exec_pwd(void)//(t_env **env)
 	{
 		ft_printf_fd(STDOUT_FILENO,"%s\n", cwd);
 		free(cwd);
-		g_last_exit_status = 0;
+		//g_last_exit_status = 0;
 		return (g_last_exit_status);
 	}
 }

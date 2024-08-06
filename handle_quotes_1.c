@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   handle_quotes_1.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:06 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/01 10:43:25 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 11:55:12 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 void	handle_quotes_glob(t_p_tree **node, t_exec_vars *vars,
-		t_env **env)
+		t_free_data *exec_data)
 {
 	t_handle_vars	l_vars;
 
@@ -28,9 +28,9 @@ void	handle_quotes_glob(t_p_tree **node, t_exec_vars *vars,
 			handle_single_quotes(l_vars.current, l_vars.result, vars);
 		else if (vars->inside_double_quotes)
 			handle_double_quotes(l_vars.current, l_vars.result, vars,
-				env);
+				exec_data);
 		else
-			handle_no_quotes(&l_vars, vars, env, node);
+			handle_no_quotes(&l_vars, vars, exec_data, node);
 		if (vars->end)
 		{
 			vars->end = 0;
@@ -68,7 +68,7 @@ void	handle_double_quotes_split(char **current, t_exec_vars *vars)
 }
 
 void	handle_double_quotes(char **current, char **result,
-			t_exec_vars *vars, t_env **env)
+			t_exec_vars *vars, t_free_data *exec_data)
 {
 	char	buffer[1024];
 	char	*token;
@@ -81,7 +81,7 @@ void	handle_double_quotes(char **current, char **result,
 	**current = '\0';
 	if (ft_strchr(token, '$') != NULL)
 	{
-		if (handle_dollar_error(&token, buffer, vars, env))
+		if (handle_dollar_error(&token, buffer, vars, exec_data))
 			return ;
 		if (update_result(result, buffer, vars))
 			return ;
@@ -94,7 +94,7 @@ void	handle_double_quotes(char **current, char **result,
 }
 
 void	handle_no_quotes(t_handle_vars *l_vars, t_exec_vars *vars,
-				t_env **env, t_p_tree **node)
+				t_free_data *exec_data, t_p_tree **node)
 {
 	char	*temp;
 
@@ -102,9 +102,9 @@ void	handle_no_quotes(t_handle_vars *l_vars, t_exec_vars *vars,
 	temp = ft_strpbrk(*l_vars->current, l_vars->delimiters);
 	if (temp == NULL)
 	{
-		handle_no_current(l_vars, vars, env, node);
+		handle_no_current(l_vars, vars, exec_data, node);
 		return ;
 	}
 	*l_vars->current = temp;
-	handle_with_current(l_vars, vars, env, node);
+	handle_with_current(l_vars, vars, exec_data, node);
 }

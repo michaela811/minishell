@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/04 14:43:48 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 11:42:45 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 	{
 		if (exec_data->tree->data != NULL)
 		{
-			handle_node_data(&exec_data->tree, vars, &exec_data->env,
+			handle_node_data(&exec_data->tree, vars, exec_data,
 				&exec_data->hd_fd);
 			if (vars->args[0] == NULL)
 				vars->i = 0;
@@ -55,21 +55,21 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 	return (0);
 }
 
-void	handle_node_data(t_p_tree **node, t_exec_vars *vars, t_env **env,
+void	handle_node_data(t_p_tree **node, t_exec_vars *vars, t_free_data *exec_data,
 		int *here_docs)
 {
 	if (is_only_space_tabs((*node)->data->lexeme))
 		return ;
 	if ((*node)->data->type == RED_FROM || (*node)->data->type == RED_TO
 		|| (*node)->data->type == APPEND || (*node)->data->type == HERE_DOC)
-		return (handle_redirection(node, vars, env, here_docs));
+		return (handle_redirection(node, vars, exec_data, here_docs));
 	vars->args[vars->i] = ft_strdup((*node)->data->lexeme);
 	if (!vars->args[vars->i])
 	{
 		vars->error = 1;
 		return (print_err(1, 2, "my(s)hell: ft_strdup error\n"));
 	}
-	handle_quotes_glob(node, vars, env);
+	handle_quotes_glob(node, vars, exec_data);
 	if (vars->error)
 	{
 		g_last_exit_status = 1;

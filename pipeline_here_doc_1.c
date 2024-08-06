@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline_here_doc_1.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 16:15:59 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 11:29:20 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 12:16:15 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 int	pipe_heredoc_dollar_open(char *lexeme_no_quotes, t_exec_vars *vars,
-	int fd, t_env **env)
+		int fd, t_free_data *exec_data)
 {
 	char	*buffer;
 	char	buffer_no_dollar[1024];
@@ -44,7 +44,7 @@ int	pipe_heredoc_dollar_open(char *lexeme_no_quotes, t_exec_vars *vars,
 		if (is_it_delimiter(lexeme_no_quotes, buffer))
 			break ;
 		buffer_start = buffer;
-		if (handle_dollar_error(&buffer, buffer_no_dollar, vars, env))
+		if (handle_dollar_error(&buffer, buffer_no_dollar, vars, exec_data))
 			return (free(buffer_start) , 1);
 		contents = get_heredoc_content(contents, buffer_no_dollar);
 		ft_strcat(contents, "\n");
@@ -101,7 +101,8 @@ int	pipe_heredoc_dollar_closed(char *lexeme_no_quotes, t_exec_vars *vars, int fd
 	return (0);
 }
 
-void handle_heredoc_quotes(int fd, t_p_tree **node, t_exec_vars *vars, t_env **env)
+void handle_heredoc_quotes(int fd, t_p_tree **node, t_exec_vars *vars,
+		t_free_data *exec_data)
 {
     char	*lexeme_no_quotes;
 
@@ -118,12 +119,13 @@ void handle_heredoc_quotes(int fd, t_p_tree **node, t_exec_vars *vars, t_env **e
             if (pipe_heredoc_dollar_closed(lexeme_no_quotes, vars, fd))
 				vars->error = 1;
     }
-    else if (pipe_heredoc_dollar_open(lexeme_no_quotes, vars, fd, env))
+    else if (pipe_heredoc_dollar_open(lexeme_no_quotes, vars, fd, exec_data))
         vars->error = 1;
     free(lexeme_no_quotes);
 }
 
-int	pipe_heredoc(t_p_tree **node, t_exec_vars *vars, int *here_docs, t_env **env)
+int	pipe_heredoc(t_p_tree **node, t_exec_vars *vars, int *here_docs,
+		t_free_data *exec_data)
 {
 	char	*filename;
 	int		fd;
@@ -132,7 +134,7 @@ int	pipe_heredoc(t_p_tree **node, t_exec_vars *vars, int *here_docs, t_env **env
 	fd = open_heredoc_file(filename, vars);
 	if (fd == -1)
 		return 1;
-	handle_heredoc_quotes(fd, node, vars, env);
+	handle_heredoc_quotes(fd, node, vars, exec_data);
 	if (vars->error)
 	{
 		close(fd);
@@ -169,7 +171,7 @@ int	pipe_heredoc(t_p_tree **node, t_exec_vars *vars, int *here_docs, t_env **env
 	return (0);
 } */
 
-int	is_there_here_doc(t_p_tree **tree, int *here_docs, t_env **env)
+int	is_there_here_doc(t_p_tree **tree, int *here_docs, t_free_data *exec_data)
 {
 	t_p_tree	*current;
 	t_exec_vars	*vars = NULL;
@@ -195,7 +197,7 @@ int	is_there_here_doc(t_p_tree **tree, int *here_docs, t_env **env)
 					return (print_err(1, 2,
 						"my(s)hell: execute_node malloc error\n"), 1);
 				init_exec_vars(vars);
-				pipe_heredoc(&current->child->child, vars, here_docs, env);
+				pipe_heredoc(&current->child->child, vars, here_docs, exec_data);
 				if (g_last_exit_status == 130)
 				{
 					free_array(vars->args);

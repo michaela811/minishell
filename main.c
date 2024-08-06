@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 10:10:52 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 12:15:21 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,8 @@ int	main(int argc, char **argv, char **envp)
 	}*/
 	while (1)
 	{
+		exec_data.dollar_status = g_last_exit_status;
+		g_last_exit_status = 0;
 		if (isatty(fileno(stdin)))
 		{
 			set_raw_mode(&orig_termios);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_quotes_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:00 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/24 15:32:58 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 11:18:16 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,9 @@ void	update_args(t_exec_vars *vars, t_handle_vars *l_vars)
 }
 
 int	handle_dollar_error(char **token, char *buffer, t_exec_vars *vars,
-		t_env **env)
+		t_free_data *exec_data)
 {
-	if (handle_dollar_sign(token, buffer, env, sizeof(buffer)))
+	if (handle_dollar_sign(token, buffer, exec_data, sizeof(buffer)))
 	{
 		vars->error = 1;
 		return (1);

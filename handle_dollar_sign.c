@@ -6,17 +6,17 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:57 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/04 14:12:51 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 11:52:43 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	handle_question_mark(char **start, char *buffer, char *dollar)
+int	handle_question_mark(char **start, char *buffer, char *dollar, int dollar_status)
 {
 	char	*exit_status;
 
-	exit_status = ft_itoa(g_last_exit_status);
+	exit_status = ft_itoa(dollar_status);
 	if (!check_null(exit_status, &g_last_exit_status))
 		return (1);
 	ft_strcat(buffer, exit_status);
@@ -59,7 +59,7 @@ void if_dollar(char *buffer, char *start_store, char *dollar, char **start)
         ft_strcat(buffer, *start);
 }
 
-int	handle_dollar_sign(char **start, char *buffer, t_env **env,
+int	handle_dollar_sign(char **start, char *buffer, t_free_data *exec_data,
 			int buffer_size)
 {
 	char	*dollar;
@@ -75,13 +75,13 @@ int	handle_dollar_sign(char **start, char *buffer, t_env **env,
 		ft_strncat(buffer, *start, dollar - *start);
 		if (*(dollar + 1) == '?')
 		{
-			if (handle_question_mark(start, buffer, dollar))
+			if (handle_question_mark(start, buffer, dollar, exec_data->dollar_status))
 				return (1);
 		}
 		else if (*(dollar + 1) == '\0' || ft_strchr("$ \"'/", *(dollar + 1)))
 			handle_special_chars(start, buffer, dollar);
 		else
-			handle_var_name(start, buffer, dollar, env);
+			handle_var_name(start, buffer, dollar, &exec_data->env);
 		dollar = ft_strchr((dollar + 1), '$');
 	}
 	dollar = ft_strchr(start_store, '$');
