@@ -12,13 +12,6 @@
 
 #include "minishell.h"
 
-int handle_sigint(int g_last_exit_status)
-{
-	if (g_last_exit_status == 130)
-		return (1);
-	return (0);
-}
-
 int	pipe_heredoc_dollar_open(char *lexeme_no_quotes, t_exec_vars *vars,
 	int fd, t_env **env)
 {
@@ -26,6 +19,7 @@ int	pipe_heredoc_dollar_open(char *lexeme_no_quotes, t_exec_vars *vars,
 	char	buffer_no_dollar[1024];
 	char	*buffer_start;
 	char	*contents;
+	//char	*line;
 
 	contents = NULL;
 	if (get_stdin())
@@ -33,13 +27,16 @@ int	pipe_heredoc_dollar_open(char *lexeme_no_quotes, t_exec_vars *vars,
 	while (1)
 	{
 		buffer = readline("heredoc> ");
-		if (handle_sigint(g_last_exit_status))
+		//line = get_next_line(fileno(stdin));
+		//if (line == NULL)
+		//	return (1);
+		if (g_last_exit_status == 130)
 		{
 			free(buffer);
-			//write(STDIN_FILENO, "\n", 1);
-			//ioctl(STDOUT_FILENO, TIOCSTI, "\n");
-			break ;
+			//free(line);
+			return (1);
 		}
+		//buffer = ft_strtrim(line, "\n");
 		if (buffer == NULL)
 			break ;
 		if (is_it_delimiter(lexeme_no_quotes, buffer))
@@ -63,23 +60,24 @@ int	pipe_heredoc_dollar_closed(char *lexeme_no_quotes, t_exec_vars *vars, int fd
 {
 	char	*buffer;
 	char	*contents;
+	//char	*line;
 
 	contents = NULL;
 	if (get_stdin())
 		return (1);
 	while (1)
 	{
-		/*if (signal(SIGINT, handle_signal))
-		{
-			//free(buffer);
-			break ;
-		}*/
 		buffer = readline("heredoc> ");
+		//line = get_next_line(fileno(stdin));
+		//if (line == NULL)
+		//	return (1);
 		if (g_last_exit_status == 130)
 		{
 			free(buffer);
+			//free(line);
 			break ;
 		}
+		//buffer = ft_strtrim(line, "\n");
 		if (buffer == NULL)
 		{
 			vars->error = 1;
@@ -193,6 +191,12 @@ int	is_there_here_doc(t_p_tree **tree, int *here_docs, t_env **env)
 						"my(s)hell: execute_node malloc error\n"), 1);
 				init_exec_vars(vars);
 				pipe_heredoc(&current->child->child, vars, here_docs, env);
+				if (g_last_exit_status == 130)
+				{
+					free_array(vars->args);
+					free(vars);
+					return (1);
+				}
 			}
 			current = current->child;
 		}

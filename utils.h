@@ -17,3 +17,4 @@ int	is_string_numeric(const char *str);
 int	overflow_check(char *result);
 void		handle_signal(int signal);
 void	setup_signal_handlers(void);
+int handle_sigint(int g_last_exit_status, char *buffer);
