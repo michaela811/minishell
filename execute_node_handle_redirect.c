@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 11:42:23 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 16:10:35 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,22 +25,10 @@ void	handle_redirection(t_p_tree **node, t_exec_vars *vars,
 		handle_redirection_append(node, vars, exec_data);
 }
 
-int	is_ambiguous_redirect(t_p_tree **node, t_exec_vars *vars, char *saved_lexeme)
-{
-	if (ft_strcmp((*node)->child->data->lexeme, "") == 0)
-	{
-		vars->error = 1;
-		return (print_err(1, 2,
-				"my(s)hell: %s: ambiguous redirect\n",
-				saved_lexeme), free(saved_lexeme), 1);
-	}
-	return (0);
-}
-
 void	handle_redirection_from(t_p_tree **node,
 			t_exec_vars *vars, t_free_data *exec_data)
 {
-	char *saved_lexeme;
+	char	*saved_lexeme;
 
 	saved_lexeme = ft_strdup((*node)->child->data->lexeme);
 	quotes_glob_redirect(node, vars, exec_data);
@@ -65,7 +53,7 @@ void	handle_redirection_from(t_p_tree **node,
 void	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 			t_free_data *exec_data)
 {
-	char* saved_lexeme;
+	char	*saved_lexeme;
 
 	saved_lexeme = ft_strdup((*node)->child->data->lexeme);
 	quotes_glob_redirect(node, vars, exec_data);
@@ -80,14 +68,7 @@ void	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 			O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (vars->fd_out == -1)
 	{
-		vars->error = 1;
-		if (errno == EACCES)
-			print_err(1, 2, "my(s)hell: %s: Permission denied\n",
-				(*node)->child->data->lexeme);
-		else
-			print_err(1, 2,
-				"my(s)hell: %s: No such file or directory\n",
-				(*node)->child->data->lexeme);
+		redirect_to_error(vars, node);
 		return ;
 	}
 	*node = (*node)->child;
@@ -96,7 +77,6 @@ void	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 			t_free_data *exec_data)
 {
-	//char	*start;
 	char	*saved_lexeme;
 	char	*exp_lexeme;
 
@@ -109,15 +89,8 @@ void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 	free(saved_lexeme);
 	exp_lexeme = malloc(4096);
 	if (!exp_lexeme)
-	{
-		print_err(1, 2, "my(s)hell: malloc\n");
-		vars->error = 1;
-		return ;
-	}
+		return (redirect_append_error(vars));
 	ft_memset(exp_lexeme, '\0', sizeof(exp_lexeme));
-	//start = (*node)->child->data->lexeme;
-	//if (handle_dollar_sign(&start, exp_lexeme, env, sizeof(exp_lexeme)))// do we need it???
-		//return (free(exp_lexeme));
 	ft_strcpy(exp_lexeme, (*node)->child->data->lexeme);
 	if (helper_is_dir(exp_lexeme, vars))
 		return ;
@@ -128,10 +101,9 @@ void	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 			| O_APPEND, 0644);
 	helper_fd_out_checker(node, vars);
 	*node = (*node)->child;
-	//vars->i++;
 }
 
-void	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars ,
+void	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars,
 		int *here_docs, t_free_data *exec_data)
 {
 	char	*filename;

@@ -23,6 +23,7 @@ SOURCES = env_main.c \
 			execute_node.c \
 			execute_node_handle_redirect.c \
 			execute_node_handle_redirect_utils.c \
+			execute_node_handle_redirect_error.c \
 			execute_node_handle_heredoc.c \
 			execute_node_exec_cmd.c \
 			handle_dollar_sign.c \
@@ -33,6 +34,8 @@ SOURCES = env_main.c \
 			lexer_main.c \
 			lexer.c \
 			main.c \
+			main_utils.c \
+			main_handle_input.c \
 			parser_is_all_rest.c \
 			parser_is_cmd_suffix.c \
 			parser_main.c \
@@ -40,6 +43,7 @@ SOURCES = env_main.c \
 			init.c \
 			handle_quotes_1.c \
 			handle_quotes_2.c \
+			handle_quotes_3.c \
 			handle_quotes_utils.c \
 			handle_quotes_redirect.c \
 			handle_quotes_heredoc.c \
@@ -52,6 +56,7 @@ SOURCES = env_main.c \
 			get_path_for_exec.c \
 			get_path_for_exec_utils.c \
 			get_path_for_exec_colon.c \
+			signals.c \
 
 
 OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))

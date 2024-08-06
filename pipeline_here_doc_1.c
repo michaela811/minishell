@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 16:15:59 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 12:16:15 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 14:12:17 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,28 +148,6 @@ int	pipe_heredoc(t_p_tree **node, t_exec_vars *vars, int *here_docs,
 	unlink(filename);
 	return (0);
 }
-
-/* int	pipe_heredoc(t_p_tree **node, t_exec_vars *vars, int *here_docs)
-{
-	char	*filename;
-	int		fd;
-
-	filename = "/tmp/heredoc.txt";
-	fd = open_heredoc_file(filename, vars);
-	pipe_get_heredoc(node, vars, fd);
-	if (vars->error)
-	{
-		close(fd);
-		unlink(filename);
-		return (1);
-	}
-	close(fd);
-	fd = open(filename, O_RDONLY);
-	*here_docs = fd;
-	vars->i++;
-	unlink(filename);
-	return (0);
-} */
 
 int	is_there_here_doc(t_p_tree **tree, int *here_docs, t_free_data *exec_data)
 {
