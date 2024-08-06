@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline_here_doc.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 14:11:08 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 17:23:30 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char	*get_heredoc_content(char *contents, char *buffer)
 	{
 		contents = malloc(ft_strlen(buffer) + 2);
 		if (contents == NULL)
-			return (free(buffer), NULL);
+			return (NULL);
 		ft_strcpy(contents, buffer);
 	}
 	else
@@ -51,7 +51,7 @@ char	*get_heredoc_content(char *contents, char *buffer)
 		new_size = old_size + ft_strlen(buffer) + 1;
 		temp = ft_realloc(contents, old_size, new_size);
 		if (temp == NULL)
-			return (free(contents), free(buffer), NULL);
+			return (NULL);
 		contents = temp;
 		ft_strcat(contents, buffer);
 	}
