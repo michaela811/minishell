@@ -93,7 +93,7 @@ int	var_control(char *command, char *args, int *empty)
 			&& args[i] != '_'))
 	{
 		return (print_err(1, 2,
-				"mini(s)hell: %s: `%s': not a valid identifier\n",
+				"my(s)hell: %s: `%s': not a valid identifier\n",
 				command, args), g_last_exit_status);
 	}
 	i++;
@@ -102,7 +102,7 @@ int	var_control(char *command, char *args, int *empty)
 		if (!ft_isalnum(args[i]) && args[i] != '_')
 		{
 			return (print_err(1, 2,
-					"mini(s)hell: %s: `%s': not a valid identifier\n",
+					"my(s)hell: %s: `%s': not a valid identifier\n",
 					command, args), g_last_exit_status);
 		}
 		i++;
