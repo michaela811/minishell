@@ -44,7 +44,8 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 		{
 			handle_node_data(&exec_data->tree, vars, exec_data,
 				&exec_data->hd_fd);
-			if (vars->args[0] == NULL || vars->args[0][0] == '\0')
+			if (vars->args[0] == NULL || (vars->args[0][0] == '\0'
+				&& ft_strlen(vars->args[0]) == 0))
 			{
 				if (vars->args[0][0] == '\0')
 					free(vars->args[0]);
