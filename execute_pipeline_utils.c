@@ -6,11 +6,39 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:27 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 11:43:28 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 18:17:59 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	execute_pipeline(t_free_data *exec_data)
+{
+	int			pipefd[2];
+	pid_t		pid;
+	int			return_value;
+
+	return_value = 0;
+	exec_data->hd_fd = -1;
+	if (exec_data->tree == NULL)
+		return (0);
+	if (exec_data->tree->sibling != NULL)
+	{
+		if (pipe(pipefd) == -1)
+			return (print_err(1, 2, "my(s)hell: pipe\n"), 1);
+	}
+	is_there_here_doc(&exec_data->tree, &exec_data->hd_fd, exec_data);
+	if (g_last_exit_status == 130)
+		return (close(pipefd[1]), close(pipefd[0]), 1);
+	pid = fork();
+	if (fork_check(pid, pipefd))
+		return (1);
+	else if (pid == 0)
+		return_value = handle_child_process(pipefd, exec_data);
+	else if (pid > 0)
+		return_value = handle_parent_process(pipefd, pid, exec_data);
+	return (return_value);
+}
 
 pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data)
 {

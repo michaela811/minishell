@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:54 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 15:48:00 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 18:07:52 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,9 @@
 # include <signal.h>
 # include <bits/sigaction.h>
 
-#define SYNTAX_ERROR -1
-#define SUBTREE_OK 0
-#define MEMORY_ERROR 1
+# define SYNTAX_ERROR -1
+# define SUBTREE_OK 0
+# define MEMORY_ERROR 1
 
 extern int	g_last_exit_status;
 
