@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 21:17:43 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 22:18:15 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 			if (vars->args[0] == NULL || (vars->args[0][0] == '\0'
 				&& ft_strlen(vars->args[0]) == 0))
 			{
-				if (vars->args[0][0] == '\0')
+				if (vars->args[0] && vars->args[0][0] == '\0')
 					free(vars->args[0]);
 				vars->i = 0;
 			}
