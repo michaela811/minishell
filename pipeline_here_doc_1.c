@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 16:15:59 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 20:24:19 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 21:22:30 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 int	handle_heredoc_quotes(int fd, t_p_tree **node,
 		t_free_data *exec_data)
 {
-    char	*no_quotes_lex;
+	char	*no_quotes_lex;
 
     no_quotes_lex = ft_strdup((*node)->data->lexeme);
     if (no_quotes_lex == NULL)

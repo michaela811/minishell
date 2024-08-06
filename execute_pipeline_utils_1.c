@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 18:16:34 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 21:10:41 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,12 @@ static void	ft_waitpid(int num_commands, pid_t *pids, int *statuses)
 	}
 }
 
+void	exit_code_130(int *statuses, int num_commands)
+{
+	if (g_last_exit_status != 130)
+		g_last_exit_status = statuses[num_commands - 1];
+}
+
 int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 {
 	pid_t		pids[10];
@@ -77,12 +83,11 @@ int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 	ft_waitpid(num_commands, pids, statuses);
 	if (exec_data->hd_fd != -1)
 		close(exec_data->hd_fd);
-	if (g_last_exit_status != 130)
-		g_last_exit_status = statuses[num_commands - 1];
+	exit_code_130(statuses, num_commands);
 	return (g_last_exit_status);
 }
 
-static int	fork_check(pid_t pid, int *pipefd)
+int	fork_check(pid_t pid, int *pipefd)
 {
 	if (pid == -1)
 	{
@@ -93,33 +98,4 @@ static int	fork_check(pid_t pid, int *pipefd)
 	}
 	else
 		return (0);
-}
-
-int	execute_pipeline(t_free_data *exec_data)
-{
-	int			pipefd[2];
-	pid_t		pid;
-	int			return_value;
-
-	return_value = 0;
-	exec_data->hd_fd = -1;
-	if (exec_data->tree == NULL)
-		return (0);
-	if (exec_data->tree->sibling != NULL)
-	{
-		if (pipe(pipefd) == -1)
-			return (print_err(1, 2, "my(s)hell: pipe\n"), 1);
-	}
-	if (is_there_here_doc(&exec_data->tree, &exec_data->hd_fd, exec_data))
-		return (g_last_exit_status);
-	if (g_last_exit_status == 130)
-		return (close(pipefd[1]), close(pipefd[0]), 1);
-	pid = fork();
-	if (fork_check(pid, pipefd))
-		return (1);
-	else if (pid == 0)
-		return_value = handle_child_process(pipefd, exec_data);
-	else if (pid > 0)
-		return_value = handle_parent_process(pipefd, pid, exec_data);
-	return (return_value);
 }
