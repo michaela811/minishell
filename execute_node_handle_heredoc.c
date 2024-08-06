@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_handle_heredoc.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 12:20:46 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 14:22:17 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,26 +65,26 @@ void	remove_quotes(char **lexeme_ptr, int *error)
 
 int	process_heredoc_dollar_closed(int file, char *lexeme_no_quotes)
 {
-	//char	*line;
+	char	*line;
 	char	*buffer;
 
 	while (1)
 	{
-		buffer = readline("heredoc> ");
-		if (buffer == NULL)
-			break ;
-		//line = get_next_line(fileno(stdin));
-		//if (line == NULL)
+		//buffer = readline("heredoc> ");
+		//if (buffer == NULL)
 		//	break ;
+		line = get_next_line(fileno(stdin));
+		if (line == NULL)
+			break ;
 		if (g_last_exit_status == 130)
 		{
-			if (buffer != NULL)
-				free(buffer);
-			//free(line);
+			//if (buffer != NULL)
+			//	free(buffer);
+			free(line);
 			return (1);
 		}
-		//buffer = ft_strtrim(line, "\n");
-		//free(line);
+		buffer = ft_strtrim(line, "\n");
+		free(line);
 		if (ft_exact_strcmp(buffer, lexeme_no_quotes) == 0)
 		{
 			free(buffer);
@@ -100,32 +100,33 @@ int	process_heredoc_dollar_closed(int file, char *lexeme_no_quotes)
 int	process_heredoc_dollar_open(int file, t_exec_vars *vars,
 		t_free_data *exec_data, char *lexeme_no_quotes)
 {
-	//char	*line;
+	char	*line;
 	char	*buffer;
 	char	buffer_no_dollar[1024];
 	char	*buffer_start;
 
 	while (1)
 	{
-		buffer = readline("heredoc> ");
-		if (buffer == NULL)
-			break ;
-		//line = get_next_line(fileno(stdin));
-		//if (line == NULL)
-		//	return (1);
+		//buffer = readline("heredoc> ");
+		//if (buffer == NULL)
+		//	break ;
+		line = get_next_line(fileno(stdin));
+		if (line == NULL)
+			return (1);
 		if (g_last_exit_status == 130)
 		{
-			if (buffer != NULL)
-				free(buffer);
+			free(line);
+			//if (buffer != NULL)
+			//	free(buffer);
 			return (1);
 		}
-		//buffer = ft_strtrim(line, "\n");
-		/*if (buffer == NULL)
+		buffer = ft_strtrim(line, "\n");
+		if (buffer == NULL)
 		{
 			//vars->error = 1;
 			return (print_err(1, 2, "my(s)hell: malloc\n"), 1);
-		}*/
-		//free(line);
+		}
+		free(line);
 		if (ft_exact_strcmp(buffer, lexeme_no_quotes) == 0)
 		{
 			free(buffer);

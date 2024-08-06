@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline_here_doc_1.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 16:15:59 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 12:16:15 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 14:18:15 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,26 +19,27 @@ int	pipe_heredoc_dollar_open(char *lexeme_no_quotes, t_exec_vars *vars,
 	char	buffer_no_dollar[1024];
 	char	*buffer_start;
 	char	*contents;
-	//char	*line;
+	char	*line;
 
 	contents = NULL;
 	if (get_stdin())
 		return (1);
 	while (1)
 	{
-		buffer = readline("heredoc> ");
-		//line = get_next_line(fileno(stdin));
-		//if (line == NULL)
-		//	return (1);
+		//buffer = readline("heredoc> ");
+		line = get_next_line(fileno(stdin));
+		if (line == NULL)
+			return (1);
 		if (g_last_exit_status == 130)
 		{
-			if (contents != NULL)
-				free(contents);
-			free(buffer);
-			//free(line);
+			if (contents != NULL) //keep
+				free(contents); //keep
+			//free(buffer);
+			free(line);
 			return (1);
 		}
-		//buffer = ft_strtrim(line, "\n");
+		buffer = ft_strtrim(line, "\n");
+		free(line);
 		if (buffer == NULL)
 			break ;
 		if (is_it_delimiter(lexeme_no_quotes, buffer))
@@ -62,26 +63,27 @@ int	pipe_heredoc_dollar_closed(char *lexeme_no_quotes, t_exec_vars *vars, int fd
 {
 	char	*buffer;
 	char	*contents;
-	//char	*line;
+	char	*line;
 
 	contents = NULL;
 	if (get_stdin())
 		return (1);
 	while (1)
 	{
-		buffer = readline("heredoc> ");
-		//line = get_next_line(fileno(stdin));
-		//if (line == NULL)
-		//	return (1);
+		//buffer = readline("heredoc> ");
+		line = get_next_line(fileno(stdin));
+		if (line == NULL)
+			return (1);
 		if (g_last_exit_status == 130)
 		{
 			if (contents != NULL)
 				free(contents);
-			free(buffer);
-			//free(line);
+			//free(buffer);
+			free(line);
 			return (1);
 		}
-		//buffer = ft_strtrim(line, "\n");
+		buffer = ft_strtrim(line, "\n");
+		free(line);
 		if (buffer == NULL)
 		{
 			vars->error = 1;
@@ -148,28 +150,6 @@ int	pipe_heredoc(t_p_tree **node, t_exec_vars *vars, int *here_docs,
 	unlink(filename);
 	return (0);
 }
-
-/* int	pipe_heredoc(t_p_tree **node, t_exec_vars *vars, int *here_docs)
-{
-	char	*filename;
-	int		fd;
-
-	filename = "/tmp/heredoc.txt";
-	fd = open_heredoc_file(filename, vars);
-	pipe_get_heredoc(node, vars, fd);
-	if (vars->error)
-	{
-		close(fd);
-		unlink(filename);
-		return (1);
-	}
-	close(fd);
-	fd = open(filename, O_RDONLY);
-	*here_docs = fd;
-	vars->i++;
-	unlink(filename);
-	return (0);
-} */
 
 int	is_there_here_doc(t_p_tree **tree, int *here_docs, t_free_data *exec_data)
 {
