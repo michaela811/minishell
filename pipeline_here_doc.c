@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/02 21:57:25 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 14:14:08 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	get_stdin(void)
 		if (dup2(tty_fd, STDIN_FILENO) == -1)
 			return (print_err(errno, 2,
 					"my(s)hell: dup2 tty_fd to STDIN_FILENO"),
-					close(tty_fd), 1);
+				close(tty_fd), 1);
 		close(tty_fd);
 	}
 	return (0);
@@ -64,66 +64,4 @@ int	is_it_delimiter(char *node, char *buffer)
 		return (1);
 	}
 	return (0);
-}
-
-/*int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
-{
-	char			*buffer;
-	char			*line;
-	char			*contents;
-
-	contents = NULL;
-	(*node)->data->lexeme = handle_quotes_echo
-		((*node)->data->lexeme, &vars->error);
-	if (get_stdin())
-		return (1);
-	while (1)
-	{
-		line = get_next_line(fileno(stdin));
-		if (line == NULL)
-			break ;
-		buffer = ft_strtrim(line, "\n");
-		free(line);
-		if (is_it_delimiter(node, buffer))
-			break ;
-		contents = get_heredoc_content(contents, buffer);
-		ft_strcat(contents, "\n");
-		free(buffer);
-	}
-	if (contents != NULL)
-	{
-		write(fd, contents, strlen(contents));
-		free(contents);
-	}
-	return (0);
-} //for tester*/
-
- //FOR EVALUATION
-int	pipe_get_heredoc(t_p_tree **node, t_exec_vars *vars, int fd)
-{
-	char			*buffer;
-	char			*contents;
-	char			*dup_lexeme;
-
-	contents = NULL;
-	dup_lexeme = handle_quotes_heredoc((*node)->data->lexeme, &vars->error);
-	if (get_stdin())
-		return (1);
-	while (1)
-	{
-		buffer = readline("heredoc> ");
-		if (buffer == NULL)
-			break ;
-		if (is_it_delimiter(dup_lexeme, buffer))
-			break ;
-		contents = get_heredoc_content(contents, buffer);
-		ft_strcat(contents, "\n");
-		free(buffer);
-	}
-	if (contents != NULL)
-	{
-		write(fd, contents, ft_strlen(contents));
-		free(contents);
-	}
-	return (free(dup_lexeme), 0);
 }

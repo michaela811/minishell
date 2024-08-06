@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:06 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 11:55:12 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 15:14:15 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,6 @@ void	handle_quotes_glob(t_p_tree **node, t_exec_vars *vars,
 
 	if (init_handle_vars(&l_vars, vars))
 		vars->error = 1;
-	//if (vars->error)
-		//return (free_handle_vars(&l_vars));
-	//vars->error = 0;
 	while (**l_vars.current != '\0' && !vars->error)
 	{
 		if (vars->inside_single_quotes)

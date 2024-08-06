@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/03 22:06:39 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 15:19:57 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int	handle_colon(char **pre_path, t_env *env)
 	char	*tmp_path;
 
 	tmp_path = get_env_var(env, "PATH");
-	if (!tmp_path)// || ft_strcmp(tmp_path, "") == 0)
+	if (!tmp_path)
 		return (0);
 	*pre_path = ft_strdup(tmp_path);
 	if (!*pre_path)

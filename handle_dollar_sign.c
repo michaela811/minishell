@@ -6,13 +6,14 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:57 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 11:52:43 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 15:16:39 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	handle_question_mark(char **start, char *buffer, char *dollar, int dollar_status)
+int	question_mark(char **start, char *buffer, char *dollar,
+		int dollar_status)
 {
 	char	*exit_status;
 
@@ -51,12 +52,12 @@ void	handle_var_name(char **start, char *buffer, char *dollar, t_env **env)
 	*start = var_end;
 }
 
-void if_dollar(char *buffer, char *start_store, char *dollar, char **start)
+void	if_dollar(char *buffer, char *start_store, char *dollar, char **start)
 {
-    if (dollar == NULL)
-        ft_strcpy(buffer, start_store);
-    else if (*start)
-        ft_strcat(buffer, *start);
+	if (dollar == NULL)
+		ft_strcpy(buffer, start_store);
+	else if (*start)
+		ft_strcat(buffer, *start);
 }
 
 int	handle_dollar_sign(char **start, char *buffer, t_free_data *exec_data,
@@ -75,7 +76,7 @@ int	handle_dollar_sign(char **start, char *buffer, t_free_data *exec_data,
 		ft_strncat(buffer, *start, dollar - *start);
 		if (*(dollar + 1) == '?')
 		{
-			if (handle_question_mark(start, buffer, dollar, exec_data->dollar_status))
+			if (question_mark(start, buffer, dollar, exec_data->dollar_status))
 				return (1);
 		}
 		else if (*(dollar + 1) == '\0' || ft_strchr("$ \"'/", *(dollar + 1)))
