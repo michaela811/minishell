@@ -6,11 +6,23 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 16:15:59 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 15:22:55 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 16:52:34 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	break_pipe_heredoc(char *buffer, char *contents)
+{
+	if (g_last_exit_status == 130)
+	{
+		if (contents != NULL)
+			free(contents);
+		free(buffer);
+		return (1);
+	}
+	return (0);
+}
 
 int	pipe_heredoc_dollar_open(char *no_quotes_lex, t_exec_vars *vars,
 		int fd, t_free_data *exec_data)
@@ -19,27 +31,15 @@ int	pipe_heredoc_dollar_open(char *no_quotes_lex, t_exec_vars *vars,
 	char	buffer_no_dollar[1024];
 	char	*buffer_start;
 	char	*contents;
-	char	*line;
 
 	contents = NULL;
 	if (get_stdin())
 		return (1);
 	while (1)
 	{
-		//buffer = readline("heredoc> ");
-		line = get_next_line(fileno(stdin));
-		if (line == NULL)
+		buffer = readline("heredoc> ");
+		if (break_pipe_heredoc(buffer, contents))
 			return (1);
-		if (g_last_exit_status == 130)
-		{
-			if (contents != NULL) //keep
-				free(contents); //keep
-			//free(buffer);
-			free(line);
-			return (1);
-		}
-		buffer = ft_strtrim(line, "\n");
-		free(line);
 		if (buffer == NULL)
 			break ;
 		if (is_it_delimiter(no_quotes_lex, buffer))
@@ -63,27 +63,15 @@ int	pipe_heredoc_dollar_closed(char *no_quotes_lex, t_exec_vars *vars, int fd)
 {
 	char	*buffer;
 	char	*contents;
-	char	*line;
 
 	contents = NULL;
 	if (get_stdin())
 		return (1);
 	while (1)
 	{
-		//buffer = readline("heredoc> ");
-		line = get_next_line(fileno(stdin));
-		if (line == NULL)
+		buffer = readline("heredoc> ");
+		if (break_pipe_heredoc(buffer, contents))
 			return (1);
-		if (g_last_exit_status == 130)
-		{
-			if (contents != NULL)
-				free(contents);
-			//free(buffer);
-			free(line);
-			return (1);
-		}
-		buffer = ft_strtrim(line, "\n");
-		free(line);
 		if (buffer == NULL)
 		{
 			vars->error = 1;
