@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 16:15:59 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 16:52:34 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 18:08:23 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,24 +94,24 @@ int	pipe_heredoc_dollar_closed(char *no_quotes_lex, t_exec_vars *vars, int fd)
 void handle_heredoc_quotes(int fd, t_p_tree **node, t_exec_vars *vars,
 		t_free_data *exec_data)
 {
-    char	*no_quotes_lex;
+	char	*no_quotes_lex;
 
-    no_quotes_lex = ft_strdup((*node)->data->lexeme);
-    if (no_quotes_lex == NULL)
-    {
-        vars->error = 1;
-        return;
-    }
-    if (ft_strpbrk((*node)->data->lexeme, "'\"") != NULL)
-    {
-        remove_quotes(&no_quotes_lex, &vars->error);
-        if (!vars->error)
-            if (pipe_heredoc_dollar_closed(no_quotes_lex, vars, fd))
+	no_quotes_lex = ft_strdup((*node)->data->lexeme);
+	if (no_quotes_lex == NULL)
+	{
+		vars->error = 1;
+		return;
+	}
+	if (ft_strpbrk((*node)->data->lexeme, "'\"") != NULL)
+	{
+		remove_quotes(&no_quotes_lex, &vars->error);
+		if (!vars->error)
+			if (pipe_heredoc_dollar_closed(no_quotes_lex, vars, fd))
 				vars->error = 1;
-    }
-    else if (pipe_heredoc_dollar_open(no_quotes_lex, vars, fd, exec_data))
-        vars->error = 1;
-    free(no_quotes_lex);
+	}
+	else if (pipe_heredoc_dollar_open(no_quotes_lex, vars, fd, exec_data))
+		vars->error = 1;
+	free(no_quotes_lex);
 }
 
 int	pipe_heredoc(t_p_tree **node, t_exec_vars *vars, int *here_docs,
@@ -142,26 +142,26 @@ int	pipe_heredoc(t_p_tree **node, t_exec_vars *vars, int *here_docs,
 int handle_pipe_heredoc(t_exec_vars **vars, int *here_docs,
 		t_p_tree *current, t_free_data *exec_data)
 {
-    if (*here_docs != -1)
-    {
-        free_array((*vars)->args);
-        free(*vars);
-        *vars = NULL;
-        close(*here_docs);
-        *here_docs = -1;
-    }
-    *vars = malloc(sizeof(t_exec_vars));
-    if (!*vars)
-        return (print_err(1, 2, "my(s)hell: execute_node malloc error\n"), 1);
-    init_exec_vars(*vars);
-    pipe_heredoc(&current->child->child, *vars, here_docs, exec_data);
-    if (g_last_exit_status == 130)
-    {
-        free_array((*vars)->args);
-        free(*vars);
-        return (1);
-    }
-    return (0);
+	if (*here_docs != -1)
+	{
+		free_array((*vars)->args);
+		free(*vars);
+		*vars = NULL;
+		close(*here_docs);
+		*here_docs = -1;
+	}
+	*vars = malloc(sizeof(t_exec_vars));
+	if (!*vars)
+		return (print_err(1, 2, "my(s)hell: execute_node malloc error\n"), 1);
+	init_exec_vars(*vars);
+	pipe_heredoc(&current->child->child, *vars, here_docs, exec_data);
+	if (g_last_exit_status == 130)
+	{
+		free_array((*vars)->args);
+		free(*vars);
+		return (1);
+	}
+	return (0);
 }
 
 int	is_there_here_doc(t_p_tree **tree, int *here_docs, t_free_data *exec_data)

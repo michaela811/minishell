@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 14:50:17 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 18:00:39 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,5 +110,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 	clear_history();
 	free_env_array(vars->args);
 	free(vars);
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
 	exit(g_last_exit_status);
 }
