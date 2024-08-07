@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:16 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 16:22:57 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 16:50:51 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	init_handle_quote_redirect(t_handle_vars *l_vars, t_p_tree **node)
 	*l_vars->result = ft_strdup("");
 	if (!*l_vars->result)
 		return (free(l_vars->result), print_err(1, 2,
-			"my(s)hell: malloc error\n"), 1);
+				"my(s)hell: malloc error\n"), 1);
 	l_vars->current = malloc(sizeof(char *));
 	if (!l_vars->current)
 		return (free(*l_vars->result), free(l_vars->result),
