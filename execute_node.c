@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 09:14:54 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 09:31:51 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	check_capacity(t_exec_vars *vars)
 {
-	if (vars->i > vars->capacity - 1)
+	if (vars->i > vars->capacity - 2)
 	{
 		expand_exec_vars(vars);
 		if (vars->error)
