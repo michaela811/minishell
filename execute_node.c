@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 08:53:04 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 09:14:54 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,9 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 				return (g_last_exit_status);
 			if (vars->args[vars->i] != NULL)
 			{
-				free(vars->args[vars->args[0] && vars->i]);
+				free(vars->args[vars->i]);
 				vars->args[vars->i] = NULL;
 			}
-			//if (vars->error != 0)
-				//return (g_last_exit_status);
 		}
 		check_capacity(vars);
 		exec_data->tree = exec_data->tree->child;
