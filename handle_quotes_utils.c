@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:00 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 11:18:16 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 16:20:50 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	update_result(char **result, char *updated_result, t_exec_vars *vars)
 		return (0);
 	new_result = ft_strjoin(*result, updated_result);
 	if (!check_null(new_result, &vars->error))
-		return (1);
+		return (print_err(1, 2, "my(s)hell: malloc error\n"), 1);
 	free(*result);
 	*result = new_result;
 	return (0);
@@ -52,7 +52,7 @@ void	update_args(t_exec_vars *vars, t_handle_vars *l_vars)
 	free(vars->args[vars->i]);
 	vars->args[vars->i] = ft_strjoin(*l_vars->result, l_vars->token);
 	if (!check_null(vars->args[vars->i], &vars->error))
-		return ;
+		return (print_err(1, 2, "my(s)hell: malloc error\n"));
 }
 
 int	handle_dollar_error(char **token, char *buffer, t_exec_vars *vars,

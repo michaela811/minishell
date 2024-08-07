@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:30:26 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 14:28:15 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 16:10:52 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ int			update_pwd(t_env **env);
 int			change_directory_and_update(char *path, t_env **env,
 				char **args);
 int			exec_echo(t_exec_vars *vars);
-char		*handle_quotes_heredoc(char *input, int *error);
 int			exec_pwd(void);
 int			exec_env(char **args, char **environment);
 int			exec_unset(char **args, t_env **env);
@@ -32,4 +31,3 @@ int			is_equals(char **name, char **value, char *equals);
 int			control_name(char *var, char **name, int *i);
 int			exec_export(char **args, t_env **env);
 void		expand_exec_vars(t_exec_vars *vars);
-void		return_exit_status(char *result, int *i, int *j, int *error);
