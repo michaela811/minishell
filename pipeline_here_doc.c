@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline_here_doc.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 17:23:30 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 14:03:28 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ int	get_stdin(void)
 			return (print_err(errno, 2,
 					"my(s)hell: dup2 tty_fd to STDIN_FILENO"),
 				close(tty_fd), 1);
-		close(tty_fd);
+		if (tty_fd != -1)
+			close(tty_fd);
 	}
 	return (0);
 }

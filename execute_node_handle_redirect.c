@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_handle_redirect.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 20:09:16 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 13:59:26 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	handle_redirection_from(t_p_tree **node,
 	if (is_ambiguous_redirect(node, vars, saved_lexeme))
 		return (g_last_exit_status);
 	free(saved_lexeme);
-	if (vars->fd_in)
+	if (vars->fd_in != -1)
 		close(vars->fd_in);
 	vars->fd_in = open((*node)->child->data->lexeme, O_RDONLY);
 	if (vars->fd_in == -1)
@@ -68,7 +68,7 @@ int	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 	if (is_ambiguous_redirect(node, vars, saved_lexeme))
 		return (g_last_exit_status);
 	free(saved_lexeme);
-	if (vars->fd_out != 1)
+	if (vars->fd_out != 1 && vars->fd_out != -1)
 		close(vars->fd_out);
 	vars->fd_out = open((*node)->child->data->lexeme,
 			O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -104,7 +104,7 @@ int	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 	if (helper_is_dir(exp_lexeme, vars))
 		return (g_last_exit_status);
 	free(exp_lexeme);
-	if (vars->fd_out != 1)
+	if (vars->fd_out != 1 && vars->fd_out != -1)
 		close(vars->fd_out);
 	vars->fd_out = open((*node)->child->data->lexeme, O_WRONLY | O_CREAT
 			| O_APPEND, 0644);
@@ -123,7 +123,7 @@ int	handle_redirection_here_doc(t_p_tree **node, t_exec_vars *vars,
 		vars->fd_in = *here_docs;
 	else
 	{
-		if (vars->fd_in)
+		if (vars->fd_in && vars->fd_in != -1)
 			close(vars->fd_in);
 		filename = handle_here_doc(node, vars, exec_data);
 		if (g_last_exit_status)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_handle_heredoc.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 21:41:16 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 13:58:12 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars,
 	if (malloc_check(no_quotes_lex, &vars->error))
 		return (NULL);
 	file = open_heredoc_file(filename);
-	//if (file_error(file, vars))
 	if (file == -1)
 		return (free(no_quotes_lex), NULL);
 	if (ft_strpbrk((*node)->child->data->lexeme, "'\"") != NULL)
@@ -54,14 +53,11 @@ char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars,
 		if (g_last_exit_status)
 			return (free(no_quotes_lex), close(file), NULL);
 		process_heredoc_dollar_closed(file, no_quotes_lex);
-		//if (process_heredoc_dollar_closed(file, no_quotes_lex))
-			//vars->error = 1;
 	}
 	else
 		process_heredoc_dollar_open(file, vars, exec_data, no_quotes_lex);
-	/* else if (process_heredoc_dollar_open(file, vars, exec_data, no_quotes_lex))
-		vars->error = 1; */
-	close(file);
+	if (file != -1)
+		close(file);
 	free(no_quotes_lex);
 	return (filename);
 }

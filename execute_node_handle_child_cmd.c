@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/05 14:24:43 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 13:55:49 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ static int	print_and_exit(t_exec_vars *vars)
 
 void	cleanup(t_exec_vars *vars)
 {
-	if (vars->fd_in)
+	if (vars->fd_in && vars->fd_in != -1)
 		close(vars->fd_in);
-	if (vars->fd_out)
+	if (vars->fd_out && vars->fd_out != -1)
 		close(vars->fd_out);
 }
 

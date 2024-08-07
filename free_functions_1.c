@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:34 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/05 14:58:26 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 14:01:22 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,9 +107,9 @@ void	free_env_array(char **env_array)
 void	free_vars(t_exec_vars *vars)
 {
 	free_env_array(vars->args);
-	if (vars->fd_in > 0)
+	if (vars->fd_in > 0 && vars->fd_in != -1)
 		close(vars->fd_in);
-	if (vars->fd_out != 1)
+	if (vars->fd_out != 1 && vars->fd_out != -1)
 		close(vars->fd_out);
 	free(vars);
 	vars = NULL;
