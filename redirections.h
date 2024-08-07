@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:33 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 21:22:51 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 18:19:13 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,3 +31,8 @@ int		is_ambiguous_redirect(t_p_tree **node, t_exec_vars *vars,
 			char *saved_lexeme);
 void	redirect_to_error(t_exec_vars *vars, t_p_tree **node);
 void	redirect_append_error(t_exec_vars *vars);
+int		write_and_free_contents(int fd, char *contents);
+int		break_pipe_heredoc(char *buffer, char *contents);
+char	*get_heredoc_content(char *contents, char *buffer);
+int		pipe_heredoc_get_content(char **contents, char *buffer,
+			char *buffer_start);
