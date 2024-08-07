@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 16:15:59 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 11:59:29 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 12:37:01 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int	handle_heredoc_quotes(int fd, t_p_tree **node,
         return(free(no_quotes_lex), g_last_exit_status);
     return (free(no_quotes_lex), 0);
 }
+
 int	pipe_heredoc(t_p_tree **node, int *here_docs, t_free_data *exec_data)
 {
 	char	*filename;
