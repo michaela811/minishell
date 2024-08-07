@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:06 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 16:01:23 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:17:18 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
 			free(vars->args[vars->i]);
 			vars->args[vars->i] = ft_strdup(*l_vars->result);
 			if (!check_null(vars->args[vars->i], &vars->error))
-				return (print_err(1, 2, "my(s)hell: malloc error\n"));
+				return (print_err(1, 2, "my(s)hell: malloc error 13\n"));
 		}
 	}
 	else
@@ -71,13 +71,13 @@ void	handle_with_current_dollar(t_handle_vars *l_vars,
 		{
 			*l_vars->result = ft_strjoin(vars->args[vars->i], " ");
 			if (!check_null(*l_vars->result, &vars->error))
-				return (print_err(1, 2, "my(s)hell: malloc error\n"));
+				return (print_err(1, 2, "my(s)hell: malloc error 14\n"));
 		}
 		else
 		{
 			*l_vars->result = ft_strdup(vars->args[vars->i]);
 			if (!check_null(*l_vars->result, &vars->error))
-				return (print_err(1, 2, "my(s)hell: malloc error\n"));
+				return (print_err(1, 2, "my(s)hell: malloc error 15\n"));
 		}
 	}
 }

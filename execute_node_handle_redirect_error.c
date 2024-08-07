@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 16:09:46 by dpadenko          #+#    #+#             */
-/*   Updated: 2024/08/06 16:11:14 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:16:18 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,6 @@ void	redirect_to_error(t_exec_vars *vars, t_p_tree **node)
 
 void	redirect_append_error(t_exec_vars *vars)
 {
-	print_err(1, 2, "my(s)hell: malloc error\n");
+	print_err(1, 2, "my(s)hell: malloc error 3\n");
 	vars->error = 1;
 }

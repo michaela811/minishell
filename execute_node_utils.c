@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:08 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 15:47:23 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:16:38 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	init_exec_vars(t_exec_vars *vars)
 	vars->args = malloc(vars->capacity * sizeof(char *));
 	if (!vars->args)
 	{
-		print_err(1, 2, "my(s)hell: malloc error\n");
+		print_err(1, 2, "my(s)hell: malloc error 7\n");
 		vars->error = 1;
 		return ;
 	}
@@ -51,7 +51,7 @@ void	expand_exec_vars(t_exec_vars *vars)
 	new_args = ft_realloc(vars->args, original_size, new_size);
 	if (new_args == NULL)
 	{
-		print_err(1, 2, "my(s)hell: malloc error\n");
+		print_err(1, 2, "my(s)hell: malloc error 8\n");
 		vars->error = 1;
 		return ;
 	}

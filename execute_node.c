@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 15:43:58 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:21:40 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int	execute_node(t_free_data *exec_data)
 	if (!vars)
 	{
 		return (print_err(1, 2,
-				"my(s)hell: execute_node malloc error\n"), 1);
+				"my(s)hell: execute_node malloc error 10\n"), 1);
 	}
 	init_exec_vars(vars);
 	if (vars->error)

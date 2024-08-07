@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 15:49:53 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:16:50 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int	detect_double_colons(char **pre_path)
 	original = *pre_path;
 	new_path = malloc(ft_strlen(original) + count_double_colon(original) + 1);
 	if (!new_path)
-		return (print_err(1, 2, "my(s)hell: malloc error\n"), 1);
+		return (print_err(1, 2, "my(s)hell: malloc error 11\n"), 1);
 	j = process_path_segment(original, new_path, i);
 	new_path[j] = '\0';
 	free(*pre_path);
@@ -91,7 +91,7 @@ int	handle_colon(char **pre_path, t_env *env)
 		return (0);
 	*pre_path = ft_strdup(tmp_path);
 	if (!*pre_path)
-		return (print_err(1, 2, "my(s)hell: malloc error\n"), 1);
+		return (print_err(1, 2, "my(s)hell: malloc error 12\n"), 1);
 	if ((*pre_path)[0] == ':')
 	{
 		if (join_and_free(pre_path, ".", 1))
