@@ -95,6 +95,8 @@ int	execute_node(t_free_data *exec_data)
 {
 	t_exec_vars	*vars;
 
+	if (exec_data->tree == NULL)
+		return (0);
 	vars = malloc(sizeof(t_exec_vars));
 	if (!vars)
 	{
@@ -102,8 +104,8 @@ int	execute_node(t_free_data *exec_data)
 				"my(s)hell: execute_node malloc error\n"), 1);
 	}
 	init_exec_vars(vars);
-	if (exec_data->tree == NULL)
-		return (0);
+	if (vars->error)
+		return (free(vars), 1);
 	if (complex_handle_node_data(exec_data, vars))
 		return (free_vars(vars), g_last_exit_status);
 	if (vars->args[vars->i] != NULL)
