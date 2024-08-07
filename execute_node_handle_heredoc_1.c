@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_handle_heredoc_1.c                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 16:06:47 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 16:24:32 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/06 20:35:01 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	handle_lexeme(char *lexeme, char *quote, char *result, int *error)
+int	handle_lexeme(char *lexeme, char *quote, char *result)
 {
 	int		i;
 	int		j;
@@ -27,20 +27,18 @@ int	handle_lexeme(char *lexeme, char *quote, char *result, int *error)
 			while (lexeme[i] != '\0' && lexeme[i] != *quote)
 				result[j++] = lexeme[i++];
 			if (lexeme[i] != *quote)
-			{
-				*error = 1;
 				return (free(result), print_err(1, 2,
 						"my(s)hell: syntax error\n"), 1);
-			}
 			i++;
 		}
 		else
 			result[j++] = lexeme[i++];
 	}
+	result[j] = '\0';
 	return (0);
 }
 
-void	remove_quotes(char **lexeme_ptr, int *error)
+int	remove_quotes(char **lexeme_ptr)
 {
 	char	*lexeme;
 	char	*result;
@@ -48,12 +46,13 @@ void	remove_quotes(char **lexeme_ptr, int *error)
 
 	lexeme = *lexeme_ptr;
 	result = malloc(ft_strlen(lexeme) + 1);
-	if (!check_null(result, error))
-		return ;
-	if (handle_lexeme(lexeme, &quote, result, error))
-		return ;
+	if (!result)
+		return (print_err(1, 2, "my(s)hell: malloc\n"), 1);
+	if (handle_lexeme(lexeme, &quote, result))
+		return (g_last_exit_status);
 	free(*lexeme_ptr);
 	*lexeme_ptr = result;
+	return (0);
 }
 
 int	process_heredoc_dollar_closed(int file, char *no_quotes_lex)
@@ -64,13 +63,9 @@ int	process_heredoc_dollar_closed(int file, char *no_quotes_lex)
 	{
 		buffer = readline("heredoc> ");
 		if (buffer == NULL)
-			break ;
-		if (g_last_exit_status == 130)
-		{
-			if (buffer != NULL)
-				free(buffer);
+			return (print_err(1, 2, "my(s)hell: malloc\n"), 1);
+		if (break_heredoc(buffer))
 			return (1);
-		}
 		if (ft_exact_strcmp(buffer, no_quotes_lex) == 0)
 		{
 			free(buffer);
@@ -105,11 +100,9 @@ int	process_heredoc_dollar_open(int file, t_exec_vars *vars,
 	{
 		buffer = readline("heredoc> ");
 		if (buffer == NULL)
-			break ;
+			return (print_err(1, 2, "my(s)hell: malloc\n"), 1);
 		if (break_heredoc(buffer))
 			return (1);
-		if (buffer == NULL)
-			return (print_err(1, 2, "my(s)hell: malloc\n"), 1);
 		if (ft_exact_strcmp(buffer, no_quotes_lex) == 0)
 			return (free(buffer), 0);
 		buffer_start = buffer;
