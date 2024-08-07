@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 16:15:59 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 17:18:31 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:34:43 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ int	handle_heredoc_quotes(int fd, t_p_tree **node,
 			if (pipe_heredoc_dollar_closed(no_quotes_lex, fd))
 				return(free(no_quotes_lex), g_last_exit_status);
 		}
-    }
-    else if (pipe_heredoc_dollar_open(no_quotes_lex, fd, exec_data))
-        return(free(no_quotes_lex), g_last_exit_status);
-    return (free(no_quotes_lex), 0);
+	}
+	else if (pipe_heredoc_dollar_open(no_quotes_lex, fd, exec_data))
+		return(free(no_quotes_lex), g_last_exit_status);
+	return (free(no_quotes_lex), 0);
 }
 int	pipe_heredoc(t_p_tree **node, int *here_docs, t_free_data *exec_data)
 {

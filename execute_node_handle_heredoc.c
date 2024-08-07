@@ -6,21 +6,11 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 17:16:13 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:32:04 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/* int	file_error(int file, t_exec_vars *vars)
-{
-	if (file == -1)
-	{
-		vars->error = 1;
-		return (1);
-	}
-	return (0);
-} */
 
 int	malloc_check(char *no_quotes_lex, int *error)
 {
@@ -45,7 +35,6 @@ char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars,
 	if (malloc_check(no_quotes_lex, &vars->error))
 		return (NULL);
 	file = open_heredoc_file(filename);
-	//if (file_error(file, vars))
 	if (file == -1)
 		return (free(no_quotes_lex), NULL);
 	if (ft_strpbrk((*node)->child->data->lexeme, "'\"") != NULL)
@@ -54,13 +43,9 @@ char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars,
 		if (g_last_exit_status)
 			return (free(no_quotes_lex), close(file), NULL);
 		process_heredoc_dollar_closed(file, no_quotes_lex);
-		//if (process_heredoc_dollar_closed(file, no_quotes_lex))
-			//vars->error = 1;
 	}
 	else
 		process_heredoc_dollar_open(file, vars, exec_data, no_quotes_lex);
-	/* else if (process_heredoc_dollar_open(file, vars, exec_data, no_quotes_lex))
-		vars->error = 1; */
 	close(file);
 	free(no_quotes_lex);
 	return (filename);

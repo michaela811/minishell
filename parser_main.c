@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:11 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 16:45:18 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:34:04 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	create_and_link_pipe(t_token_list **tok, t_p_tree **new)
 	link_pipe(new, pipe_node);
 	next_command = NULL;
 	if (is_simple_command(tok, &next_command, tok_prev) != 0
-			|| !next_command->child)
+		|| !next_command->child)
 		return (g_last_exit_status);
 	link_pipe(new, next_command);
 	return (0);
@@ -48,7 +48,7 @@ int	is_pipe_sequence(t_free_data *exec_data)
 	current_command = NULL;
 	if (is_simple_command(&exec_data->token_list, &current_command,
 			exec_data->token_list) != 0
-			|| !current_command->child)
+		|| !current_command->child)
 		return (free_command_data(exec_data), g_last_exit_status);
 	exec_data->tree->child = current_command;
 	while (exec_data->token_list != NULL

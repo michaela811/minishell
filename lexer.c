@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:34 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 16:24:52 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 16:50:34 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,4 +95,3 @@ void	process_input_str(char *str, const char *delim, char *dest)
 	}
 	*dest = '\0';
 }
-
