@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline_here_doc_dollar.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 17:03:19 by dpadenko          #+#    #+#             */
-/*   Updated: 2024/08/06 20:19:18 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 12:02:20 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,21 +79,10 @@ int	pipe_heredoc_dollar_open(char *no_quotes_lex, int fd,
 		if (handle_dollar_sign(&buffer, buffer_no_dollar, exec_data,
 				sizeof(buffer_no_dollar)))
 			return (free(buffer_start), 1);
-		//if (handle_dollar_error(&buffer, buffer_no_dollar, vars, exec_data))
-			//return (free(buffer_start) , 1);
-		/* contents = get_heredoc_content(contents, buffer_no_dollar);
-		ft_strcat(contents, "\n");
-		free(buffer_start); */
 		if (pipe_heredoc_get_content(&contents, buffer_no_dollar, buffer_start))
 			return (1);
 	}
 	return write_and_free_contents(fd, contents);
-	/* if (contents != NULL)
-	{
-		write(fd, contents, ft_strlen(contents));
-		free(contents);
-	}
-	return (0); */
 }
 
 int	pipe_heredoc_dollar_closed(char *no_quotes_lex, int fd)
@@ -119,17 +108,8 @@ int	pipe_heredoc_dollar_closed(char *no_quotes_lex, int fd)
 		if (is_it_delimiter(no_quotes_lex, buffer))
 			break ;
 		buffer_start = buffer;
-		/* contents = get_heredoc_content(contents, buffer);
-		ft_strcat(contents, "\n");
-		free(buffer); */
 		if (pipe_heredoc_get_content(&contents, buffer, buffer_start))
 			return (1);
 	}
 	return write_and_free_contents(fd, contents);
-	/* if (contents != NULL)
-	{
-		write(fd, contents, ft_strlen(contents));
-		free(contents);
-	}
-	return (0); */
 }
