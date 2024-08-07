@@ -90,32 +90,3 @@ int	pipe_heredoc_dollar_open(char *no_quotes_lex, int fd,
 	}
 	return write_and_free_contents(fd, contents);
 }
-
-int	pipe_heredoc_dollar_closed(char *no_quotes_lex, int fd)
-{
-	char	*buffer;
-	char	*buffer_start;
-	char	*contents;
-
-	buffer = NULL;
-	contents = NULL;
-	if (get_stdin())
-		return (1);
-	while (1)
-	{
-		buffer = readline("heredoc> ");
-		if (break_pipe_heredoc(buffer, contents))
-			return (1);
-		if (buffer == NULL)
-		{
-			g_last_exit_status = 1;
-			break ;
-		}
-		if (is_it_delimiter(no_quotes_lex, buffer))
-			break ;
-		buffer_start = buffer;
-		if (pipe_heredoc_get_content(&contents, buffer, buffer_start))
-			return (1);
-	}
-	return write_and_free_contents(fd, contents);
-}

@@ -34,7 +34,6 @@ SOURCES = env_main.c \
 			lexer_main.c \
 			lexer.c \
 			main.c \
-			main_utils.c \
 			main_handle_input.c \
 			parser_is_all_rest.c \
 			parser_is_cmd_suffix.c \
