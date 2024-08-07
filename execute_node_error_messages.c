@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:30:37 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 14:58:53 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 16:22:59 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	path_status_2(t_exec_vars *vars, char **path)
 		return (print_err(126, 2, "my(s)hell: %s: Permission denied\n",
 				vars->args[0]), 126);
 	return (print_err(127, 2, "my(s)hell: %s: command not found\n",
-			*path), 127);
+			*path), free(*path), 127);
 }
 
 int	path_status_1(t_exec_vars *vars, t_env **env, char **path)
