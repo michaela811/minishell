@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 16:15:59 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 18:21:07 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 12:37:01 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,18 +55,18 @@ int	pipe_heredoc(t_p_tree **node, int *here_docs, t_free_data *exec_data)
 	return (0);
 }
 
-int	handle_pipe_heredoc(int *here_docs, t_p_tree *current,
+int handle_pipe_heredoc(int *here_docs, t_p_tree *current,
 		t_free_data *exec_data)
 {
-	if (*here_docs != -1)
-	{
-		close(*here_docs);
-		*here_docs = -1;
-	}
-	pipe_heredoc(&current->child->child, here_docs, exec_data);
-	if (g_last_exit_status == 130)
-		return (1);
-	return (0);
+    if (*here_docs != -1)
+    {
+        close(*here_docs);
+        *here_docs = -1;
+    }
+    pipe_heredoc(&current->child->child, here_docs, exec_data);
+    if (g_last_exit_status == 130)
+        return (1);
+    return (0);
 }
 
 int	is_there_here_doc(t_p_tree **tree, int *here_docs, t_free_data *exec_data)

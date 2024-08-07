@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
 /*   Updated: 2024/08/07 17:32:52 by dpadenko         ###   ########.fr       */
@@ -11,6 +11,16 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	check_capacity(t_exec_vars *vars)
+{
+	if (vars->i > vars->capacity - 2)
+	{
+		expand_exec_vars(vars);
+		if (vars->error)
+			free_env_array(vars->args);
+	}
+}
 
 int	is_only_space_tabs(char *str)
 {
