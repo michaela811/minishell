@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 21:41:16 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 13:59:13 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	malloc_check(char *no_quotes_lex, int *error)
 	if (no_quotes_lex == NULL)
 	{
 		*error = 1;
-		print_err(1, 2, "my(s)hell: malloc\n");
+		print_err(1, 2, "my(s)hell: malloc error\n");
 		return (1);
 	}
 	return (0);

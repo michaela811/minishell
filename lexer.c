@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:34 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:37:36 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 16:24:52 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,17 +96,3 @@ void	process_input_str(char *str, const char *delim, char *dest)
 	*dest = '\0';
 }
 
-/* void	handle_memory_error(t_token **token_list, int num_tokens)
-{
-	int	i;
-
-	i = 0;
-	while (i < num_tokens)
-	{
-		free((*token_list)[i].lexeme);
-		i++;
-	}
-	free(*token_list);
-	print_err(1, 2, "Memory allocation error\n");
-	exit(EXIT_FAILURE);
-} */

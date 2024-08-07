@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:54 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 15:08:44 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 16:19:41 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 		free((*node)->child->data->lexeme);
 		(*node)->child->data->lexeme = ft_strdup(*l_vars->result);
 		if (!check_null((*node)->child->data->lexeme, &vars->error))
-			return ;
+			return (print_err(1, 2, "my(s)hell: malloc error\n"));
 	}
 	else
 	{
@@ -63,7 +63,7 @@ void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 		(*node)->child->data->lexeme = ft_strjoin(*l_vars->result,
 				l_vars->token);
 		if (!check_null((*node)->child->data->lexeme, &vars->error))
-			return ;
+			return (print_err(1, 2, "my(s)hell: malloc error\n"));
 	}
 	vars->end = 1;
 }
