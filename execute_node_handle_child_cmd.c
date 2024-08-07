@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 16:02:37 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 16:23:43 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,6 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment,
 		path = vars->args[0];
 	if ((err_check_fork(vars, env, &path)) != 0)
 	{
-		if (path)
-			free(path);
 		clean_child_cmd(vars, exec_data);
 		exit (g_last_exit_status);
 	}
