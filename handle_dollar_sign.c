@@ -18,6 +18,8 @@ int	question_mark(char **start, char *buffer, char *dollar,
 	char	*exit_status;
 
 	exit_status = ft_itoa(dollar_status);
+	if (exit_status == NULL)
+		return (print_err(1, 2, "my(s)hell: malloc in ft_itoa\n"), 1);
 	if (!check_null(exit_status, &g_last_exit_status))
 		return (1);
 	ft_strcat(buffer, exit_status);

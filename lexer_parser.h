@@ -3,14 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_parser.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:28 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:37:30 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 11:09:45 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-t_token_list		*create_token(enum e_token_type type, char *lexeme);
 void				add_token(t_token_list **list, enum e_token_type type,
 						char *lexeme);
 int					count_additional_chars(char *input, const char *delim);
@@ -25,7 +24,8 @@ enum e_token_type	determine_token_type(char *token_value);
 void				link_node(t_p_tree **current, t_p_tree *newNode);
 int					is_cmd_word(t_token_list **tok,
 						t_p_tree **cmd_word_node);
-int					is_simple_command(t_token_list **tok, t_p_tree **new);
+int					is_simple_command(t_token_list **tok, t_p_tree **new,
+						t_token_list *tok_prev);
 int					is_io_redirect(t_token_list **tok,
 						t_p_tree **redirect_node);
 bool				is_redirection_token(enum e_token_type type);
