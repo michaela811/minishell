@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:08 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/05 14:24:21 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 15:47:23 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	init_exec_vars(t_exec_vars *vars)
 	vars->args = malloc(vars->capacity * sizeof(char *));
 	if (!vars->args)
 	{
+		print_err(1, 2, "my(s)hell: malloc error\n");
 		vars->error = 1;
 		return ;
 	}
@@ -50,6 +51,7 @@ void	expand_exec_vars(t_exec_vars *vars)
 	new_args = ft_realloc(vars->args, original_size, new_size);
 	if (new_args == NULL)
 	{
+		print_err(1, 2, "my(s)hell: malloc error\n");
 		vars->error = 1;
 		return ;
 	}

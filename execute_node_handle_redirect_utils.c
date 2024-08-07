@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:03 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 20:04:32 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 14:00:30 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ int	helper_fd_out_checker(t_p_tree **node, t_exec_vars *vars)
 			return (print_err(1, 2, "my(s)hell: %s: Permission denied\n",
 				(*node)->child->data->lexeme), 1);
 		else if (errno == ENOENT)
-			return (print_err(1, 2, "my(s)hell: %s: No such file or directory\n",
+			return (print_err(1, 2,
+					"my(s)hell: %s: No such file or directory\n",
 				(*node)->child->data->lexeme), 1);
 		else
 			return (print_err(1, 2,
