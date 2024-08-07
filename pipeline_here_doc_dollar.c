@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline_here_doc_dollar.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 17:03:19 by dpadenko          #+#    #+#             */
-/*   Updated: 2024/08/06 20:19:18 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:18:36 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,12 @@ int pipe_heredoc_get_content(char **contents, char *buffer, char *buffer_start)
 
 int	write_and_free_contents(int fd, char *contents)
 {
-    if (contents != NULL)
-    {
-        write(fd, contents, ft_strlen(contents));
-        free(contents);
-    }
-    return (0);
+	if (contents != NULL)
+	{
+		write(fd, contents, ft_strlen(contents));
+		free(contents);
+	}
+	return (0);
 }
 
 int	pipe_heredoc_dollar_open(char *no_quotes_lex, int fd,
