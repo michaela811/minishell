@@ -50,6 +50,8 @@ void	clean_child_cmd(t_exec_vars *vars, t_free_data *exec_data)
 	if (exec_data->hd_fd != -1)
 		close(exec_data->hd_fd);
 	close(STDIN_FILENO);
+	if (STDOUT_FILENO)
+		close(STDOUT_FILENO);
 }
 
 int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment,
