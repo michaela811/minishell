@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:16 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 16:46:21 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 18:20:07 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,3 @@ void	link_pipe(t_p_tree **current, t_p_tree *new_node)
 		last->sibling = new_node;
 	}
 }
-
