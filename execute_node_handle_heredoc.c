@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 19:44:55 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/06 21:41:16 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ char	*handle_here_doc(t_p_tree **node, t_exec_vars *vars,
 		//if (process_heredoc_dollar_closed(file, no_quotes_lex))
 			//vars->error = 1;
 	}
-	process_heredoc_dollar_open(file, vars, exec_data, no_quotes_lex);
+	else
+		process_heredoc_dollar_open(file, vars, exec_data, no_quotes_lex);
 	/* else if (process_heredoc_dollar_open(file, vars, exec_data, no_quotes_lex))
 		vars->error = 1; */
 	close(file);

@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 21:17:43 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 09:14:54 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,14 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 	{
 		if (exec_data->tree->data != NULL)
 		{
-			handle_node_data(&exec_data->tree, vars, exec_data,
-				&exec_data->hd_fd);
+			if (handle_node_data(&exec_data->tree, vars, exec_data,
+				&exec_data->hd_fd))
+				return (g_last_exit_status);
 			if (vars->args[vars->i] != NULL)
 			{
 				free(vars->args[vars->i]);
 				vars->args[vars->i] = NULL;
 			}
-			if (vars->error != 0)
-				return (g_last_exit_status);
 		}
 		check_capacity(vars);
 		exec_data->tree = exec_data->tree->child;
@@ -92,6 +91,8 @@ int	execute_node(t_free_data *exec_data)
 {
 	t_exec_vars	*vars;
 
+	if (exec_data->tree == NULL)
+		return (0);
 	vars = malloc(sizeof(t_exec_vars));
 	if (!vars)
 	{
@@ -99,8 +100,8 @@ int	execute_node(t_free_data *exec_data)
 				"my(s)hell: execute_node malloc error\n"), 1);
 	}
 	init_exec_vars(vars);
-	if (exec_data->tree == NULL)
-		return (0);
+	if (vars->error)
+		return (free(vars), 1);
 	if (complex_handle_node_data(exec_data, vars))
 		return (free_vars(vars), g_last_exit_status);
 	if (vars->args[vars->i] != NULL)
