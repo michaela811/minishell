@@ -42,18 +42,15 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 	{
 		if (exec_data->tree->data != NULL)
 		{
-			if (handle_node_data(&exec_data->tree, vars, exec_data,
-				&exec_data->hd_fd))
-				return (g_last_exit_status);
-			if (vars->args[0] == NULL || (vars->args[0][0] == '\0'
-				&& ft_strlen(vars->args[0]) == 0))
+			handle_node_data(&exec_data->tree, vars, exec_data,
+				&exec_data->hd_fd);
+			if (vars->args[vars->i] != NULL)
 			{
-				if (vars->args[0][0] == '\0')
-					free(vars->args[0]);
-				vars->i = 0;
+				free(vars->args[vars->i]);
+				vars->args[vars->i] = NULL;
 			}
-			//if (vars->error != 0)
-				//return (g_last_exit_status);
+			if (vars->error != 0)
+				return (g_last_exit_status);
 		}
 		check_capacity(vars);
 		exec_data->tree = exec_data->tree->child;
