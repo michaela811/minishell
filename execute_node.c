@@ -41,7 +41,7 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 				vars->args[vars->i] = NULL;
 			}
 		}
-		if (vars->i < vars->capacity - 1)
+		if (vars->i > vars->capacity - 2)
 		{
 			vars->args[vars->i] = NULL;
 			expand_exec_vars(vars);
