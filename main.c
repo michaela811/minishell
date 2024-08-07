@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:43 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 16:28:42 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:07:44 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ int	process_input(t_free_data *exec_data, struct termios *orig_termios)
 			reset_terminal_mode(orig_termios);
 		free_exit_data(exec_data);
 		clear_history();
-		return (print_err(1, 2, "my(s)hell: readline failure\n"), 1);
+		return (1);
+		//return (print_err(1, 2, "my(s)hell: readline failure\n"), 1);
 	}
 	reset_terminal_mode(orig_termios);
 	handle_input(input, exec_data);

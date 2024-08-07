@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:22 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 16:24:03 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:18:26 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ t_token	*create_token_lexer(char *token_value)
 	if (new_token->lexeme == NULL)
 	{
 		free(new_token);
-		return (print_err(1, 2, "malloc error\n"), NULL);
+		return (print_err(1, 2, "malloc error 29\n"), NULL);
 	}
 	return (new_token);
 }
@@ -81,7 +81,7 @@ t_token_list	*create_node_lexer(t_token *new_token)
 	if (new_node == NULL)
 	{
 		free(new_token);
-		return (print_err(1, 2, "malloc error\n"), NULL);
+		return (print_err(1, 2, "malloc error 30\n"), NULL);
 	}
 	new_node->token = new_token;
 	new_node->next = NULL;

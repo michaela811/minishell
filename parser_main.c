@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_main.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:11 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 16:49:25 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:34:04 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ int	is_pipe_sequence(t_free_data *exec_data)
 	if (exec_data->token_list == NULL || exec_data->token_list->token == NULL)
 		return (print_err(2, 2, "my(s)hell: syntax error\n"), 1);
 	exec_data->tree = alloc_parse_tree();
+	if (exec_data->tree == NULL)
+		return (print_err(1, 2, "my(s)hell: memory error\n"), 1);
 	exec_data->tree_start = exec_data->tree;
 	if (exec_data->tree == NULL)
 		return (print_err(1, 2, "my(s)hell: memory error\n"), 1);

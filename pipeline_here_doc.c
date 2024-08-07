@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 17:23:30 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:18:47 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char	*get_heredoc_content(char *contents, char *buffer)
 	{
 		contents = malloc(ft_strlen(buffer) + 2);
 		if (contents == NULL)
-			return (NULL);
+			return (print_err(1, 2, "my(s)hell: malloc error 34"), NULL);
 		ft_strcpy(contents, buffer);
 	}
 	else
@@ -49,7 +49,7 @@ char	*get_heredoc_content(char *contents, char *buffer)
 		new_size = old_size + ft_strlen(buffer) + 1;
 		temp = ft_realloc(contents, old_size, new_size);
 		if (temp == NULL)
-			return (NULL);
+			return (print_err(1, 2, "my(s)hell: malloc error 35"), NULL);
 		contents = temp;
 		ft_strcat(contents, buffer);
 	}

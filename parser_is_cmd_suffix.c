@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_is_cmd_suffix.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:07 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 11:24:09 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 16:44:22 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ t_p_tree	*alloc_parse_tree(void)
 
 	tree = malloc(sizeof(t_p_tree));
 	if (tree == NULL)
-		return (NULL);
+		return ( NULL);
 	tree->data = NULL;
 	tree->child = NULL;
 	tree->sibling = NULL;

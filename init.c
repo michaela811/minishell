@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:16 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 16:50:51 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:33:42 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,16 @@ int	init_handle_vars(t_handle_vars *l_vars, t_exec_vars *vars)
 {
 	l_vars->result = malloc(sizeof(char *));
 	if (!l_vars->result)
-		return (print_err(1, 2, "my(s)hell: malloc error\n"), 1);
+		return (print_err(1, 2, "my(s)hell: malloc error 21\n"), 1);
 	*l_vars->result = ft_strdup("");
 	if (!*l_vars->result)
-		return (print_err(1, 2, "my(s)hell: malloc error\n"), 1);
+		return (print_err(1, 2, "my(s)hell: malloc error 22\n"), 1);
 	l_vars->current = malloc(sizeof(char *));
 	if (!l_vars->current)
-		return (print_err(1, 2, "my(s)hell: malloc error\n"), 1);
+		return (print_err(1, 2, "my(s)hell: malloc error 23\n"), 1);
 	*l_vars->current = ft_strdup(vars->args[vars->i]);
 	if (!*l_vars->current)
-		return (print_err(1, 2, "my(s)hell: malloc error\n"), 1);
+		return (print_err(1, 2, "my(s)hell: malloc error 24\n"), 1);
 	l_vars->delimiters = "'\"";
 	l_vars->current_start = *l_vars->current;
 	return (0);
@@ -48,20 +48,20 @@ int	init_handle_quote_redirect(t_handle_vars *l_vars, t_p_tree **node)
 {
 	l_vars->result = malloc(sizeof(char *));
 	if (!l_vars->result)
-		return (print_err(1, 2, "my(s)hell: malloc error\n"), 1);
+		return (print_err(1, 2, "my(s)hell: malloc error 25\n"), 1);
 	*l_vars->result = ft_strdup("");
 	if (!*l_vars->result)
 		return (free(l_vars->result), print_err(1, 2,
-				"my(s)hell: malloc error\n"), 1);
+			"my(s)hell: malloc error 26\n"), 1);
 	l_vars->current = malloc(sizeof(char *));
 	if (!l_vars->current)
 		return (free(*l_vars->result), free(l_vars->result),
-			print_err(1, 2, "my(s)hell: malloc error\n"), 1);
+			print_err(1, 2, "my(s)hell: malloc error 27\n"), 1);
 	*l_vars->current = ft_strdup((*node)->child->data->lexeme);
 	if (!*l_vars->current)
 		return (free(l_vars->current), free(*l_vars->result),
 			free(l_vars->result),
-			print_err(1, 2, "my(s)hell: malloc error\n"), 1);
+			print_err(1, 2, "my(s)hell: malloc error 28\n"), 1);
 	l_vars->delimiters = "'\"";
 	l_vars->current_start = *l_vars->current;
 	return (0);

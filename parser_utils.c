@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:16 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:38:18 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 16:46:21 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,19 +46,3 @@ void	link_pipe(t_p_tree **current, t_p_tree *new_node)
 	}
 }
 
-void	print_p_tree(t_p_tree *tree, int depth)
-{
-	int	i;
-
-	i = 0;
-	if (!tree)
-		return ;
-	while (i++ < depth)
-		printf("  ");
-	if (tree->data)
-		printf("%s (%d)\n", tree->data->lexeme, tree->data->type);
-	else
-		printf("NULL\n");
-	print_p_tree(tree->child, depth + 1);
-	print_p_tree(tree->sibling, depth);
-}

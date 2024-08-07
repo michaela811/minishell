@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 16:06:47 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 16:29:23 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:16:09 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	remove_quotes(char **lexeme_ptr)
 	lexeme = *lexeme_ptr;
 	result = malloc(ft_strlen(lexeme) + 1);
 	if (!result)
-		return (print_err(1, 2, "my(s)hell: malloc error\n"), 1);
+		return (print_err(1, 2, "my(s)hell: malloc error 1\n"), 1);
 	if (handle_lexeme(lexeme, &quote, result))
 		return (g_last_exit_status);
 	free(*lexeme_ptr);

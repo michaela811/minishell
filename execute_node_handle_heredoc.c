@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_handle_heredoc.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 16:53:52 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:32:04 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	malloc_check(char *no_quotes_lex, int *error)
 	if (no_quotes_lex == NULL)
 	{
 		*error = 1;
-		print_err(1, 2, "my(s)hell: malloc error\n");
+		print_err(1, 2, "my(s)hell: malloc error 2\n");
 		return (1);
 	}
 	return (0);

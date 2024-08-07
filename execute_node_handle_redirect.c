@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_handle_redirect.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 17:06:41 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:32:40 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	handle_redirection_from(t_p_tree **node,
 
 	saved_lexeme = ft_strdup((*node)->child->data->lexeme);
 	if (!saved_lexeme)
-		return (print_err(1, 2, "my(s)hell: malloc error\n"), 1);
+		return (print_err(1, 2, "my(s)hell: malloc error 4\n"), 1);
 	quotes_glob_redirect(node, vars, exec_data);
 	if (vars->error)
 		return (g_last_exit_status);
@@ -61,7 +61,7 @@ int	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 
 	saved_lexeme = ft_strdup((*node)->child->data->lexeme);
 	if (!saved_lexeme)
-		return (print_err(1, 2, "my(s)hell: malloc error\n"), 1);
+		return (print_err(1, 2, "my(s)hell: malloc error 5\n"), 1);
 	quotes_glob_redirect(node, vars, exec_data);
 	if (g_last_exit_status)
 		return (g_last_exit_status);
@@ -89,7 +89,7 @@ int	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 
 	saved_lexeme = ft_strdup((*node)->child->data->lexeme);
 	if (!saved_lexeme)
-		return (print_err(1, 2, "my(s)hell: malloc error\n"), 1);
+		return (print_err(1, 2, "my(s)hell: malloc error 6\n"), 1);
 	quotes_glob_redirect(node, vars, exec_data);
 	if (g_last_exit_status)
 		return (g_last_exit_status);

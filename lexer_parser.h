@@ -6,12 +6,10 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:28 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 11:09:45 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 16:47:20 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-void				add_token(t_token_list **list, enum e_token_type type,
-						char *lexeme);
 int					count_additional_chars(char *input, const char *delim);
 char				*preprocess_input(char *str, const char *delim);
 void				process_input_str(char *str, const char *delim, char *dest);
@@ -35,10 +33,7 @@ int					is_cmd_suffix(t_token_list **tok,
 						t_p_tree **suffix_node);
 void				link_pipe(t_p_tree **current, t_p_tree *newNode);
 int					is_pipe_sequence(t_free_data *exec_data);
-void				print_p_tree(t_p_tree *tree, int depth);
-void				test_parser(void);
 void				handle_input(char *input, t_free_data *exec_data);
 void				handle_preprocess_input(char *input,
 						t_free_data *exec_data);
 void				handle_parse_tree(t_free_data *exec_data);
-void				print_token_list(t_token_list *list);
