@@ -7,7 +7,6 @@
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 17:03:19 by dpadenko          #+#    #+#             */
 /*   Updated: 2024/08/07 18:25:00 by mmasarov         ###   ########.fr       */
-/*   Updated: 2024/08/07 12:02:20 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,22 +70,18 @@ int	pipe_heredoc_dollar_open(char *no_quotes_lex, int fd,
 		return (1);
 	while (1)
 	{
-		buffer = readline("heredoc> "); // Try to fail!
+		buffer = readline("heredoc> ");
 		if (break_pipe_heredoc(buffer, contents))
 			return (1);
-		if (buffer == NULL)
-		{
-			g_last_exit_status = 1;
+		if (readline_check(buffer))
 			break ;
-		}
 		if (is_it_delimiter(no_quotes_lex, buffer))
 			break ;
 		buffer_start = buffer;
-		if (handle_dollar_sign(&buffer, buffer_no_dollar, exec_data,
-				sizeof(buffer_no_dollar)))
-			return (free(buffer_start), 1);
+		if (process_buffer(buffer, buffer_no_dollar, exec_data, buffer_start))
+			return (1);
 		if (pipe_heredoc_get_content(&contents, buffer_no_dollar, buffer_start))
 			return (1);
 	}
-	return write_and_free_contents(fd, contents);
+	return (write_and_free_contents(fd, contents));
 }

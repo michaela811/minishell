@@ -6,21 +6,11 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 17:32:52 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 12:33:41 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	check_capacity(t_exec_vars *vars)
-{
-	if (vars->i > vars->capacity - 2)
-	{
-		expand_exec_vars(vars);
-		if (vars->error)
-			free_env_array(vars->args);
-	}
-}
 
 int	is_only_space_tabs(char *str)
 {
@@ -51,7 +41,7 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 				vars->args[vars->i] = NULL;
 			}
 		}
-		if (vars->i < vars->capacity - 1)
+		if (vars->i > vars->capacity - 2)
 		{
 			vars->args[vars->i] = NULL;
 			expand_exec_vars(vars);

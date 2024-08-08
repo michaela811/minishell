@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 11:08:21 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:32:40 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,11 +103,7 @@ int	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 	ft_strcpy(exp_lexeme, (*node)->child->data->lexeme);
 	if (helper_is_dir(exp_lexeme, vars))
 		return (g_last_exit_status);
-	free(exp_lexeme);
-	if (vars->fd_out != 1 && vars->fd_out != -1)
-		close(vars->fd_out);
-	vars->fd_out = open((*node)->child->data->lexeme, O_WRONLY | O_CREAT
-			| O_APPEND, 0644);
+	helper_free_close_open(node, exp_lexeme, vars);
 	if (helper_fd_out_checker(node, vars))
 		return (g_last_exit_status);
 	*node = (*node)->child;
