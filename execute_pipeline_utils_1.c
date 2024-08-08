@@ -37,7 +37,8 @@ void	exit_code_130(int *statuses, int num_commands)
 		g_last_exit_status = statuses[num_commands - 1];
 }
 
-void	initialize_statuses(int *statuses)
+void	initialize_statuses(int *statuses, pid_t *pids,
+		int num_commands, pid_t pid)
 {
 	int	i;
 
@@ -47,6 +48,7 @@ void	initialize_statuses(int *statuses)
 		statuses[i] = 0;
 		i++;
 	}
+	pids[num_commands] = pid;
 }
 
 int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
@@ -58,8 +60,7 @@ int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 	t_free_data	sibling_free_data;
 
 	num_commands = 0;
-	initialize_statuses(statuses);
-	pids[num_commands] = pid;
+	initialize_statuses(statuses, pids, num_commands, pid);
 	num_commands++;
 	if (exec_data->tree->sibling != NULL)
 	{
