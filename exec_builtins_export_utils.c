@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_builtins_export_utils.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 17:17:35 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/08 17:31:24 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,14 @@ int	split_var(char *var, char **name, char **value)
 	*value = ft_strdup(equals + 1);
 	if (*value == NULL)
 		return (print_err(ENOMEM, 2,
-				"split_var: strndup error\n"), free(*value),
+				"split_var: strndup error\n"), free(*value),//why no free(*name) here?
 			g_last_exit_status);
+	if (ft_strlen(*value) > 4096)
+	{
+		return (print_err(1, 2,
+				"assigning value is too long\n"),
+			g_last_exit_status);
+	}
 	return (0);
 }
 

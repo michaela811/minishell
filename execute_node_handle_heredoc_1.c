@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 16:06:47 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 17:16:09 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/08 16:46:16 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,25 +92,32 @@ int	break_heredoc(char *buffer)
 int	process_heredoc_dollar_open(int file, t_exec_vars *vars,
 		t_free_data *exec_data, char *no_quotes_lex)
 {
-	char	*buffer;
-	char	buffer_no_dollar[1024];
+	char	*rl_input;
+	//char	buffer_no_dollar[1024];
 	char	*buffer_start;
+	t_handle_vars	l_vars;
 
+	l_vars.buffer_size = 4096;
+	l_vars.buffer = malloc(l_vars.buffer_size);
+	if (l_vars.buffer == NULL)
+		return (print_err(1, 2, "my(s)hell: malloc error x1"), 1);
 	while (1)
 	{
-		buffer = readline("heredoc> ");
-		if (buffer == NULL)
-			return (print_err(1, 2, "my(s)hell: readline failure\n"), 1);
-		if (break_heredoc(buffer))
-			return (1);
-		if (ft_exact_strcmp(buffer, no_quotes_lex) == 0)
-			return (free(buffer), 0);
-		buffer_start = buffer;
-		if (handle_dollar_error(&buffer, buffer_no_dollar, vars, exec_data))
-			return (free(buffer_start), 1);
-		write(file, buffer_no_dollar, ft_strlen(buffer_no_dollar));
+		rl_input = readline("heredoc> ");
+		if (rl_input == NULL)
+			return (print_err(1, 2, "my(s)hell: readline failure\n"),
+				free(l_vars.buffer), 1);
+		if (break_heredoc(rl_input))
+			return (free(l_vars.buffer), 1);
+		if (ft_exact_strcmp(rl_input, no_quotes_lex) == 0)
+			return (free(rl_input), free(l_vars.buffer), 0);
+		buffer_start = rl_input;
+		if (handle_dollar_error(&rl_input, &l_vars, vars, exec_data))
+			return (free(buffer_start), free(l_vars.buffer), 1);
+		write(file, l_vars.buffer, ft_strlen(l_vars.buffer));
 		write(file, "\n", 1);
 		free(buffer_start);
+		free(l_vars.buffer);
 	}
 	return (0);
 }

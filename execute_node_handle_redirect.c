@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 17:32:40 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/08 11:45:07 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 	if (is_ambiguous_redirect(node, vars, saved_lexeme))
 		return (g_last_exit_status);
 	free(saved_lexeme);
-	exp_lexeme = malloc(4096);
+	exp_lexeme = malloc(4096);//control buffer size
 	if (!exp_lexeme)
 		return (redirect_append_error(vars), g_last_exit_status);
 	ft_memset(exp_lexeme, '\0', sizeof(exp_lexeme));
