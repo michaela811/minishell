@@ -68,7 +68,7 @@ int	update_pwd(t_env **env)
 	cwd = getcwd(NULL, 0);
 	if (cwd == NULL)
 		return (print_err(1, 2, "my(s)hell: cd: error retrieving current"
-				"directory: getcwd: cannot access parent directories: "
+				" directory: getcwd: cannot access parent directories: "
 				"No such file or directory\n"), 1);
 	if (update_add_env_var(env, "PWD", cwd))
 		return (free(cwd), 1);

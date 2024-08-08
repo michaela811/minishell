@@ -28,3 +28,5 @@ void	reset_terminal_mode(struct termios *orig_termios);
 int		fork_check(pid_t pid, int *pipefd);
 void	helper_free_close_open(t_p_tree **node, char *exp_lexeme,
 			t_exec_vars *vars);
+void	custom_sigquit_handler(int sig);
+void	helper_sigquit_handler(struct sigaction *sa, struct sigaction *old_sa);

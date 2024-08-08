@@ -12,11 +12,11 @@
 
 #include "minishell.h"
 
-void	handle_signal(int signal)
+void	handle_signal(int sig)
 {
 	int	saved_errno;
 
-	if (signal == SIGINT)
+	if (sig == SIGINT)
 	{
 		g_last_exit_status = 130;
 		write(STDOUT_FILENO, "\n", 1);
@@ -24,10 +24,10 @@ void	handle_signal(int signal)
 		rl_on_new_line();
 		rl_redisplay();
 	}
-	else if (signal == SIGQUIT)
+	else if (sig == SIGQUIT)
 	{
 	}
-	else if (signal == SIGCHLD || signal == SIGPIPE)
+	else if (sig == SIGCHLD || sig == SIGPIPE)
 	{
 		saved_errno = errno;
 		while (waitpid((pid_t)(-1), 0, WNOHANG) > 0)
@@ -54,5 +54,22 @@ void	setup_signal_handlers(void)
 		exit(EXIT_FAILURE);
 	}
 	signal(SIGINT, handle_signal);
-	signal(SIGQUIT, SIG_IGN);
+	(signal(SIGQUIT, SIG_IGN));
+}
+
+void	custom_sigquit_handler(int sig)
+{
+	if (sig == SIGQUIT)
+	{
+		g_last_exit_status = 131;
+		return ;
+	}
+}
+
+void	helper_sigquit_handler(struct sigaction *sa, struct sigaction *old_sa)
+{
+	sa->sa_handler = custom_sigquit_handler;
+	sigemptyset(&sa->sa_mask);
+	sa->sa_flags = 0;
+	sigaction(SIGQUIT, sa, old_sa);
 }
