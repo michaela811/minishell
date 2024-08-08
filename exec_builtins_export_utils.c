@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 14:50:32 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:17:35 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ int	split_var(char *var, char **name, char **value)
 	*value = ft_strdup(equals + 1);
 	if (*value == NULL)
 		return (print_err(ENOMEM, 2,
-				"split_var: strndup error\n"), free(*name), g_last_exit_status);
+				"split_var: strndup error\n"), free(*value),
+			g_last_exit_status);
 	return (0);
 }
 

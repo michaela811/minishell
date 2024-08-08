@@ -46,7 +46,6 @@ SOURCES = env_main.c \
 			handle_quotes_3.c \
 			handle_quotes_utils.c \
 			handle_quotes_redirect.c \
-			handle_quotes_heredoc.c \
 			execute_pipeline_utils_1.c \
 			execute_node_handle_child_cmd.c \
 			execute_node_error_messages.c \

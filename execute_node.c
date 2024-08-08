@@ -12,16 +12,6 @@
 
 #include "minishell.h"
 
-void	check_capacity(t_exec_vars *vars)
-{
-	if (vars->i > vars->capacity - 2)
-	{
-		expand_exec_vars(vars);
-		if (vars->error)
-			free_env_array(vars->args);
-	}
-}
-
 int	is_only_space_tabs(char *str)
 {
 	int	i;
@@ -43,7 +33,7 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 		if (exec_data->tree->data != NULL)
 		{
 			if (handle_node_data(&exec_data->tree, vars, exec_data,
-				&exec_data->hd_fd))
+					&exec_data->hd_fd))
 				return (g_last_exit_status);
 			if (vars->args[vars->i] != NULL)
 			{
@@ -51,7 +41,13 @@ static int	complex_handle_node_data(t_free_data *exec_data, t_exec_vars *vars)
 				vars->args[vars->i] = NULL;
 			}
 		}
-		check_capacity(vars);
+		if (vars->i > vars->capacity - 2)
+		{
+			vars->args[vars->i] = NULL;
+			expand_exec_vars(vars);
+			if (vars->error)
+				return (g_last_exit_status);
+		}
 		exec_data->tree = exec_data->tree->child;
 	}
 	return (0);
@@ -97,11 +93,11 @@ int	execute_node(t_free_data *exec_data)
 	if (!vars)
 	{
 		return (print_err(1, 2,
-				"my(s)hell: execute_node malloc error\n"), 1);
+				"my(s)hell: execute_node malloc error 10\n"), 1);
 	}
 	init_exec_vars(vars);
 	if (vars->error)
-		return (free(vars), 1);
+		return (free(vars), g_last_exit_status);
 	if (complex_handle_node_data(exec_data, vars))
 		return (free_vars(vars), g_last_exit_status);
 	if (vars->args[vars->i] != NULL)

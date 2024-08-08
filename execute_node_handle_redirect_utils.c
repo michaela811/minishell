@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_handle_redirect_utils.c               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:03 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 20:04:32 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:17:04 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,25 @@ int	helper_fd_out_checker(t_p_tree **node, t_exec_vars *vars)
 		vars->error = 1;
 		if (errno == EACCES)
 			return (print_err(1, 2, "my(s)hell: %s: Permission denied\n",
-				(*node)->child->data->lexeme), 1);
+					(*node)->child->data->lexeme), 1);
 		else if (errno == ENOENT)
-			return (print_err(1, 2, "my(s)hell: %s: No such file or directory\n",
-				(*node)->child->data->lexeme), 1);
+			return (print_err(1, 2,
+					"my(s)hell: %s: No such file or directory\n",
+					(*node)->child->data->lexeme), 1);
 		else
 			return (print_err(1, 2,
-				"my(s)hell: %s: Not a directory\n",
-				(*node)->child->data->lexeme), 1);
+					"my(s)hell: %s: Not a directory\n",
+					(*node)->child->data->lexeme), 1);
 	}
 	return (0);
+}
+
+void	helper_free_close_open(t_p_tree **node, char *exp_lexeme,
+		t_exec_vars *vars)
+{
+	free(exp_lexeme);
+	if (vars->fd_out != 1)
+		close(vars->fd_out);
+	vars->fd_out = open((*node)->child->data->lexeme, O_WRONLY | O_CREAT
+			| O_APPEND, 0644);
 }

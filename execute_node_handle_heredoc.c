@@ -17,7 +17,7 @@ int	malloc_check(char *no_quotes_lex, int *error)
 	if (no_quotes_lex == NULL)
 	{
 		*error = 1;
-		print_err(1, 2, "my(s)hell: malloc\n");
+		print_err(1, 2, "my(s)hell: malloc error 2\n");
 		return (1);
 	}
 	return (0);

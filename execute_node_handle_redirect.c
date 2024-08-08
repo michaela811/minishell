@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 11:08:21 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:32:40 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ int	handle_redirection_from(t_p_tree **node,
 
 	saved_lexeme = ft_strdup((*node)->child->data->lexeme);
 	if (!saved_lexeme)
-		return (print_err(1, 2, "my(s)hell: malloc\n"), 1);
+		return (print_err(1, 2, "my(s)hell: malloc error 4\n"), 1);
 	quotes_glob_redirect(node, vars, exec_data);
-	if (vars->error)//could be also g_last_exit_status?
+	if (vars->error)
 		return (g_last_exit_status);
 	if (is_ambiguous_redirect(node, vars, saved_lexeme))
 		return (g_last_exit_status);
@@ -61,7 +61,7 @@ int	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 
 	saved_lexeme = ft_strdup((*node)->child->data->lexeme);
 	if (!saved_lexeme)
-		return (print_err(1, 2, "my(s)hell: malloc\n"), 1);
+		return (print_err(1, 2, "my(s)hell: malloc error 5\n"), 1);
 	quotes_glob_redirect(node, vars, exec_data);
 	if (g_last_exit_status)
 		return (g_last_exit_status);
@@ -89,7 +89,7 @@ int	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 
 	saved_lexeme = ft_strdup((*node)->child->data->lexeme);
 	if (!saved_lexeme)
-		return (print_err(1, 2, "my(s)hell: malloc\n"), 1);
+		return (print_err(1, 2, "my(s)hell: malloc error 6\n"), 1);
 	quotes_glob_redirect(node, vars, exec_data);
 	if (g_last_exit_status)
 		return (g_last_exit_status);
@@ -103,11 +103,7 @@ int	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 	ft_strcpy(exp_lexeme, (*node)->child->data->lexeme);
 	if (helper_is_dir(exp_lexeme, vars))
 		return (g_last_exit_status);
-	free(exp_lexeme);
-	if (vars->fd_out != 1 && vars->fd_out != -1)
-		close(vars->fd_out);
-	vars->fd_out = open((*node)->child->data->lexeme, O_WRONLY | O_CREAT
-			| O_APPEND, 0644);
+	helper_free_close_open(node, exp_lexeme, vars);
 	if (helper_fd_out_checker(node, vars))
 		return (g_last_exit_status);
 	*node = (*node)->child;

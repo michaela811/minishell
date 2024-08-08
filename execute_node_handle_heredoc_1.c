@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 16:06:47 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 20:35:01 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:16:09 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	remove_quotes(char **lexeme_ptr)
 	lexeme = *lexeme_ptr;
 	result = malloc(ft_strlen(lexeme) + 1);
 	if (!result)
-		return (print_err(1, 2, "my(s)hell: malloc\n"), 1);
+		return (print_err(1, 2, "my(s)hell: malloc error 1\n"), 1);
 	if (handle_lexeme(lexeme, &quote, result))
 		return (g_last_exit_status);
 	free(*lexeme_ptr);
@@ -63,7 +63,7 @@ int	process_heredoc_dollar_closed(int file, char *no_quotes_lex)
 	{
 		buffer = readline("heredoc> ");
 		if (buffer == NULL)
-			return (print_err(1, 2, "my(s)hell: malloc\n"), 1);
+			return (print_err(1, 2, "my(s)hell: readline failure\n"), 1);
 		if (break_heredoc(buffer))
 			return (1);
 		if (ft_exact_strcmp(buffer, no_quotes_lex) == 0)
@@ -100,7 +100,7 @@ int	process_heredoc_dollar_open(int file, t_exec_vars *vars,
 	{
 		buffer = readline("heredoc> ");
 		if (buffer == NULL)
-			return (print_err(1, 2, "my(s)hell: malloc\n"), 1);
+			return (print_err(1, 2, "my(s)hell: readline failure\n"), 1);
 		if (break_heredoc(buffer))
 			return (1);
 		if (ft_exact_strcmp(buffer, no_quotes_lex) == 0)

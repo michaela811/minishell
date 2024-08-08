@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline_here_doc.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 17:23:30 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/07 18:25:09 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char	*get_heredoc_content(char *contents, char *buffer)
 	{
 		contents = malloc(ft_strlen(buffer) + 2);
 		if (contents == NULL)
-			return (NULL);
+			return (print_err(1, 2, "my(s)hell: malloc error 34"), NULL);
 		ft_strcpy(contents, buffer);
 	}
 	else
@@ -49,7 +49,7 @@ char	*get_heredoc_content(char *contents, char *buffer)
 		new_size = old_size + ft_strlen(buffer) + 1;
 		temp = ft_realloc(contents, old_size, new_size);
 		if (temp == NULL)
-			return (NULL);
+			return (print_err(1, 2, "my(s)hell: malloc error 35"), NULL);
 		contents = temp;
 		ft_strcat(contents, buffer);
 	}
@@ -63,5 +63,51 @@ int	is_it_delimiter(char *node, char *buffer)
 		free(buffer);
 		return (1);
 	}
+	return (0);
+}
+
+int	pipe_heredoc_dollar_closed(char *no_quotes_lex, int fd)
+{
+	char	*buffer;
+	char	*buffer_start;
+	char	*contents;
+
+	buffer = NULL;
+	contents = NULL;
+	if (get_stdin())
+		return (1);
+	while (1)
+	{
+		buffer = readline("heredoc> ");
+		if (break_pipe_heredoc(buffer, contents))
+			return (1);
+		if (buffer == NULL)
+		{
+			print_err(1, 2, "my(s)hell: malloc error 33");
+			break ;
+		}
+		if (is_it_delimiter(no_quotes_lex, buffer))
+			break ;
+		buffer_start = buffer;
+		if (pipe_heredoc_get_content(&contents, buffer, buffer_start))
+			return (1);
+	}
+	return (write_and_free_contents(fd, contents));
+}
+
+int	pipe_heredoc_get_content(char **contents, char *buffer, char *buffer_start)
+{
+	*contents = get_heredoc_content(*contents, buffer);
+	if (*contents == NULL)
+	{
+		if (buffer_start)
+			free(buffer_start);
+		if (contents)
+			free(contents);
+		print_err(1, 2, "my(s)hell: malloc error in get_heredoc_content");
+		return (1);
+	}
+	ft_strcat(*contents, "\n");
+	free(buffer_start);
 	return (0);
 }

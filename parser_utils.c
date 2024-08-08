@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:16 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 10:38:18 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/07 18:20:07 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,46 +44,4 @@ void	link_pipe(t_p_tree **current, t_p_tree *new_node)
 			last = last->sibling;
 		last->sibling = new_node;
 	}
-}
-
-t_token_list	*create_token(enum e_token_type type, char *lexeme)
-{
-	t_token			*new_token;
-	t_token_list	*new_list_node;
-
-	new_token = malloc(sizeof(t_token));
-	if (!new_token)
-	{
-		print_err(1, 2, "malloc error in token creation\n");
-		exit(MEMORY_ERROR);
-	}
-	new_token->lexeme = ft_strdup(lexeme);
-	new_token->type = type;
-	new_list_node = malloc(sizeof(t_token_list));
-	if (!new_list_node)
-	{
-		free_token(new_token);
-		print_err(1, 2, "malloc error in token list creation\n");
-		exit(MEMORY_ERROR);
-	}
-	new_list_node->token = new_token;
-	new_list_node->next = NULL;
-	return (new_list_node);
-}
-
-void	print_p_tree(t_p_tree *tree, int depth)
-{
-	int	i;
-
-	i = 0;
-	if (!tree)
-		return ;
-	while (i++ < depth)
-		printf("  ");
-	if (tree->data)
-		printf("%s (%d)\n", tree->data->lexeme, tree->data->type);
-	else
-		printf("NULL\n");
-	print_p_tree(tree->child, depth + 1);
-	print_p_tree(tree->sibling, depth);
 }
