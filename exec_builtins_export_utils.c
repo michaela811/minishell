@@ -54,6 +54,11 @@ int	split_var(char *var, char **name, char **value)
 
 int	control_name(char *var, char **name, int *i)
 {
+	if (ft_strlen(*name) > 1024)
+	{
+		return (print_err(1, 2,
+				"my(s)hell: too long identifier\n"), g_last_exit_status);
+	}
 	while ((*name)[*i] != '\0')
 	{
 		if (!ft_isalnum((*name)[*i]) && (*name)[*i] != '_')
