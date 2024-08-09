@@ -6,19 +6,19 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 17:03:19 by dpadenko          #+#    #+#             */
-/*   Updated: 2024/08/08 17:07:24 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/09 17:55:53 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	break_pipe_heredoc(char *buffer, char *contents)
+int	break_pipe_heredoc(char *rl_input, char *contents)
 {
 	if (g_last_exit_status == 130)
 	{
 		if (contents != NULL)
 			free(contents);
-		free(buffer);
+		free(rl_input);
 		return (1);
 	}
 	return (0);
@@ -57,7 +57,7 @@ int	readline_check(char *buffer)
 {
 	if (buffer == NULL)
 	{
-		print_err(1, 2, "my(s)hell: malloc error 32");
+		print_err(1, 2, "my(s)hell: heredoc delimited by EOF\n");
 		return (1);
 	}
 	return (0);
@@ -96,9 +96,12 @@ int	pipe_heredoc_dollar_open(char *no_quotes_lex, int fd,
 	{
 		rl_input = readline("heredoc> ");
 		if (break_pipe_heredoc(rl_input, contents))
-			return (free_bufs_contents(contents, l_vars.buffer, rl_input), 1);
+			return (free(l_vars.buffer), 1);
 		if (readline_check(rl_input))
 			break ;
+		if (ft_strlen(rl_input) >= 4096)
+			return (print_err(1, 2, "my(s)hell: heredoc too long\n"),
+				free (rl_input), free(l_vars.buffer), 1);
 		if (is_it_delimiter(no_quotes_lex, rl_input))
 			break ;
 		buffer_start = rl_input;

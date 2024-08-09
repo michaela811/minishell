@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:00 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/08 16:23:27 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/09 15:45:01 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,5 +64,5 @@ int	handle_dollar_error(char **token, t_handle_vars *l_vars, t_exec_vars *vars,
 		vars->error = 1;
 		return (1);
 	}
-	return (0);
+	return (0);//change back to 0!!!
 }
