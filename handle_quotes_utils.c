@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:00 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 17:17:44 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/08 16:23:27 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,12 @@ void	update_args(t_exec_vars *vars, t_handle_vars *l_vars)
 	if (!check_null(vars->args[vars->i], &vars->error))
 		return (print_err(1, 2, "my(s)hell: malloc error 20\n"));
 }
-
-int	handle_dollar_error(char **token, char *buffer, t_exec_vars *vars,
+//int		handle_dollar_error(char **token, char *buffer, t_exec_vars *vars,
+			//t_free_data *exec_data);
+int	handle_dollar_error(char **token, t_handle_vars *l_vars, t_exec_vars *vars,
 		t_free_data *exec_data)
 {
-	if (handle_dollar_sign(token, buffer, exec_data, sizeof(buffer)))
+	if (handle_dollar_sign(token, l_vars, exec_data))
 	{
 		vars->error = 1;
 		return (1);

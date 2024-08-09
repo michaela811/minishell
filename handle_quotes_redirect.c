@@ -6,19 +6,35 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:54 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 17:17:34 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/08 16:29:17 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	vars_set_null_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
+		t_p_tree **node)
+{
+	l_vars->buffer = NULL;
+	l_vars->token = NULL;
+	l_vars->delimiters = NULL;
+	l_vars->current = NULL;
+	l_vars->result = NULL;
+	l_vars->current_start = NULL;
+	if (init_handle_quote_redirect(l_vars, node))
+	{
+		free_handle_vars(l_vars);
+		vars->error = 1;
+	}
+	return ;
+}
 
 void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars,
 		t_free_data *exec_data)
 {
 	t_handle_vars	l_vars;
 
-	if (init_handle_quote_redirect(&l_vars, node))
-		vars->error = 1;
+	vars_set_null_redirect(&l_vars, vars, node);
 	if (vars->error)
 		return ;
 	while (*l_vars.current != NULL && **l_vars.current != '\0')
@@ -26,8 +42,7 @@ void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars,
 		if (vars->inside_single_quotes)
 			handle_single_quotes(l_vars.current, l_vars.result, vars);
 		else if (vars->inside_double_quotes)
-			handle_double_quotes(l_vars.current, l_vars.result, vars,
-				exec_data);
+			handle_double_quotes(&l_vars, vars, exec_data);
 		else
 			handle_no_quotes_redirect(&l_vars, vars, exec_data, node);
 		if (vars->end)
@@ -47,7 +62,7 @@ void	handle_no_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 {
 	if (ft_strchr(l_vars->token, '$') != NULL)
 	{
-		if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars,
+		if (handle_dollar_error(&l_vars->token, l_vars, vars,
 				exec_data))
 			return ;
 		if (update_result(l_vars->result, l_vars->buffer, vars))
@@ -77,8 +92,7 @@ void	handle_with_current_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
 	**l_vars->current = '\0';
 	if (ft_strchr((*node)->data->lexeme, '$') != NULL)
 	{
-		if (handle_dollar_sign(&l_vars->token, l_vars->buffer, exec_data,
-				sizeof(l_vars->buffer)))
+		if (handle_dollar_sign(&l_vars->token, l_vars, exec_data))
 		{
 			vars->error = 1;
 			return ;
