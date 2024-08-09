@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_handle_redirect.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/09 15:11:16 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/09 21:12:18 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@ int	handle_redirection(t_p_tree **node, t_exec_vars *vars,
 {
 	if ((*node)->data->type == HERE_DOC)
 		return (handle_redirection_here_doc(node, vars, here_docs, exec_data));
+	if (ft_strlen((*node)->child->data->lexeme) > 255)//or 256?
+		return (print_err(1, 2, "my(s)hell: %s: File name too long\n",
+				(*node)->child->data->lexeme), 1);
 	if ((*node)->data->type == RED_FROM)
 		return (handle_redirection_from(node, vars, exec_data));
 	else if ((*node)->data->type == RED_TO)
@@ -96,10 +99,10 @@ int	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 	if (is_ambiguous_redirect(node, vars, saved_lexeme))
 		return (g_last_exit_status);
 	free(saved_lexeme);
-	exp_lexeme = malloc(4096);//control buffer size
+	exp_lexeme = malloc(4096);
 	if (!exp_lexeme)
 		return (redirect_append_error(vars), g_last_exit_status);
-	ft_memset(exp_lexeme, '\0', sizeof(exp_lexeme));
+	ft_memset(exp_lexeme, '\0', 4096);
 	ft_strcpy(exp_lexeme, (*node)->child->data->lexeme);
 	if (helper_is_dir(exp_lexeme, vars))
 		return (g_last_exit_status);
