@@ -63,7 +63,8 @@ int	handle_pipe_heredoc(int *here_docs, t_p_tree *current,
 		close(*here_docs);
 		*here_docs = -1;
 	}
-	pipe_heredoc(&current->child->child, here_docs, exec_data);
+	if (pipe_heredoc(&current->child->child, here_docs, exec_data))
+		return (1);
 	if (g_last_exit_status == 130)
 		return (1);
 	return (0);
