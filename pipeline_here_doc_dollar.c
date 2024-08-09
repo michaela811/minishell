@@ -78,14 +78,12 @@ int	pipe_heredoc_dollar_open(char *no_quotes_lex, int fd,
 		t_free_data *exec_data)
 {
 	char	*rl_input;
-	//char	*buffer_no_dollar;
 	t_handle_vars	l_vars;
 	char	*buffer_start;
 	char	*contents;
 
 	l_vars.buffer_size = 4096;
 	l_vars.buffer = malloc(l_vars.buffer_size);
-	//buffer_no_dollar = malloc(4096);
 	if (l_vars.buffer == NULL)
 		return (print_err(1, 2, "my(s)hell: malloc error x1"),
 			free(l_vars.buffer), 1);
@@ -108,7 +106,7 @@ int	pipe_heredoc_dollar_open(char *no_quotes_lex, int fd,
 		if (process_buffer(rl_input, &l_vars, exec_data, buffer_start))
 			return (free_bufs_contents(contents, l_vars.buffer, rl_input), 1);
 		if (pipe_heredoc_get_content(&contents, l_vars.buffer, buffer_start))
-			return (1);
+			return (free(l_vars.buffer), 1);
 	}
 	return (write_and_free_contents(fd, contents), free(l_vars.buffer), 0);
 }
