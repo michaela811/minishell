@@ -104,7 +104,7 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 			i++;
 		if (handle_exit(result, vars))
 			return (g_last_exit_status);
-		g_last_exit_status = ft_atoi(result);
+		exec_data->dollar_status = ft_atoi(result);
 	}
 	free_exit_data(exec_data);
 	clear_history();
@@ -112,5 +112,5 @@ int	exec_exit(t_exec_vars *vars, t_free_data *exec_data)
 	free(vars);
 	close(STDIN_FILENO);
 	close(STDOUT_FILENO);
-	exit(g_last_exit_status);
+	exit(exec_data->dollar_status);
 }
