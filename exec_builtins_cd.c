@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 14:48:16 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/09 15:11:19 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,26 +53,20 @@ int	change_directory_and_update(char *path, t_env **env, char **args)
 
 int	update_pwd(t_env **env)
 {
+	char	*old_pwd;
 	char	*pwd;
-	char	*cwd;
 
-	pwd = get_env_var(*env, "PWD");
-	if (!pwd)
-		pwd = getcwd(NULL, 0);
+	old_pwd = get_env_var(*env, "PWD");
+	if (update_add_env_var(env, "OLDPWD", old_pwd))
+		return (1);
+	pwd = getcwd(NULL, 0);
 	if (pwd == NULL)
 		return (print_err(1, 2, "my(s)hell: cd: error retrieving current"
 				" directory: getcwd: cannot access parent directories: "
 				"No such file or directory\n"), 1);
-	if (update_add_env_var(env, "OLDPWD", pwd))
-		return (1);
-	cwd = getcwd(NULL, 0);
-	if (cwd == NULL)
-		return (print_err(1, 2, "my(s)hell: cd: error retrieving current"
-				" directory: getcwd: cannot access parent directories: "
-				"No such file or directory\n"), 1);
-	if (update_add_env_var(env, "PWD", cwd))
-		return (free(cwd), 1);
-	return (free(cwd), 0);
+	if (update_add_env_var(env, "PWD", pwd))
+		return (free(pwd), 1);
+	return (free(pwd), 0);
 }
 
 int	exec_cd(char **args, t_env **env)

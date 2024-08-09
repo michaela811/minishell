@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   env_handling.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:30:37 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 11:29:35 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/09 14:55:26 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	update_add_env_var(t_env **head, const char *name, const char *value)
+//if (update_add_env_var(env, "PWD", cwd))
+
+int	update_add_env_var(t_env **head, const char *name, char *value)
 {
 	t_env	*var;
 	t_env	*new_var;

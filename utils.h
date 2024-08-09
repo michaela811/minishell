@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:48 by mmasarov          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/08/08 11:29:34 by dpadenko         ###   ########.fr       */
+=======
+/*   Updated: 2024/08/09 11:48:50 by mmasarov         ###   ########.fr       */
+>>>>>>> 13099dc469cc7ee74c834a6c6edb1905ed9b902d
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,3 +34,4 @@ void	helper_free_close_open(t_p_tree **node, char *exp_lexeme,
 			t_exec_vars *vars);
 void	custom_sigquit_handler(int sig);
 void	helper_sigquit_handler(struct sigaction *sa, struct sigaction *old_sa);
+char	*find_first_non_alnum(char *str);
