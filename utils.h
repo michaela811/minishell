@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:48 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 17:35:03 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/09 11:41:47 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,3 +28,4 @@ void	reset_terminal_mode(struct termios *orig_termios);
 int		fork_check(pid_t pid, int *pipefd);
 void	helper_free_close_open(t_p_tree **node, char *exp_lexeme,
 			t_exec_vars *vars);
+char	*find_first_non_alnum(char *str);
