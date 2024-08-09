@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:48 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/08 11:29:34 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/09 20:49:24 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ void	handle_signal(int signal);
 void	setup_signal_handlers(void);
 int		malloc_check(char *no_quotes_lex, int *error);
 int		handle_lexeme(char *lexeme, char *quote, char *result);
-int		process_heredoc_dollar_closed(int file, char *no_quotes_lex);
 int		break_heredoc(char *buffer);
 int		process_input(t_free_data *exec_data);
 void	set_raw_mode(struct termios *orig_termios);
