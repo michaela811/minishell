@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:16 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 18:23:01 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/09 15:08:20 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,10 @@ t_free_data	*init_command_data(char **envp, t_free_data *exec_data)
 
 int	init_handle_vars(t_handle_vars *l_vars, t_exec_vars *vars)
 {
+	l_vars->buffer_size = 4096;
+	l_vars->buffer = malloc(l_vars->buffer_size);
+	if (!l_vars->buffer)
+		return (print_err(1, 2, "my(s)hell: malloc error xx\n"), 1);
 	l_vars->result = malloc(sizeof(char *));
 	if (!l_vars->result)
 		return (print_err(1, 2, "my(s)hell: malloc error 21\n"), 1);
@@ -46,6 +50,10 @@ int	init_handle_vars(t_handle_vars *l_vars, t_exec_vars *vars)
 
 int	init_handle_quote_redirect(t_handle_vars *l_vars, t_p_tree **node)
 {
+	l_vars->buffer_size = 4096;
+	l_vars->buffer = malloc(l_vars->buffer_size);
+	if (!l_vars->buffer)
+		return (print_err(1, 2, "my(s)hell: malloc error xx\n"), 1);
 	l_vars->result = malloc(sizeof(char *));
 	if (!l_vars->result)
 		return (print_err(1, 2, "my(s)hell: malloc error 25\n"), 1);
