@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:57 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/09 14:22:34 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/09 15:45:17 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,7 +182,7 @@ int	handle_dollar_sign(char **start, t_handle_vars *l_vars,
 	start_store = *start;
 	dollar = ft_strchr(*start, '$');
 	if (process_dollar_signs(start, dollar, l_vars, exec_data))
-    	return 1;
+    	return (1);
 	/* while (dollar != NULL)
 	{
 		while (dollar - *start >= l_vars->buffer_size)

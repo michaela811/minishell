@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline_here_doc.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 18:25:09 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/09 17:36:17 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,10 +82,11 @@ int	pipe_heredoc_dollar_closed(char *no_quotes_lex, int fd)
 		if (break_pipe_heredoc(buffer, contents))
 			return (1);
 		if (buffer == NULL)
-		{
-			print_err(1, 2, "my(s)hell: malloc error 33");
-			break ;
-		}
+			return (ft_printf_fd(STDOUT_FILENO,
+				"my(s)hell: heredoc delimited by EOF\n"), 0);
+		if (ft_strlen(buffer) >= 4096)
+			return (print_err(1, 2, "my(s)hell: heredoc too long\n"),
+				free(buffer), 1);
 		if (is_it_delimiter(no_quotes_lex, buffer))
 			break ;
 		buffer_start = buffer;

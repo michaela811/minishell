@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 16:06:47 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/08 16:46:16 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/09 17:47:28 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,14 @@ int	process_heredoc_dollar_closed(int file, char *no_quotes_lex)
 	while (1)
 	{
 		buffer = readline("heredoc> ");
-		if (buffer == NULL)
-			return (print_err(1, 2, "my(s)hell: readline failure\n"), 1);
 		if (break_heredoc(buffer))
 			return (1);
+		if (buffer == NULL)
+			return (ft_printf_fd(STDOUT_FILENO,
+				"my(s)hell: heredoc delimited by EOF\n"), 0);
+		if (ft_strlen(buffer) >= 4096)
+			return (print_err(1, 2, "my(s)hell: heredoc too long\n"),
+				free(buffer), 1);
 		if (ft_exact_strcmp(buffer, no_quotes_lex) == 0)
 		{
 			free(buffer);
@@ -104,11 +108,14 @@ int	process_heredoc_dollar_open(int file, t_exec_vars *vars,
 	while (1)
 	{
 		rl_input = readline("heredoc> ");
-		if (rl_input == NULL)
-			return (print_err(1, 2, "my(s)hell: readline failure\n"),
-				free(l_vars.buffer), 1);
 		if (break_heredoc(rl_input))
 			return (free(l_vars.buffer), 1);
+		if (rl_input == NULL)
+			return (ft_printf_fd(STDOUT_FILENO,
+				"my(s)hell: heredoc delimited by EOF\n"), free(l_vars.buffer), 0);
+		if (ft_strlen(rl_input) >= 4096)
+			return (print_err(1, 2, "my(s)hell: heredoc too long\n"),
+				free(l_vars.buffer), free(rl_input), 1);
 		if (ft_exact_strcmp(rl_input, no_quotes_lex) == 0)
 			return (free(rl_input), free(l_vars.buffer), 0);
 		buffer_start = rl_input;
@@ -117,7 +124,7 @@ int	process_heredoc_dollar_open(int file, t_exec_vars *vars,
 		write(file, l_vars.buffer, ft_strlen(l_vars.buffer));
 		write(file, "\n", 1);
 		free(buffer_start);
-		free(l_vars.buffer);
 	}
+	free(l_vars.buffer);
 	return (0);
 }
