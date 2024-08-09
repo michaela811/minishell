@@ -107,9 +107,9 @@ void	free_env_array(char **env_array)
 void	free_vars(t_exec_vars *vars)
 {
 	free_env_array(vars->args);
-	if (vars->fd_in > 0)
+	if (vars->fd_in > 0 && vars->fd_in != -1)
 		close(vars->fd_in);
-	if (vars->fd_out != 1)
+	if (vars->fd_out != 1 && vars->fd_out != -1)
 		close(vars->fd_out);
 	free(vars);
 	vars = NULL;
