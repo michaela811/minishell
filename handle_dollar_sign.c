@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   handle_dollar_sign.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:57 by mmasarov          #+#    #+#             */
 /*   Updated: 2024/08/09 15:45:17 by dpadenko         ###   ########.fr       */
@@ -71,7 +71,7 @@ int	handle_var_name(char **start, t_handle_vars *l_vars, char *dollar,
 
 	ft_memset(var_name, '\0', 4096);
 	var_start = dollar + 1;
-	var_end = ft_strpbrk(var_start, " \t\n\"'$/.:?");
+	var_end = find_first_non_alnum(var_start);
 	if (var_end == NULL)
 		var_end = var_start + ft_strlen(var_start);
 	ft_strncpy(var_name, var_start, var_end - var_start);

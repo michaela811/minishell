@@ -27,6 +27,7 @@ SOURCES = env_main.c \
 			execute_node_handle_heredoc.c \
 			execute_node_exec_cmd.c \
 			handle_dollar_sign.c \
+			handle_dollar_sign_utils.c \
 			execute_node_utils.c \
 			execute_parse_tree.c \
 			execute_pipeline_utils.c \
@@ -34,7 +35,6 @@ SOURCES = env_main.c \
 			lexer_main.c \
 			lexer.c \
 			main.c \
-			main_utils.c \
 			main_handle_input.c \
 			parser_is_all_rest.c \
 			parser_is_cmd_suffix.c \

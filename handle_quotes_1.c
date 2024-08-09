@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   handle_quotes_1.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:06 by mmasarov          #+#    #+#             */
 /*   Updated: 2024/08/08 15:45:21 by dpadenko         ###   ########.fr       */
