@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:40 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/08 16:59:03 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/09 12:52:30 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ typedef struct s_free_data
 typedef struct s_handle_vars
 {
 	char	*buffer;//[1024];
-	size_t	buffer_size;
+	int		buffer_size;
 	char	*token;
 	char	*delimiters;
 	char	**current;

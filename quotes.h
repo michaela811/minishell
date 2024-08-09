@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:27 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/08 17:06:39 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/09 14:21:04 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,3 +55,4 @@ void	handle_error_and_free_redirect(t_exec_vars *vars, t_handle_vars *l_vars,
 int		buffer_end_space(char *buffer);
 void	update_args(t_exec_vars *vars, t_handle_vars *l_vars);
 int		remove_quotes(char **lexeme_ptr);
+int		resize_buffer(char **buffer, int *buffer_size);
