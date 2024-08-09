@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:57 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/09 11:52:56 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/09 15:11:55 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ void	handle_var_name(char **start, char *buffer, char *dollar, t_env **env)
 
 	ft_memset(var_name, '\0', sizeof(var_name));
 	var_start = dollar + 1;
-	//var_end = ft_strpbrk(var_start, " \t\n\"'$/.:?");
 	var_end = find_first_non_alnum(var_start);
 	if (var_end == NULL)
 		var_end = var_start + ft_strlen(var_start);

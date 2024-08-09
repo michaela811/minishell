@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:33:41 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/09 15:00:09 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/09 15:11:19 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,6 @@ int	update_pwd(t_env **env)
 	old_pwd = get_env_var(*env, "PWD");
 	if (update_add_env_var(env, "OLDPWD", old_pwd))
 		return (1);
-	/* if (!pwd)
-		pwd = getcwd(NULL, 0);
-	if (pwd == NULL)
-		return (print_err(1, 2, "my(s)hell: cd: error retrieving current"
-				" directory: getcwd: cannot access parent directories: "
-				"No such file or directory\n"), 1); */
 	pwd = getcwd(NULL, 0);
 	if (pwd == NULL)
 		return (print_err(1, 2, "my(s)hell: cd: error retrieving current"
