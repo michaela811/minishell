@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/08 11:45:07 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/09 15:11:16 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	handle_redirection_from(t_p_tree **node,
 		return (print_err(1, 2, "my(s)hell: malloc error 4\n"), 1);
 	quotes_glob_redirect(node, vars, exec_data);
 	if (vars->error)
-		return (g_last_exit_status);
+		return (free(saved_lexeme), g_last_exit_status);
 	if (is_ambiguous_redirect(node, vars, saved_lexeme))
 		return (g_last_exit_status);
 	free(saved_lexeme);
@@ -64,7 +64,7 @@ int	handle_redirection_to(t_p_tree **node, t_exec_vars *vars,
 		return (print_err(1, 2, "my(s)hell: malloc error 5\n"), 1);
 	quotes_glob_redirect(node, vars, exec_data);
 	if (g_last_exit_status)
-		return (g_last_exit_status);
+		return (free(saved_lexeme), g_last_exit_status);
 	if (is_ambiguous_redirect(node, vars, saved_lexeme))
 		return (g_last_exit_status);
 	free(saved_lexeme);
@@ -92,7 +92,7 @@ int	handle_redirection_append(t_p_tree **node, t_exec_vars *vars,
 		return (print_err(1, 2, "my(s)hell: malloc error 6\n"), 1);
 	quotes_glob_redirect(node, vars, exec_data);
 	if (g_last_exit_status)
-		return (g_last_exit_status);
+		return (free(saved_lexeme), g_last_exit_status);
 	if (is_ambiguous_redirect(node, vars, saved_lexeme))
 		return (g_last_exit_status);
 	free(saved_lexeme);
