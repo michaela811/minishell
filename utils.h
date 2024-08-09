@@ -17,7 +17,6 @@ int		is_string_numeric(const char *str);
 int		overflow_check(char *result);
 void	handle_signal(int signal);
 void	setup_signal_handlers(void);
-int		file_error(int file, t_exec_vars *vars);
 int		malloc_check(char *no_quotes_lex, int *error);
 int		handle_lexeme(char *lexeme, char *quote, char *result);
 int		process_heredoc_dollar_closed(int file, char *no_quotes_lex);
