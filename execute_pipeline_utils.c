@@ -40,6 +40,27 @@ int	execute_pipeline(t_free_data *exec_data)
 	return (return_value);
 }
 
+int	handle_child_process(int *pipefd, t_free_data *exec_data)
+{
+	if (exec_data->tree->sibling != NULL)
+	{
+		if (dup2(pipefd[1], STDOUT_FILENO) == -1)
+		{
+			print_err(1, 2, "my(s)hell: dup2\n");
+			exit(EXIT_FAILURE);
+		}
+		close(pipefd[0]);
+		close(pipefd[1]);
+	}
+	execute_node(exec_data);
+	free_exit_data(exec_data);
+	if (exec_data->hd_fd != -1)
+		close(exec_data->hd_fd);
+	close(STDOUT_FILENO);
+	close(STDIN_FILENO);
+	exit(g_last_exit_status);
+}
+
 pid_t	handle_sibling_process(int *pipefd, t_free_data *exec_data)
 {
 	pid_t	pid2;

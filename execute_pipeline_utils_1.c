@@ -12,27 +12,6 @@
 
 #include <minishell.h>
 
-int	handle_child_process(int *pipefd, t_free_data *exec_data)
-{
-	if (exec_data->tree->sibling != NULL)
-	{
-		if (dup2(pipefd[1], STDOUT_FILENO) == -1)
-		{
-			print_err(1, 2, "my(s)hell: dup2\n");
-			exit(EXIT_FAILURE);
-		}
-		close(pipefd[0]);
-		close(pipefd[1]);
-	}
-	execute_node(exec_data);
-	free_exit_data(exec_data);
-	if (exec_data->hd_fd != -1)
-		close(exec_data->hd_fd);
-	close(STDOUT_FILENO);
-	close(STDIN_FILENO);
-	exit(g_last_exit_status);
-}
-
 static void	ft_waitpid(int num_commands, pid_t *pids, int *statuses)
 {
 	int	status;
@@ -58,6 +37,20 @@ void	exit_code_130(int *statuses, int num_commands)
 		g_last_exit_status = statuses[num_commands - 1];
 }
 
+void	initialize_statuses(int *statuses, pid_t *pids,
+		int num_commands, pid_t pid)
+{
+	int	i;
+
+	i = 0;
+	while (i < 10)
+	{
+		statuses[i] = 0;
+		i++;
+	}
+	pids[num_commands] = pid;
+}
+
 int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 {
 	pid_t		pids[10];
@@ -67,7 +60,7 @@ int	handle_parent_process(int *pipefd, pid_t pid, t_free_data *exec_data)
 	t_free_data	sibling_free_data;
 
 	num_commands = 0;
-	pids[num_commands] = pid;
+	initialize_statuses(statuses, pids, num_commands, pid);
 	num_commands++;
 	if (exec_data->tree->sibling != NULL)
 	{

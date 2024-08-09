@@ -34,10 +34,14 @@ int	execute_command(t_exec_vars *vars, t_free_data *exec_data)
 
 int	handle_fork(t_exec_vars *vars, t_env **env, t_free_data *exec_data)
 {
-	pid_t	pid;
-	int		status;
+	pid_t				pid;
+	int					status;
+	struct sigaction	sa;
+	struct sigaction	old_sa;
 
 	pid = 0;
+	status = 0;
+	helper_sigquit_handler(&sa, &old_sa);
 	pid = fork();
 	if (pid == -1)
 	{
@@ -52,5 +56,6 @@ int	handle_fork(t_exec_vars *vars, t_env **env, t_free_data *exec_data)
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		g_last_exit_status = WEXITSTATUS(status);
+	sigaction(SIGQUIT, &old_sa, NULL);
 	return (g_last_exit_status);
 }
