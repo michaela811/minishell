@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_dollar_sign.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:57 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/09 15:45:17 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/09 20:12:40 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

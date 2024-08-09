@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/09 17:36:17 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/09 20:35:00 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,32 +68,42 @@ int	is_it_delimiter(char *node, char *buffer)
 
 int	pipe_heredoc_dollar_closed(char *no_quotes_lex, int fd)
 {
-	char	*buffer;
+	char	*rl_input;
 	char	*buffer_start;
 	char	*contents;
 
-	buffer = NULL;
+	rl_input = NULL;
 	contents = NULL;
+	t_handle_vars	l_vars;
+
+	l_vars.buffer_size = 4096;
+	l_vars.buffer = malloc(l_vars.buffer_size);
+	//buffer_no_dollar = malloc(4096);
+	if (l_vars.buffer == NULL)
+		return (print_err(1, 2, "my(s)hell: malloc error x1"),
+			free(l_vars.buffer), 1);
 	if (get_stdin())
 		return (1);
 	while (1)
 	{
-		buffer = readline("heredoc> ");
-		if (break_pipe_heredoc(buffer, contents))
-			return (1);
-		if (buffer == NULL)
-			return (ft_printf_fd(STDOUT_FILENO,
-				"my(s)hell: heredoc delimited by EOF\n"), 0);
-		if (ft_strlen(buffer) >= 4096)
-			return (print_err(1, 2, "my(s)hell: heredoc too long\n"),
-				free(buffer), 1);
-		if (is_it_delimiter(no_quotes_lex, buffer))
+		rl_input = readline("heredoc> ");
+		if (break_pipe_heredoc(rl_input, contents))
+			return (free(l_vars.buffer), 1);
+		if (readline_check(rl_input))
 			break ;
-		buffer_start = buffer;
-		if (pipe_heredoc_get_content(&contents, buffer, buffer_start))
+		if (is_it_delimiter(no_quotes_lex, rl_input))
+			break ;
+		//if (ft_strlen(rl_input) >= 4096)
+			//return (print_err(1, 2, "my(s)hell: heredoc too long\n"),
+				//free(rl_input), 1);
+		while ((int)ft_strlen(rl_input) >= l_vars.buffer_size)
+			if (resize_buffer(&l_vars.buffer, &l_vars.buffer_size))
+				return (free_bufs_contents(contents, l_vars.buffer, rl_input), 1);
+		buffer_start = rl_input;
+		if (pipe_heredoc_get_content(&contents, rl_input, buffer_start))
 			return (1);
 	}
-	return (write_and_free_contents(fd, contents));
+	return (write_and_free_contents(fd, contents),free(l_vars.buffer), 0);
 }
 
 int	pipe_heredoc_get_content(char **contents, char *buffer, char *buffer_start)
