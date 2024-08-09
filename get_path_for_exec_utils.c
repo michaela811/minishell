@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 15:19:25 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/08 17:35:25 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	exec_cwd(char *cmd, char **exec)
 {
-	char	cwd[1024];
+	char	cwd[4096];
 	char	*tmp;
 
 	if (getcwd(cwd, sizeof(cwd)) != NULL)

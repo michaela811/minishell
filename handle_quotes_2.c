@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:06 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 17:17:18 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/08 16:19:55 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 int	dollar_to_result(t_handle_vars *l_vars, t_exec_vars *vars,
 		t_free_data *exec_data)
 {
-	ft_memset(l_vars->buffer, '\0', sizeof(l_vars->buffer));
-	if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, exec_data))
+	ft_memset(l_vars->buffer, '\0', l_vars->buffer_size);
+	if (handle_dollar_error(&l_vars->token, l_vars, vars, exec_data))
 		return (1);
 	if (update_result(l_vars->result, l_vars->buffer, vars))
 		return (1);
@@ -55,7 +55,7 @@ void	handle_no_current(t_handle_vars *l_vars, t_exec_vars *vars,
 void	handle_with_current_dollar(t_handle_vars *l_vars,
 			t_exec_vars *vars, t_free_data *exec_data, t_p_tree **node)
 {
-	if (handle_dollar_error(&l_vars->token, l_vars->buffer, vars, exec_data))
+	if (handle_dollar_error(&l_vars->token, l_vars, vars, exec_data))
 		return ;
 	update_result(l_vars->result, l_vars->buffer, vars);
 	if (vars->error)
