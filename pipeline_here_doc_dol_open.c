@@ -6,20 +6,16 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 17:03:19 by dpadenko          #+#    #+#             */
-/*   Updated: 2024/08/10 14:03:39 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/10 20:00:07 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	process_buffer(char *buffer, t_handle_vars *l_vars, t_free_data *exec_data,
-	char *buffer_start)
+int	process_buffer(char *buffer, t_handle_vars *l_vars, t_free_data *exec_data)
 {
 	if (handle_dollar_sign(&buffer, l_vars, exec_data))
-	{
-		free(buffer_start);
 		return (1);
-	}
 	return (0);
 }
 
@@ -45,10 +41,10 @@ int	pipe_heredoc_dollar_open(char *no_quotes_lex, int fd,
 		else if (control_result == 1)
 			return (control_result);
 		buffer_start = rl_input;
-		if (process_buffer(rl_input, &l_vars, exec_data, buffer_start))
+		if (process_buffer(rl_input, &l_vars, exec_data))
 			return (free_bufs_contents(contents, l_vars.buffer, rl_input), 1);
 		if (pipe_heredoc_get_content(&contents, l_vars.buffer, buffer_start))
-			return (1);
+			return (free(l_vars.buffer), 1);
 	}
 	return (write_and_free_contents(fd, contents), free(l_vars.buffer), 0);
 }

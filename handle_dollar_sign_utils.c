@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 11:40:06 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/10 13:36:58 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/10 20:39:23 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ int	ft_strlcat_custom(char *dst, const char *src, int dest_size)
 
 	e = 0;
 	i = ft_strlen(dst);
-	dest_len = ft_strlen(dst);
 	src_len = ft_strlen(src);
 	if (dest_size == 0)
 		return (src_len + dest_size);

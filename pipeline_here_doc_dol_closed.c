@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:21 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/10 14:01:57 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/10 20:40:04 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	pipe_heredoc_dollar_closed(char *no_quotes_lex, int fd)
 			return (control_result);
 		buffer_start = rl_input;
 		if (pipe_heredoc_get_content(&contents, rl_input, buffer_start))
-			return (1);
+			return (free(l_vars.buffer), 1);
 	}
 	return (write_and_free_contents(fd, contents), free(l_vars.buffer), 0);
 }
@@ -51,7 +51,7 @@ char	*get_heredoc_content(char *contents, char *buffer)
 	{
 		contents = malloc(ft_strlen(buffer) + 2);
 		if (contents == NULL)
-			return (print_err(1, 2, "my(s)hell: malloc error 34"), NULL);
+			return (print_err(1, 2, "my(s)hell: malloc error 34\n"), NULL);
 		ft_strcpy(contents, buffer);
 	}
 	else
@@ -60,7 +60,8 @@ char	*get_heredoc_content(char *contents, char *buffer)
 		new_size = old_size + ft_strlen(buffer) + 1;
 		temp = ft_realloc(contents, old_size, new_size);
 		if (temp == NULL)
-			return (print_err(1, 2, "my(s)hell: malloc error 35"), NULL);
+			return (free(contents), print_err(1, 2,
+					"my(s)hell: malloc error 35\n"), NULL);
 		contents = temp;
 		ft_strcat(contents, buffer);
 	}
@@ -74,9 +75,8 @@ int	pipe_heredoc_get_content(char **contents, char *buffer, char *buffer_start)
 	{
 		if (buffer_start)
 			free(buffer_start);
-		if (contents)
-			free(contents);
-		print_err(1, 2, "my(s)hell: malloc error in get_heredoc_content");
+		if (*contents)
+			free(*contents);
 		return (1);
 	}
 	ft_strcat(*contents, "\n");

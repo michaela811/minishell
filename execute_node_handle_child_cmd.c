@@ -3,20 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execute_node_handle_child_cmd.c                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 11:07:26 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/10 21:44:08 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
-
-static int	print_and_exit(t_exec_vars *vars)
-{
-	print_err(127, 2, "my(s)hell: execve\n", vars->args[0]);
-	exit(127);
-}
 
 void	cleanup(t_exec_vars *vars)
 {
@@ -30,12 +24,22 @@ void	set_fds(int fd_in, int fd_out)
 {
 	if (fd_in != 0)
 	{
-		dup2(fd_in, 0);
+		if (dup2(fd_in, 0) == -1)
+		{
+			print_err(1, 2, "my(s)hell: dup2\n");
+			exit(EXIT_FAILURE);
+		}
 		close(fd_in);
 	}
 	if (fd_out != 1)
 	{
-		dup2(fd_out, 1);
+		if (dup2(fd_out, 1) == -1)
+		{
+			if (fd_in != 0)
+				close(fd_in);
+			print_err(1, 2, "my(s)hell: dup2\n");
+			exit(EXIT_FAILURE);
+		}
 		close(fd_out);
 	}
 }
@@ -71,8 +75,9 @@ int	handle_child_cmd(t_exec_vars *vars, t_env **env, char **environment,
 	g_last_exit_status = execve(path, vars->args, environment);
 	if (g_last_exit_status < 0)
 	{
+		print_err(127, 2, "my(s)hell: execve\n", vars->args[0]);
 		clean_child_cmd(vars, exec_data);
-		print_and_exit(vars);
+		exit(127);
 	}
 	exit (EXIT_SUCCESS);
 }

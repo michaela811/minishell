@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipeline_utils.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:27 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/06 18:17:59 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/10 20:42:04 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ int	execute_pipeline(t_free_data *exec_data)
 			return (print_err(1, 2, "my(s)hell: pipe\n"), 1);
 	}
 	if (is_there_here_doc(&exec_data->tree, &exec_data->hd_fd, exec_data))
-		return (close(pipefd[1]), close(pipefd[0]), 1);
+		return (1); // deleted close(pipefd[0]),close(pipefd[1]),
 	if (g_last_exit_status == 130)
-		return (close(pipefd[1]), close(pipefd[0]), 1);
+		return (1); // deleted close(pipefd[0]),close(pipefd[1]),
 	pid = fork();
 	if (fork_check(pid, pipefd))
 		return (1);
