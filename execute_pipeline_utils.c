@@ -27,14 +27,7 @@ int	execute_pipeline(t_free_data *exec_data)
 		if (pipe(pipefd) == -1)
 			return (print_err(1, 2, "my(s)hell: pipe\n"), 1);
 	}
-	if (is_there_here_doc(&exec_data->tree, &exec_data->hd_fd, exec_data))
-	{
-		if (pipefd[0] != -1)
-			close(pipefd[0]);
-		if (pipefd[1] != -1)
-			close(pipefd[1]);
-		return (1);
-	}
+	is_there_here_doc(&exec_data->tree, &exec_data->hd_fd, exec_data);
 	if (g_last_exit_status == 130)
 		return (close(pipefd[1]), close(pipefd[0]), 1);
 	pid = fork();

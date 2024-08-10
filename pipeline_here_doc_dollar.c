@@ -106,7 +106,7 @@ int	pipe_heredoc_dollar_open(char *no_quotes_lex, int fd,
 		if (process_buffer(rl_input, &l_vars, exec_data, buffer_start))
 			return (free_bufs_contents(contents, l_vars.buffer, rl_input), 1);
 		if (pipe_heredoc_get_content(&contents, l_vars.buffer, buffer_start))
-			return (free(l_vars.buffer), 1);
+			return (1);
 	}
 	return (write_and_free_contents(fd, contents), free(l_vars.buffer), 0);
 }
