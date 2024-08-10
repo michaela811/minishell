@@ -25,6 +25,7 @@ SOURCES = env_main.c \
 			execute_node_handle_redirect_utils.c \
 			execute_node_handle_redirect_error.c \
 			execute_node_handle_heredoc.c \
+			execute_node_handle_heredoc_utils.c \
 			execute_node_exec_cmd.c \
 			handle_dollar_sign.c \
 			handle_dollar_sign_utils.c \
@@ -40,23 +41,23 @@ SOURCES = env_main.c \
 			parser_is_cmd_suffix.c \
 			parser_main.c \
 			parser_utils.c \
-			init.c \
-			handle_quotes_1.c \
-			handle_quotes_2.c \
-			handle_quotes_3.c \
-			handle_quotes_utils.c \
+			init_1.c \
+			init_2.c \
+			handle_quotes_main_1.c \
+			handle_quotes_main_2.c \
+			handle_quotes_utils_1.c \
+			handle_quotes_utils_2.c \
 			handle_quotes_redirect.c \
 			execute_pipeline_utils_1.c \
 			execute_node_handle_child_cmd.c \
 			execute_node_error_messages.c \
 			free_functions_1.c \
-			pipeline_here_doc.c \
-			pipeline_here_doc_1.c \
-			pipeline_here_doc_dollar.c \
+			pipeline_here_doc_dol_closed.c \
+			pipeline_here_doc_main.c \
+			pipeline_here_doc_dol_open.c \
 			get_path_for_exec.c \
 			get_path_for_exec_utils.c \
 			get_path_for_exec_colon.c \
-			execute_node_handle_heredoc_1.c \
 			signals.c \
 
 
