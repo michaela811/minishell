@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:22 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 17:18:26 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/10 18:16:04 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,10 @@ t_token_list **current)
 
 	new_token = create_token_lexer(*token_value);
 	if (new_token == NULL)
-		return (free_token_list(*token_list),
-			print_err(1, 2, "malloc error in strdup function\n"), 1);
+		return (free_token_list(*token_list), 1);
 	new_node = create_node_lexer(new_token);
 	if (new_node == NULL)
-		return (free_token(new_token), free_token_list(*token_list),
-			print_err(1, 2, "malloc error in strdup function\n"), 1);
+		return (free_token(new_token), free_token_list(*token_list), 1);
 	if (*token_list == NULL)
 	{
 		*token_list = new_node;
@@ -62,7 +60,7 @@ t_token	*create_token_lexer(char *token_value)
 
 	new_token = malloc(sizeof(t_token));
 	if (new_token == NULL)
-		return (NULL);
+		return (print_err(1, 2, "malloc error x29\n"), NULL);
 	new_token->type = determine_token_type(token_value);
 	new_token->lexeme = ft_strdup(token_value);
 	if (new_token->lexeme == NULL)
@@ -79,10 +77,7 @@ t_token_list	*create_node_lexer(t_token *new_token)
 
 	new_node = malloc(sizeof(t_token_list));
 	if (new_node == NULL)
-	{
-		free(new_token);
 		return (print_err(1, 2, "malloc error 30\n"), NULL);
-	}
 	new_node->token = new_token;
 	new_node->next = NULL;
 	return (new_node);

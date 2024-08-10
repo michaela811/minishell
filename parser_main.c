@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:11 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 17:34:04 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/10 19:28:22 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ int	is_pipe_sequence(t_free_data *exec_data)
 		return (print_err(1, 2, "my(s)hell: memory error\n"), 1);
 	current_command = NULL;
 	if (is_simple_command(&exec_data->token_list, &current_command,
-			exec_data->token_list) != 0
-		|| !current_command->child)
+			exec_data->token_list) != 0)
+		//|| !current_command->child) Control with more commands if still works
 		return (free_command_data(exec_data), g_last_exit_status);
 	exec_data->tree->child = current_command;
 	while (exec_data->token_list != NULL
@@ -87,7 +87,7 @@ int	is_simple_command(t_token_list **tok, t_p_tree **new,
 	if (is_new_null(new))
 		return (1);
 	if (is_cmd_prefix(tok, &((*new)->child)) != 0)
-		return (free(*new), g_last_exit_status);
+		return (free_parse_tree(*new), g_last_exit_status);
 	cmd_word_node = NULL;
 	if (is_cmd_word(tok, &cmd_word_node) != 0)
 		return (free_parse_tree(*new), g_last_exit_status);

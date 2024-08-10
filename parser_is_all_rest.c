@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_is_all_rest.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:00 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/07/01 11:23:55 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/10 19:29:11 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,11 @@ int	is_cmd_prefix(t_token_list **tok, t_p_tree **prefix_node)
 	{
 		redirect_node = NULL;
 		if (is_io_redirect(tok, &redirect_node) != 0)
-			return (free_parse_tree(*prefix_node), g_last_exit_status);
+		{
+			free_parse_tree(*prefix_node);
+			*prefix_node = NULL;
+			return (g_last_exit_status);
+		}
 		link_node(prefix_node, redirect_node);
 	}
 	return (0);
