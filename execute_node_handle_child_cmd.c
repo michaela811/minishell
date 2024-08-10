@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:51 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/10 20:41:37 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/10 21:44:08 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	set_fds(int fd_in, int fd_out)
 	}
 	if (fd_out != 1)
 	{
-		if (dup2(fd_out, 0) == -1)
+		if (dup2(fd_out, 1) == -1)
 		{
 			if (fd_in != 0)
 				close(fd_in);
