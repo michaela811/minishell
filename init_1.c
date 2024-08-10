@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   init_1.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:16 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/09 15:08:20 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/10 12:06:45 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,30 @@ t_free_data	*init_command_data(char **envp, t_free_data *exec_data)
 	exec_data->hd_fd = -1;
 	exec_data->dollar_status = 0;
 	return (exec_data);
+}
+
+void	init_exec_vars(t_exec_vars *vars)
+{
+	int	i;
+
+	vars->fd_in = 0;
+	vars->fd_out = 1;
+	vars->capacity = 10;
+	vars->args = malloc(vars->capacity * sizeof(char *));
+	if (!vars->args)
+	{
+		print_err(1, 2, "my(s)hell: malloc error 7\n");
+		vars->error = 1;
+		return ;
+	}
+	i = 0;
+	while (i < vars->capacity)
+		vars->args[i++] = NULL;
+	vars->i = 0;
+	vars->error = 0;
+	vars->inside_single_quotes = 0;
+	vars->inside_double_quotes = 0;
+	vars->end = 0;
 }
 
 int	init_handle_vars(t_handle_vars *l_vars, t_exec_vars *vars)

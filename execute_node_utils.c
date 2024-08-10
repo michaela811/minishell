@@ -6,35 +6,11 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:08 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 17:16:38 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/10 12:03:54 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	init_exec_vars(t_exec_vars *vars)
-{
-	int	i;
-
-	vars->fd_in = 0;
-	vars->fd_out = 1;
-	vars->capacity = 10;
-	vars->args = malloc(vars->capacity * sizeof(char *));
-	if (!vars->args)
-	{
-		print_err(1, 2, "my(s)hell: malloc error 7\n");
-		vars->error = 1;
-		return ;
-	}
-	i = 0;
-	while (i < vars->capacity)
-		vars->args[i++] = NULL;
-	vars->i = 0;
-	vars->error = 0;
-	vars->inside_single_quotes = 0;
-	vars->inside_double_quotes = 0;
-	vars->end = 0;
-}
 
 void	expand_exec_vars(t_exec_vars *vars)
 {

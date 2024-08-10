@@ -6,28 +6,11 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:54 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/08 16:29:17 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/10 12:00:21 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	vars_set_null_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
-		t_p_tree **node)
-{
-	l_vars->buffer = NULL;
-	l_vars->token = NULL;
-	l_vars->delimiters = NULL;
-	l_vars->current = NULL;
-	l_vars->result = NULL;
-	l_vars->current_start = NULL;
-	if (init_handle_quote_redirect(l_vars, node))
-	{
-		free_handle_vars(l_vars);
-		vars->error = 1;
-	}
-	return ;
-}
 
 void	quotes_glob_redirect(t_p_tree **node, t_exec_vars *vars,
 		t_free_data *exec_data)

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipeline_here_doc_1.c                              :+:      :+:    :+:   */
+/*   pipeline_here_doc_main.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 16:15:59 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 18:21:07 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/10 13:50:02 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,23 @@ int	is_there_here_doc(t_p_tree **tree, int *here_docs, t_free_data *exec_data)
 			}
 			current = current->child;
 		}
+	}
+	return (0);
+}
+
+int	get_stdin(void)
+{
+	int				tty_fd;
+	struct termios	term;
+
+	if (tcgetattr(STDIN_FILENO, &term) == -1)
+	{
+		tty_fd = open("/dev/tty", O_RDONLY);
+		if (dup2(tty_fd, STDIN_FILENO) == -1)
+			return (print_err(errno, 2,
+					"my(s)hell: dup2 tty_fd to STDIN_FILENO"),
+				close(tty_fd), 1);
+		close(tty_fd);
 	}
 	return (0);
 }

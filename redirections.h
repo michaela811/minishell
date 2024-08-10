@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:33 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/09 20:50:22 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/10 14:06:05 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,5 @@ char	*get_heredoc_content(char *contents, char *buffer);
 int		pipe_heredoc_get_content(char **contents, char *buffer,
 			char *buffer_start);
 void	free_bufs_contents(char *contents, char *buffer, char *rl_input);
-int		readline_check(char *buffer);
+void	vars_set_null_redirect(t_handle_vars *l_vars, t_exec_vars *vars,
+			t_p_tree **node);
