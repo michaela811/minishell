@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 16:06:47 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/09 17:47:28 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/09 20:50:09 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,28 +57,35 @@ int	remove_quotes(char **lexeme_ptr)
 
 int	process_heredoc_dollar_closed(int file, char *no_quotes_lex)
 {
-	char	*buffer;
+	char	*rl_input;
 
+	t_handle_vars	l_vars;
+
+	l_vars.buffer_size = 4096;
+	l_vars.buffer = malloc(l_vars.buffer_size);
+	if (l_vars.buffer == NULL)
+		return (print_err(1, 2, "my(s)hell: malloc error x1"), 1);
 	while (1)
 	{
-		buffer = readline("heredoc> ");
-		if (break_heredoc(buffer))
-			return (1);
-		if (buffer == NULL)
+		rl_input = readline("heredoc> ");
+		if (break_heredoc(rl_input))
+			return (free(l_vars.buffer), 1);
+		if (rl_input == NULL)
 			return (ft_printf_fd(STDOUT_FILENO,
-				"my(s)hell: heredoc delimited by EOF\n"), 0);
-		if (ft_strlen(buffer) >= 4096)
+				"my(s)hell: heredoc delimited by EOF\n"), free(l_vars.buffer), 0);
+		if (ft_exact_strcmp(rl_input, no_quotes_lex) == 0)
+			return (free(rl_input), free(l_vars.buffer), 0);
+		/* if (ft_strlen(rl_input) >= 4096)
 			return (print_err(1, 2, "my(s)hell: heredoc too long\n"),
-				free(buffer), 1);
-		if (ft_exact_strcmp(buffer, no_quotes_lex) == 0)
-		{
-			free(buffer);
-			return (0);
-		}
-		write(file, buffer, ft_strlen(buffer));
+				free(rl_input), 1); */
+		while ((int)ft_strlen(rl_input) >= l_vars.buffer_size)
+			if (resize_buffer(&l_vars.buffer, &l_vars.buffer_size))
+				return (free(l_vars.buffer), free(rl_input), 1);
+		write(file, rl_input, ft_strlen(rl_input));
 		write(file, "\n", 1);
-		free(buffer);
+		free(rl_input);
 	}
+	free(l_vars.buffer);
 	return (0);
 }
 
@@ -113,11 +120,14 @@ int	process_heredoc_dollar_open(int file, t_exec_vars *vars,
 		if (rl_input == NULL)
 			return (ft_printf_fd(STDOUT_FILENO,
 				"my(s)hell: heredoc delimited by EOF\n"), free(l_vars.buffer), 0);
-		if (ft_strlen(rl_input) >= 4096)
-			return (print_err(1, 2, "my(s)hell: heredoc too long\n"),
-				free(l_vars.buffer), free(rl_input), 1);
 		if (ft_exact_strcmp(rl_input, no_quotes_lex) == 0)
 			return (free(rl_input), free(l_vars.buffer), 0);
+		//if (ft_strlen(rl_input) >= 4096)
+			//return (print_err(1, 2, "my(s)hell: heredoc too long\n"),
+				//free(l_vars.buffer), free(rl_input), 1);
+		while ((int)ft_strlen(rl_input) >= l_vars.buffer_size)
+			if (resize_buffer(&l_vars.buffer, &l_vars.buffer_size))
+				return (free(l_vars.buffer), free(rl_input), 1);
 		buffer_start = rl_input;
 		if (handle_dollar_error(&rl_input, &l_vars, vars, exec_data))
 			return (free(buffer_start), free(l_vars.buffer), 1);

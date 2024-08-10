@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 17:03:19 by dpadenko          #+#    #+#             */
-/*   Updated: 2024/08/09 17:55:53 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/09 20:36:39 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,14 @@ int	pipe_heredoc_dollar_open(char *no_quotes_lex, int fd,
 	char	*buffer_start;
 	char	*contents;
 
+	rl_input = NULL;
+	contents = NULL;
+
 	l_vars.buffer_size = 4096;
 	l_vars.buffer = malloc(l_vars.buffer_size);
 	if (l_vars.buffer == NULL)
 		return (print_err(1, 2, "my(s)hell: malloc error x1"),
 			free(l_vars.buffer), 1);
-	contents = NULL;
 	if (get_stdin())
 		return (1);
 	while (1)
@@ -97,11 +99,13 @@ int	pipe_heredoc_dollar_open(char *no_quotes_lex, int fd,
 			return (free(l_vars.buffer), 1);
 		if (readline_check(rl_input))
 			break ;
-		if (ft_strlen(rl_input) >= 4096)
-			return (print_err(1, 2, "my(s)hell: heredoc too long\n"),
-				free (rl_input), free(l_vars.buffer), 1);
 		if (is_it_delimiter(no_quotes_lex, rl_input))
 			break ;
+		while ((int)ft_strlen(rl_input) >= l_vars.buffer_size)
+			if (resize_buffer(&l_vars.buffer, &l_vars.buffer_size))
+				return (free_bufs_contents(contents, l_vars.buffer, rl_input), 1);
+			//return (print_err(1, 2, "my(s)hell: heredoc too long\n"),
+				//free (rl_input), free(l_vars.buffer), 1);
 		buffer_start = rl_input;
 		if (process_buffer(rl_input, &l_vars, exec_data, buffer_start))
 			return (free_bufs_contents(contents, l_vars.buffer, rl_input), 1);
