@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_handle_input.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 14:24:35 by dpadenko          #+#    #+#             */
-/*   Updated: 2024/08/06 14:25:28 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/09 16:20:00 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	handle_input(char *input, t_free_data *exec_data)
 	{
 		add_history(input);
 		handle_preprocess_input(input, exec_data);
-		if (!exec_data->token_list)
+		if (!exec_data->token_list || g_last_exit_status)
 			return ;
 		exec_data->token_list_start = exec_data->token_list;
 		handle_parse_tree(exec_data);
@@ -36,9 +36,8 @@ void	handle_preprocess_input(char *input, t_free_data *exec_data)
 		input = NULL;
 		return ;
 	}
-	if (lexer(processed_input, &(exec_data->token_list)))
+	if (g_last_exit_status || lexer(processed_input, &(exec_data->token_list)))
 	{
-		g_last_exit_status = 3;
 		free(input);
 		input = NULL;
 		free(processed_input);

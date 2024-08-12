@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:37:34 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/07 16:50:34 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/09 16:03:20 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,4 +94,6 @@ void	process_input_str(char *str, const char *delim, char *dest)
 		str++;
 	}
 	*dest = '\0';
+	if (in_quotes)
+		print_err(2, 2, "my(s)hell: unclosed quotes\n");
 }
