@@ -6,7 +6,7 @@
 /*   By: mmasarov <mmasarov@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:27 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/12 10:19:42 by mmasarov         ###   ########.fr       */
+/*   Updated: 2024/08/12 11:31:50 by mmasarov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	execute_pipeline(t_free_data *exec_data)
 	if (is_there_here_doc(&exec_data->tree, &exec_data->hd_fd, exec_data))
 		return (1);
 	if (g_last_exit_status == 130)
-		return (1); // deleted close(pipefd[0]),close(pipefd[1]),
+		return (1);
 	pid = fork();
 	if (fork_check(pid, pipefd))
 		return (1);

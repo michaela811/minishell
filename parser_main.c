@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:38:11 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/10 19:28:22 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/12 11:08:33 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ int	is_pipe_sequence(t_free_data *exec_data)
 	current_command = NULL;
 	if (is_simple_command(&exec_data->token_list, &current_command,
 			exec_data->token_list) != 0)
-		//|| !current_command->child) Control with more commands if still works
 		return (free_command_data(exec_data), g_last_exit_status);
 	exec_data->tree->child = current_command;
 	while (exec_data->token_list != NULL

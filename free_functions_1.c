@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:34 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/10 11:33:20 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/12 11:09:40 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,6 @@ void	free_handle_vars(t_handle_vars *l_vars)
 {
 	if (l_vars->buffer != NULL)
 		free(l_vars->buffer);
-	//if (l_vars->result == NULL) control if needed
-		//return ;
 	if (l_vars->result != NULL)
 	{
 		if (*l_vars->result != NULL)
