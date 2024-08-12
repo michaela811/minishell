@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:36:15 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/09 21:12:18 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/12 11:11:31 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	handle_redirection(t_p_tree **node, t_exec_vars *vars,
 {
 	if ((*node)->data->type == HERE_DOC)
 		return (handle_redirection_here_doc(node, vars, here_docs, exec_data));
-	if (ft_strlen((*node)->child->data->lexeme) > 255)//or 256?
+	if (ft_strlen((*node)->child->data->lexeme) > 255)
 		return (print_err(1, 2, "my(s)hell: %s: File name too long\n",
 				(*node)->child->data->lexeme), 1);
 	if ((*node)->data->type == RED_FROM)
