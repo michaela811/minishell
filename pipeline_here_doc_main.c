@@ -82,8 +82,9 @@ int	is_there_here_doc(t_p_tree **tree, int *here_docs, t_free_data *exec_data)
 			if (current->child->data != NULL
 				&& current->child->data->type == HERE_DOC)
 			{
-				if (handle_pipe_heredoc(here_docs, current, exec_data))
-					return (g_last_exit_status);
+				handle_pipe_heredoc(here_docs, current, exec_data);
+				//if (handle_pipe_heredoc(here_docs, current, exec_data))
+				//	return (g_last_exit_status);
 			}
 			current = current->child;
 		}
