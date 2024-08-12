@@ -6,7 +6,7 @@
 /*   By: dpadenko <dpadenko@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 10:35:25 by mmasarov          #+#    #+#             */
-/*   Updated: 2024/08/10 20:41:53 by dpadenko         ###   ########.fr       */
+/*   Updated: 2024/08/12 11:10:09 by dpadenko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ int	handle_fork(t_exec_vars *vars, t_env **env, t_free_data *exec_data)
 	struct sigaction	sa;
 	struct sigaction	old_sa;
 
-	//pid = 0;
 	status = 0;
 	helper_sigquit_handler(&sa, &old_sa);
 	pid = fork();
