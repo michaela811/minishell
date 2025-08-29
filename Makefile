@@ -1,90 +1,64 @@
 NAME = minishell
-HEADER = lexer.h
 CC = cc
-CFLAGS = -g -Wall -Wextra -Werror# -fsanitize=address
+CFLAGS = -g -Wall -Wextra -Werror -MMD -MP # -fsanitize=address
+
+INC_DIR = include
+SRC_DIR = src
+OBJ_DIR = obj
 
 LIBDIR = ./libft
-OBJDIR = ./obj
 LIBFT = $(LIBDIR)/libft.a
 
-SOURCES = env_main.c \
-			env_utils.c \
-			env_handling.c \
-			error_handling.c \
-			exec_builtins_exit.c \
-			exec_builtins_cd.c \
-			exec_builtins_echo.c \
-			exec_builtins_env.c \
-			exec_builtins_export.c \
-			exec_builtins_export_utils.c \
-			exec_builtins_pwd.c \
-			exec_builtins_unset.c \
-			exec_builtins.c \
-			execute_node.c \
-			execute_node_handle_redirect.c \
-			execute_node_handle_redirect_utils.c \
-			execute_node_handle_redirect_error.c \
-			execute_node_handle_heredoc.c \
-			execute_node_handle_heredoc_utils.c \
-			execute_node_exec_cmd.c \
-			handle_dollar_sign.c \
-			handle_dollar_sign_utils.c \
-			execute_node_utils.c \
-			execute_parse_tree.c \
-			execute_pipeline_utils.c \
-			free_functions.c \
-			lexer_main.c \
-			lexer.c \
-			main.c \
-			main_handle_input.c \
-			parser_is_all_rest.c \
-			parser_is_cmd_suffix.c \
-			parser_main.c \
-			parser_utils.c \
-			init_1.c \
-			init_2.c \
-			handle_quotes_main_1.c \
-			handle_quotes_main_2.c \
-			handle_quotes_utils_1.c \
-			handle_quotes_utils_2.c \
-			handle_quotes_redirect.c \
-			execute_pipeline_utils_1.c \
-			execute_node_handle_child_cmd.c \
-			execute_node_error_messages.c \
-			free_functions_1.c \
-			pipeline_here_doc_dol_closed.c \
-			pipeline_here_doc_main.c \
-			pipeline_here_doc_dol_open.c \
-			get_path_for_exec.c \
-			get_path_for_exec_utils.c \
-			get_path_for_exec_colon.c \
-			signals.c \
+PRINTFD_DIR := ./printf_fd
+PRINTFD_LIB := $(PRINTFD_DIR)/libprintf_fd.a
 
+# -------- Readline (Linux/macOS) --------
+UNAME_S   := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+  RL_INC  := -I/opt/homebrew/opt/readline/include
+  RL_LIB  := -L/opt/homebrew/opt/readline/lib -lreadline
+else
+  RL_INC  := 
+  RL_LIB  := -lreadline
+endif
 
-OBJ = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))
+SRC = $(shell find $(SRC_DIR) -type f -name '*.c')
+OBJ = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))
+DEP = $(OBJ:.o=.d)
+
+.PHONY: all clean fclean re libs
 
 all: $(NAME)
 
-$(OBJDIR):
-	mkdir -p $(OBJDIR)
+$(NAME): $(LIBFT) $(PRINTFD_LIB) $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) -L$(LIBDIR) -lft $(PRINTFD_LIB) $(RL_LIB) -o $@
 
-$(OBJDIR)/%.o: %.c | $(OBJDIR)
-	$(CC) $(CFLAGS) -o $@ -c $< -I.
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -I$(INC_DIR) -I$(LIBDIR) -I$(PRINTFD_DIR) $(RL_INC) -c $< -o $@
 
-$(NAME): $(LIBFT) $(OBJ)
-		$(CC) $(CFLAGS) $(OBJ) -L$(LIBDIR) -lft -lreadline -o $(NAME)
+$(OBJ_DIR):
+	@mkdir -p $(OBJ_DIR)
 
-$(LIBFT):
-		$(MAKE) -C $(LIBDIR) all
+$(LIBDIR)/.git:
+	@git submodule update --init --recursive
 
-.PHONY: clean fclean all re
+$(LIBFT): | $(LIBDIR)/.git
+	$(MAKE) -C $(LIBDIR) all
+
+$(PRINTFD_LIB):
+	$(MAKE) -C $(PRINTFD_DIR) all
 
 clean:
-		$(MAKE) -C $(LIBDIR) clean
-		rm -rf $(OBJDIR)
+	$(MAKE) -C $(LIBDIR) clean
+	$(MAKE) -C $(PRINTFD_DIR) clean
+	rm -rf $(OBJ_DIR)
 
 fclean: clean
-		$(MAKE) -C $(LIBDIR) fclean
-		rm -rf $(NAME)
+	$(MAKE) -C $(LIBDIR) fclean
+	$(MAKE) -C $(PRINTFD_DIR) fclean
+	rm -f $(NAME)
 
 re: fclean all
+
+-include $(DEP)

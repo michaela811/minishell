@@ -23,7 +23,8 @@
 # include <sys/stat.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include "libft/libft.h"
+# include "libft.h"
+# include "ft_printf_fd.h"
 # include <errno.h>
 # include <signal.h>
 # include <limits.h>
