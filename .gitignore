@@ -67,3 +67,5 @@ $USER
 $USER'$USER'
 
 *.swp
+*.swo
+.vscode/
