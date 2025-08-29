@@ -13,18 +13,23 @@ SRC = \
 	ft_print_ptr_fd.c \
 	ft_print_percent_fd.c
 
-OBJ := $(SRC:.c=.o)
+OBJDIR = obj_printf_fd
+OBJ = $(addprefix $(OBJDIR)/, $(SRC:.c=.o))
 
-all: $(NAME)
+all: $(OBJDIR) $(NAME)
+
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
 
 $(NAME): $(OBJ)
 	$(AR) $@ $^
 
-%.o: %.c ft_printf_fd.h
+$(OBJDIR)/%.o: %.c ft_printf_fd.h | $(OBJDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJ)
+	rm -rf $(OBJDIR)
 
 fclean: clean
 	rm -f $(NAME)
