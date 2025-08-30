@@ -23,9 +23,7 @@
 - **Builtins** implemented in‑process when appropriate:
   - `echo` (with `-n`), `cd`, `pwd`, `export`, `unset`, `env`, `exit`.
 - **Signals** & termios behavior matching Bash‐like expectations.
-- **No memory leaks** over long interactive sessions; correct cleanup for all code paths.
-
-> Bonus ideas (if allowed by your scope): logical ops `&&` / `||`, parentheses, wildcards, etc. (Not required by the classic subject.)
+- **No memory leaks** over long interactive sessions; correct cleanup for all code paths
 
 ---
 
