@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 int		is_directory(const char *path);
-int		ft_isspace(char c);
+int		ft_isspace_minishell(char c);
 int		directory_check(char *arg_0);
 int		is_string_numeric(const char *str);
 int		overflow_check(char *result);

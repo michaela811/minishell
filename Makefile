@@ -31,7 +31,7 @@ DEP = $(OBJ:.o=.d)
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(PRINTFD_LIB) $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -L$(LIBDIR) -lft $(PRINTFD_LIB) $(RL_LIB) -o $@
+	$(CC) $(CFLAGS) $(OBJ) $(PRINTFD_LIB) -L$(LIBDIR) -lft $(RL_LIB) -o $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@mkdir -p $(dir $@)
