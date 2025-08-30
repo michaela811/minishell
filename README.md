@@ -113,7 +113,6 @@ Getting **Ctrl keys** right is a common failure point. The parent shell and its 
 > | Ctrl‑C  | newline + prompt   | kills child      | 130   |
 > | Ctrl‑\  | ignored            | “Quit: 3”        | 131   |
 > | Ctrl‑D  | exit shell         | (n/a)            | last  |
-> | Ctrl‑Z  | ignored            | default in child | (n/a) |
 
 ---
 
@@ -228,9 +227,6 @@ Also ensure `exit` builtin accepts: `exit`, `exit <n>`, error on too many args, 
   1. From a fresh `./minishell`, press **Ctrl‑D** on an empty line.
   2. Shell prints `exit` and terminates.
   3. In your outer shell, run `echo $?` → expect previous minishell status (often `0`).
-- **Ctrl‑Z (suspend):**
-  - **At prompt:** press **Ctrl‑Z** → nothing should happen (ignored).
-  - **While child runs:** run `cat`, then **Ctrl‑Z** → the child stops (`Stopped`) while minishell stays responsive. Since minishell has no job control, manually `kill -SIGCONT <pid>` or `kill -9 <pid>` from another terminal if needed.
 
 #### Pipeline interruption
 - Run: `sleep 5 | cat` → press **Ctrl‑C**.
