@@ -9,8 +9,8 @@ OBJ_DIR = obj
 LIBDIR = ./libft
 LIBFT = $(LIBDIR)/libft.a
 
-PRINTFD_DIR := ./printf_fd
-PRINTFD_LIB := $(PRINTFD_DIR)/libprintf_fd.a
+#PRINTFD_DIR := ./printf_fd
+#PRINTFD_LIB := $(PRINTFD_DIR)/libprintf_fd.a
 
 # -------- Readline (Linux/macOS) --------
 UNAME_S   := $(shell uname -s)
@@ -30,33 +30,42 @@ DEP = $(OBJ:.o=.d)
 
 all: $(NAME)
 
-$(NAME): $(LIBFT) $(PRINTFD_LIB) $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(PRINTFD_LIB) -L$(LIBDIR) -lft $(RL_LIB) -o $@
+#$(NAME): $(LIBFT) $(PRINTFD_LIB) $(OBJ)
+#	$(CC) $(CFLAGS) $(OBJ) $(PRINTFD_LIB) -L$(LIBDIR) -lft $(RL_LIB) -o $@
+
+$(NAME): $(LIBFT) $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) -L$(LIBDIR) -lft $(RL_LIB) -o $@
+
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -I$(INC_DIR) -I$(LIBDIR) -I$(PRINTFD_DIR) $(RL_INC) -c $< -o $@
+#	$(CC) $(CFLAGS) -I$(INC_DIR) -I$(LIBDIR) -I$(PRINTFD_DIR) $(RL_INC) -c $< -o $@
+	$(CC) $(CFLAGS) -I$(INC_DIR) -I$(LIBDIR) $(RL_INC) -c $< -o $@
 
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 
-$(LIBDIR)/.git:
-	@git submodule update --init --recursive
+#$(LIBDIR)/.git:
+#	@git submodule update --init --recursive
 
-$(LIBFT): | $(LIBDIR)/.git
+#$(LIBFT): | $(LIBDIR)/.git
+#	$(MAKE) -C $(LIBDIR) all
+
+$(LIBFT):
 	$(MAKE) -C $(LIBDIR) all
 
-$(PRINTFD_LIB):
-	$(MAKE) -C $(PRINTFD_DIR) all
+
+#$(PRINTFD_LIB):
+#	$(MAKE) -C $(PRINTFD_DIR) all
 
 clean:
 	$(MAKE) -C $(LIBDIR) clean
-	$(MAKE) -C $(PRINTFD_DIR) clean
+#	$(MAKE) -C $(PRINTFD_DIR) clean
 	rm -rf $(OBJ_DIR)
 
 fclean: clean
 	$(MAKE) -C $(LIBDIR) fclean
-	$(MAKE) -C $(PRINTFD_DIR) fclean
+#	$(MAKE) -C $(PRINTFD_DIR) fclean
 	rm -f $(NAME)
 
 re: fclean all

@@ -66,7 +66,7 @@ int	overflow_check(char *result)
 	char	*end;
 	char	*num;
 
-	while (isspace((unsigned char)*result))
+	while (ft_isspace_minishell((unsigned char)*result))
 		result++;
 	end = result;
 	if (*result == '+' || *result == '-')
@@ -77,7 +77,7 @@ int	overflow_check(char *result)
 		end++;
 	while (*end != '\0')
 	{
-		if (!isspace((unsigned char)*end))
+		if (!ft_isspace_minishell((unsigned char)*end))
 			return (0);
 		end++;
 	}
