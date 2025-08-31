@@ -42,7 +42,7 @@ src/
   path/            # PATH resolution
   free/            # cleanup helpers
 printf_fd/         # libprintf_fd.a (ft_printf_fd & helpers)
-libft/             # submodule (libft.a)
+libft/             # standard library with additional functions for this project (libft.a)
 tools/suppress/    # sanitizer suppression files (readline, etc.)
 ```
 
@@ -54,8 +54,8 @@ tools/suppress/    # sanitizer suppression files (readline, etc.)
 
 ## Build & Run
 ```sh
-# clone with submodules
-git clone --recursive https://github.com/michaela811/minishell.git minishell
+# clone 
+git clone https://github.com/michaela811/minishell.git minishell
 cd minishell
 
 # build
@@ -68,8 +68,6 @@ make
 ### Make targets
 - `make` – build `minishell`, `libft.a`, and `libprintf_fd.a`.
 - `make clean|fclean|re` – standard hygiene.
-
-> If you forgot submodules: `git submodule update --init --recursive`.
 
 ---
 
@@ -127,7 +125,7 @@ Getting **Ctrl keys** right is a common failure point. The parent shell and its 
 - **Unquoted delimiter (expands):**
   
   ```
-  echo start; cat <<EOF; echo end
+  cat <<EOF
   $USER $?
   EOF
   ```
@@ -139,8 +137,6 @@ Getting **Ctrl keys** right is a common failure point. The parent shell and its 
   EOF
   ```
   Should print literal `$USER $?`.
-- **SIGINT abort:**
-  Start `cat <<EOF`, type a few chars, press **Ctrl‑C** → heredoc aborts, no temp leaks, `$?=130`.
   ```
 ---
 
@@ -148,9 +144,6 @@ Getting **Ctrl keys** right is a common failure point. The parent shell and its 
 - **Delimiter quoting controls expansion**:
   - Unquoted delimiter → expand `$VAR` and `$?` inside heredoc.
   - Quoted delimiter → **no expansion**.
-- **Signals inside heredoc**:
-  - `Ctrl‑C` must **abort** the heredoc, clean temp files, and set status `130`.
-- Use a temp file or pipe; ensure **FD hygiene** in pipelines.
 
 ---
 
@@ -226,13 +219,6 @@ valgrind \
 11. **Signals in children**: restore defaults; print correct messages.
 12. **Cleanups**: sweeping frees on all early‑return/error paths.
 13. **Test matrix**: scripts to cover signals, pipes, redirs, heredoc, big env, weird filenames.
-
----
-
-## Developer Notes
-- `libft/` is a **git submodule**.
-- `printf_fd/` builds `libprintf_fd.a` and is linked by the top‑level Makefile.
-- Object files mirror the `src/` tree; header deps generated via `-MMD -MP`.
 
 ---
 
