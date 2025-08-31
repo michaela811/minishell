@@ -23,7 +23,8 @@
 # include <sys/stat.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include "libft/libft.h"
+# include "libft.h"
+# include "ft_printf_fd.h"
 # include <errno.h>
 # include <signal.h>
 # include <limits.h>
@@ -32,15 +33,15 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <unistd.h>
-# include <structs.h>
-# include <lexer_parser.h>
-# include <allocs_and_frees.h>
-# include <quotes.h>
-# include <env.h>
-# include <redirections.h>
-# include <utils.h>
-# include <exec.h>
-# include <builtins.h>
+# include "structs.h"
+# include "lexer_parser.h"
+# include "allocs_and_frees.h"
+# include "quotes.h"
+# include "env.h"
+# include "redirections.h"
+# include "utils.h"
+# include "exec.h"
+# include "builtins.h"
 # include <signal.h>
 # include <bits/sigaction.h>
 

@@ -32,7 +32,7 @@ static int	handle_exit(char *result, t_exec_vars *vars)
 
 int	is_string_numeric(const char *str)
 {
-	while (ft_isspace((unsigned char)*str))
+	while (ft_isspace_minishell((unsigned char)*str))
 		str++;
 	if (*str == '+' || *str == '-')
 		str++;
@@ -44,14 +44,14 @@ int	is_string_numeric(const char *str)
 	}
 	while (*str)
 	{
-		if (!ft_isspace((unsigned char)*str))
+		if (!ft_isspace_minishell((unsigned char)*str))
 			return (0);
 		str++;
 	}
 	return (1);
 }
 
-int	ft_isspace(char c)
+int	ft_isspace_minishell(char c)
 {
 	return (c == ' '
 		|| c == '\f'
@@ -66,7 +66,7 @@ int	overflow_check(char *result)
 	char	*end;
 	char	*num;
 
-	while (isspace((unsigned char)*result))
+	while (ft_isspace_minishell((unsigned char)*result))
 		result++;
 	end = result;
 	if (*result == '+' || *result == '-')
@@ -77,7 +77,7 @@ int	overflow_check(char *result)
 		end++;
 	while (*end != '\0')
 	{
-		if (!isspace((unsigned char)*end))
+		if (!ft_isspace_minishell((unsigned char)*end))
 			return (0);
 		end++;
 	}
